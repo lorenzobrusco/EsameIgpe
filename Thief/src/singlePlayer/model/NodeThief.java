@@ -114,13 +114,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 		}
 	}
 
+	@Override
 	public void death() {
+		super.death();
 		this.resetCurrentTime();
 		this.walkingSound.stopSound();
-		this.deathSound.playSound();
-		this.alive = false;
-		super.channel.setAnim(death, 0.50f);
-		super.channel.setLoopMode(LoopMode.DontLoop);
 		this.stop();
 	}
 
@@ -225,7 +223,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			CollisionResult closest = collisionResult.getClosestCollision();
 			if (closest != null) {
 				enemy.isStricken(this.getDAMAGE());
-				if (enemy.isDead()) {
+				if (!enemy.isDead()) {
 					this.enemyWin.playSound();
 				}
 			}
