@@ -59,7 +59,7 @@ public class Main extends SimpleApplication implements ActionListener {
 		this.audioRenderer.setListener(this.listener);
 
 		editor();
-		// singlePlayer();
+//		singlePlayer();
 
 	}
 

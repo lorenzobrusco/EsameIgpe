@@ -1,6 +1,6 @@
 package editor;
 
-import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResult; 
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
@@ -478,46 +478,46 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeBonFire(Vector3f intersect) {// TODO togliete commenti per
 													// creare un nuovo bonFire
-		// Node bonfire = new Node("Bonfire");
-		//
-		// Spatial wood =
-		// GameManager.getIstance().getApplication().getAssetManager()
-		// .loadModel("Models/Bonfire/Bonfire.mesh.j3o");
-		// wood.setLocalTranslation(0, 0.4f, 0);
-		//
-		// ParticleEmitter fire = new ParticleEmitter("Emitter",
-		// com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
-		// fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f,
-		// bonfire.getLocalTranslation().y + 0.5f,
-		// bonfire.getLocalTranslation().x + 0.2f);
-		// Material mat_red = new
-		// Material(GameManager.getIstance().getApplication().getAssetManager(),
-		// "Common/MatDefs/Misc/Particle.j3md");
-		// mat_red.setTexture("Texture",
-		// GameManager.getIstance().getApplication().getAssetManager().loadTexture("Effects/Explosion/flame.png"));
-		// fire.setMaterial(mat_red);
-		// fire.setImagesX(2);
-		// fire.setImagesY(2);
-		// fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));
-		// fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
-		// fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2,
-		// 0));
-		// fire.setStartSize(1.0f);
-		// fire.setEndSize(0.1f);
-		// fire.setGravity(0, -1f, 0);
-		// fire.setLowLife(1f);
-		// fire.setHighLife(2f);
-		// fire.getParticleInfluencer().setVelocityVariation(0.3f);
-		//
-		// bonfire.attachChild(wood);
-		// bonfire.attachChild(fire);
-		//
-		// NodeModel nodeBonFire = new NodeModel(bonfire, new Vector3f(7.3f,
-		// 15f, 1000f));
+//		 Node bonfire = new Node("Bonfire");
+//		
+//		 Spatial wood =
+//		 GameManager.getIstance().getApplication().getAssetManager()
+//		 .loadModel("Models/bonfire/Bonfire.mesh.j3o");
+//		 wood.setLocalTranslation(0, 0.4f, 0);
+//		
+//		 ParticleEmitter fire = new ParticleEmitter("Emitter",
+//		 com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
+//		 fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f,
+//		 bonfire.getLocalTranslation().y + 0.5f,
+//		 bonfire.getLocalTranslation().x + 0.2f);
+//		 Material mat_red = new
+//		 Material(GameManager.getIstance().getApplication().getAssetManager(),
+//		 "Common/MatDefs/Misc/Particle.j3md");
+//		 mat_red.setTexture("Texture",
+//		 GameManager.getIstance().getApplication().getAssetManager().loadTexture("Effects/Explosion/flame.png"));
+//		 fire.setMaterial(mat_red);
+//		 fire.setImagesX(2);
+//		 fire.setImagesY(2);
+//		 fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));
+//		 fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
+//		 fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2,
+//		 0));
+//		 fire.setStartSize(1.0f);
+//		 fire.setEndSize(0.1f);
+//		 fire.setGravity(0, -1f, 0);
+//		 fire.setLowLife(1f);
+//		 fire.setHighLife(2f);
+//		 fire.getParticleInfluencer().setVelocityVariation(0.3f);
+//		
+//		 bonfire.attachChild(wood);
+//		 bonfire.attachChild(fire);
+//		
+//		 NodeModel nodeBonFire = new NodeModel(bonfire, new Vector3f(7.3f,
+//		 15f, 1000f));
 
-		// this.bonFireModel.setName(bonfire.getName());
+//		 this.bonFireModel.setName(bonfire.getName());
 		this.bonFireModel.getModel().setLocalTranslation(intersect);
-		// this.terrain.attachChild(this.bonFireModel.getModel());
+//		 this.terrain.attachChild(this.bonFireModel.getModel());
 		this.bonFireModel.moveModel(this.bonFireModel.getModel().getLocalTranslation());
 		this.spatials.add((Node) this.bonFireModel.getModel());
 		this.setName();
@@ -538,8 +538,8 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeThief(Vector3f intersect) {// TODO togliete commenti per
 												// creare un nuovo yasuo
-		// this.thiefModel = new NodeThief(
-		// GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Yasuo/Yasuo.mesh.j3o"));
+//		 this.thiefModel = new NodeThief(
+//		 GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Yasuo/Yasuo.mesh.j3o"));
 		this.thiefModel.getModel().setLocalTranslation(intersect);
 		this.thiefModel.moveModel(intersect);
 		 this.terrain.attachChild(thiefModel.getModel());
