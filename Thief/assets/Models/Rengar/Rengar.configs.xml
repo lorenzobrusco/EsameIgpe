@@ -1,0 +1,10 @@
+<model>
+	<configs>
+		<rotate>
+			<x>1.57f</x>
+			<y>0f</y>
+			<z>0f</z>
+		</rotate>
+		<scale>0.02f</scale>
+	</configs>
+</model>

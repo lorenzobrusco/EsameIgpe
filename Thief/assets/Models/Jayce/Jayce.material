@@ -1,0 +1,22 @@
+
+material JayceMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588 0.588 0.588 1
+
+			texture_unit
+			{
+				texture Jayce.dds
+			}
+
+			texture_unit
+			{
+			}
+		}
+
+	}
+
+}

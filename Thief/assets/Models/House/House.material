@@ -1,0 +1,23 @@
+
+material House_MAT
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.807843 0.807843 0.807843 1
+			
+			texture_unit
+			{
+				texture house_diffuse.tga
+				
+			}
+
+			texture_unit
+			{
+			}
+		}
+
+	}
+
+}

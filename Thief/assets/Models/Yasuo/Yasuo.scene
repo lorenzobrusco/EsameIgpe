@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="39.3701" minOgreVersion="1.9" ogreMaxVersion="2.6.4" author="OgreMax Scene Exporter (www.ogremax.com)" application="3DS Max">
+    <environment>
+        <colourAmbient r="0.333333" g="0.333333" b="0.333333"/>
+        <colourBackground r="0" g="0" b="0"/>
+        <clipping near="0" far="100000"/>
+    </environment>
+    <nodes>
+        <node name="Root_Upper">
+            <position x="-0.226163" y="42.1248" z="1.93208"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.707076" qy="-6.10352e-005" qz="-2.3151e-011" qw="0.707137"/>
+        </node>
+        <node name="Root_Lower">
+            <position x="-0.226163" y="42.1248" z="1.93208"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.707076" qy="-6.10352e-005" qz="-2.3151e-011" qw="0.707137"/>
+        </node>
+        <node name="Sword_World">
+            <position x="-13.2417" y="40.4638" z="12.1359"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.523623" qy="-0.444574" qz="0.612111" qw="0.391783"/>
+        </node>
+        <node name="Sheath_World">
+            <position x="-11.4035" y="39.8807" z="1.22315"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="-0.0244998" qy="0.733647" qz="-0.66725" qw="0.12625"/>
+        </node>
+        <node name="Buffbone_Glb_Channel_Loc">
+            <position x="2.70333e-005" y="66.9287" z="27.5591"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="-6.10351e-005" qy="1" qz="0.000122129" qw="-3.62546e-008"/>
+        </node>
+        <node name="C_Buffbone_Glb_Overhead_Loc">
+            <position x="0.288809" y="113.563" z="-1.84362"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="-0.0400698" qy="-0.685639" qz="0.726469" qw="-0.0231627"/>
+        </node>
+        <node name="Buffbone_Glb_Ground_Loc">
+            <position x="2.70333e-005" y="0.00011484" z="-1.18035"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="3.04821e-005" qy="-0.707076" qz="0.707138" qw="3.04847e-005"/>
+        </node>
+        <node name="C_Buffbone_Glb_Center_Loc">
+            <position x="-0.226163" y="36.5603" z="0.917994"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="6.13669e-005" qy="-0.707076" qz="0.707138" qw="-3.97391e-007"/>
+        </node>
+        <node name="C_Buffbone_Glb_Layout_Loc">
+            <position x="2.70333e-005" y="0.000114785" z="-2.4248"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="3.04821e-005" qy="-0.707076" qz="0.707138" qw="3.04847e-005"/>
+        </node>
+        <node name="Model">
+            <position x="0" y="0" z="0"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.707107" qy="0" qz="0" qw="0.707107"/>
+            <entity name="Model" castShadows="true" receiveShadows="true" meshFile="Model.mesh">
+                <subentities>
+                    <subentity index="0" materialName="Material#25"/>
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

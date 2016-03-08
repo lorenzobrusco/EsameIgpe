@@ -1,0 +1,22 @@
+
+material WindMill_MAT
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.321569 0.321569 0.321569 1
+			
+			texture_unit
+			{
+				texture windmill_diffuse.tga
+			}
+
+			texture_unit
+			{
+			}
+		}
+
+	}
+
+}
