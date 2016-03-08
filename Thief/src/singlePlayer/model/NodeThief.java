@@ -226,7 +226,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 			if (closest != null) {
 				enemy.isStricken(this.getDAMAGE());
 				if (enemy.isDead()) {
-					GameManager.getIstance().getTerrain().detachChild(enemy.spatial);
 					this.enemyWin.playSound();
 				}
 			}
