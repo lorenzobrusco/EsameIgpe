@@ -116,6 +116,13 @@ public class GameManager {
 		}
 	}
 
+	public void startEnemiesIntelligence(){
+	    for (NodeEnemy enemy : this.enemies ){
+		enemy.runIntelligence();
+		enemy.attack();
+	    }
+	}
+	
 	public void addModelEnemy(NodeEnemy enemy) {
 		this.enemies.add(enemy);
 	}
