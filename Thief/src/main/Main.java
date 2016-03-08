@@ -7,7 +7,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.system.AppSettings;
-
 import control.GameManager;
 import editor.EditorTerrain;
 import singlePlayer.SinglePlayer;
@@ -58,8 +57,8 @@ public class Main extends SimpleApplication implements ActionListener {
 		this.flyCam.setMoveSpeed(100f);
 		this.audioRenderer.setListener(this.listener);
 
-		editor();
-//		singlePlayer();
+//		editor();
+		singlePlayer();
 
 	}
 
