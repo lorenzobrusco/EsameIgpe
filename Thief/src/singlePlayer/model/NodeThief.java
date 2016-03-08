@@ -305,22 +305,24 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	@Override
 	protected void setupAudio() {
-		this.walkingSound = new Sound(this, "Walking", false, false, false, 0.09f, false);
-		this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
-		this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
-		this.bonfireSound = new Sound(this, "Bonfire", false, false, false, 1.0f, false);
-		this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f, false);
-		this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f, false);
-		this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f, false);
-		this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f, false);
-		this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f, false);
-		this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f, false);
-		this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f, false);
-		this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f, false);
-		this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f, false);
-		this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f, false);
-		this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f, false);
-		this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
-		this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
+		if (!GameManager.getIstance().isEditor()) {
+			this.walkingSound = new Sound(this, "Walking", false, false, false, 0.09f, false);
+			this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
+			this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
+			this.bonfireSound = new Sound(this, "Bonfire", false, false, false, 1.0f, false);
+			this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f, false);
+			this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f, false);
+			this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f, false);
+			this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f, false);
+			this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f, false);
+			this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f, false);
+			this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f, false);
+			this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f, false);
+			this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f, false);
+			this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f, false);
+			this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f, false);
+			this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
+			this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
+		}
 	}
 }
