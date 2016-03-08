@@ -46,7 +46,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private Sound enemyView;
 	private int currentTime;
 	private int talkFrequence;
-
 	private final String bonfire = "BonFire";
 
 	public NodeThief(Spatial model) {
@@ -56,6 +55,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.waitAnimation = false;
 		this.currentTime = (int) System.currentTimeMillis();
 		this.talkFrequence = 20;
+		this.setViewed(true);
 		this.setupAudio();
 
 	}
@@ -100,6 +100,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public void stop() {
 		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 		this.walkingSound.stopSound();
+		if (this.getWorldTranslation().y < -9f) {
+			this.death();
+		}
 	}
 
 	public void run() {
@@ -116,10 +119,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	@Override
 	public void death() {
-		super.death();
-		this.resetCurrentTime();
-		this.walkingSound.stopSound();
-		this.stop();
+		if (this.alive) {
+			super.death();
+			this.resetCurrentTime();
+			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+			this.walkingSound.stopSound();
+		}
 	}
 
 	public void toSitNearToBonFire() {

@@ -58,6 +58,7 @@ public class NodeEnemy extends NodeCharacter {
 			this.isRun = false;
 			this.isStanding = !this.isRun;
 		}
+		//TODO i nemici non muoiono se annegano in idle
 	}
 
 	public void runAnimation() {
@@ -113,6 +114,7 @@ public class NodeEnemy extends NodeCharacter {
 	public void death() {
 		super.death();
 		this.artificialIntelligence.stop();
+		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 	}
 
 	@Override
