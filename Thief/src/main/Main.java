@@ -26,19 +26,19 @@ public class Main extends SimpleApplication implements ActionListener {
 
 	public static void main(String[] args) {
 		Main app = new Main();
-//
-//		AppSettings gameSettings = new AppSettings(false);
-//		gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-//				java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-//		gameSettings.setFullscreen(true);
-//		gameSettings.setVSync(true);
-//		gameSettings.setTitle("Thief");
-//		gameSettings.setUseInput(true);
-//		gameSettings.setFrameRate(500);
-//		gameSettings.setSamples(0);
-//		gameSettings.setRenderer("LWJGL-OpenGL2");
-//		app.setSettings(gameSettings);
-//		app.setShowSettings(false);
+		//
+		// AppSettings gameSettings = new AppSettings(false);
+		// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+		// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+		// gameSettings.setFullscreen(true);
+		// gameSettings.setVSync(true);
+		// gameSettings.setTitle("Thief");
+		// gameSettings.setUseInput(true);
+		// gameSettings.setFrameRate(500);
+		// gameSettings.setSamples(0);
+		// gameSettings.setRenderer("LWJGL-OpenGL2");
+		// app.setSettings(gameSettings);
+		// app.setShowSettings(false);
 
 		// disable statistics
 		app.setDisplayFps(true);
@@ -58,22 +58,21 @@ public class Main extends SimpleApplication implements ActionListener {
 		this.flyCam.setMoveSpeed(100f);
 		this.audioRenderer.setListener(this.listener);
 
-//		 editor();
-		singlePlayer();
+		editor();
+		// singlePlayer();
 
 	}
 
 	@Override
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
-		if (singleplayer){
+		if (singleplayer) {
 			player.simpleUpdate(tpf);
 			this.listener.setLocation(cam.getLocation());
 			this.listener.setRotation(cam.getRotation());
 			this.audioRenderer.update(tpf);
-			
-		}
-		else
+
+		} else
 			editorTerrain.simpleUpdate(tpf);
 
 	}
@@ -86,6 +85,7 @@ public class Main extends SimpleApplication implements ActionListener {
 
 	public void editor() {
 		singleplayer = false;
+		GameManager.getIstance().setEditor(true);
 		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 		this.initKeys();
 	}
