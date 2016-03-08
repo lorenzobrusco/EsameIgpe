@@ -8,17 +8,10 @@ import singlePlayer.model.NodeEnemy;
 public class AI {
 
     private final NodeEnemy enemy;
-    private final float DISTANCETOSLOWDOWNSMALL;
-    private final float DISTANCETOSLOWDOWNMEDIUM;
-    private final float DISTANCETOSLOWDOWNLARGE;
-    private final float DISTANCETOSLOWDOWNLARGEST;
+    private final float SPEED = 15;
 
     public AI(final NodeEnemy enemy) {
 	this.enemy = enemy;
-	this.DISTANCETOSLOWDOWNSMALL = 35;
-	this.DISTANCETOSLOWDOWNMEDIUM = 70;
-	this.DISTANCETOSLOWDOWNLARGE = 105;
-	this.DISTANCETOSLOWDOWNLARGEST = 140;
     }
 
     public void run() {
@@ -47,9 +40,7 @@ public class AI {
     }
 
     public void enemyTranslate(NodeEnemy enemy, Vector3f thiefDirection, float distance) {
-	System.out.println((1/distance));
-	    enemy.getCharacterControl().setWalkDirection(thiefDirection.mult((1/distance)*30));
-
+	enemy.getCharacterControl().setWalkDirection(thiefDirection.mult((1 / distance) * this.SPEED));
 	enemy.runAnimation();
     }
 

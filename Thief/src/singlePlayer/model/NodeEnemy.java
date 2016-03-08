@@ -105,7 +105,6 @@ public class NodeEnemy extends NodeCharacter {
 		CollisionResult closest = collisionResult.getClosestCollision();
 		if (closest != null) {
 			GameManager.getIstance().getNodeThief().isStricken(this.getDAMAGE());
-			System.out.println("colptio");
 		}
 
 	}
