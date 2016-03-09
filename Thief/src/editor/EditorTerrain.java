@@ -60,7 +60,9 @@ public class EditorTerrain implements ScreenController {
 	private Geometry marker;
 	private BitmapText hintText;
 	private boolean raiseTerrain = false;
-	private Nifty nifty;
+    private Nifty nifty;
+	@SuppressWarnings("unused")
+	private NiftyJmeDisplay niftyDisplay;
 	private LoadTerrain loadTerrain;
 	private NodeThief thiefModel;
 	private NodeModel bonFireModel;
@@ -73,9 +75,11 @@ public class EditorTerrain implements ScreenController {
 	private final AppSettings settings;
 
 	public EditorTerrain(Node rootNode, Camera cam, BitmapFont guiFont, Node guiNode, ViewPort port,
-			AppSettings settings, String path) {
+			AppSettings settings, String path,NiftyJmeDisplay display, Nifty nifty) {
 
 		this.rootNode = rootNode;
+		this.niftyDisplay = display;
+		this.nifty = nifty;
 		this.cam = cam;
 		this.guiFont = guiFont;
 		this.guiNode = guiNode;
@@ -345,13 +349,9 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	private void makeNiftyEditor() {
-		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(GameManager.getIstance().getApplication().getAssetManager(),
-				GameManager.getIstance().getApplication().getInputManager(),
-				GameManager.getIstance().getApplication().getAudioRenderer(),
-				GameManager.getIstance().getApplication().getGuiViewPort());
-		this.nifty = niftyDisplay.getNifty();
+		
 		this.nifty.fromXml("Interface/editor.xml", "start", this);
-		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
+		
 	}
 
 	private void createMarker() {
