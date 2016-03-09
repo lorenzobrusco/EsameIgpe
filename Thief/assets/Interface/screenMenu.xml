@@ -25,6 +25,7 @@
 		                                       <onEndHover name="nop" onStartEffect="endGrow(singlePlayerButton)" />                            
 		                                  	
 		       		</effect> 
+		       		<interact onClick="openSinglePlayer()" />
 		    </image>       
         </panel>
         
