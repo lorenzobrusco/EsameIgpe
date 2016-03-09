@@ -44,7 +44,6 @@ public class LoadTerrain {
 
 		NodeEnemy nodeModel = new NodeEnemy(spatial, dimension, spatial.getLocalTranslation());
 		GameManager.getIstance().addModel(nodeModel);
-		GameManager.getIstance().addModelEnemy(nodeModel);
 		if (editor) {
 			nodeModel.moveModel(spatial.getWorldTranslation());
 			terrain.detachChild(spatial);

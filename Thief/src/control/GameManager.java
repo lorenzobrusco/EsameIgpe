@@ -50,12 +50,15 @@ public class GameManager {
 
 	private AudioRenderer audioRenderer;
 
+	private boolean editor;
+
 	private GameManager() {
 
 		this.spatial = new Stack<>();
 		this.nodeRender = new ArrayList<>();
 		this.enemies = new ArrayList<>();
 		this.lights = new ArrayList<>();
+		this.editor = false;
 	}
 
 	public void setParams(SimpleApplication application) {
@@ -113,6 +116,13 @@ public class GameManager {
 				model.addCharacterControll();
 			}
 			bulletAppState.getPhysicsSpace().add(model);
+		}
+	}
+
+	public void startEnemiesIntelligence() {
+		for (NodeEnemy enemy : this.enemies) {
+			enemy.runIntelligence();
+			enemy.attack();
 		}
 	}
 
@@ -205,5 +215,13 @@ public class GameManager {
 
 	public AudioRenderer getAudioRender() {
 		return this.audioRenderer;
+	}
+
+	public void setEditor(boolean editor) {
+		this.editor = editor;
+	}
+
+	public boolean isEditor() {
+		return this.editor;
 	}
 }
