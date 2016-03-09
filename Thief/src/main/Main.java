@@ -94,6 +94,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     }
 
     public void singlePlayer() {
+    	
 	singleplayer = true;
 	editor = false;
 	this.player = new SinglePlayer(viewPort, rootNode, cam, "mountain");
@@ -180,6 +181,15 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	public void openEditor()
 	{
 		editor();
+			
+		
+	}
+	
+	public void openSinglePlayer()
+	{
+		
+		nifty.exit();		
+		singlePlayer();
 			
 		
 	}
