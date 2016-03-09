@@ -12,7 +12,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
-
 import control.GameManager;
 import singlePlayer.Sound;
 
@@ -54,8 +53,8 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		this.STARTLIFE = life;
 		this.life = life;
 		this.DAMAGE = DAMAGE;
-		this.setupAudio();
 		this.viewed = false;
+		this.setupAudio();
 	}
 
 	public NodeCharacter(String model, Vector3f dimensionControll, int life, final int DAMAGE) {
@@ -174,6 +173,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		GameManager.getIstance().getTerrain().detachChild(node);
 	}
 
+	public void checkCollition() {
+		;
+	}
+
 	@Override
 	public void onAnimChange(AnimControl arg0, AnimChannel arg1, String arg2) {
 
@@ -185,30 +188,34 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 	@Override
 	protected void setupAudio() {
-//		this.deathSound = new Sound(this, "Death", false, true, false, 1.0f, false);
-//		this.scream1 = new Sound(this, "Scream1", false, true, false, 1.0f, false);
-//		this.scream2 = new Sound(this, "Scream2", false, true, false, 1.0f, false);
-//		this.scream3 = new Sound(this, "Scream3", false, true, false, 1.0f, false);
-//		this.scream4 = new Sound(this, "Scream4", false, true, false, 1.0f, false);
+		if (!GameManager.getIstance().isEditor()) {
+			this.deathSound = new Sound(this, "Death", false, true, false, 1.0f, false);
+			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.0f, false);
+			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.0f, false);
+			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.0f, false);
+			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.0f, false);
+		}
 	}
 
 	protected void playScream() {
-		int rand = (int) (Math.random() * 4) + 1;
-		switch (rand) {
-		case 1:
-			this.scream1.playSoundIstance();
-			break;
-		case 2:
-			this.scream2.playSoundIstance();
-			break;
-		case 3:
-			this.scream3.playSoundIstance();
-			break;
-		case 4:
-			this.scream4.playSoundIstance();
-			break;
-		default:
-			break;
+		if (!GameManager.getIstance().isEditor()) {
+			int rand = (int) (Math.random() * 4) + 1;
+			switch (rand) {
+			case 1:
+				this.scream1.playSoundIstance();
+				break;
+			case 2:
+				this.scream2.playSoundIstance();
+				break;
+			case 3:
+				this.scream3.playSoundIstance();
+				break;
+			case 4:
+				this.scream4.playSoundIstance();
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -219,5 +226,13 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	public boolean isViewed() {
 		return this.viewed;
 
+	}
+
+	public void death() {
+		if (this.alive)
+			this.deathSound.playSound();
+		this.alive = false;
+		this.channel.setAnim(death, 0.50f);
+		this.channel.setLoopMode(LoopMode.DontLoop);
 	}
 }

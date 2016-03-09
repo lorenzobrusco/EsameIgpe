@@ -44,7 +44,6 @@ public class LoadTerrain {
 
 		NodeEnemy nodeModel = new NodeEnemy(spatial, dimension, spatial.getLocalTranslation());
 		GameManager.getIstance().addModel(nodeModel);
-		GameManager.getIstance().addModelEnemy(nodeModel);
 		if (editor) {
 			nodeModel.moveModel(spatial.getWorldTranslation());
 			terrain.detachChild(spatial);
@@ -143,6 +142,9 @@ public class LoadTerrain {
 				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
 			} else if (spatial.getName().contains("XiinZhao")) {
 				spatial.setName("XiinZhao");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+			} else if (spatial.getName().contains("Katarina")) {
+				spatial.setName("Katarina");
 				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
 			} else if (spatial.getName().contains("Yasuo")) {
 				spatial.setName("Yasuo");

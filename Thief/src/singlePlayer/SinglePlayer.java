@@ -67,6 +67,7 @@ public class SinglePlayer {
 		}
 		if (!GameManager.getIstance().getNodeThief().isRun())
 			GameManager.getIstance().getNodeThief().stop();
+		GameManager.getIstance().startEnemiesIntelligence();
 	}
 
 	private void setKey() {

@@ -3,6 +3,7 @@ package control;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 
 import singlePlayer.model.NodeCharacter;
+import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
 
@@ -25,11 +26,14 @@ public class GameRender {
 
 	}
 
-	public void rayRendering() {
+	public synchronized void rayRendering() {
 		for (NodeModel model : GameManager.getIstance().getModels()) {
 			if (!(model.getName().contains("Castle"))) {
 				if (distance(model) < this.VIEWDISTANCE) {
 					if (GameManager.getIstance().addModelRender(model)) {
+					    if(model instanceof NodeEnemy)
+						GameManager.getIstance().addModelEnemy((NodeEnemy) model);
+					    
 						terrain.attachChild(model);
 						GameManager.getIstance().getBullet().getPhysicsSpace().add(model);
 					}
