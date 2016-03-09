@@ -16,7 +16,7 @@
           <image filename="Interface/titleGame.png" width="60%" height="90%" />        
         </panel>
         
-        <panel id="space" height="10%" childLayout="center"/>
+        <panel id="space1" height="10%" childLayout="center"/>
          <panel id="singlePlayerPanel" height="10%" childLayout="center">        
           <image filename="Interface/singlePlayerButton.png" id="singlePlayerButton" width="60%" height="90%" visibleToMouse="true">
           
@@ -89,7 +89,7 @@
     </layer>
     
      <layer id = "foreground_start" childLayout = "horizontal">
-   <panel id="space" width="10%" childLayout="center"/> 
+   <panel id="space2" width="10%" childLayout="center"/> 
         <panel id="panelOptions" width="28%" childLayout="vertical">
         <panel id="titlePanel" height="20%" childLayout="center">        
           <image filename="Interface/titleSettings.png" width="60%" height="90%" />        
@@ -111,11 +111,11 @@
 		         
 		         <panel id="optionsPanelRight" width="50%"  childLayout="vertical" >      
 		               
-		               <panel id="space" height="8%" childLayout="center"/>   
+		               <panel id="space3" height="8%" childLayout="center"/>   
 		               <panel id="soundCheckboxOptionsSettings"  childLayout = "center" align="center">
 					            <control id="checkboxSound" name="checkbox" checked="true" />
 					   </panel>  
-					      <panel id="space" height="15%" childLayout="center"/>   
+					      <panel id="space4" height="15%" childLayout="center"/>   
 		               <panel id="checkboxShadowsOptionsSettings"  childLayout = "center" align="center">
 					            <control id="checkboxShadows" name="checkbox" checked="true" />
 					   </panel> 

@@ -77,7 +77,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 				GameManager.getIstance().getApplication().getAudioRenderer(),
 				GameManager.getIstance().getApplication().getGuiViewPort());
     this.nifty = niftyDisplay.getNifty();	
-    this.nifty.fromXml("Interface/screen2.xml", "start", this);	
+    this.nifty.fromXml("Interface/screenMenu.xml", "start", this);	
 		
 		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	
