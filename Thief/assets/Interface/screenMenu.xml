@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+   <useStyles filename="nifty-default-styles.xml" />
+   <useControls filename="nifty-default-controls.xml" />
+ 
+  <screen id="start" controller="main.Main">
+   <layer id="background_start" childLayout="center" >
+   <image filename="Interface/background.jpg" width="100%" height="100%" />
+   </layer>
+  
+   <layer id = "foreground_start" childLayout = "horizontal">
+      
+       <panel id="space" width="10%" childLayout="center"/> 
+        <panel id="panelOptions" width="28%" childLayout="vertical">
+        <panel id="titlePanel" height="20%" childLayout="center">        
+          <image filename="Interface/titleGame.png" width="60%" height="90%" />        
+        </panel>
+        
+        <panel id="space1" height="10%" childLayout="center"/>
+         <panel id="singlePlayerPanel" height="10%" childLayout="center">        
+          <image filename="Interface/singlePlayerButton.png" id="singlePlayerButton" width="60%" height="90%" visibleToMouse="true">
+          
+		           <effect>
+		                                      <onStartHover name="nop" onStartEffect="startGrow(singlePlayerButton)" />   
+		                                       <onEndHover name="nop" onStartEffect="endGrow(singlePlayerButton)" />                            
+		                                  	
+		       		</effect> 
+		    </image>       
+        </panel>
+        
+          <panel id="multiPlayerPanel" height="10%" childLayout="center">        
+          <image filename="Interface/multiPlayerButton.png" id="multiPlayerButton" width="60%" height="90%" visibleToMouse="true">
+          
+		           <effect>
+		                                      <onStartHover name="nop" onStartEffect="startGrow(multiPlayerButton)" />   
+		                                       <onEndHover name="nop" onStartEffect="endGrow(multiPlayerButton)" />                            
+		                                  	
+		       		</effect> 
+		    </image>       
+        </panel>
+        <panel id="editorPanel" height="10%" childLayout="center">        
+          <image filename="Interface/editorButton.png" id="editorButton" width="60%" height="90%" visibleToMouse="true">
+          
+		           <effect>
+		                                      <onStartHover name="nop" onStartEffect="startGrow(editorButton)" />   
+		                                       <onEndHover name="nop" onStartEffect="endGrow(editorButton)" />                            
+		                                  	
+		       		</effect> 
+		       		 <interact onClick="openEditor()" />
+		    </image>       
+        </panel>
+        
+          <panel id="settingsPanel" height="10%" childLayout="center">        
+          <image filename="Interface/settingsButton.png" id="settingsButton" width="60%" height="90%" visibleToMouse="true">
+          
+		           <effect>
+		                                      <onStartHover name="nop" onStartEffect="startGrow(settingsButton)" />   
+		                                       <onEndHover name="nop" onStartEffect="endGrow(settingsButton)" />                            
+		                                  	
+		       		</effect> 
+		       		<interact onClick="loadScreen(settingsScreen)" />
+		    </image>       
+        </panel>
+           
+         <panel id="exitPanel" height="10%" childLayout="center">        
+          <image filename="Interface/exitButton.png" id="exitButton" width="60%" height="90%" visibleToMouse="true">
+          
+		           <effect>
+		                                      <onStartHover name="nop" onStartEffect="startGrow(exitButton)" />   
+		                                       <onEndHover name="nop" onStartEffect="endGrow(exitButton)" />                            
+		                                  	
+		       		</effect> 
+		       		 <interact onClick="closeGame()" />
+		    </image>       
+        </panel>
+        
+        
+        </panel> 
+       
+     
+             
+   </layer>
+  </screen>
+ 
+ 
+  <screen id="settingsScreen" controller="main.Main">
+  <layer id="background_settings" childLayout="center" >
+   <image filename="Interface/background.jpg" width="100%" height="100%" />
+    </layer>
+    
+     <layer id = "foreground_start" childLayout = "horizontal">
+   <panel id="space2" width="10%" childLayout="center"/> 
+        <panel id="panelOptions" width="28%" childLayout="vertical">
+        <panel id="titlePanel" height="20%" childLayout="center">        
+          <image filename="Interface/titleSettings.png" width="60%" height="90%" />        
+        </panel>
+        
+       	 <panel id="optionsPanel" height="60%" childLayout="horizontal" >    	
+		        
+		         <panel id="optionsPanelLeft" width="50%"  childLayout="vertical" >        
+		         	  
+				 		  <panel id="soundPanel" height="20%" childLayout="center">        
+				         		 <image filename="Interface/soundText.png" id="soundText" width="150%" height="100%"/>	      
+				          </panel>
+				          
+				          <panel id="shadowsPanel" height="20%" childLayout="center">        
+				         		 <image filename="Interface/shadowsText.png" id="shadowsText" width="140%" height="100%"/>	      
+				          </panel>
+				 
+		         </panel>
+		         
+		         <panel id="optionsPanelRight" width="50%"  childLayout="vertical" >      
+		               
+		               <panel id="space3" height="8%" childLayout="center"/>   
+		               <panel id="soundCheckboxOptionsSettings"  childLayout = "center" align="center">
+					            <control id="checkboxSound" name="checkbox" checked="true" />
+					   </panel>  
+					      <panel id="space4" height="15%" childLayout="center"/>   
+		               <panel id="checkboxShadowsOptionsSettings"  childLayout = "center" align="center">
+					            <control id="checkboxShadows" name="checkbox" checked="true" />
+					   </panel> 
+					 
+		         </panel>
+        
+             
+        </panel> 
+        <panel id="exitPanel" height="10%" childLayout="center">        
+          <image filename="Interface/returnButton.png" id="returnButton" width="60%" height="90%" visibleToMouse="true">
+          
+		           <effect>
+		                                      <onStartHover name="nop" onStartEffect="startGrow(returnButton)" />   
+		                                       <onEndHover name="nop" onStartEffect="endGrow(returnButton)" />                            
+		                                  	
+		       		</effect> 
+		       		 <interact onClick="loadScreen(start)" />
+		    </image>       
+        </panel>
+        </panel>
+        
+  </layer>
+  </screen>
+
+ 
+</nifty>
