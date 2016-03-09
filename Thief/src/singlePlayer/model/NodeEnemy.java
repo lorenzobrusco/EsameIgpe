@@ -33,7 +33,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
 
 	public void runIntelligence() {
-		if (!waitAnimation)
+		if (!waitAnimation && this.alive)
 			this.artificialIntelligence.run();
 	}
 
@@ -53,33 +53,43 @@ public class NodeEnemy extends NodeCharacter {
 	}
 
 	public void stopAnimation() {
-		if (!isStanding) {
-			this.channel.setAnim(this.idle);
-			this.isRun = false;
-			this.isStanding = !this.isRun;
+		if (this.getWorldTranslation().y > -9f) {
+			if (!isStanding) {
+				this.channel.setAnim(this.idle);
+				this.isRun = false;
+				this.isStanding = !this.isRun;
+			}
+		} else {
+			this.death();
 		}
-		//TODO i nemici non muoiono se annegano in idle
+
 	}
 
 	public void runAnimation() {
-		if (!isRun) {
+		if (!isRun && this.alive) {
 			this.channel.setAnim(this.run);
 			this.isRun = true;
 			this.isStanding = !this.isRun;
 			if (this.getWorldTranslation().y < -9f) {
+				this.isRun = false;
+				this.isStanding = !this.isRun;
 				this.death();
 			}
 		}
 	}
 
 	public void attack1Animation() {
-		this.channel.setAnim(this.attack1);
-		this.stopAnimation();
+		if (this.alive) {
+			this.channel.setAnim(this.attack1);
+			this.stopAnimation();
+		}
 	}
 
 	public void attack2Animation() {
-		this.channel.setAnim(this.attack2);
-		this.stopAnimation();
+		if (this.alive) {
+			this.channel.setAnim(this.attack2);
+			this.stopAnimation();
+		}
 	}
 
 	public boolean hasFound() {
@@ -112,9 +122,14 @@ public class NodeEnemy extends NodeCharacter {
 
 	@Override
 	public void death() {
-		super.death();
-		this.artificialIntelligence.stop();
-		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+		if (this.alive) {
+			super.death();
+			this.artificialIntelligence.stop();
+			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+		} else {
+			super.death();
+
+		}
 	}
 
 	@Override

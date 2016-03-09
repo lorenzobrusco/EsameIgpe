@@ -379,7 +379,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeEnemy(Vector3f intersect) {
 		NodeCharacter enemy = null;
-		int rand = (int) (Math.random() * 5);
+		int rand = (int) (Math.random() * 7);
 		switch (rand) {
 		case 0:
 			enemy = new NodeCharacter("Jayce/Jayce.mesh.j3o", new Vector3f(3.0f, 6f, 100f), 50, 10);
@@ -398,6 +398,9 @@ public class EditorTerrain implements ScreenController {
 			break;
 		case 5:
 			enemy = new NodeCharacter("XiinZhao/XiinZhao.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 6:
+			enemy = new NodeCharacter("Katarina/Katarina.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		default:
 			break;

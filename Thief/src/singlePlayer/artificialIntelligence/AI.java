@@ -46,7 +46,7 @@ public class AI {
 
 	public void stop() {
 		enemyTranslate(enemy, new Vector3f(0, -2, 0), 00);
-//		enemy.stopAnimation();
+		enemy.stopAnimation();
 	}
 
 }

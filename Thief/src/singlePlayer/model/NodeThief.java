@@ -228,7 +228,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			CollisionResult closest = collisionResult.getClosestCollision();
 			if (closest != null) {
 				enemy.isStricken(this.getDAMAGE());
-				if (!enemy.isDead()) {
+				if (enemy.isDead()) {
 					this.enemyWin.playSound();
 				}
 			}
@@ -267,7 +267,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				&& this.voice5.getAudioNode().getStatus().equals(Status.Stopped)
 				&& this.voice6.getAudioNode().getStatus().equals(Status.Stopped)
 				&& this.voice7.getAudioNode().getStatus().equals(Status.Stopped)
-				&& this.walkingSound.getAudioNode().getStatus().equals(Status.Stopped)) {
+				&& this.walkingSound.getAudioNode().getStatus().equals(Status.Stopped) && this.alive) {
 			this.resetCurrentTime();
 			int rand = ((int) (Math.random() * 7)) + 1;
 

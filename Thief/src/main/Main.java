@@ -78,7 +78,7 @@ public class Main extends SimpleApplication implements ActionListener {
 
 	public void singlePlayer() {
 		singleplayer = true;
-		this.player = new SinglePlayer(viewPort, rootNode, cam, "ia");
+		this.player = new SinglePlayer(viewPort, rootNode, cam, "test");
 		this.initKeys();
 	}
 
