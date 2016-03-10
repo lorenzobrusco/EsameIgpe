@@ -1,5 +1,6 @@
 package singlePlayer;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
 import control.GameManager;
@@ -10,21 +11,28 @@ public class Sound {
 	private AudioNode sound;
 	private boolean played;
 
-	public Sound() {
+	public Sound(AssetManager assetManager, Node node, String soundName, boolean reverb, boolean positional,
+			boolean loop, float volume) {
+		this.sound = new AudioNode(assetManager, "Sounds/" + soundName + ".ogg");
+		this.setup(node, soundName, reverb, positional, loop, volume, true);
 	}
 
 	public Sound(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
 			boolean played) {
 		if (!(node instanceof NodeModel)) {
 			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-					"Sounds/Gameplay.ogg");
+					"Sounds/" + soundName + ".ogg");
 		} else {
 			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
 					"Models/" + node.getName() + "/Sounds/" + soundName + ".ogg");
 		}
+		this.setup(node, soundName, reverb, positional, loop, volume, played);
+	}
+
+	private void setup(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
+			boolean played) {
 		this.played = played;
 		this.sound.setVolume(volume);
-
 		this.sound.setLocalTranslation(node.getLocalTranslation());
 		this.sound.setLocalRotation(node.getLocalRotation().inverse());
 		this.sound.setReverbEnabled(reverb);
@@ -34,9 +42,6 @@ public class Sound {
 		this.sound.setLooping(loop);
 		this.sound.setRefDistance(10.0f);
 		this.sound.setMaxDistance(20.0f);
-
-		// GameManager.getIstance().getRoootNode().attachChild(this.sound);
-
 	}
 
 	public void playSound() {
@@ -50,7 +55,6 @@ public class Sound {
 
 	public void stopSound() {
 		this.sound.stop();
-		// GameManager.getIstance().getRoootNode().detachChild(this.sound);
 	}
 
 	public AudioNode getAudioNode() {

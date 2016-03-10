@@ -109,7 +109,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	}
 
 	public void startAttack() {
-
+		this.playScream();
 		node.setLocalTranslation(this.getLocalTranslation());
 
 		BoundingBox boundingBox = new BoundingBox();
@@ -144,8 +144,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 		if (this.alive) {
 			this.life -= DAMAGE;
-
-			this.playScream();
 
 			if (this.isDead()) {
 				this.deathSound.playSound();
