@@ -205,9 +205,9 @@ public class GameManager {
 		return this.lights;
 	}
 
-	public Node getRoootNode() {
-		return this.application.getRootNode();
-	}
+//	public Node getRoootNode() {
+//		return this.application.getRootNode();
+//	}
 
 	public void setAudioRender(AudioRenderer audioRenderer) {
 		this.audioRenderer = audioRenderer;

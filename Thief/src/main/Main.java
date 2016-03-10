@@ -67,10 +67,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.debug = false;
 		this.singleplayer = false;
 		this.editor = false;
-		this.setupAudio();
 
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);
+		this.setupAudio();
 		this.flyCam.setMoveSpeed(100f);
 
 		mouseInput.setCursorVisible(true);
@@ -85,6 +85,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 
 		this.menuSound.playSound();
+
 	}
 
 	@Override
@@ -94,7 +95,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 			player.simpleUpdate(tpf);
 		else if (editor)
 			editorTerrain.simpleUpdate(tpf);
-
 	}
 
 	public void singlePlayer() {
@@ -102,7 +102,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = true;
 		editor = false;
 		GameManager.getIstance().setEditor(false);
-		this.player = new SinglePlayer(viewPort, rootNode, cam, "ia");
+		this.player = new SinglePlayer(viewPort, rootNode, cam, "prova1");
 		this.initKeys();
 		this.menuSound.stopSound();
 	}
@@ -145,7 +145,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	};
 
 	public void setupAudio() {
-		this.menuSound = new Sound(this.assetManager, this.rootNode, "Menu", false, false, true, 1.0f);
+		this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
 	}
 
 	@Override

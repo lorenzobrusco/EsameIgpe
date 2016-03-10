@@ -31,7 +31,6 @@ public class AI {
 		} else if (distance <= this.enemy.getDISTANCE() && !this.enemy.hasFound()) {
 			stop();
 			this.enemy.setHasFound(true);
-
 		}
 	}
 

@@ -71,7 +71,6 @@ public class SinglePlayer {
 	}
 
 	private void setKey() {
-
 		GameManager.getIstance().getApplication().getInputManager().addMapping(run, new KeyTrigger(KeyInput.KEY_W));
 		GameManager.getIstance().getApplication().getInputManager().addMapping(attack1,
 				new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -93,7 +92,7 @@ public class SinglePlayer {
 	}
 
 	private void setupAmbientSound() {
-		this.ambient = new Sound(GameManager.getIstance().getRoootNode(), "Gameplay", false, false, true, 1.0f, false);
+		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 1.0f, false);
 		this.ambient.playSound();
 	}
 }

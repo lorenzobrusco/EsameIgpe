@@ -1,6 +1,5 @@
 package singlePlayer;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
 import control.GameManager;
@@ -10,13 +9,7 @@ public class Sound {
 
 	private AudioNode sound;
 	private boolean played;
-
-	public Sound(AssetManager assetManager, Node node, String soundName, boolean reverb, boolean positional,
-			boolean loop, float volume) {
-		this.sound = new AudioNode(assetManager, "Sounds/" + soundName + ".ogg");
-		this.setup(node, soundName, reverb, positional, loop, volume, true);
-	}
-
+	
 	public Sound(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
 			boolean played) {
 		if (!(node instanceof NodeModel)) {
@@ -50,7 +43,6 @@ public class Sound {
 
 	public void playSoundIstance() {
 		this.sound.playInstance();
-		this.stopSound();
 	}
 
 	public void stopSound() {

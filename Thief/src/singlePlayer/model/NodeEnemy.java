@@ -38,16 +38,24 @@ public class NodeEnemy extends NodeCharacter {
 	}
 
 	public void attack() {
-		if (this.hasFound && !this.waitAnimation) {
-			this.waitAnimation = true;
-			this.startAttack();
-			this.checkCollition();
-			if (this.waitAnimation) {
-				this.channel.setAnim(this.attack1);
-				this.switchAttack = !this.switchAttack;
-			} else {
-				this.channel.setAnim(this.attack2);
-				this.switchAttack = !this.switchAttack;
+		if (!GameManager.getIstance().getNodeThief().isDead()) {
+			if (this.hasFound && !this.waitAnimation) {
+				this.waitAnimation = true;
+				this.startAttack();
+				this.checkCollition();
+				if (this.waitAnimation) {
+					this.channel.setAnim(this.attack1);
+					if (this.name.equals("Wukong")) {
+						this.channel.setSpeed(2.0f);
+					}
+					this.switchAttack = !this.switchAttack;
+				} else {
+					this.channel.setAnim(this.attack2);
+					if (this.name.equals("Wukong")) {
+						this.channel.setSpeed(2.0f);
+					}
+					this.switchAttack = !this.switchAttack;
+				}
 			}
 		}
 	}
