@@ -97,13 +97,16 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     	
 	singleplayer = true;
 	editor = false;
-	this.player = new SinglePlayer(viewPort, rootNode, cam, "mountain");
+	GameManager.getIstance().setEditor(false);
+	this.player = new SinglePlayer(viewPort, rootNode, cam, "test");
+	this.initKeys();
     }
 
     public void editor() {
    
     editor = true;
 	singleplayer = false;
+	GameManager.getIstance().setEditor(true);
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain", niftyDisplay, nifty);
 	mouseInput.setCursorVisible(false);
 	flyCam.setEnabled(true);
