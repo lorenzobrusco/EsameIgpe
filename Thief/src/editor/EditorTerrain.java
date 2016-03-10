@@ -22,12 +22,18 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
+
+
 import control.GameManager;
+
 import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import singlePlayer.model.NodeCharacter;
@@ -73,6 +79,8 @@ public class EditorTerrain implements ScreenController {
 	private final Node guiNode;
 	private final ViewPort viewPort;
 	private final AppSettings settings;
+	
+	Element niftyElement;
 
 	public EditorTerrain(Node rootNode, Camera cam, BitmapFont guiFont, Node guiNode, ViewPort port,
 			AppSettings settings, String path,NiftyJmeDisplay display, Nifty nifty) {
@@ -98,6 +106,7 @@ public class EditorTerrain implements ScreenController {
 		this.createMarker();
 		this.setKey();
 		this.rootNode.addLight(loadTerrain.makeAmbientLight());
+
 	}
 
 	public void simpleUpdate(float tpf) {
@@ -595,7 +604,32 @@ public class EditorTerrain implements ScreenController {
 				this.currentSpatial.rotate(0.0f, 0.0f, event.getValue());
 		}
 	}
+	
+	
+	public void startGrow(String nameButton)
+	{
+			
+		NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/"+nameButton+"OnHover.png", false);		
+		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);		
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+	
+	public void endGrow(String nameButton)
+	{
+		
+		NiftyImage image = nifty.getRenderEngine().createImage(null,"Interface/"+nameButton+".png", false);		
+		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);		
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
 
+	
+	public void closeEditor()
+	{
+		
+		
+		
+		
+	}
 	@Override
 	public void bind(Nifty arg0, Screen arg1) {
 
