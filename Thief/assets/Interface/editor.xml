@@ -3,49 +3,136 @@
   <useStyles filename="nifty-default-styles.xml"/>
   <useControls filename="nifty-default-controls.xml"/>
   <screen id="start" controller="editor.EditorTerrain">
-    <layer childLayout="absolute" id="layer0">
-      <panel childLayout="absolute" height="200px" id="modifyCurrentSpatial" width="253px" y="3%">
-        <image filename="Interface/prova.png" width="100%" height="100%" />    
-	    <control font="aurulent-sans-16.fnt" height="50px" id="NameModel" name="label" text="Model: nobody" width="100px" x="28%" y="0.01%"/>
-	    <control font="aurulent-sans-16.fnt" height="50px" id="rotate" name="label" text="rotate:" width="100px"  y="17%"/>
-	    <control id="sliderRotate" name="horizontalSlider" width="200px" x="5%" y="40%"/>
-	   	<control childLayout="center" id="buttonDelete" label="DELETE" name="button" width="150px" x="18%" y="80%">
-        	<interact onClick="delete()"/>
-        </control>
-        <control childLayout="center" id="buttonReset" label="RESET" name="button" width="150px" x="18%" y="60%">
-        	<interact onClick="reset()"/>
-        </control>
-      </panel>
-      <panel childLayout="absolute" height="400px" id="legend" style="nifty-panel" width="253px" x="80%" y="3%">
-      	<control font="aurulent-sans-16.fnt" height="50px" id="mountainText" name="label" text="mountain : left" width="100px" x="30%" y="15"/>
-      	 <image filename="Interface/mountain.png" x="5%" y="18"></image>
-        <control font="aurulent-sans-16.fnt" height="50px" id="valleyText" name="label" text="valley : rigth" width="100px" x="30%" y="60"/>
-         <image filename="Interface/valley.png" x="5%" y="68"></image>
-        <control font="aurulent-sans-16.fnt" height="50px" id="treeText" name="label" text="tree : 		1" width="100px" x="30%" y="105"/>
-       		 <image filename="Interface/tree.png" x="5%" y="108"></image>
-        <control font="aurulent-sans-16.fnt" height="50px" id="cofferText" name="label" text="coffer" width="100px" x="30%" y="150"/>
-       		 <image filename="Interface/casket.png" x="5%" y="158"></image>
-        <control font="aurulent-sans-16.fnt" height="50px" id="diamondText" name="label" text="portal :		 3" width="100px" x="30%" y="195"/>
-       		 <image filename="Interface/diamond.gif" x="5%" y="198"></image>
-        <control font="aurulent-sans-16.fnt" height="50px" id="thiefText" name="label" text="thief : 		4" width="100px" x="30%" y="240"/>
-        	 <image filename="Interface/thief.png" x="5%" y="243"></image>
-        <control font="aurulent-sans-16.fnt" height="50px" id="enemyText" name="label" text="enemy : 		5" width="100px" x="30%" y="285"/>
-        	 <image filename="Interface/enemy.png" x="5%" y="288"></image>
-      </panel>
-      <panel childLayout="absolute" height="15%" id="save" style="nifty-panel" width="253" x="80%" y="85%">
-        <control childLayout="center" id="buttonSave" label="SAVE" name="button" width="150px" x="18%" y="85%">
-        	<interact onClick="save()"/>
-        </control>
-        <control id="textfieldSave" name="textfield" width="80%" x="10%" y="50%"/>
-        <control font="aurulent-sans-16.fnt" height="50px" id="labelNameSave" name="label" text="NAME" width="100px" x="30%" y="0"/>
-      </panel>
-     <panel childLayout="absolute" height="25%" id="load" style="nifty-panel" width="253" x="80%" y="57%">
-     	 <control font="aurulent-sans-16.fnt" height="50px" id="labelNameLoad" name="label" text="FILE" width="100px" x="30%" y="0"/>  
-     	 <control height="200px" id="listBox" name="listBox" width="200px" x="10" y="40"/>
-     	 <control childLayout="center" id="buttonLoad" label="LOAD" name="button" width="150px" x="18%" y="85%">
-        	<interact onClick="load()"/>
-        </control>
+    <layer childLayout="center" id="layer">
+    
+     <panel id="centralPanel" childLayout="horizontal">
+	      <panel id="leftPanel"  width="50%" childLayout="vertical">          
+			        <panel id="leftPanelUP"  height="50%" childLayout="horizontal">
+						          <panel id="spaceHorizontal"  width="4%"  childLayout="vertical"/>
+						           <panel id="subPanelUp"   childLayout="vertical">
+									         <panel id="spaceVertical"  height="7%"  childLayout="vertical"/>
+									          <panel id="modifyCurrentSpatial" style="nifty-panel" height="50%" width="50%" childLayout="vertical" >
+										                <panel id="panelTextAndRotate" height="70%"  childLayout="vertical" >
+											                <control font="aurulent-sans-16.fnt"   id="NameModel" name="label" text="Model: nobody"  x="50%" y="0.01%" valign="center"/>
+														    <control font="aurulent-sans-16.fnt" height="50px" id="rotate" name="label" text="rotate:" width="100px"  y="17%"/>
+														    <control id="sliderRotate" name="horizontalSlider" width="100%" />
+													    </panel>
+													     <panel id="buttonPanel" height="30%"  childLayout="horizontal" >
+														     	<panel id="buttonDeletePanel" width="50%"  childLayout="center" >
+																	   	<control childLayout="center" id="buttonDelete" label="DELETE" name="button" width="80%">
+																        	<interact onClick="delete()"/>
+																        </control>
+													            </panel>
+													        <panel id="buttonResetPanel" width="50%"  childLayout="center" >
+															         <control childLayout="center" id="buttonReset" label="RESET" name="button" width="80%">
+																        	<interact onClick="reset()"/>
+																     </control>
+														     </panel>
+										             </panel>
+								        
+								            </panel>
+					       		 </panel>
+			         </panel>
+			      
+				      <panel id="leftPanelDown"  height="50%" childLayout="horizontal" >
+					        <panel id="spaceHorizontalDown"  width="4%" childLayout="horizontal" />
+					         <panel id="internPanel"  childLayout="vertical" >
+						          <panel id="spaceVertical_down" height="30%" childLayout="vertical" />			      
+						          <panel id="niftyLoad"  height="50%" width="50%" style="nifty-panel" childLayout="vertical">
+							          		<panel id="niftyLoad1"  height="70%"  childLayout="vertical">
+												     <control font="aurulent-sans-16.fnt" height="50px" id="labelNameLoad" name="label" text="FILE" />  
+											     	 <control height="200px" id="listBox" name="listBox" width="100%"/>
+							   				 </panel>
+							   				 <panel id="niftyLoad2"  height="30%" width="100%"  childLayout="center">
+											     	 <control childLayout="center" id="buttonLoad" label="LOAD" name="button" width="150px" >
+											        	<interact onClick="load()"/>
+											        </control>
+							                </panel>
+						            </panel>
+					         </panel>
+				      </panel>
+	      
+	      </panel>
+ 
+       <panel id="rightPanel"  width="50%" childLayout="vertical"> 
+       <panel id="spaceRightPanelUp"  height="4%" childLayout="vertical"/> 
+     		 <panel id="rightPanelUP"  height="50%" childLayout="horizontal">
+     		  <panel id="spaceRightPanelRight"  width="56%" childLayout="horizontal" />
+     		   <panel id="legend"  width="40%" childLayout="horizontal"  style="nifty-panel" >
+					      <panel id="imageLegend"  width="50%" childLayout="vertical" >
+					           
+					            <panel id="panelMoutain"  height="13%" width="100%" childLayout="center"> 
+						      			<image filename="Interface/mountain.png" />
+						      	</panel>
+						      	
+						      	<panel id="panelValley"  height="13%" width="100%" childLayout="center"> 
+						      			<image filename="Interface/valley.png" align="center"/>
+						      	</panel>
+						      
+						      
+						        <panel id="panelTree"  height="13%" width="100%" childLayout="center"> 
+						      			<image filename="Interface/tree.png" align="center"/>
+						      	</panel>
+						      	
+						      	 <panel id="panelCascket"  height="13%" width="100%" childLayout="center"> 
+						      			<image filename="Interface/casket.png" align="center"/>
+						      	</panel>
+						      	 <panel id="panelDiamond"  height="13%" width="100%" childLayout="center"> 
+						      			<image filename="Interface/diamond.png" align="center"/>
+						      	 </panel>
+						         <panel id="panelThief"  height="13%" width="100%" childLayout="center"> 
+						      			<image filename="Interface/thief.png" align="center"/>
+						      	</panel>
+						         <panel id="panelEnemy"  height="13%" width="100%" childLayout="center"> 
+						      	 		<image filename="Interface/enemy.png" align="center"/>
+						      	 </panel>
+					    </panel>
+					    
+					    <panel id="textLegend"  width="50%"  childLayout="vertical"  >
+					        <panel id="panelMountainText"  height="13%" childLayout="center"> 
+					    	<control font="aurulent-sans-16.fnt" id="mountainText" name="label" text="mountain : left" width="100%" height="50%"/>
+					    	</panel>
+					    	  <panel id="panelValleyText"  height="13%" childLayout="center"> 				    
+					           <control font="aurulent-sans-16.fnt" id="valleyText" name="label" text="valley : right" width="100%" height="50%"/>
+					        </panel>
+					        <panel id="panelTreeText"  height="13%" childLayout="center"> 				    
+					           <control font="aurulent-sans-16.fnt" id="treeText" name="label" text="tree : 		1" width="100%" height="50%"/>
+					        </panel>
+					         <panel id="panelCofferText"  height="13%" childLayout="center"> 				    
+					           <control font="aurulent-sans-16.fnt" id="cofferText" name="label" text="coffer"  width="100%" height="100%"/>
+					        </panel>
+					         <panel id="panelDiamondText" height="13%" childLayout="center"> 				    
+					           <control font="aurulent-sans-16.fnt" id="diamondText" name="label" text="portal :		 3" width="100%" height="50%"/>
+					        </panel>
+					         <panel id="panelThiefText"  height="13%" childLayout="center"> 				    
+					           <control font="aurulent-sans-16.fnt" id="thiefText" name="label" text="thief : 		4" width="100%" height="100%"/>
+					        </panel>
+					         <panel id="panelEnemyText"  height="13%" childLayout="center"> 				    
+					           <control font="aurulent-sans-16.fnt" id="enemyText" name="label" text="enemy : 		5" width="100%" height="50%"/>
+					        </panel>
+					    </panel>
+					    
+     		    </panel>
+     		 
+     		 </panel>
+     		 
+     		 <panel id="rightPanelDown"  height="50%" childLayout="horizontal">
+     		   <panel id="spaceRightPanelRight"  width="56%" childLayout="horizontal" />
+     		    <panel childLayout="vertical" height="30%" width="40%" id="save" style="nifty-panel" >
+			        <control font="aurulent-sans-16.fnt" height="50px" id="labelNameSave" name="label" text="NAME" width="100px" x="30%" y="0"/>
+			        <control id="textfieldSave" name="textfield" width="80%" x="10%" y="50%" align="center"/>
+			        <control childLayout="center" id="buttonSave" label="SAVE" name="button" align="center">
+			        	<interact onClick="save()"/>
+			        </control>
+     		 </panel>
+     		 </panel>
+       </panel>
+    
+    
+    
      </panel>
+     
+     
     </layer>
   </screen>
 </nifty>
