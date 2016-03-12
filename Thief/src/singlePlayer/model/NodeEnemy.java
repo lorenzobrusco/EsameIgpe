@@ -60,8 +60,10 @@ public class NodeEnemy extends NodeCharacter {
 	}
 
 	public void runIntelligence() {
-		if (!waitAnimation && this.alive)
+		if (!waitAnimation && this.alive){
 			this.artificialIntelligence.run();
+			System.out.println("run");
+		}
 	}
 
 	public void attack() {
@@ -143,6 +145,14 @@ public class NodeEnemy extends NodeCharacter {
 		return switchAttack;
 	}
 
+	@Override
+	public void resetAll() {
+		super.resetAll();
+		this.waitAnimation = false;
+		this.runIntelligence();
+		GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
+	}
+	
 	@Override
 	public void checkCollition() {
 		CollisionResults collisionResult = new CollisionResults();

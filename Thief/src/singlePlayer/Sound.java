@@ -16,14 +16,11 @@ public class Sound {
 			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
 					"Sounds/" + soundName + ".ogg");
 		} else {
-			// TODO aggiusta nome cartella bonfire
-			if (!node.getName().equals("Bonfire")) {
-				this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-						"Models/" + node.getName() + "/Sounds/" + soundName + ".ogg");
-			} else {
-				this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-						"Models/bonfire/Sounds/" + soundName + ".ogg");
-			}
+			// TODO aggiorna contatote di thief -> non sparare cazzate se ti
+			// stanno attaccando
+
+			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+					"Models/" + node.getName() + "/Sounds/" + soundName + ".ogg");
 		}
 		this.setup(node, soundName, reverb, positional, loop, volume, played);
 	}

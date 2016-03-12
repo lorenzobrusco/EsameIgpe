@@ -159,6 +159,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	public void resetAll() {
 		this.alive = true;
 		this.life = this.STARTLIFE;
+		this.viewed = false;
 		this.channel.setAnim(idle);
 		this.channel.setLoopMode(LoopMode.Loop);
 	}

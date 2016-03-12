@@ -28,7 +28,6 @@ public class GameRender {
 
 	public synchronized void rayRendering() {
 		for (NodeModel model : GameManager.getIstance().getModels()) {
-			// System.out.println(model.getName());
 			if (!(model.getName().contains("Castle"))) {
 				if (distance(model) < this.VIEWDISTANCE) {
 					if (GameManager.getIstance().addModelRender(model)) {

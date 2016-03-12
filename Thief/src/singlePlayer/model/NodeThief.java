@@ -135,11 +135,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 			this.bonfireSound.playSound();
 			this.channel.setAnim("BonFire");
 			this.channel.setLoopMode(LoopMode.DontLoop);
+			this.channel.setSpeed(0.7f);
 			this.waitAnimation = true;
-			for (NodeEnemy enemy : GameManager.getIstance().getEnemys()) {
-				enemy.resetAll();
-				enemy.setViewed(false);
-			}
+			
 		}
 	}
 
@@ -216,6 +214,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (arg2.equals(bonfire)) {
 			arg1.setAnim(idle);
 			NodeThief.this.waitAnimation = false;
+			for (NodeEnemy enemy : GameManager.getIstance().getEnemys()) {
+				enemy.resetAll();
+			}
 		}
 	}
 

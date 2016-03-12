@@ -75,7 +75,6 @@ public class EditorTerrain implements ScreenController {
 	private final ViewPort viewPort;
 	private final AppSettings settings;
 	private Sound editorSound;
-//	private Element niftyElement;
 
 	public EditorTerrain(Node rootNode, Camera cam, BitmapFont guiFont, Node guiNode, ViewPort port,
 			AppSettings settings, String path, Nifty nifty) {
@@ -102,6 +101,10 @@ public class EditorTerrain implements ScreenController {
 		this.rootNode.addLight(loadTerrain.makeAmbientLight());
 		this.setupAudio();
 		this.editorSound.playSound();
+		// TODO elimina thief e bon fire gia presenti
+
+		// this.terrain.detachChild(this.thiefModel);
+		// this.terrain.detachChild(this.bonFireModel);
 	}
 
 	public void simpleUpdate(float tpf) {
@@ -383,7 +386,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeEnemy(Vector3f intersect) {
 		NodeCharacter enemy = null;
-		int rand = (int) (Math.random() * 6);
+		int rand = (int) (Math.random() * 8);
 		switch (rand) {
 		case 0:
 			enemy = new NodeCharacter("Jayce/Jayce.mesh.j3o", new Vector3f(3.0f, 6f, 100f), 50, 10);
@@ -405,6 +408,9 @@ public class EditorTerrain implements ScreenController {
 			break;
 		case 6:
 			enemy = new NodeCharacter("Katarina/Katarina.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 7:
+			enemy = new NodeCharacter("Jarvan/Jarvan.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		default:
 			break;
@@ -485,51 +491,56 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeBonFire(Vector3f intersect) {// TODO togliete commenti per
 													// creare un nuovo bonFire
-		// Node bonfire = new Node("Bonfire");
-		//
-		// Spatial wood =
-		// GameManager.getIstance().getApplication().getAssetManager()
-		// .loadModel("Models/bonfire/Bonfire.mesh.j3o");
-		// wood.setLocalTranslation(0, 0.4f, 0);
-		//
-		// ParticleEmitter fire = new ParticleEmitter("Emitter",
-		// com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
-		// fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f,
-		// bonfire.getLocalTranslation().y + 0.5f,
-		// bonfire.getLocalTranslation().x + 0.2f);
-		// Material mat_red = new
-		// Material(GameManager.getIstance().getApplication().getAssetManager(),
-		// "Common/MatDefs/Misc/Particle.j3md");
-		// mat_red.setTexture("Texture",
-		// GameManager.getIstance().getApplication().getAssetManager().loadTexture("Effects/Explosion/flame.png"));
-		// fire.setMaterial(mat_red);
-		// fire.setImagesX(2);
-		// fire.setImagesY(2);
-		// fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));
-		// fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
-		// fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2,
-		// 0));
-		// fire.setStartSize(1.0f);
-		// fire.setEndSize(0.1f);
-		// fire.setGravity(0, -1f, 0);
-		// fire.setLowLife(1f);
-		// fire.setHighLife(2f);
-		// fire.getParticleInfluencer().setVelocityVariation(0.3f);
-		//
-		// bonfire.attachChild(wood);
-		// bonfire.attachChild(fire);
-		//
-		// NodeModel nodeBonFire = new NodeModel(bonfire, new Vector3f(7.3f,
-		// 15f, 1000f));
+//		Node bonfire = new Node("Bonfire");
+//
+//		Spatial wood = GameManager.getIstance().getApplication().getAssetManager()
+//				.loadModel("Models/Bonfire/Bonfire.mesh.j3o");
+//		wood.setLocalTranslation(0, 0.4f, 0);
+//
+//		ParticleEmitter fire = new ParticleEmitter("Emitter", com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
+//		fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f, bonfire.getLocalTranslation().y + 0.5f,
+//				bonfire.getLocalTranslation().x + 0.2f);
+//		Material mat_red = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+//				"Common/MatDefs/Misc/Particle.j3md");
+//		mat_red.setTexture("Texture",
+//				GameManager.getIstance().getApplication().getAssetManager().loadTexture("Effects/Explosion/flame.png"));
+//		fire.setMaterial(mat_red);
+//		fire.setImagesX(2);
+//		fire.setImagesY(2);
+//		fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));
+//		fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
+//		fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
+//		fire.setStartSize(1.0f);
+//		fire.setEndSize(0.1f);
+//		fire.setGravity(0, -1f, 0);
+//		fire.setLowLife(1f);
+//		fire.setHighLife(2f);
+//		fire.getParticleInfluencer().setVelocityVariation(0.3f);
+//
+//		bonfire.attachChild(wood);
+//		bonfire.attachChild(fire);
+//
+//		NodeModel nodeBonFire = new NodeModel(bonfire, new Vector3f(7.3f, 15f, 1000f));
+//
+//		this.bonFireModel = nodeBonFire;
+//		this.bonFireModel.setName(bonfire.getName());
+//		this.bonFireModel.getModel().setLocalTranslation(intersect);
+//		this.terrain.attachChild(nodeBonFire.getModel());
+//		this.bonFireModel.moveModel(nodeBonFire.getModel().getLocalTranslation());
+//		this.spatials.add((Node) nodeBonFire.getModel());
+//		this.setName();
+//		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+//				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 
-		// this.bonFireModel.setName(bonfire.getName());
-		this.bonFireModel.getModel().setLocalTranslation(intersect);
-		// this.terrain.attachChild(this.bonFireModel.getModel());
-		this.bonFireModel.moveModel(this.bonFireModel.getModel().getLocalTranslation());
-		this.spatials.add((Node) this.bonFireModel.getModel());
-		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		 this.bonFireModel.setName(this.bonFireModel.getName());
+		 this.bonFireModel.getModel().setLocalTranslation(intersect);
+		 this.bonFireModel.moveModel(this.bonFireModel.getModel().getLocalTranslation());
+		 this.spatials.add((Node) this.bonFireModel.getModel());
+		 this.setName();
+		 this.nifty.getCurrentScreen().findNiftyControl("sliderRotate",
+		 Slider.class)
+		 .setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate",
+		 Slider.class).getMin());
 	}
 
 	private void makePortal(Vector3f intersect) {

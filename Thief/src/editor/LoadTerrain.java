@@ -146,6 +146,9 @@ public class LoadTerrain {
 			} else if (spatial.getName().contains("Katarina")) {
 				spatial.setName("Katarina");
 				this.createNodeCharacter(terrain, spatial, new Vector3f(1.2f, 3.6f, 45f), editor);
+			} else if (spatial.getName().contains("Jarvan")) {
+				spatial.setName("Jarvan");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(3f, 6.0f, 45f), editor);
 			} else if (spatial.getName().contains("Yasuo")) {
 				spatial.setName("Yasuo");
 				this.createNodeThief(terrain, spatial, editor);
