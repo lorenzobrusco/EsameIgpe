@@ -9,13 +9,16 @@ public class Sound {
 
 	private AudioNode sound;
 	private boolean played;
-	
+
 	public Sound(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
 			boolean played) {
 		if (!(node instanceof NodeModel)) {
 			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
 					"Sounds/" + soundName + ".ogg");
 		} else {
+			// TODO aggiorna contatote di thief -> non sparare cazzate se ti
+			// stanno attaccando
+
 			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
 					"Models/" + node.getName() + "/Sounds/" + soundName + ".ogg");
 		}

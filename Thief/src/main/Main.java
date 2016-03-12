@@ -38,24 +38,21 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	public static void main(String[] args) {
 		Main app = new Main();
 		AppSettings gameSettings = new AppSettings(false);
-
-		// gameSettings.setResolution(800, 600);
-
 		gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 				java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 		// gameSettings.setFullscreen(true);
-		gameSettings.setVSync(true);
+//		gameSettings.setVSync(true);
 		gameSettings.setTitle("Thief");
 		gameSettings.setUseInput(true);
 		gameSettings.setFrameRate(500);
 		gameSettings.setSamples(0);
 		gameSettings.setRenderer("LWJGL-OpenGL2");
 		app.setSettings(gameSettings);
-		app.setShowSettings(false);
+		app.setShowSettings(true);
 
 		// disable statistics
-		app.setDisplayFps(false);
-		app.setDisplayStatView(false);
+		app.setDisplayFps(true);
+		app.setDisplayStatView(true);
 		app.start();
 	}
 
@@ -85,7 +82,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 
 		this.menuSound.playSound();
-
 	}
 
 	@Override
@@ -102,7 +98,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = true;
 		editor = false;
 		GameManager.getIstance().setEditor(false);
-		this.player = new SinglePlayer(viewPort, rootNode, cam, "prova1");
+		this.player = new SinglePlayer(viewPort, rootNode, cam, "j");
 		this.initKeys();
 		this.menuSound.stopSound();
 	}
@@ -112,8 +108,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		editor = true;
 		singleplayer = false;
 		GameManager.getIstance().setEditor(true);
-		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain",
-				niftyDisplay, nifty);
+		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain", nifty);
 		mouseInput.setCursorVisible(false);
 		flyCam.setEnabled(true);
 		this.initKeys();
