@@ -14,7 +14,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
@@ -22,9 +21,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-
 import control.GameManager;
-
 import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.Slider;
@@ -67,8 +64,6 @@ public class EditorTerrain implements ScreenController {
 	private BitmapText hintText;
 	private boolean raiseTerrain = false;
 	private Nifty nifty;
-	@SuppressWarnings("unused")
-	private NiftyJmeDisplay niftyDisplay;
 	private LoadTerrain loadTerrain;
 	private NodeThief thiefModel;
 	private NodeModel bonFireModel;
@@ -83,10 +78,9 @@ public class EditorTerrain implements ScreenController {
 //	private Element niftyElement;
 
 	public EditorTerrain(Node rootNode, Camera cam, BitmapFont guiFont, Node guiNode, ViewPort port,
-			AppSettings settings, String path, NiftyJmeDisplay display, Nifty nifty) {
+			AppSettings settings, String path, Nifty nifty) {
 
 		this.rootNode = rootNode;
-		this.niftyDisplay = display;
 		this.nifty = nifty;
 		this.cam = cam;
 		this.guiFont = guiFont;
@@ -389,7 +383,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeEnemy(Vector3f intersect) {
 		NodeCharacter enemy = null;
-		int rand = (int) (Math.random() * 5);
+		int rand = (int) (Math.random() * 6);
 		switch (rand) {
 		case 0:
 			enemy = new NodeCharacter("Jayce/Jayce.mesh.j3o", new Vector3f(3.0f, 6f, 100f), 50, 10);
@@ -408,6 +402,9 @@ public class EditorTerrain implements ScreenController {
 			break;
 		case 5:
 			enemy = new NodeCharacter("XiinZhao/XiinZhao.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 6:
+			enemy = new NodeCharacter("Katarina/Katarina.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		default:
 			break;

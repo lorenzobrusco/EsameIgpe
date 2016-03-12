@@ -127,25 +127,25 @@ public class LoadTerrain {
 				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), editor);
 			} else if (spatial.getName().contains("Jayce")) {
 				spatial.setName("Jayce");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 90f), editor);
 			} else if (spatial.getName().contains("Rengar")) {
 				spatial.setName("Rengar");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3.0f, 6f, 100f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 80f), editor);
 			} else if (spatial.getName().contains("Talon")) {
 				spatial.setName("Talon");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3.0f, 7f, 100f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 50f), editor);
 			} else if (spatial.getName().contains("Wukong")) {
 				spatial.setName("Wukong");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3.0f, 7f, 100f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.4f, 2.6f, 40f), editor);
 			} else if (spatial.getName().contains("Azir")) {
 				spatial.setName("Azir");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 60f), editor);
 			} else if (spatial.getName().contains("XiinZhao")) {
 				spatial.setName("XiinZhao");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 50f), editor);
 			} else if (spatial.getName().contains("Katarina")) {
 				spatial.setName("Katarina");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.2f, 3.6f, 45f), editor);
 			} else if (spatial.getName().contains("Yasuo")) {
 				spatial.setName("Yasuo");
 				this.createNodeThief(terrain, spatial, editor);

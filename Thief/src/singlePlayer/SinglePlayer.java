@@ -92,7 +92,7 @@ public class SinglePlayer {
 	}
 
 	private void setupAmbientSound() {
-		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 1.0f, false);
+		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 		this.ambient.playSound();
 	}
 }

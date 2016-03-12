@@ -49,7 +49,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private final String bonfire = "BonFire";
 
 	public NodeThief(Spatial model) {
-		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 100, 10);
+		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 1000, 10);
 		this.controlRender = RENDER;
 		this.isRun = false;
 		this.waitAnimation = false;

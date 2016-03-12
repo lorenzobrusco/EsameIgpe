@@ -28,19 +28,25 @@ public class GameRender {
 
 	public synchronized void rayRendering() {
 		for (NodeModel model : GameManager.getIstance().getModels()) {
+			// System.out.println(model.getName());
 			if (!(model.getName().contains("Castle"))) {
 				if (distance(model) < this.VIEWDISTANCE) {
 					if (GameManager.getIstance().addModelRender(model)) {
-					    if(model instanceof NodeEnemy)
-						GameManager.getIstance().addModelEnemy((NodeEnemy) model);
-					    
+						if (model instanceof NodeEnemy)
+							GameManager.getIstance().addModelEnemy((NodeEnemy) model);
+
 						terrain.attachChild(model);
 						GameManager.getIstance().getBullet().getPhysicsSpace().add(model);
 					}
-					if (distance(model) < this.AMBIENTSOUDNDISTANCE) {
-						model.playSound();
+					if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Chapel")) {
+						model.playChapelSound();
 					} else {
-						model.stopSound();
+						model.stopChapelSound();
+					}
+					if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Bonfire")) {
+						model.playBonfireSound();
+					} else {
+						model.stopBonfireSound();
 					}
 					if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE
 							&& !((NodeCharacter) model).isViewed()) {
