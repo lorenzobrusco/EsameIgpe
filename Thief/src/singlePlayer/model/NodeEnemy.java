@@ -60,9 +60,9 @@ public class NodeEnemy extends NodeCharacter {
 	}
 
 	public void runIntelligence() {
-		if (!waitAnimation && this.alive){
+		// TODO avvia intelligenza
+		if (!waitAnimation && this.alive) {
 			this.artificialIntelligence.run();
-			System.out.println("run");
 		}
 	}
 
@@ -152,7 +152,7 @@ public class NodeEnemy extends NodeCharacter {
 		this.runIntelligence();
 		GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
 	}
-	
+
 	@Override
 	public void checkCollition() {
 		CollisionResults collisionResult = new CollisionResults();
