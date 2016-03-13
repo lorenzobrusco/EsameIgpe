@@ -103,8 +103,8 @@ public class EditorTerrain implements ScreenController {
 		this.editorSound.playSound();
 		// TODO elimina thief e bon fire gia presenti
 
-		// this.terrain.detachChild(this.thiefModel);
-		// this.terrain.detachChild(this.bonFireModel);
+//		 this.terrain.detachChild(this.thiefModel);
+//		 this.terrain.detachChild(this.bonFireModel);
 	}
 
 	public void simpleUpdate(float tpf) {
@@ -374,7 +374,7 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	private void makeTree(Vector3f intersect) {
-		NodeModel tree = new NodeModel("Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
+		NodeModel tree = new NodeModel("Specials/Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
 		tree.getModel().setLocalTranslation(intersect);
 		this.terrain.attachChild(tree.getModel());
 		tree.moveModel(tree.getModel().getLocalTranslation());
@@ -386,31 +386,43 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeEnemy(Vector3f intersect) {
 		NodeCharacter enemy = null;
-		int rand = (int) (Math.random() * 8);
+		int rand = (int) (Math.random() * 12);
 		switch (rand) {
 		case 0:
-			enemy = new NodeCharacter("Jayce/Jayce.mesh.j3o", new Vector3f(3.0f, 6f, 100f), 50, 10);
+			enemy = new NodeCharacter("Characters/Jayce/Jayce.mesh.j3o", new Vector3f(3.0f, 6f, 100f), 50, 10);
 			break;
 		case 1:
-			enemy = new NodeCharacter("Rengar/Rengar.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			enemy = new NodeCharacter("Characters/Rengar/Rengar.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		case 2:
-			enemy = new NodeCharacter("Talon/Talon.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f), 50, 10);
+			enemy = new NodeCharacter("Characters/Talon/Talon.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f), 50, 10);
 			break;
 		case 3:
-			enemy = new NodeCharacter("Wukong/Wukong.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f), 50, 10);
+			enemy = new NodeCharacter("Characters/Wukong/Wukong.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f), 50, 10);
 			break;
 		case 4:
-			enemy = new NodeCharacter("Azir/Azir.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			enemy = new NodeCharacter("Characters/Azir/Azir.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		case 5:
-			enemy = new NodeCharacter("XiinZhao/XiinZhao.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			enemy = new NodeCharacter("Characters/XiinZhao/XiinZhao.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		case 6:
-			enemy = new NodeCharacter("Katarina/Katarina.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			enemy = new NodeCharacter("Characters/Katarina/Katarina.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		case 7:
-			enemy = new NodeCharacter("Jarvan/Jarvan.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			enemy = new NodeCharacter("Characters/Jarvan/Jarvan.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 8:
+			enemy = new NodeCharacter("Characters/Fiora/Fiora.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 9:
+			enemy = new NodeCharacter("Characters/Sejuani/Sejuani.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 10:
+			enemy = new NodeCharacter("Characters/Volibear/Volibear.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
+			break;
+		case 11:
+			enemy = new NodeCharacter("Characters/WarWick/WarWick.mesh.j3o", new Vector3f(3.0f, 7f, 100f), 50, 10);
 			break;
 		default:
 			break;
@@ -430,13 +442,13 @@ public class EditorTerrain implements ScreenController {
 		int rand = (int) (Math.random() * 3);
 		switch (rand) {
 		case 0:
-			builder = new NodeModel("House/House.mesh.j3o", new Vector3f(3.0f, 6f, 100f));
+			builder = new NodeModel("Buildings/House/House.mesh.j3o", new Vector3f(3.0f, 6f, 100f));
 			break;
 		case 1:
-			builder = new NodeModel("HouseTwo/HouseTwo.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+			builder = new NodeModel("Buildings/HouseTwo/HouseTwo.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
 			break;
 		case 2:
-			builder = new NodeModel("HouseMedium/HouseMedium.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f));
+			builder = new NodeModel("Buildings/HouseMedium/HouseMedium.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f));
 			builder.setName("HouseMedium");
 			break;
 		default:
@@ -453,7 +465,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeChapel(Vector3f intersect) {
 
-		NodeModel builder = new NodeModel("Chapel/Chapel.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+		NodeModel builder = new NodeModel("Buildings/Chapel/Chapel.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
 		builder.getModel().setLocalTranslation(intersect);
 		this.terrain.attachChild(builder.getModel());
 		builder.moveModel(builder.getModel().getLocalTranslation());
@@ -465,7 +477,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeWindMill(Vector3f intersect) {
 
-		NodeModel windMill = new NodeModel("WindMill/WindMill.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+		NodeModel windMill = new NodeModel("Buildings/WindMill/WindMill.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
 		windMill.setName("WindMill");
 		windMill.getModel().setLocalTranslation(intersect);
 		this.terrain.attachChild(windMill.getModel());
@@ -478,7 +490,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeCastle(Vector3f intersect) {
 
-		NodeModel castle = new NodeModel("Castle/Castle.j3o", new Vector3f(3.0f, 7f, 100f));
+		NodeModel castle = new NodeModel("Buildings/Castle/Castle.j3o", new Vector3f(3.0f, 7f, 100f));
 		castle.setName("Castle");
 		castle.getModel().setLocalTranslation(intersect.x, intersect.y, intersect.z);
 		this.terrain.attachChild(castle.getModel());
@@ -494,7 +506,7 @@ public class EditorTerrain implements ScreenController {
 //		Node bonfire = new Node("Bonfire");
 //
 //		Spatial wood = GameManager.getIstance().getApplication().getAssetManager()
-//				.loadModel("Models/Bonfire/Bonfire.mesh.j3o");
+//				.loadModel("Models/Specials/Bonfire/Bonfire.mesh.j3o");
 //		wood.setLocalTranslation(0, 0.4f, 0);
 //
 //		ParticleEmitter fire = new ParticleEmitter("Emitter", com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
@@ -544,7 +556,7 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	private void makePortal(Vector3f intersect) {
-		NodeModel portal = new NodeModel("Portal/Portal.mesh.j3o", new Vector3f(7.3f, 15f, 1000f));
+		NodeModel portal = new NodeModel("Specials/Portal/Portal.mesh.j3o", new Vector3f(7.3f, 15f, 1000f));
 		portal.getModel().setLocalTranslation(intersect);
 		this.terrain.attachChild(portal.getModel());
 		portal.moveModel(portal.getModel().getLocalTranslation());
@@ -556,8 +568,8 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeThief(Vector3f intersect) {// TODO togliete commenti per
 												// creare un nuovo yasuo
-		// this.thiefModel = new NodeThief(
-		// GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Yasuo/Yasuo.mesh.j3o"));
+//		 this.thiefModel = new NodeThief(
+//		 GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"));
 		this.thiefModel.getModel().setLocalTranslation(intersect);
 		this.thiefModel.moveModel(intersect);
 		this.terrain.attachChild(thiefModel.getModel());

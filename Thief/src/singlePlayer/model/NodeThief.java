@@ -49,7 +49,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private final String bonfire = "BonFire";
 
 	public NodeThief(Spatial model) {
-		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 1000, 10);
+		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10000, 10);
 		this.controlRender = RENDER;
 		this.isRun = false;
 		this.waitAnimation = false;
@@ -127,7 +127,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		}
 	}
 
-	public void toSitNearToBonFire() {
+	public void sitNearToBonFire() {
 		this.resetCurrentTime();
 		if (this.getLocalTranslation()
 				.distance(GameManager.getIstance().getBonfire().getLocalTranslation()) < BONFIREDISTANCE) {
@@ -137,7 +137,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			this.channel.setLoopMode(LoopMode.DontLoop);
 			this.channel.setSpeed(0.7f);
 			this.waitAnimation = true;
-			
+
 		}
 	}
 
@@ -193,7 +193,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 					&& !NodeThief.this.waitAnimation && !NodeThief.this.isRun) {
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
-				NodeThief.this.toSitNearToBonFire();
+				NodeThief.this.sitNearToBonFire();
 			}
 		}
 	};
@@ -246,7 +246,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	}
 
-	private void resetCurrentTime() {
+	public void resetCurrentTime() {
 		this.currentTime = (int) System.currentTimeMillis();
 	}
 

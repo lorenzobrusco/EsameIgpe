@@ -148,7 +148,19 @@ public class LoadTerrain {
 				this.createNodeCharacter(terrain, spatial, new Vector3f(1.2f, 3.6f, 45f), editor);
 			} else if (spatial.getName().contains("Jarvan")) {
 				spatial.setName("Jarvan");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3f, 6.0f, 45f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 5.5f, 45f), editor);
+			} else if (spatial.getName().contains("Fiora")) {
+				spatial.setName("Fiora");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.2f, 4f, 50f), editor);
+			} else if (spatial.getName().contains("Sejuani")) {
+				spatial.setName("Sejuani");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(2.5f, 6f, 280f), editor);
+			} else if (spatial.getName().contains("Volibear")) {
+				spatial.setName("Volibear");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(3f, 7f, 200f), editor);
+			} else if (spatial.getName().contains("WarWick")) {
+				spatial.setName("WarWick");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 150f), editor);
 			} else if (spatial.getName().contains("Yasuo")) {
 				spatial.setName("Yasuo");
 				this.createNodeThief(terrain, spatial, editor);

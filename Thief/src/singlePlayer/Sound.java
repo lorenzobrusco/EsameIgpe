@@ -3,6 +3,7 @@ package singlePlayer;
 import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
 import control.GameManager;
+import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeModel;
 
 public class Sound {
@@ -18,9 +19,21 @@ public class Sound {
 		} else {
 			// TODO aggiorna contatote di thief -> non sparare cazzate se ti
 			// stanno attaccando
-
-			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-					"Models/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+			if (node instanceof NodeCharacter) {
+				this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+						"Models/Characters/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+			}
+			if (node instanceof NodeModel) {
+				String name = node.getName();
+				if (name.equals("Chapel")) {
+					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+							"Models/Buildings/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+				}
+				if (name.equals("Bonfire") || name.equals("Portal")) {
+					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+							"Models/Specials/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+				}
+			}
 		}
 		this.setup(node, soundName, reverb, positional, loop, volume, played);
 	}

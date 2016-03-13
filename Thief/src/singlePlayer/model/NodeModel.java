@@ -28,7 +28,7 @@ public class NodeModel extends Node {
 	}
 
 	public NodeModel(String path, Vector3f dimensionControll) {
-		this.spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/" + path);
+		this.spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/" + path );
 		this.spatial.setShadowMode(RenderQueue.ShadowMode.Inherit);
 		this.setName(this.spatial.getName());
 		this.dimensionControll = dimensionControll;
@@ -49,6 +49,8 @@ public class NodeModel extends Node {
 	}
 
 	public NodeModel(String path, Vector3f dimensionControll, Vector3f intersection) {
+		System.out.println("secondo");
+		System.out.println(path);
 		this.spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/" + path);
 		this.spatial.setShadowMode(RenderQueue.ShadowMode.Inherit);
 		this.setName(this.spatial.getName());
