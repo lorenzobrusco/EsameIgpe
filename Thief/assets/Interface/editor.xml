@@ -1,188 +1,86 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <nifty>
-  <useStyles filename="nifty-default-styles.xml"/>
-  <useControls filename="nifty-default-controls.xml"/>
-  <screen id="start" controller="editor.EditorTerrain">
-  
-  
-    <layer childLayout="center" id="layer">
-    
-     <panel id="centralPanel" childLayout="horizontal">
-	      <panel id="leftPanel"  width="50%" childLayout="vertical">          
-			        <panel id="leftPanelUP"  height="50%" childLayout="horizontal">
-						          <panel id="spaceHorizontal"  width="4%"  childLayout="vertical"/>
-						           <panel id="subPanelUp"   childLayout="vertical">
-									         <panel id="spaceVertical"  height="7%"  childLayout="vertical"/>
-									          <panel id="modifyCurrentSpatial"  height="50%" width="70%" childLayout="vertical" backgroundImage="Interface/blackBar.png">
-										                <panel id="panelTextAndRotate" height="70%"  childLayout="vertical" >
-											                <control font="Interface/Fonts/Morpheus.fnt"  color="#ee1f" id="NameModel" name="label" text="Model: nobody"  valign="center"/>
-														    <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="rotate" name="label" text="rotate:"/>
-														    <control id="sliderRotate" name="horizontalSlider" width="80%" />
-													    </panel>
-													     <panel id="buttonPanel" height="30%"  childLayout="horizontal" >
-														     	<panel id="buttonDeletePanel" width="50%"  childLayout="center" >
-														     	
-														     	<image filename="Interface/deleteButton.png" id="deleteButton" width="80%" height="100%" visibleToMouse="true">
-          
-					         									     <effect>
-									                                      <onStartHover name="nop" onStartEffect="startGrow(deleteButton)" />   
-									                                       <onEndHover name="nop" onStartEffect="endGrow(deleteButton)" />                            
-					                                  	    		</effect> 
-					       										<interact onClick="delete()" />
-		   												    </image> 
-																	   
-													            </panel>
-													        <panel id="buttonResetPanel" width="50%"  childLayout="center" >
-													        
-													        <image filename="Interface/resetButton.png" id="resetButton" width="80%" height="100%" visibleToMouse="true">
-          
-					         									     <effect>
-									                                      <onStartHover name="nop" onStartEffect="startGrow(resetButton)" />   
-									                                       <onEndHover name="nop" onStartEffect="endGrow(resetButton)" />                            
-					                                  	    		</effect> 
-					       										<interact onClick="reset()" />
-		   												    </image> 
-															         
-														     </panel>
-										             </panel>
-								        
-								            </panel>
-					       		 </panel>
-			         </panel>
-			      
-				      <panel id="leftPanelDown"  height="50%" childLayout="horizontal" >
-					        <panel id="spaceHorizontalDown"  width="4%" childLayout="horizontal" />
-					         <panel id="internPanel"  childLayout="vertical" >
-						          <panel id="spaceVertical_down" height="30%" childLayout="vertical" />			      
-						          <panel id="niftyLoad"  height="50%" width="50%" backgroundImage="Interface/blackBar.png"   childLayout="vertical"> 
-							          		<panel id="niftyLoad1"  height="70%" childLayout="vertical"  >
-												     <control font="Interface/Fonts/Morpheus.fnt" id="labelNameLoad" name="label" text="FILE" color="#ee1f" />  
-											     	 <control  id="listBox" name="listBox" width="90%" height="80%" align="center"/>
-							   				 </panel>
-							   				 <panel id="niftyLoad2"  height="30%" width="100%"  childLayout="center" >
-							   				  <image filename="Interface/loadButton.png" id="loadButton" width="80%" height="100%" visibleToMouse="true">
-          
-		         									     <effect>
-						                                      <onStartHover name="nop" onStartEffect="startGrow(loadButton)" />   
-						                                       <onEndHover name="nop" onStartEffect="endGrow(loadButton)" />                            
-		                                  	    		</effect> 
-		       										<interact onClick="load()" />
-		   										 </image> 
-											     	
-							                </panel>
-						            </panel>
-					         </panel>
-				      </panel>
-	      
-	      </panel>
- 
-       <panel id="rightPanel"  width="50%" childLayout="vertical"> 
-       <panel id="spaceRightPanelUp"  height="4%" childLayout="vertical"/> 
-     		 <panel id="rightPanelUP"  height="50%" childLayout="horizontal">
-     		  <panel id="spaceRightPanelRightUp"  width="56%" childLayout="horizontal" />
-     		   <panel id="legend"  width="40%" childLayout="horizontal"  backgroundImage="Interface/blackBar.png" >
-					      <panel id="imageLegend"  width="30%" childLayout="vertical" >
-					           
-					            <panel id="panelMoutain"  height="13%" width="100%" childLayout="center"> 
-						      			<image filename="Interface/mountain.png" />
-						      	</panel>
-						      	
-						      	<panel id="panelValley"  height="13%" width="100%" childLayout="center"> 
-						      			<image filename="Interface/valley.png" align="center"/>
-						      	</panel>
-						      
-						      
-						        <panel id="panelTree"  height="13%" width="100%" childLayout="center"> 
-						      			<image filename="Interface/tree.png" align="center"/>
-						      	</panel>
-						      	
-						      	 <panel id="panelCascket"  height="13%" width="100%" childLayout="center"> 
-						      			<image filename="Interface/casket.png" align="center"/>
-						      	</panel>
-						      	 <panel id="panelDiamond"  height="13%" width="100%" childLayout="center"> 
-						      			<image filename="Interface/diamond.png" align="center"/>
-						      	 </panel>
-						         <panel id="panelThief"  height="13%" width="100%" childLayout="center"> 
-						      			<image filename="Interface/thief.png" align="center"/>
-						      	</panel>
-						         <panel id="panelEnemy"  height="13%" width="100%" childLayout="center"> 
-						      	 		<image filename="Interface/enemy.png" align="center"/>
-						      	 </panel>
-					    </panel>
-					    
-					    <panel id="textLegend"  width="70%"  childLayout="vertical"  >
-					        <panel id="panelMountainText"  height="13%" childLayout="center"> 
-					    	<control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="mountainText" name="label" text="mountain : left" width="100%" height="50%"/>
-					    	</panel>
-					    	  <panel id="panelValleyText"  height="13%" childLayout="center"> 				    
-					           <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="valleyText" name="label" text="valley : right" width="100%" height="50%"/>
-					        </panel>
-					        <panel id="panelTreeText"  height="13%" childLayout="center"> 				    
-					           <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="treeText" name="label" text="tree : 		1" width="100%" height="50%"/>
-					        </panel>
-					         <panel id="panelCofferText"  height="13%" childLayout="center"> 				    
-					           <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="cofferText" name="label" text="coffer"  width="100%" height="100%"/>
-					        </panel>
-					         <panel id="panelDiamondText" height="13%" childLayout="center"> 				    
-					           <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f"  id="diamondText" name="label" text="portal :		 3" width="100%" height="50%"/>
-					        </panel>
-					         <panel id="panelThiefText"  height="13%" childLayout="center"> 				    
-					           <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="thiefText" name="label" text="thief : 		4" width="100%" height="100%"/>
-					        </panel>
-					         <panel id="panelEnemyText"  height="13%" childLayout="center"> 				    
-					           <control font="Interface/Fonts/Morpheus.fnt" color="#ee1f" id="enemyText" name="label" text="enemy : 		5" width="100%" height="50%"/>
-					        </panel>
-					    </panel>
-					    
-     		    </panel>
-     		 
-     		 </panel>
-     		  <panel id="spaceRightPanelUp"  height="10%" childLayout="vertical"/> 
-     		 <panel id="rightPanelDown"  height="50%" childLayout="horizontal">
-     		   <panel id="spaceRightPanelRight"  width="56%" childLayout="horizontal" />
-     		    <panel childLayout="vertical" height="40%" width="40%" id="save" backgroundImage="Interface/blackBar.png"  > 
-			        <control font="Interface/Fonts/Morpheus.fnt" id="labelNameSave" color="#ee1f" name="label" text="NAME" />
-			        <control id="textfieldSave" name="textfield" width="80%"  align="center" />
-			        <panel id="spaceText"  height="7%" childLayout="horizontal" />
-			        <image filename="Interface/saveButton.png" id="saveButton" width="80%" height="40%" visibleToMouse="true" align="center">
-          
-					         <effect>
-							<onStartHover name="nop" onStartEffect="startGrow(saveButton)" />   
-						    <onEndHover name="nop" onStartEffect="endGrow(saveButton)" />                            
-					        </effect> 
-					      <interact onClick="save()" />
-		   				</image> 
-			        
-     		 </panel>
-     		 </panel>
-       </panel>
-    
-    
-    
-     </panel>
-     
-     
-    </layer>
-    
-    <layer childLayout="center" id="layer1">
-    
-     <panel id="Panel1" childLayout="vertical">
-     
-       <panel id="Panel2"  height="70%" childLayout="vertical"/>
-       
-       <panel id="Panel3" height="30%"  childLayout="center">
-     	<image filename="Interface/returnButton.png" id="returnButton" width="30%" height="40%" visibleToMouse="true">
-          
-		           <effect>
-		                                      <onStartHover name="nop" onStartEffect="startGrow(returnButton)" />   
-		                                      <onEndHover name="nop" onStartEffect="endGrow(returnButton)" />                            
-		                                  	
-		       		</effect> 
-		       		 <interact onClick="closeEditor()" />
-		    </image>   
-        </panel>
-       </panel>
-    
-    </layer>
-  </screen>
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+	<screen id="start" controller="editor.EditorTerrain">
+		<layer childLayout="center" id="layer">
+			<panel id="centralPanel" childLayout="horizontal">
+				<panel id="leftPanel" width="20%" height="98%" childLayout="vertical" x="1%"
+					backgroundImage="Interface/blackBar.png">
+					<panel id="currentModel" width="100%" height="30%"
+						childLayout="vertical">
+						<panel id="spaceCurrentModel" height="2%" />
+						<control font="Interface/Fonts/Morpheus.fnt" color="#ee1f"
+							id="NameModel" name="label" text="Model: nobody" valign="center" />
+						<control font="Interface/Fonts/Morpheus.fnt" color="#ee1f"
+							id="rotate" name="label" text="rotate:" />
+						<control id="sliderRotate" name="horizontalSlider" width="80%" />
+						<panel id="buttonCurrentModel" width="100%" childLayout="horizontal">
+							<image filename="Interface/deleteButton.png" id="deleteButton"
+								width="50%" height="40%" x="2%" visibleToMouse="true">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(deleteButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(deleteButton)" />
+								</effect>
+								<interact onClick="delete()" />
+							</image>
+							<image filename="Interface/resetButton.png" id="resetButton"
+								width="50%" height="40%" visibleToMouse="true">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(resetButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(resetButton)" />
+								</effect>
+								<interact onClick="reset()" />
+							</image>
+						</panel>
+					</panel>
+					<panel id="loadTerrain" width="100%" height="30%" childLayout="vertical">
+							<control font="Interface/Fonts/Morpheus.fnt" id="terrainFileToLoad" name="label" text="Terrain to load: " color="#ee1f" />
+							<control id="listBox" name="listBox" width="90%" height="80%" align="center"/>
+							<panel id="buttonloadTerrain" width="100%" childLayout="horizontal">
+								<image filename="Interface/loadButton.png" id="loadButton"
+									width="50%" height="40%" x="2%" visibleToMouse="true">
+									<effect>
+										<onStartHover name="nop" onStartEffect="startGrow(loadButton)" />
+										<onEndHover name="nop" onStartEffect="endGrow(loadButton)" />
+									</effect>
+									<interact onClick="load()" />
+								</image>
+								<image filename="Interface/resetButton.png" id="deleteButton"
+									width="50%" height="40%" visibleToMouse="true">
+									<effect>
+										<onStartHover name="nop" onStartEffect="startGrow(deleteButton)" />
+										<onEndHover name="nop" onStartEffect="endGrow(deleteButton)" />
+									</effect>
+									<interact onClick="reset()" />
+								</image>
+							</panel>			
+					</panel>
+					<panel id="saveTerrain" width="100%" height="25%" childLayout="vertical">
+						<control font="Interface/Fonts/Morpheus.fnt" id="terrainFileToSave" name="label" text="Tearrain to save: " color="#ee1f" />
+						<control id="textfieldSaveTerrain" name="textfield" width="80%" align="center" />
+						<image filename="Interface/saveButton.png" id="saveButton"	width="50%" height="40%" visibleToMouse="true" align="center">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(saveButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(saveButton)" />
+							</effect>
+							<interact onClick="save()" />
+						</image>
+					</panel> 
+					<panel id="return" width="100%" height="25%" childLayout="vertical">
+						<image filename="Interface/returnButton.png" id="returnButton"	width="50%" height="40%" visibleToMouse="true" align="center">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(returnButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(returnButton)" />
+							</effect>
+							<interact onClick="closeEditor()" />
+						</image>
+					</panel>
+				</panel>
+				<panel id="upPanel"  height="15%" backgroundImage="Interface/blackBar.png" childLayout="vertical">
+					
+				</panel>
+			</panel>
+		</layer>
+	</screen>
 </nifty>
