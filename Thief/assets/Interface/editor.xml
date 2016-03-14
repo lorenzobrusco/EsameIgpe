@@ -77,8 +77,61 @@
 						</image>
 					</panel>
 				</panel>
-				<panel id="upPanel"  height="15%" backgroundImage="Interface/blackBar.png" childLayout="vertical">
-					
+				<panel id="upPanel"  height="15%" backgroundImage="Interface/blackBar.png" childLayout="horizontal">
+					<panel id="items" width="100%" height="100%" padding="12%,1%,2%,2%" childLayout="horizontal">
+						<panel id="up" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/mountain.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="upText" name="label" text="Mountain: " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="upNumber" name="label" text="press: 1" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						<panel id="down" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: 2" color="#ee1f"/>
+						</panel>
+						
+					</panel>
 				</panel>
 			</panel>
 		</layer>

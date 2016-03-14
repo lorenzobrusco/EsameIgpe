@@ -56,7 +56,6 @@ public class EditorTerrain implements ScreenController {
 	private boolean builder = false;
 	private boolean chapel = false;
 	private boolean castle = false;
-	private boolean windMill = false;
 	private boolean bonFire = false;
 	private boolean enemy = false;
 	private TerrainQuad terrain;
@@ -95,12 +94,12 @@ public class EditorTerrain implements ScreenController {
 		this.makeNiftyEditor();
 		this.loadHintText();
 		this.initCrossHairs();
-		this.readScenes();
 		this.createMarker();
 		this.setKey();
 		this.rootNode.addLight(loadTerrain.makeAmbientLight());
 		this.setupAudio();
 		this.editorSound.playSound();
+
 		// TODO elimina thief e bon fire gia presenti
 
 //		 this.terrain.detachChild(this.thiefModel);
@@ -109,7 +108,6 @@ public class EditorTerrain implements ScreenController {
 
 	public void simpleUpdate(float tpf) {
 		Vector3f intersection = getWorldIntersection();
-		this.updateHintText(intersection);
 		if (this.raiseTerrain && !this.mouse) {
 			if (intersection != null) {
 				this.adjustHeight(intersection, 20, tpf * 60);
@@ -153,11 +151,6 @@ public class EditorTerrain implements ScreenController {
 				this.makeCastle(intersection);
 				this.castle = false;
 			}
-		} else if (this.windMill && !this.mouse) {
-			if (intersection != null) {
-				this.makeWindMill(intersection);
-				this.windMill = false;
-			}
 		} else if (this.enemy && !this.mouse) {
 			if (intersection != null) {
 				this.makeEnemy(intersection);
@@ -177,24 +170,14 @@ public class EditorTerrain implements ScreenController {
 		this.guiNode.attachChild(this.hintText);
 	}
 
-	public void updateHintText(Vector3f target) {
-		int x = (int) cam.getLocation().x;
-		int y = (int) cam.getLocation().y;
-		int z = (int) cam.getLocation().z;
-		String targetText = "";
-		if (target != null)
-			targetText = "  intersect: " + target.toString();
-		this.hintText.setText(x + "," + y + "," + z + targetText);
-	}
-
 	public void save() {
-		if (this.nifty.getCurrentScreen().findNiftyControl("textfieldSave", TextField.class).getDisplayedText()
+		if (this.nifty.getCurrentScreen().findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText()
 				.equals("")) {
 			new SaveTerrain(this.rootNode).saveModel("default");
 		} else {
 			new SaveTerrain(this.rootNode).saveModel(this.nifty.getCurrentScreen()
-					.findNiftyControl("textfieldSave", TextField.class).getDisplayedText());
-			this.nifty.getCurrentScreen().findNiftyControl("textfieldSave", TextField.class).setText("");
+					.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
+			this.nifty.getCurrentScreen().findNiftyControl("textfieldSaveTerrain", TextField.class).setText("");
 		}
 		this.readScenes();
 	}
@@ -229,9 +212,7 @@ public class EditorTerrain implements ScreenController {
 		this.terrain = this.loadTerrain.loadTerrain(path, true);
 		this.rootNode.attachChild(this.terrain);
 		this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-		this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
-		this.thiefModel = GameManager.getIstance().getNodeThief();
-		this.bonFireModel = GameManager.getIstance().getBonfire();
+		this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
 	}
 
 	private void initCrossHairs() {
@@ -261,8 +242,6 @@ public class EditorTerrain implements ScreenController {
 				EditorTerrain.this.builder = pressed;
 			} else if (name.equals("chapel")) {
 				EditorTerrain.this.chapel = pressed;
-			} else if (name.equals("windMill")) {
-				EditorTerrain.this.windMill = pressed;
 			} else if (name.equals("castle")) {
 				EditorTerrain.this.castle = pressed;
 			} else if (name.equals("bonFire")) {
@@ -376,7 +355,6 @@ public class EditorTerrain implements ScreenController {
 	private void makeTree(Vector3f intersect) {
 		NodeModel tree = new NodeModel("Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
 		tree.getModel().setLocalTranslation(intersect);
-		tree.getModel().scale(5f);
 		this.terrain.attachChild(tree.getModel());
 		tree.moveModel(tree.getModel().getLocalTranslation());
 		this.spatials.add((Node) tree.getModel());
@@ -440,7 +418,7 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeBuilder(Vector3f intersect) {
 		NodeModel builder = null;
-		int rand = (int) (Math.random() * 3);
+		int rand = (int) (Math.random() * 4);
 		switch (rand) {
 		case 0:
 			builder = new NodeModel("Buildings/House/House.mesh.j3o", new Vector3f(3.0f, 6f, 100f));
@@ -451,6 +429,10 @@ public class EditorTerrain implements ScreenController {
 		case 2:
 			builder = new NodeModel("Buildings/HouseMedium/HouseMedium.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f));
 			builder.setName("HouseMedium");
+			break;
+		case 3:
+			builder = new NodeModel("Buildings/WindMill/WindMill.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+			builder.setName("WindMill");
 			break;
 		default:
 			break;
@@ -476,19 +458,6 @@ public class EditorTerrain implements ScreenController {
 				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
-	private void makeWindMill(Vector3f intersect) {
-
-		NodeModel windMill = new NodeModel("Buildings/WindMill/WindMill.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
-		windMill.setName("WindMill");
-		windMill.getModel().setLocalTranslation(intersect);
-		this.terrain.attachChild(windMill.getModel());
-		windMill.moveModel(windMill.getModel().getLocalTranslation());
-		this.spatials.add((Node) windMill.getModel());
-		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
-	}
-
 	private void makeCastle(Vector3f intersect) {
 
 		NodeModel castle = new NodeModel("Buildings/Castle/Castle.j3o", new Vector3f(3.0f, 7f, 100f));
@@ -506,11 +475,11 @@ public class EditorTerrain implements ScreenController {
 													// creare un nuovo bonFire
 //		Node bonfire = new Node("Bonfire");
 //
-//		com.jme3.scene.Spatial wood = GameManager.getIstance().getApplication().getAssetManager()
+//		Spatial wood = GameManager.getIstance().getApplication().getAssetManager()
 //				.loadModel("Models/Specials/Bonfire/Bonfire.mesh.j3o");
 //		wood.setLocalTranslation(0, 0.4f, 0);
 //
-//		com.jme3.effect.ParticleEmitter fire = new com.jme3.effect.ParticleEmitter("Emitter", com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
+//		ParticleEmitter fire = new ParticleEmitter("Emitter", com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
 //		fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f, bonfire.getLocalTranslation().y + 0.5f,
 //				bonfire.getLocalTranslation().x + 0.2f);
 //		Material mat_red = new Material(GameManager.getIstance().getApplication().getAssetManager(),
@@ -569,8 +538,8 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeThief(Vector3f intersect) {// TODO togliete commenti per
 												// creare un nuovo yasuo
-//		 this.thiefModel = new NodeThief(
-//		 GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"));
+		 this.thiefModel = new NodeThief(
+		 GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"));
 		this.thiefModel.getModel().setLocalTranslation(intersect);
 		this.thiefModel.moveModel(intersect);
 		this.terrain.attachChild(thiefModel.getModel());
@@ -581,6 +550,7 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	private void readScenes() {
+		
 		@SuppressWarnings("unchecked")
 		ListBox<String> listBox = this.nifty.getCurrentScreen().findNiftyControl("listBox", ListBox.class);
 		listBox.clear();
@@ -661,6 +631,6 @@ public class EditorTerrain implements ScreenController {
 
 	@Override
 	public void onStartScreen() {
-
+	    this.readScenes();
 	}
 }
