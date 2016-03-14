@@ -1,17 +1,14 @@
 package singlePlayer.artificialIntelligence;
 
 import com.jme3.bounding.BoundingBox;
-import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.debug.WireBox;
-
 import control.GameManager;
 import singlePlayer.model.NodeEnemy;
-import singlePlayer.model.NodeModel;
 
 public class Way {
 
@@ -38,10 +35,10 @@ public class Way {
 		GameManager.getIstance().getTerrain().attachChild(leftBox);
 		GameManager.getIstance().getTerrain().attachChild(rightBox);
 
-		CollisionResults frontCollitions = new CollisionResults();
-		CollisionResults backCollitions = new CollisionResults();
-		CollisionResults leftCollitions = new CollisionResults();
-		CollisionResults rightCollitions = new CollisionResults();
+//		CollisionResults frontCollitions = new CollisionResults();
+//		CollisionResults backCollitions = new CollisionResults();
+//		CollisionResults leftCollitions = new CollisionResults();
+//		CollisionResults rightCollitions = new CollisionResults();
 
 //		for (NodeModel node : GameManager.getIstance().getNodeModel()) {
 //			frontBox.collideWith(ENEMY.getWorldBound(), leftCollitions);

@@ -374,8 +374,9 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	private void makeTree(Vector3f intersect) {
-		NodeModel tree = new NodeModel("Specials/Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
+		NodeModel tree = new NodeModel("Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
 		tree.getModel().setLocalTranslation(intersect);
+		tree.getModel().scale(5f);
 		this.terrain.attachChild(tree.getModel());
 		tree.moveModel(tree.getModel().getLocalTranslation());
 		this.spatials.add((Node) tree.getModel());
@@ -505,11 +506,11 @@ public class EditorTerrain implements ScreenController {
 													// creare un nuovo bonFire
 //		Node bonfire = new Node("Bonfire");
 //
-//		Spatial wood = GameManager.getIstance().getApplication().getAssetManager()
+//		com.jme3.scene.Spatial wood = GameManager.getIstance().getApplication().getAssetManager()
 //				.loadModel("Models/Specials/Bonfire/Bonfire.mesh.j3o");
 //		wood.setLocalTranslation(0, 0.4f, 0);
 //
-//		ParticleEmitter fire = new ParticleEmitter("Emitter", com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
+//		com.jme3.effect.ParticleEmitter fire = new com.jme3.effect.ParticleEmitter("Emitter", com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
 //		fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f, bonfire.getLocalTranslation().y + 0.5f,
 //				bonfire.getLocalTranslation().x + 0.2f);
 //		Material mat_red = new Material(GameManager.getIstance().getApplication().getAssetManager(),
