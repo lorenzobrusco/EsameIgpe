@@ -32,7 +32,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private final float BONFIREDISTANCE = 10f;
 	private boolean changeAttack;
 	private boolean waitAnimation;
-	private Sound walkingSound;
+	private Sound walkingOnGrassSound;
 	private Sound swordSound;
 	private Sound bonfireSound;
 	private Sound voice1;
@@ -49,7 +49,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private final String bonfire = "BonFire";
 
 	public NodeThief(Spatial model) {
-		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 100, 10);
+		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10000, 10);
 		this.controlRender = RENDER;
 		this.isRun = false;
 		this.waitAnimation = false;
@@ -99,7 +99,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	public void stop() {
 		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-		this.walkingSound.stopSound();
+		this.walkingOnGrassSound.stopSound();
 		if (this.getWorldTranslation().y < -9f) {
 			this.death();
 		}
@@ -107,7 +107,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	public void run() {
 		this.resetCurrentTime();
-		this.walkingSound.playSound();
+		this.walkingOnGrassSound.playSound();
 		Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 		vector3f.y = -2f;
 		this.characterControl.setWalkDirection(vector3f);
@@ -123,11 +123,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 			super.death();
 			this.resetCurrentTime();
 			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-			this.walkingSound.stopSound();
+			this.walkingOnGrassSound.stopSound();
 		}
 	}
 
-	public void toSitNearToBonFire() {
+	public void sitNearToBonFire() {
 		this.resetCurrentTime();
 		if (this.getLocalTranslation()
 				.distance(GameManager.getIstance().getBonfire().getLocalTranslation()) < BONFIREDISTANCE) {
@@ -135,11 +135,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 			this.bonfireSound.playSound();
 			this.channel.setAnim("BonFire");
 			this.channel.setLoopMode(LoopMode.DontLoop);
+			this.channel.setSpeed(0.7f);
 			this.waitAnimation = true;
-			for (NodeEnemy enemy : GameManager.getIstance().getEnemys()) {
-				enemy.resetAll();
-				enemy.setViewed(false);
-			}
+
 		}
 	}
 
@@ -195,7 +193,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 					&& !NodeThief.this.waitAnimation && !NodeThief.this.isRun) {
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
-				NodeThief.this.toSitNearToBonFire();
+				NodeThief.this.sitNearToBonFire();
 			}
 		}
 	};
@@ -216,6 +214,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (arg2.equals(bonfire)) {
 			arg1.setAnim(idle);
 			NodeThief.this.waitAnimation = false;
+			for (NodeEnemy enemy : GameManager.getIstance().getEnemys()) {
+				enemy.resetAll();
+			}
 		}
 	}
 
@@ -245,7 +246,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	}
 
-	private void resetCurrentTime() {
+	public void resetCurrentTime() {
 		this.currentTime = (int) System.currentTimeMillis();
 	}
 
@@ -267,7 +268,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				&& this.voice5.getAudioNode().getStatus().equals(Status.Stopped)
 				&& this.voice6.getAudioNode().getStatus().equals(Status.Stopped)
 				&& this.voice7.getAudioNode().getStatus().equals(Status.Stopped)
-				&& this.walkingSound.getAudioNode().getStatus().equals(Status.Stopped) && this.alive) {
+				&& this.walkingOnGrassSound.getAudioNode().getStatus().equals(Status.Stopped) && this.alive) {
 			this.resetCurrentTime();
 			int rand = ((int) (Math.random() * 7)) + 1;
 
@@ -309,7 +310,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	@Override
 	protected void setupAudio() {
 		if (!GameManager.getIstance().isEditor()) {
-			this.walkingSound = new Sound(this, "Walking", false, false, false, 0.09f, false);
+			this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false, false, false, 0.09f, false);
 			this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
 			this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
 			this.bonfireSound = new Sound(this, "Bonfire", false, false, false, 1.0f, false);

@@ -109,6 +109,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	}
 
 	public void startAttack() {
+		GameManager.getIstance().getNodeThief().resetCurrentTime();
 		this.playScream();
 		node.setLocalTranslation(this.getLocalTranslation());
 
@@ -159,6 +160,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	public void resetAll() {
 		this.alive = true;
 		this.life = this.STARTLIFE;
+		this.viewed = false;
 		this.channel.setAnim(idle);
 		this.channel.setLoopMode(LoopMode.Loop);
 	}
@@ -187,11 +189,11 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	@Override
 	protected void setupAudio() {
 		if (!GameManager.getIstance().isEditor()) {
-			this.deathSound = new Sound(this, "Death", false, true, false, 1.0f, false);
-			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.0f, false);
-			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.0f, false);
-			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.0f, false);
-			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.0f, false);
+			this.deathSound = new Sound(this, "Death", false, true, false, 1.2f, false);
+			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.2f, false);
+			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.2f, false);
+			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.2f, false);
+			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.2f, false);
 		}
 	}
 
