@@ -3,10 +3,8 @@ package singlePlayer.artificialIntelligence;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-
 import control.GameManager;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -20,12 +18,10 @@ public class AI {
     private final int LEFT = 2;
     private final int BACK = 0;
     private boolean stopSearchThief;
-    private Vector3f newWay;
 
     public AI(final NodeEnemy enemy) {
 	this.enemy = enemy;
 	this.stopSearchThief = false;
-	this.newWay = new Vector3f(0f, 0f, 0f);
 	this.way = new Way(this.enemy);
     }
 
@@ -49,8 +45,6 @@ public class AI {
 			this.alternativeWay(this.RIGHT);
 		    } else if (!this.collisionResults((BoundingBox) this.way.getLeftBox().getWorldBound())) {
 			this.alternativeWay(this.LEFT);
-		    } else {
-			this.alternativeWay(this.BACK);
 		    }
 
 		}
@@ -59,54 +53,54 @@ public class AI {
 		this.enemy.setHasFound(true);
 	    }
 	} else
-	    controll(this.enemy.getLocalTranslation(), this.newWay);
+	    this.controll();
     }
 
     public void alternativeWay(final int DIRECTION) {
-	Quaternion rotateL = null;
 
-	switch (DIRECTION) {
-	case RIGHT:
-	    System.out.println("destra");
-	    rotateL = new Quaternion().fromAngleAxis(0, Vector3f.UNIT_X);
-	    break;
-	case LEFT:
-	    System.out.println("sinistra");
-	    rotateL = new Quaternion().fromAngleAxis(1, Vector3f.UNIT_X);
-	    break;
-	case BACK:
-	    System.out.println("in dietro");
-	    rotateL = new Quaternion().fromAngleAxis(FastMath.PI, Vector3f.UNIT_X);
-	    break;
+	if (!stopSearchThief) {
+	    Quaternion turn = new Quaternion();
 
-	default:
-	    break;
+	    switch (DIRECTION) {
+	    case RIGHT:
+		System.out.println("destra");
+		turn.fromAngles(0, 90, 0);
+		break;
+	    case LEFT:
+		System.out.println("sinistra");
+		turn.fromAngles(0, -90, 0);
+		break;
+	    case BACK:
+		System.out.println("in dietro");
+		break;
+
+	    default:
+		break;
+	    }
+	    Vector3f enemyLocation = this.enemy.getLocalTranslation();
+	    Vector3f view = turn.mult(Vector3f.UNIT_Z);
+	    System.out.println(enemy.getLocalTranslation() + "---> " + view);
+	    Vector3f direction = enemyLocation.subtract(view);
+	    direction.y = -2f;
+	    enemyRotate(enemy, direction);
+	    enemyTranslate(enemy, direction, this.SPEED * 4);
 	}
-	Vector3f enemyLocation = this.enemy.getLocalTranslation();
-	Vector3f view = this.enemy.getCharacterControl().getViewDirection();
-	rotateL.multLocal(view);
-	Vector3f direction = enemyLocation.subtract(view);
-	final float distance = enemyLocation.distance(direction);
-	System.out.println(distance);
-	direction.y = -2f;
-	enemyRotate(enemy, direction);
-	enemyTranslate(enemy, direction, this.SPEED * 4);
     }
 
-    public void controll(Vector3f start, Vector3f end) {
-	// System.out.println(start + "----" + end);
-	new Thread() {
-	    @Override
-	    public void run() {
-		try {
-		    sleep(500);
-		    AI.this.stopSearchThief = false;
-		} catch (InterruptedException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
+    public void controll() {
+	if (stopSearchThief) {
+	    new Thread() {
+		@Override
+		public void run() {
+		    try {
+			sleep(500);
+			AI.this.stopSearchThief = false;
+		    } catch (InterruptedException e) {
+			e.printStackTrace();
+		    }
 		}
-	    }
-	}.start();
+	    }.start();
+	}
     }
 
     public boolean collisionResults(BoundingBox box) {
