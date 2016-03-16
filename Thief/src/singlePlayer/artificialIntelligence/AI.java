@@ -16,6 +16,9 @@ public class AI {
     private final NodeEnemy enemy;
     private final Way way;
     private final float SPEED = 15;
+    private final int RIGHT = 1;
+    private final int LEFT = 2;
+    private final int BACK = 0;
     private boolean stopSearchThief;
     private Vector3f newWay;
 
@@ -31,10 +34,10 @@ public class AI {
 	if (!stopSearchThief) {
 	    Vector3f thiefLocation = GameManager.getIstance().getNodeThief().getLocalTranslation();
 	    Vector3f enemyLocation = this.enemy.getLocalTranslation();
-	  
+
 	    Vector3f thiefDirection = thiefLocation.subtract(enemyLocation);
 	    thiefDirection.y = -2.0f;
-	   
+
 	    float distance = thiefLocation.distance(enemyLocation);
 	    this.enemyRotate(this.enemy, thiefDirection);
 	    if (distance > this.enemy.getDISTANCE()) {
@@ -42,17 +45,14 @@ public class AI {
 		this.enemyTranslate(enemy, thiefDirection, distance);
 		if (this.collisionResults((BoundingBox) this.enemy.getBox().getWorldBound())) {
 		    this.stopSearchThief = true;
-		    //this.way.newWay();
-		    if (!this.collisionResults((BoundingBox) this.way.getRightBox().getWorldBound())){
-			System.out.println("vado a destra");
+		    if (!this.collisionResults((BoundingBox) this.way.getRightBox().getWorldBound())) {
+			this.alternativeWay(this.RIGHT);
+		    } else if (!this.collisionResults((BoundingBox) this.way.getLeftBox().getWorldBound())) {
+			this.alternativeWay(this.LEFT);
+		    } else {
+			this.alternativeWay(this.BACK);
 		    }
-		    else if (!this.collisionResults((BoundingBox) this.way.getLeftBox().getWorldBound())){
-			System.out.println("vado a destra");
-		    }
-		    else {
-			System.out.println("torno in dietro");
-		    }
-		    this.alternativeWay();
+
 		}
 	    } else if (distance <= this.enemy.getDISTANCE() && !this.enemy.hasFound()) {
 		stop();
@@ -62,11 +62,28 @@ public class AI {
 	    controll(this.enemy.getLocalTranslation(), this.newWay);
     }
 
-    public void alternativeWay() {
+    public void alternativeWay(final int DIRECTION) {
+	Quaternion rotateL = null;
 
+	switch (DIRECTION) {
+	case RIGHT:
+	    System.out.println("destra");
+	    rotateL = new Quaternion().fromAngleAxis(0, Vector3f.UNIT_X);
+	    break;
+	case LEFT:
+	    System.out.println("sinistra");
+	    rotateL = new Quaternion().fromAngleAxis(1, Vector3f.UNIT_X);
+	    break;
+	case BACK:
+	    System.out.println("in dietro");
+	    rotateL = new Quaternion().fromAngleAxis(FastMath.PI, Vector3f.UNIT_X);
+	    break;
+
+	default:
+	    break;
+	}
 	Vector3f enemyLocation = this.enemy.getLocalTranslation();
-	Vector3f view=this.enemy.getCharacterControl().getViewDirection();
-	Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI /8, Vector3f.UNIT_Y);
+	Vector3f view = this.enemy.getCharacterControl().getViewDirection();
 	rotateL.multLocal(view);
 	Vector3f direction = enemyLocation.subtract(view);
 	final float distance = enemyLocation.distance(direction);
@@ -78,7 +95,7 @@ public class AI {
 
     public void controll(Vector3f start, Vector3f end) {
 	// System.out.println(start + "----" + end);
-	new Thread(){
+	new Thread() {
 	    @Override
 	    public void run() {
 		try {
@@ -91,7 +108,6 @@ public class AI {
 	    }
 	}.start();
     }
-    
 
     public boolean collisionResults(BoundingBox box) {
 	boolean collision = false;
