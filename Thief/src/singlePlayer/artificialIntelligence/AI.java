@@ -24,7 +24,6 @@ public class AI {
 	this.stopSearchThief = false;
 	this.newWay = new Vector3f(0f, 0f, 0f);
 	this.way = new Way(this.enemy);
-
     }
 
     public void run() {
@@ -43,21 +42,17 @@ public class AI {
 		this.enemyTranslate(enemy, thiefDirection, distance);
 		if (this.collisionResults((BoundingBox) this.enemy.getBox().getWorldBound())) {
 		    this.stopSearchThief = true;
-		    this.way.newWay();
+		    //this.way.newWay();
 		    if (!this.collisionResults((BoundingBox) this.way.getRightBox().getWorldBound())){
-			this.newWay = thiefDirection.add(new Vector3f(5f,0,0));
-			
+			System.out.println("vado a destra");
 		    }
 		    else if (!this.collisionResults((BoundingBox) this.way.getLeftBox().getWorldBound())){
-			this.newWay = thiefDirection.add(new Vector3f(-5f,0,0));
-			
+			System.out.println("vado a destra");
 		    }
-//		    else {
-//			this.newWay = this.way.getBackBox().getLocalTranslation();
-//			this.newWay = this.way.getBackBox().getLocalTranslation();
-//			System.out.println(this.newWay);
-//		    }
-		    this.alternativeWay(this.newWay);
+		    else {
+			System.out.println("torno in dietro");
+		    }
+		    this.alternativeWay();
 		}
 	    } else if (distance <= this.enemy.getDISTANCE() && !this.enemy.hasFound()) {
 		stop();
@@ -67,22 +62,18 @@ public class AI {
 	    controll(this.enemy.getLocalTranslation(), this.newWay);
     }
 
-    public void alternativeWay(Vector3f direction) {
+    public void alternativeWay() {
 
 	Vector3f enemyLocation = this.enemy.getLocalTranslation();
 	Vector3f view=this.enemy.getCharacterControl().getViewDirection();
 	Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI /8, Vector3f.UNIT_Y);
 	rotateL.multLocal(view);
-	enemyRotate(enemy, view);
-	
-	
-//	this.newWay = enemyLocation.subtract(direction);
-//	this.newWay.y = -2f;
-//	System.out.println(newWay);
-//	float distance = enemyLocation.distance(direction);
-//	this.enemyRotate(this.enemy, direction);
-//	this.enemyTranslate(this.enemy, direction, distance);
-
+	Vector3f direction = enemyLocation.subtract(view);
+	final float distance = enemyLocation.distance(direction);
+	System.out.println(distance);
+	direction.y = -2f;
+	enemyRotate(enemy, direction);
+	enemyTranslate(enemy, direction, this.SPEED * 4);
     }
 
     public void controll(Vector3f start, Vector3f end) {
@@ -91,7 +82,7 @@ public class AI {
 	    @Override
 	    public void run() {
 		try {
-		    sleep(1000);
+		    sleep(500);
 		    AI.this.stopSearchThief = false;
 		} catch (InterruptedException e) {
 		    // TODO Auto-generated catch block
