@@ -22,15 +22,16 @@ public class Way {
 	this.leftBox = new Node("left");
 	this.rightBox = new Node("right");
 	this.backBox = new Node("back");
-	ENEMY.attachChild(this.leftBox);
-	ENEMY.attachChild(this.rightBox);
-	ENEMY.attachChild(this.backBox);
+	this.ENEMY.attachChild(this.leftBox);
+	this.ENEMY.attachChild(this.rightBox);
+	this.ENEMY.attachChild(this.backBox);
+	this.newWay();
     }
 
     public void newWay() {
-	this.makeBox(leftBox, this.ENEMY.getCharacterControl().getViewDirection().add(new Vector3f(5f, 0f, 0f)));
-	this.makeBox(rightBox, this.ENEMY.getCharacterControl().getViewDirection().add(new Vector3f(5f, 0f, 0f)));
-	this.makeBox(backBox, this.ENEMY.getCharacterControl().getViewDirection().add(new Vector3f(5f, 0f, 0f)));
+	this.makeBox(leftBox, new Vector3f(5f, 2.5f, 0f));
+	this.makeBox(rightBox, new Vector3f(-5f, 2.5f, 0f));
+	this.makeBox(backBox, new Vector3f(0f, 2.5f, -5f));
     }
 
     public void deleteOldWay() {
