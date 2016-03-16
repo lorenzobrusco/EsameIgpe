@@ -52,6 +52,18 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		// gameSettings.setRenderer("LWJGL-OpenGL2");
 		// app.setSettings(gameSettings);
 		// app.setShowSettings(false);
+//		AppSettings gameSettings = new AppSettings(false);
+//		gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+//				java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+//		gameSettings.setFullscreen(true);
+//		gameSettings.setVSync(true);
+//		gameSettings.setTitle("Thief");
+//		gameSettings.setUseInput(true);
+//		gameSettings.setFrameRate(500);
+//		gameSettings.setSamples(0);
+//		gameSettings.setRenderer("LWJGL-OpenGL2");
+//		app.setSettings(gameSettings);
+//		app.setShowSettings(false);
 
 		// disable statistics
 		app.setDisplayFps(false);
