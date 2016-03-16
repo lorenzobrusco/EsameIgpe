@@ -30,9 +30,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	private NiftyJmeDisplay niftyDisplay;
 	private Nifty nifty;
 	private Sound menuSound;
-	private boolean shadows;
-	private boolean fog;
-	private boolean water;
 
 	public Main() {
 
@@ -40,8 +37,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	public static void main(String[] args) {
 		Main app = new Main();
-
-
 //		AppSettings gameSettings = new AppSettings(false);
 //		gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 //				java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
@@ -69,9 +64,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.debug = false;
 		this.singleplayer = false;
 		this.editor = false;
-		this.shadows = true;
-		this.fog = true;
-		this.water = true;
 
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);
@@ -106,7 +98,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = true;
 		editor = false;
 		GameManager.getIstance().setEditor(false);
-		this.player = new SinglePlayer(viewPort, rootNode, cam, "ia", shadows, fog, water);
+		this.player = new SinglePlayer(viewPort, rootNode, cam, "ia", true, true, true);
 		this.initKeys();
 		this.menuSound.stopSound();
 	}
@@ -212,15 +204,4 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
-	public void setShadows(boolean shadows) {
-		this.shadows = shadows;
-	}
-
-	public void setFog(boolean fog) {
-		this.fog = fog;
-	}
-
-	public void setWater(boolean water) {
-		this.water = water;
-	}
 }
