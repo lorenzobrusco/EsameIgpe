@@ -12,77 +12,80 @@ import singlePlayer.model.NodeEnemy;
 
 public class Way {
 
-	private final NodeEnemy ENEMY;
+    private final NodeEnemy ENEMY;
+    private final Node leftBox;
+    private final Node rightBox;
+    private final Node backBox;
 
-	public Way(final NodeEnemy ENEMY) {
-		this.ENEMY = ENEMY;
-		this.getWay();
-	}
+    public Way(final NodeEnemy ENEMY) {
+	this.ENEMY = ENEMY;
+	this.leftBox = new Node("left");
+	this.rightBox = new Node("right");
+	this.backBox = new Node("back");
+	ENEMY.attachChild(this.leftBox);
+	ENEMY.attachChild(this.rightBox);
+	ENEMY.attachChild(this.backBox);
+    }
 
-	public Vector3f getWay() {
-		Vector3f result = new Vector3f();
-		Node frontBox = this.makeBox(new Vector3f(this.ENEMY.getLocalTranslation().x + 5,
-				this.ENEMY.getLocalTranslation().y, this.ENEMY.getLocalTranslation().z));
-		Node backBox = this.makeBox(new Vector3f(this.ENEMY.getLocalTranslation().x - 5,
-				this.ENEMY.getLocalTranslation().y, this.ENEMY.getLocalTranslation().z));
-		Node leftBox = this.makeBox(new Vector3f(this.ENEMY.getLocalTranslation().x, this.ENEMY.getLocalTranslation().y,
-				this.ENEMY.getLocalTranslation().z + 5));
-		Node rightBox = this.makeBox(new Vector3f(this.ENEMY.getLocalTranslation().x,
-				this.ENEMY.getLocalTranslation().y, this.ENEMY.getLocalTranslation().z - 5));
+    public void newWay() {
+	this.makeBox(leftBox, this.ENEMY.getCharacterControl().getViewDirection().add(new Vector3f(5f, 0f, 0f)));
+	this.makeBox(rightBox, this.ENEMY.getCharacterControl().getViewDirection().add(new Vector3f(5f, 0f, 0f)));
+	this.makeBox(backBox, this.ENEMY.getCharacterControl().getViewDirection().add(new Vector3f(5f, 0f, 0f)));
+    }
 
-		GameManager.getIstance().getTerrain().attachChild(frontBox);
-		GameManager.getIstance().getTerrain().attachChild(backBox);
-		GameManager.getIstance().getTerrain().attachChild(leftBox);
-		GameManager.getIstance().getTerrain().attachChild(rightBox);
+    public void deleteOldWay() {
+	ENEMY.detachChild(backBox);
+	ENEMY.detachChild(leftBox);
+	ENEMY.detachChild(rightBox);
+    }
 
-//		CollisionResults frontCollitions = new CollisionResults();
-//		CollisionResults backCollitions = new CollisionResults();
-//		CollisionResults leftCollitions = new CollisionResults();
-//		CollisionResults rightCollitions = new CollisionResults();
+    public Vector3f getWay() {
+	Vector3f result = new Vector3f();
+	return result;
+    }
 
-//		for (NodeModel node : GameManager.getIstance().getNodeModel()) {
-//			frontBox.collideWith(ENEMY.getWorldBound(), leftCollitions);
-//			System.out.println(leftCollitions.size());
-//		}
+    private void makeBox(Node box, Vector3f localPosition) {
 
-		return result;
-	}
+	BoundingBox boundingBox = new BoundingBox();
+	boundingBox.setXExtent(1.5f);
+	boundingBox.setYExtent(0.5f);
+	boundingBox.setZExtent(1.5f);
 
-	private Node makeBox(Vector3f localPosition) {
+	final WireBox wireBox2 = new WireBox();
+	wireBox2.fromBoundingBox(boundingBox);
+	wireBox2.setLineWidth(0f);
+	final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
 
-		Node box = new Node("box test");
-		box.setLocalTranslation(localPosition);
+	final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+		"Common/MatDefs/Misc/Unshaded.j3md");
+	boxAttach.setMaterial(material);
 
-		BoundingBox boundingBox = new BoundingBox();
-		boundingBox.setXExtent(1.5f);
-		boundingBox.setYExtent(0.5f);
-		boundingBox.setZExtent(1.5f);
+	material.setColor("Color", ColorRGBA.Red);
+	// material.getAdditionalRenderState().setDepthWrite(true);
+	// material.getAdditionalRenderState().setColorWrite(true);
+	//
+	// boxAttach.setQueueBucket(Bucket.Transparent);
 
-		final WireBox wireBox2 = new WireBox();
-		wireBox2.fromBoundingBox(boundingBox);
-		wireBox2.setLineWidth(0f);
-		final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
-		boxAttach.setLocalTranslation(0, 2.5f, 4f);
+	box.setLocalTranslation(localPosition);
+	box.attachChild(boxAttach);
+	boundingBox.setCenter(boxAttach.getLocalTranslation());
 
-		final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
-				"Common/MatDefs/Misc/Unshaded.j3md");
-		boxAttach.setMaterial(material);
+    }
 
-		material.setColor("Color", ColorRGBA.Red);
-		// material.getAdditionalRenderState().setDepthWrite(true);
-		// material.getAdditionalRenderState().setColorWrite(true);
-		//
-		// boxAttach.setQueueBucket(Bucket.Transparent);
+    public Node getLeftBox() {
+	return leftBox;
+    }
 
-		box.attachChild(boxAttach);
-		boundingBox.setCenter(boxAttach.getLocalTranslation());
+    public Node getRightBox() {
+	return rightBox;
+    }
 
-		return box;
+    public Node getBackBox() {
+	return backBox;
+    }
 
-	}
-
-	public NodeEnemy getENEMY() {
-		return ENEMY;
-	}
+    public NodeEnemy getENEMY() {
+	return ENEMY;
+    }
 
 }

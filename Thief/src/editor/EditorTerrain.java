@@ -365,6 +365,7 @@ public class EditorTerrain implements ScreenController {
 
     private void makeTree(Vector3f intersect) {
 	NodeModel tree = new NodeModel("Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
+	tree.getModel().scale(5f);
 	tree.getModel().setLocalTranslation(intersect);
 	this.terrain.attachChild(tree.getModel());
 	tree.moveModel(tree.getModel().getLocalTranslation());
