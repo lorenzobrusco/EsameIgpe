@@ -27,12 +27,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
     private final static String SENDSTATE = "send your state";
-    private final static String ENDSENDSTATE = "end send your state";
     private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
     private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
     private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
+    private final static String PATH = "assets" + File.separator + "MultiPlayer" + File.separator;
     private final BufferedReader INPUT;
     private final DataOutputStream OUTPUT;
     private boolean establishedConnection;
@@ -51,7 +51,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
-	    if(!this.INPUT.readLine().equals(YESIHAVE)){
+	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
 		this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
 		this.fileTransfer(socket);
 		this.OUTPUT.writeBytes(ENDSENDMETERRAIN + "\n");
@@ -59,11 +59,15 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    if (this.INPUT.readLine().equals(KNOCK))
 		this.OUTPUT.writeBytes(HOWAREYOU + "\n");
 	    this.nameClient = this.INPUT.readLine();
+
 	    if (new Format(this.nameClient).itIsCorrectFormat()) {
+		System.out.println(nameClient);
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
-		this.establishedConnection = true; 
-	    } else
+		this.establishedConnection = true;
+	    } 
+	    else
 		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
+	    System.out.println(establishedConnection);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -88,20 +92,13 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
-	    this.OUTPUT.writeBytes(SENDSTATE);
-	    if (this.INPUT.readLine().equals(SENDSTATE))
-		// TODO AGGIORNO LA POSIZIONE
-		this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION);
-	    	// TODO AGGIORNO LA VITA
-	    	this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE);
-	    this.OUTPUT.writeBytes(ENDSENDSTATE);
-	    if (this.INPUT.readLine().equals(ENDSENDSTATE))
-		//TODO OK
-		;
+		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+		this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
+		this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
+		System.out.println(this.INPUT.readLine());
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
-
     }
 
     @Override
@@ -122,46 +119,48 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     @Override
     public void run() {
-     
-	while(this.establishedConnection){
+
+	this.startConnection();
+	while (this.establishedConnection) {
+//	    System.out.println("prendo le info");
 	    this.communicationState();
 	}
     }
 
     public boolean fileTransfer(Socket client) {
 
-   	BufferedInputStream outputTerrain = null;
-   	OutputStream outputStream = null;
-   	try {
-   	    File file = new File("");
-   	    byte[] terrain = new byte[(int) file.length()];
-   	    FileInputStream inputTerrain = new FileInputStream(file);
-   	    outputTerrain = new BufferedInputStream(inputTerrain);
-   	    outputTerrain.read(terrain, 0, terrain.length);
-   	    outputStream = client.getOutputStream();
-   	    outputStream.write(terrain, 0, terrain.length);
-   	    outputStream.flush();
-   	    System.out.println("Done.");
-   	    return true;
-   	} catch (IOException e) {
-   	    e.printStackTrace();
-   	    return false;
-   	} finally {
-   	    if (outputTerrain != null && outputStream != null)
-   		try {
-   		    outputTerrain.close();
-   		    outputStream.close();
-   		} catch (IOException e) {
-   		    e.printStackTrace();
-   		}
-   	}
-       }
-    
+	BufferedInputStream outputTerrain = null;
+	OutputStream outputStream = null;
+	try {
+	    File file = new File(PATH + this.server.getTERRAIN() + ".j3o");
+	    byte[] terrain = new byte[(int) file.length()];
+	    FileInputStream inputTerrain = new FileInputStream(file);
+	    outputTerrain = new BufferedInputStream(inputTerrain);
+	    outputTerrain.read(terrain, 0, terrain.length);
+	    outputStream = client.getOutputStream();
+	    outputStream.write(terrain, 0, terrain.length);
+	    outputStream.flush();
+	    System.out.println("Done.");
+	    return true;
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    return false;
+	} finally {
+	    if (outputTerrain != null && outputStream != null)
+		try {
+		    outputTerrain.close();
+		    outputStream.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	}
+    }
+
     public Server getServer() {
 	return server;
     }
 
-    public String getAddress(){
+    public String getAddress() {
 	return this.nameClient;
     }
 }

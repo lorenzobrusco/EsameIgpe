@@ -12,12 +12,11 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import control.GameManager;
 import multiPlayer.protocols.CommunicationProtocol;
 
 public class Client extends Thread implements CommunicationProtocol {
 
-    private final static String ADDRESS = "lorenzobrusco92.ddns.net"; // TODO
+    private final static String ADDRESS = "160.97.222.216"; // TODO
 								      // passare
 								      // ip a
 								      // mano
@@ -62,7 +61,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    if(this.INPUT.readLine().equals(HAVEYOUTHISTERRAIN)){
 		final String nameTerrain = this.INPUT.readLine();
-		final File file = new File(PATH + nameTerrain);
+		final File file = new File(PATH + nameTerrain + ".j3o");
 		if(file.exists())
 		    this.OUTPUT.writeBytes(YESIHAVE + "\n");
 		else{
@@ -81,7 +80,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME))
 		this.establishedConnection = true;
 	    else if (this.INPUT.readLine().equals(TRYAGAIN))
-		this.startConnection(); // try again
+		this.startConnection(); 
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -106,9 +105,9 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	try {
 	    if (this.INPUT.readLine().equals(SENDSTATE))
-		this.OUTPUT.writeBytes(POSITION + GameManager.getIstance().getNodeThief().getLocalTranslation() + "\n");
+		this.OUTPUT.writeBytes(POSITION + 100 + "\n"); //TODO  GameManager.getIstance().getNodeThief().getLocalTranslation()
 	    if (this.INPUT.readLine().equals(ACNOWLEDGEDPOSITION))
-		this.OUTPUT.writeBytes(LIFE + GameManager.getIstance().getNodeThief().getLIFE() + "\n");
+		this.OUTPUT.writeBytes(LIFE + 50 + "\n"); 	//TODO GameManager.getIstance().getNodeThief().getLIFE()
 	    if (this.INPUT.readLine().equals(ACNOWLEDGEDLIFE))
 		this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
 	} catch (IOException e) {
@@ -137,9 +136,11 @@ public class Client extends Thread implements CommunicationProtocol {
     @Override
     public void run() {
 
+	this.startConnection();
 	while (this.establishedConnection) {
 	    // TODO scambio di informazioni
 	    this.communicationState();
+//	    System.out.println("mando le info");
 	}
     }
 
