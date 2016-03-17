@@ -179,4 +179,13 @@ public class Client extends Thread implements CommunicationProtocol {
 	return namePlayer;
     }
 
+    
+    public static void main(String[] args) {
+	try {
+	    new Client("lorenzo").start();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
 }
