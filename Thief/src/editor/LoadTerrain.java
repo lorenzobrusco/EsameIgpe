@@ -169,6 +169,55 @@ public class LoadTerrain {
 
 		return terrain;
 	}
+	
+	public TerrainQuad loadTerrainMultiPlayer(String path) {
+		TerrainQuad terrain;
+		Node terrainGeo = (Node) GameManager.getIstance().getApplication().getAssetManager()
+				.loadModel("MultiPlayer/" + path);
+		String something = "";
+		for (Spatial spatial : ((Node) terrainGeo).getChildren())
+			if (spatial.getName().contains("terrain"))
+				something = spatial.getName();
+		terrain = (TerrainQuad) ((Node) terrainGeo).getChild(something);
+		TerrainLodControl control = new TerrainLodControl(terrain,
+				GameManager.getIstance().getApplication().getCamera());
+		control.setLodCalculator(new DistanceLodCalculator(65, 2.7f));
+		terrain.addControl(control);
+		terrain.setShadowMode(ShadowMode.CastAndReceive);
+		for (Spatial spatial : terrain.getChildren()) {
+			if (spatial.getName().contains("Tree")) {
+				spatial.setName("Tree");
+				this.createNodeModel(terrain, spatial, new Vector3f(1.57f, 10f, 1000f), false);
+			} else if (spatial.getName().contains("Portal")) {
+				spatial.setName("Portal");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("Bonfire")) {
+				spatial.setName("Bonfire");
+				GameManager.getIstance().addPointShadow(spatial.getLocalTranslation());
+				this.createNodeModelBonFire(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("Chapel")) {
+				spatial.setName("Chapel");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("Castle")) {
+				spatial.setName("Castle");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("House")) {
+				spatial.setName("House");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("HouseMedium")) {
+				spatial.setName("HouseMedium");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("HouseTwo")) {
+				spatial.setName("HouseTwo");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("WindMill")) {
+				spatial.setName("WindMill");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			}
+		}
+
+		return terrain;
+	}
 
 	public Light makeAmbientLight() {
 		AmbientLight ambLight = new AmbientLight();

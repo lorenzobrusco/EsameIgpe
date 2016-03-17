@@ -131,6 +131,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	OutputStream outputStream = null;
 	try {
 	    File file = new File(PATH + this.server.getTERRAIN() + ".j3o");
+	    System.out.println("mando");
+	
 	    byte[] terrain = new byte[(int) file.length()];
 	    FileInputStream inputTerrain = new FileInputStream(file);
 	    outputTerrain = new BufferedInputStream(inputTerrain);
@@ -144,13 +146,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    e.printStackTrace();
 	    return false;
 	} finally {
-	    if (outputTerrain != null && outputStream != null)
-		try {
-		    outputTerrain.close();
-		    outputStream.close();
-		} catch (IOException e) {
-		    e.printStackTrace();
-		}
+	  try {
+	    outputStream.close();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	}
     }
 
