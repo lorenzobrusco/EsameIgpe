@@ -50,7 +50,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void startConnection() {
 	try {
 	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
-	    this.OUTPUT.writeBytes(this.server.getTERRAIN().getName() + "\n");
+	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
 	    if(!this.INPUT.readLine().equals(YESIHAVE)){
 		this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
 		this.fileTransfer(socket);

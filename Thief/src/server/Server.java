@@ -6,18 +6,17 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.AbstractMap;
 import java.util.HashMap;
-import com.jme3.scene.Node;
 
 public class Server extends Thread {
 
     private final static int PORT = 8080;
     private final ServerSocket server;
-    private final Node TERRAIN;
+    private final String TERRAIN;
     private final AbstractMap<String, ClientManager> players;
 
-    public Server(final String namePlayer, final Node TERRAIN) throws UnknownHostException, IOException {
+    public Server(final String path) throws UnknownHostException, IOException {
 	this.server = new ServerSocket(PORT);
-	this.TERRAIN = TERRAIN;
+	this.TERRAIN = path;
 	this.players = new HashMap<>();
     }
 
@@ -50,8 +49,17 @@ public class Server extends Thread {
 	    this.players.remove(clientManager.getAddress());
     }
 
-    public Node getTERRAIN() {
+    public String getTERRAIN() {
 	return TERRAIN;
     }
 
+    public static void main(String[] args) {
+	try {
+	    new Server("mountain").start();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+    }
+    
 }
