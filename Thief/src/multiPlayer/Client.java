@@ -110,6 +110,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(LIFE + 50 + "\n"); 	//TODO GameManager.getIstance().getNodeThief().getLIFE()
 	    if (this.INPUT.readLine().equals(ACNOWLEDGEDLIFE))
 		this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
+	    System.out.println("ho mandato le info");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -138,9 +139,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-	    // TODO scambio di informazioni
 	    this.communicationState();
-//	    System.out.println("mando le info");
 	}
     }
 

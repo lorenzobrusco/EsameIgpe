@@ -30,7 +30,6 @@ public class Server extends Thread {
 		ClientManager clientManager = new ClientManager(this, client);
 		clientManager.start();
 		this.addPlayer(clientManager);
-
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }

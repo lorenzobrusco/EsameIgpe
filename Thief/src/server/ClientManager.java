@@ -64,8 +64,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		System.out.println(nameClient);
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
 		this.establishedConnection = true;
-	    } 
-	    else
+	    } else
 		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
 	    System.out.println(establishedConnection);
 	} catch (IOException e) {
@@ -92,10 +91,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
-		this.OUTPUT.writeBytes(SENDSTATE + "\n");
-		this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
-		this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
-		System.out.println(this.INPUT.readLine());
+	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
+	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
+	    System.out.println(this.INPUT.readLine());
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -122,7 +121,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-//	    System.out.println("prendo le info");
 	    this.communicationState();
 	}
     }
