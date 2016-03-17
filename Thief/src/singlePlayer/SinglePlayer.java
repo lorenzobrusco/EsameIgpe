@@ -42,6 +42,8 @@ public class SinglePlayer {
 		this.loadLevel(level, shadows, fog, water);
 		GameManager.getIstance().getNodeThief().setCam(cam);
 		this.setKey();
+		GameManager.getIstance().makeSecondLayer();
+		GameManager.getIstance().printSecondLayer();
 		this.setupAmbientSound();
 	}
 

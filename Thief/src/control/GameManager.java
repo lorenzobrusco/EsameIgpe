@@ -5,16 +5,27 @@ import java.util.Stack;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioRenderer;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bounding.BoundingSphere;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.PointLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitor;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
+import com.jme3.scene.debug.WireSphere;
+
 import editor.LoadTerrain;
 import logic.World;
+import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
@@ -52,6 +63,8 @@ public class GameManager {
 
 	private boolean editor;
 
+	private boolean[][] secondLayer;
+
 	private GameManager() {
 
 		this.spatial = new Stack<>();
@@ -59,6 +72,7 @@ public class GameManager {
 		this.enemies = new ArrayList<>();
 		this.lights = new ArrayList<>();
 		this.editor = false;
+		this.secondLayer = new boolean[1024][1024];
 	}
 
 	public void setParams(SimpleApplication application) {
@@ -219,5 +233,44 @@ public class GameManager {
 
 	public boolean isEditor() {
 		return this.editor;
+	}
+
+	public void makeSecondLayer() {
+		for (Spatial model : this.getModels()) {
+			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
+				
+				
+				System.out.println(model.getWorldBound().getVolume());
+
+				BoundingSphere boundingBox = new BoundingSphere();
+				boundingBox.setRadius(20f);
+
+				final WireSphere wireBox2 = new WireSphere();
+				wireBox2.fromBoundingSphere(boundingBox);
+				wireBox2.setLineWidth(0f);
+				final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
+
+				final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+						"Common/MatDefs/Misc/Unshaded.j3md");
+				boxAttach.setMaterial(material);
+
+				material.setColor("Color", ColorRGBA.Red);
+				((Node) model).attachChild(boxAttach);
+				boundingBox.setCenter(boxAttach.getLocalTranslation());
+
+				System.out.println(model.getWorldBound());
+				this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
+						+ 512)][(((int) model.getWorldBound().getCenter().getZ()) + 512)] = true;
+			}
+		}
+	}
+
+	public void printSecondLayer() {
+		for (int x = 0; x < this.secondLayer.length; x++) {
+			for (int z = 0; z < this.secondLayer[x].length; z++) {
+				if (this.secondLayer[x][z])
+					System.out.println("obstacle on " + (x - 512) + " " + (z - 512));
+			}
+		}
 	}
 }
