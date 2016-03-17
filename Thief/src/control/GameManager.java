@@ -5,7 +5,7 @@ import java.util.Stack;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioRenderer;
-import com.jme3.bounding.BoundingSphere;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -17,7 +17,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.debug.WireSphere;
+import com.jme3.scene.debug.WireBox;
 import editor.LoadTerrain;
 import logic.World;
 import singlePlayer.model.NodeCharacter;
@@ -29,35 +29,22 @@ import singlePlayer.travel.PanelGame;
 public class GameManager {
 
 	private static GameManager manager;
-
 	private Stack<NodeModel> spatial;
-
 	private ArrayList<NodeModel> nodeRender;
-
 	private ArrayList<NodeEnemy> enemies;
-
 	private ArrayList<PointLight> lights;
-
 	private GameControl control;
-
 	private PanelGame game;
-
 	private SimpleApplication application;
-
 	private BulletAppState bulletAppState;
-
 	private LoadTerrain loadTerrain;
-
 	private NodeThief thief;
-
 	private NodeModel bonfire;
-
 	private Node terrain;
-
 	private AudioRenderer audioRenderer;
-
 	private boolean editor;
-
+	private float worldXExtent;
+	private float worldZExtent;
 	private boolean[][] secondLayer;
 
 	private GameManager() {
@@ -67,7 +54,6 @@ public class GameManager {
 		this.enemies = new ArrayList<>();
 		this.lights = new ArrayList<>();
 		this.editor = false;
-		this.secondLayer = new boolean[1024][1024];
 	}
 
 	public void setParams(SimpleApplication application) {
@@ -77,6 +63,9 @@ public class GameManager {
 
 	public void setTerrain(Node terrain) {
 		this.terrain = terrain;
+		this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
+		this.worldZExtent = ((BoundingBox) this.terrain.getWorldBound()).getZExtent();
+		this.secondLayer = new boolean[(((int) (worldXExtent * 2)) + 1)][(((int) (worldZExtent * 2)) + 1)];
 	}
 
 	public void setBullet(BulletAppState appState) {
@@ -233,38 +222,38 @@ public class GameManager {
 	public void makeSecondLayer() {
 		for (Spatial model : this.getModels()) {
 			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
-
-				this.makeSphere(model);
-
-				System.out.println(model.getWorldBound());
+				this.makeModelPerimeter(model);
+				System.out
+						.println(model.getName() + " " + "xExtent " + ((BoundingBox) model.getWorldBound()).getXExtent()
+								+ ", " + "zExtent " + ((BoundingBox) model.getWorldBound()).getZExtent());
 				this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
-						+ 512)][(((int) model.getWorldBound().getCenter().getZ()) + 512)] = true;
+						+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
+								+ (int) this.worldZExtent)] = true;
 			}
 		}
 	}
 
-	private float getRadiusFromVolume(float volume) {
-		return (float) Math.pow(((3 * volume) / (4 * Math.PI)), 1 / 3.0);
+	public boolean[][] getSecondLayer() {
+		return this.secondLayer;
 	}
 
 	public void printSecondLayer() {
 		for (int x = 0; x < this.secondLayer.length; x++) {
 			for (int z = 0; z < this.secondLayer[x].length; z++) {
 				if (this.secondLayer[x][z])
-					System.out.println("obstacle on " + (x - 512) + " " + (z - 512));
+					System.out.println("obstacle on " + (x - this.worldXExtent) + " " + (z - this.worldZExtent));
 			}
 		}
 	}
 
-	private void makeSphere(Spatial model) {
+	private void makeModelPerimeter(Spatial model) {
 
-		System.out.println(model.getWorldBound().getVolume());
+		BoundingBox boundingBox = new BoundingBox();
+		boundingBox.setXExtent((((BoundingBox) model.getWorldBound()).getXExtent()) + 2);
+		boundingBox.setZExtent((((BoundingBox) model.getWorldBound()).getZExtent()) + 2);
 
-		BoundingSphere boundingBox = new BoundingSphere();
-		boundingBox.setRadius(this.getRadiusFromVolume(model.getWorldBound().getVolume()) + 5);
-
-		final WireSphere wireBox2 = new WireSphere();
-		wireBox2.fromBoundingSphere(boundingBox);
+		final WireBox wireBox2 = new WireBox();
+		wireBox2.fromBoundingBox(boundingBox);
 		wireBox2.setLineWidth(0f);
 		final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
 
