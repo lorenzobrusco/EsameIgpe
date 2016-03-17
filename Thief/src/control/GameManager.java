@@ -234,29 +234,17 @@ public class GameManager {
 		for (Spatial model : this.getModels()) {
 			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
 
-				System.out.println(model.getWorldBound().getVolume());
-
-				BoundingSphere boundingBox = new BoundingSphere();
-				boundingBox.setRadius(20f);
-
-				final WireSphere wireBox2 = new WireSphere();
-				wireBox2.fromBoundingSphere(boundingBox);
-				wireBox2.setLineWidth(0f);
-				final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
-
-				final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
-						"Common/MatDefs/Misc/Unshaded.j3md");
-				boxAttach.setMaterial(material);
-
-				material.setColor("Color", ColorRGBA.Red);
-				((Node) model).attachChild(boxAttach);
-				boundingBox.setCenter(boxAttach.getLocalTranslation());
+				this.makeSphere(model);
 
 				System.out.println(model.getWorldBound());
 				this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
 						+ 512)][(((int) model.getWorldBound().getCenter().getZ()) + 512)] = true;
 			}
 		}
+	}
+
+	private float getRadiusFromVolume(float volume) {
+		return (float) Math.pow(((3 * volume) / (4 * Math.PI)), 1 / 3.0);
 	}
 
 	public void printSecondLayer() {
@@ -266,5 +254,27 @@ public class GameManager {
 					System.out.println("obstacle on " + (x - 512) + " " + (z - 512));
 			}
 		}
+	}
+
+	private void makeSphere(Spatial model) {
+
+		System.out.println(model.getWorldBound().getVolume());
+
+		BoundingSphere boundingBox = new BoundingSphere();
+		boundingBox.setRadius(this.getRadiusFromVolume(model.getWorldBound().getVolume()) + 5);
+
+		final WireSphere wireBox2 = new WireSphere();
+		wireBox2.fromBoundingSphere(boundingBox);
+		wireBox2.setLineWidth(0f);
+		final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
+
+		final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+				"Common/MatDefs/Misc/Unshaded.j3md");
+		boxAttach.setMaterial(material);
+
+		material.setColor("Color", ColorRGBA.Red);
+		((Node) model).attachChild(boxAttach);
+		boundingBox.setCenter(boxAttach.getLocalTranslation());
+
 	}
 }
