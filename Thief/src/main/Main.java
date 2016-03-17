@@ -98,7 +98,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = true;
 		editor = false;
 		GameManager.getIstance().setEditor(false);
-		this.player = new SinglePlayer(viewPort, rootNode, cam, "ia");
+		this.player = new SinglePlayer(viewPort, rootNode, cam, "ai1", true, true, true);
 		this.initKeys();
 		this.menuSound.stopSound();
 	}

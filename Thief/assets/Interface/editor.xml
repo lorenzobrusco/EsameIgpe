@@ -84,49 +84,49 @@
 							<control font="Interface/Fonts/Morpheus.fnt" id="upText" name="label" text="Mountain " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="upNumber" name="label" text="press: left" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
+						<panel id="downValleyDown" width="10%" height="100%" childLayout="vertical">
 							<image filename="Interface/valley.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="downText" name="label" text="Valley " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber" name="label" text="press: rigth" color="#ee1f"/>
 						</panel>
 						
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downValleyUp" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/tree.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="treeText" name="label" text="Tree " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="treeNumber" name="label" text="press: 1" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downBonfire" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/bonfire.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="bonFireText" name="label" text="Bonfire " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="bonFireNumber" name="label" text="press: 2" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downPlayer" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/jasuo.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="playerText" name="label" text="Player " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="playerNumber" name="label" text="press: 3" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downEnemies" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/enemy.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="enemiesText" name="label" text="Enemies " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="enemiesNumber" name="label" text="press: 4" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downPortal" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/portal.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="portalText" name="label" text="Portal " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="portalNumber" name="label" text="press: 5" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
-							<control font="Interface/Fonts/Morpheus.fnt" id="builderText" name="label" text="Builder " color="#ee1f"/>
+						<panel id="downBuildings" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/buildings.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="builderText" name="label" text="Buildings " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="builderNumber" name="label" text="press: 6" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downChurch" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/church.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="churchText" name="label" text="Church " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="churchNumber" name="label" text="press: 7" color="#ee1f"/>
 						</panel>
-						<panel id="down" width="10%" height="100%" childLayout="vertical">
-							<image filename="Interface/valley.png" align="center" />
+						<panel id="downCastle" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/castle.png" align="center" />
 							<control font="Interface/Fonts/Morpheus.fnt" id="castleText" name="label" text="Castle " color="#ee1f"/>
 							<control font="Interface/Fonts/Morpheus.fnt" id="castleNumber" name="label" text="press: 8" color="#ee1f"/>
 						</panel>

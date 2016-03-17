@@ -277,4 +277,5 @@ public class LoadTerrain {
 		fog.setFogDensity(3.0f);
 		return fog;
 	}
+	
 }

@@ -29,9 +29,9 @@ public class Way {
     }
 
     public void newWay() {
-	this.makeBox(leftBox, new Vector3f(5f, 2.5f, 0f));
-	this.makeBox(rightBox, new Vector3f(-5f, 2.5f, 0f));
-	this.makeBox(backBox, new Vector3f(0f, 2.5f, -5f));
+	this.makeBox(leftBox, new Vector3f(2f, 1f, -2f));
+	this.makeBox(rightBox, new Vector3f(-2f, 1f, -2f));
+	this.makeBox(backBox, new Vector3f(0f, 1f, -6f));
     }
 
     public void deleteOldWay() {
