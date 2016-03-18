@@ -166,7 +166,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     public NodeCharacter makePlayer(){
 	NodeCharacter player = new NodeCharacter(this.nameModel, new Vector3f(2.0f, 5.5f, 45f), LIFE, DAMAGE);
-	GameManager.getIstance().setNodeThief((NodeThief) player);
+	//GameManager.getIstance().setNodeThief((NodeThief) player);
 	return player;
     }
     

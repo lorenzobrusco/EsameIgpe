@@ -9,6 +9,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -17,6 +18,7 @@ import control.GameManager;
 import control.GameRender;
 import editor.LoadTerrain;
 import singlePlayer.Sound;
+import singlePlayer.model.NodeThief;
 
 public class MultiPlayer {
 
@@ -25,7 +27,6 @@ public class MultiPlayer {
     private final String run = "Run";
     private final String rotateClockwise = "rotateClockwise";
     private final String rotateCounterClockwise = "rotateCounterClockwise";
-    private final String bonfire = "BonFire";
     private final ViewPort viewPort;
     private final Node rootNode;
     private Node nodeScene;
@@ -34,12 +35,12 @@ public class MultiPlayer {
     private final LoadTerrain loadTerrain;
     private GameRender render;
     private Sound ambient;
-    private String Address;
+    private Client client = null;
 
     public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, String address, String namePlayer,
 	    String nameModel) {
 	try {
-	    new Client(namePlayer, nameModel, address);
+	    this.client = new Client(namePlayer, nameModel, address);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -50,7 +51,7 @@ public class MultiPlayer {
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	this.loadLevel(level);
-	GameManager.getIstance().getNodeThief().setSinglePlayer(true);
+	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(cam);
 	this.setKey();
 	this.setupAmbientSound();
@@ -58,17 +59,22 @@ public class MultiPlayer {
     }
 
     public void loadLevel(String level) {
-	TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
+	final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
 	this.nodeScene.attachChild(terrainQuad);
 	this.nodeScene.addLight(loadTerrain.makeAmbientLight());
 	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	this.nodeScene.addControl(rigidBodyControl);
+	this.bornPosition();
+	this.nodeScene.attachChild(GameManager.getIstance().getNodeThief().getModel());
 	this.rootNode.attachChild(nodeScene);
+	this.bornPosition();
 	GameManager.getIstance().setTerrain(nodeScene);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	GameManager.getIstance().addPhysics();
 	GameManager.getIstance().addPointLightToScene();
+	GameManager.getIstance().getNodeThief().addCharacterControll();
+	GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
 	this.render = new GameRender(terrainQuad);
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
     }
@@ -79,7 +85,7 @@ public class MultiPlayer {
 	}
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
-	GameManager.getIstance().startEnemiesIntelligence();
+	//GameManager.getIstance().startEnemiesIntelligence();
     }
 
     private void setKey() {
@@ -94,11 +100,10 @@ public class MultiPlayer {
 		new KeyTrigger(KeyInput.KEY_D));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
 		new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(bonfire, new KeyTrigger(KeyInput.KEY_F));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, bonfire, "toggleRotate");
+		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, "toggleRotate");
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }
@@ -109,6 +114,7 @@ public class MultiPlayer {
     }
 
     public void bornPosition() {
-	// TODO da implementare
+	GameManager.getIstance().setNodeThief(new NodeThief(GameManager.getIstance().getApplication().getAssetManager().loadModel(this.client.getNameModel())));
+	GameManager.getIstance().getNodeThief().move(new Vector3f(50, 0, 50));
     }
 }

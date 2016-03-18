@@ -33,7 +33,7 @@ public class Server extends Thread {
 		Socket client = server.accept();
 		ClientManager clientManager = new ClientManager(this, client);
 		clientManager.start();
-		this.addPlayer(clientManager);
+		//this.addPlayer(clientManager);
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }

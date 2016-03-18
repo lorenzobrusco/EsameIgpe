@@ -188,35 +188,35 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 	@Override
 	protected void setupAudio() {
-		if (!GameManager.getIstance().isEditor()) {
-			this.deathSound = new Sound(this, "Death", false, true, false, 1.2f, false);
-			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.2f, false);
-			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.2f, false);
-			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.2f, false);
-			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.2f, false);
-		}
+//		if (!GameManager.getIstance().isEditor()) {
+//			this.deathSound = new Sound(this, "Death", false, true, false, 1.2f, false);
+//			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.2f, false);
+//			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.2f, false);
+//			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.2f, false);
+//			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.2f, false);
+//		}
 	}
 
 	protected void playScream() {
-		if (!GameManager.getIstance().isEditor()) {
-			int rand = (int) (Math.random() * 4) + 1;
-			switch (rand) {
-			case 1:
-				this.scream1.playSoundIstance();
-				break;
-			case 2:
-				this.scream2.playSoundIstance();
-				break;
-			case 3:
-				this.scream3.playSoundIstance();
-				break;
-			case 4:
-				this.scream4.playSoundIstance();
-				break;
-			default:
-				break;
-			}
-		}
+//		if (!GameManager.getIstance().isEditor()) {
+//			int rand = (int) (Math.random() * 4) + 1;
+//			switch (rand) {
+//			case 1:
+//				this.scream1.playSoundIstance();
+//				break;
+//			case 2:
+//				this.scream2.playSoundIstance();
+//				break;
+//			case 3:
+//				this.scream3.playSoundIstance();
+//				break;
+//			case 4:
+//				this.scream4.playSoundIstance();
+//				break;
+//			default:
+//				break;
+//			}
+//		}
 	}
 
 	public void setViewed(boolean viewed) {

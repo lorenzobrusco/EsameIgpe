@@ -41,6 +41,7 @@
 							<onEndHover name="nop" onStartEffect="endGrow(multiPlayerButton)" />
 
 						</effect>
+						<interact onClick="openMultiPlayer()" />
 					</image>
 				</panel>
 				<panel id="editorPanel" height="10%" childLayout="center">

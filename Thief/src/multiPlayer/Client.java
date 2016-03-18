@@ -16,7 +16,6 @@ import multiPlayer.protocols.CommunicationProtocol;
 
 public class Client extends Thread implements CommunicationProtocol {
 
-//    private final static String ADDRESS = "160.97.222.216";
     private final static int PORT = 8080;
     private final static String KNOCK = "knock knock";
     private final static String HOWAREYOU = "who are you?";
@@ -37,7 +36,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String NOIHAVENT = "no, I haven't";
     public final static int FILE_SIZE = 7134962;
     private final static String PATH = "assets" + File.separator + "MultiPlayer" + File.separator;
-    private final static String PATHMODEL = "Models/" + File.separator + "Characters/" + File.separator;
+    private final static String PATHMODEL = "Models" + File.separator + "Characters" + File.separator;
     private final String IAM;
     private final Socket socket;
     private final BufferedReader INPUT;
@@ -50,7 +49,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = false;
 	this.namePlayer = namePlayer;
-	this.nameModel = PATHMODEL + nameModel + File.separator + nameModel + ".j3o";
+	this.nameModel = PATHMODEL + nameModel + File.separator + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
 	this.IAM = this.ipAddress();
