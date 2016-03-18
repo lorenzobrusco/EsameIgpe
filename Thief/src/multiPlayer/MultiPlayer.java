@@ -13,6 +13,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
@@ -65,16 +66,13 @@ public class MultiPlayer {
 	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	this.nodeScene.addControl(rigidBodyControl);
-	this.bornPosition();
-	this.nodeScene.attachChild(GameManager.getIstance().getNodeThief().getModel());
-	this.rootNode.attachChild(nodeScene);
-	this.bornPosition();
+	this.rootNode.attachChild(nodeScene);	
 	GameManager.getIstance().setTerrain(nodeScene);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	GameManager.getIstance().addPhysics();
 	GameManager.getIstance().addPointLightToScene();
-	GameManager.getIstance().getNodeThief().addCharacterControll();
-	GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
+	//GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
+	this.bornPosition();
 	this.render = new GameRender(terrainQuad);
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
     }
@@ -114,7 +112,13 @@ public class MultiPlayer {
     }
 
     public void bornPosition() {
-	GameManager.getIstance().setNodeThief(new NodeThief(GameManager.getIstance().getApplication().getAssetManager().loadModel(this.client.getNameModel())));
-	GameManager.getIstance().getNodeThief().move(new Vector3f(50, 0, 50));
+	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.client.getNameModel());
+	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
+	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
+	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
+	this.nodeScene.attachChild(GameManager.getIstance().getNodeThief());
+	GameManager.getIstance().getNodeThief().addCharacterControll();
+	GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
+	//GameManager.getIstance().getNodeThief().move
     }
 }
