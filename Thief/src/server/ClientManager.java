@@ -14,9 +14,11 @@ import java.net.URL;
 
 import com.jme3.math.Vector3f;
 
+import control.GameManager;
 import multiPlayer.protocols.CommunicationProtocol;
 import server.formatIP.Format;
 import singlePlayer.model.NodeCharacter;
+import singlePlayer.model.NodeThief;
 
 public class ClientManager extends Thread implements CommunicationProtocol {
 
@@ -164,7 +166,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     public NodeCharacter makePlayer(){
 	NodeCharacter player = new NodeCharacter(this.nameModel, new Vector3f(2.0f, 5.5f, 45f), LIFE, DAMAGE);
-	
+	GameManager.getIstance().setNodeThief((NodeThief) player);
 	return player;
     }
     

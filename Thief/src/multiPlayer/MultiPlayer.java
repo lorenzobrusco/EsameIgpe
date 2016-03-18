@@ -1,5 +1,7 @@
 package multiPlayer;
 
+import java.io.IOException;
+
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -32,19 +34,28 @@ public class MultiPlayer {
     private final LoadTerrain loadTerrain;
     private GameRender render;
     private Sound ambient;
+    private String Address;
 
-    public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String level) {
-		this.viewPort = viewPort;
-		this.rootNode = rootNode;
-		cam.setFrustumFar(200);
-		cam.onFrameChange();
-		this.loadTerrain = new LoadTerrain();
-		this.nodeScene = new Node("Scene");
-		this.loadLevel(level);
-		//GameManager.getIstance().getNodeThief().setCam(cam);
-		this.setKey();
-		this.setupAmbientSound();
+    public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, String address, String namePlayer,
+	    String nameModel) {
+	try {
+	    new Client(namePlayer, nameModel, address);
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
+	this.viewPort = viewPort;
+	this.rootNode = rootNode;
+	cam.setFrustumFar(200);
+	cam.onFrameChange();
+	this.loadTerrain = new LoadTerrain();
+	this.nodeScene = new Node("Scene");
+	this.loadLevel(level);
+	GameManager.getIstance().getNodeThief().setSinglePlayer(true);
+	GameManager.getIstance().getNodeThief().setCam(cam);
+	this.setKey();
+	this.setupAmbientSound();
+
+    }
 
     public void loadLevel(String level) {
 	TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
@@ -96,8 +107,8 @@ public class MultiPlayer {
 	this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 	this.ambient.playSound();
     }
-    
-    public void bornPosition(){
-	//TODO da implementare
+
+    public void bornPosition() {
+	// TODO da implementare
     }
 }

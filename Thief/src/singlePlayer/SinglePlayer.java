@@ -40,6 +40,7 @@ public class SinglePlayer {
 		this.loadTerrain = new LoadTerrain();
 		this.nodeScene = new Node("Scene");
 		this.loadLevel(level, shadows, fog, water);
+		GameManager.getIstance().getNodeThief().setSinglePlayer(true);
 		GameManager.getIstance().getNodeThief().setCam(cam);
 		this.setKey();
 		GameManager.getIstance().makeSecondLayer();

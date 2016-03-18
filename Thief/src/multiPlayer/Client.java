@@ -16,7 +16,7 @@ import multiPlayer.protocols.CommunicationProtocol;
 
 public class Client extends Thread implements CommunicationProtocol {
 
-    private final static String ADDRESS = "160.97.222.216";
+//    private final static String ADDRESS = "160.97.222.216";
     private final static int PORT = 8080;
     private final static String KNOCK = "knock knock";
     private final static String HOWAREYOU = "who are you?";
@@ -46,8 +46,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private final String namePlayer;
     private final String nameModel;
 
-    public Client(final String namePlayer, final String nameModel) throws UnknownHostException, IOException {
-	this.socket = new Socket(ADDRESS, PORT);
+    public Client(final String namePlayer, final String nameModel, final String address) throws UnknownHostException, IOException {
+	this.socket = new Socket(address, PORT);
 	this.establishedConnection = false;
 	this.namePlayer = namePlayer;
 	this.nameModel = PATHMODEL + nameModel + File.separator + nameModel + ".j3o";
@@ -191,7 +191,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public static void main(String[] args) {
 	try {
-	    new Client("lorenzo", "Jarvan").start();
+	    new Client("lorenzo", "Jarvan","160.97.123.113").start();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
