@@ -223,7 +223,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (arg2.equals(bonfire)) {
 	    arg1.setAnim(idle);
 	    NodeThief.this.waitAnimation = false;
-	    for (NodeEnemy enemy : GameManager.getIstance().getEnemys()) {
+	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
 		enemy.resetAll();
 	    }
 	}
@@ -231,7 +231,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     @Override
     public void checkCollition() {
-	for (NodeEnemy enemy : GameManager.getIstance().getEnemys()) {
+	for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
 	    CollisionResults collisionResult = new CollisionResults();
 	    BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
 	    enemy.collideWith(box, collisionResult);

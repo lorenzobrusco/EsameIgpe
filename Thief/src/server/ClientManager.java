@@ -14,30 +14,30 @@ import java.net.URL;
 
 import com.jme3.math.Vector3f;
 
-import control.GameManager;
 import multiPlayer.protocols.CommunicationProtocol;
 import server.formatIP.Format;
-import singlePlayer.model.NodeCharacter;
-import singlePlayer.model.NodeThief;
 
 public class ClientManager extends Thread implements CommunicationProtocol {
 
     private final Server server;
     private Socket socket;
+    private String address;
     private String nameClient;
     private String nameModel;
+    private Vector3f startPosition;
     private final BufferedReader INPUT;
     private final DataOutputStream OUTPUT;
     private boolean establishedConnection;
-    private final static int LIFE = 100;
-    private final static int DAMAGE = 5;
+    public boolean newPlayer;
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
-    private final static String HOWAREYOU = "who are you?";
+    private final static String WHOAREYOU = "who are you?";
+    private final static String WHOIS = "who is?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
     private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
+    private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
     private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
     private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
@@ -49,7 +49,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public ClientManager(Server server, Socket socket) throws IOException {
 	this.server = server;
 	this.establishedConnection = false;
-	this.nameClient = new String();
+	this.newPlayer = false;
+	this.address = new String();
 	this.socket = socket;
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -58,19 +59,26 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void startConnection() {
 	try {
+
 	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
+	    System.out.println("ciao");
 	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
 		this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
 		this.fileTransfer(socket);
 		this.OUTPUT.writeBytes(ENDSENDMETERRAIN + "\n");
 	    }
 	    if (this.INPUT.readLine().equals(KNOCK))
-		this.OUTPUT.writeBytes(HOWAREYOU + "\n");
-	    	this.nameClient = this.INPUT.readLine();
-	    	this.nameModel = this.INPUT.readLine();
-	    if (new Format(this.nameClient).itIsCorrectFormat()) {
-		System.out.println(nameClient);
+		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
+	    this.address = this.INPUT.readLine();
+	    this.nameClient = this.INPUT.readLine();
+	    this.nameModel = this.INPUT.readLine();
+	    final float x = Float.parseFloat(this.INPUT.readLine());
+	    final float y = Float.parseFloat(this.INPUT.readLine());
+	    final float z = Float.parseFloat(this.INPUT.readLine());
+	    this.startPosition = new Vector3f(x, y, z);
+	    if (new Format(this.address).itIsCorrectFormat()) {
+		System.out.println(address);
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
 		this.establishedConnection = true;
 	    } else
@@ -126,10 +134,31 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     }
 
     @Override
+    public void communicationNewPlayer(String name, String model, String x, String y, String z) {
+	try {
+	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
+	    if (INPUT.readLine().equals(WHOIS)) {
+		this.OUTPUT.writeBytes(name + "\n");
+		this.OUTPUT.writeBytes(model + "\n");
+		this.OUTPUT.writeBytes(x + "\n");
+		this.OUTPUT.writeBytes(y + "\n");
+		this.OUTPUT.writeBytes(z + "\n");
+		this.OUTPUT.writeBytes(name + "\n");
+	    }
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+
+    }
+
+    @Override
     public void run() {
 
 	this.startConnection();
 	while (this.establishedConnection) {
+	    if(this.newPlayer){
+		
+	    }
 	    this.communicationState();
 	}
     }
@@ -141,7 +170,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    File file = new File(PATH + this.server.getTERRAIN() + ".j3o");
 	    System.out.println("mando");
-	
+
 	    byte[] terrain = new byte[(int) file.length()];
 	    FileInputStream inputTerrain = new FileInputStream(file);
 	    outputTerrain = new BufferedInputStream(inputTerrain);
@@ -155,26 +184,41 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    e.printStackTrace();
 	    return false;
 	} finally {
-	  try {
-	    outputStream.close();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
+	    try {
+		outputStream.close();
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
 	}
     }
 
-    public NodeCharacter makePlayer(){
-	NodeCharacter player = new NodeCharacter(this.nameModel, new Vector3f(2.0f, 5.5f, 45f), LIFE, DAMAGE);
-	//GameManager.getIstance().setNodeThief((NodeThief) player);
-	return player;
+    public void notifyNewPlayers() {
+
     }
-    
+
     public Server getServer() {
 	return server;
     }
 
     public String getAddress() {
-	return this.nameClient;
+	return this.address;
     }
+
+    public String getNameClient() {
+	return address;
+    }
+
+    public void setNameClient(String nameClient) {
+	this.address = nameClient;
+    }
+
+    public boolean isNewPlayer() {
+        return newPlayer;
+    }
+
+    public void setNewPlayer(boolean newPlayer) {
+        this.newPlayer = newPlayer;
+    }
+
 }
+

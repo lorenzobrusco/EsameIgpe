@@ -38,10 +38,11 @@ public class MultiPlayer {
     private Sound ambient;
     private Client client = null;
 
-    public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, String address, String namePlayer,
+    public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
 	    String nameModel) {
 	try {
 	    this.client = new Client(namePlayer, nameModel, address);
+	    this.client.start();
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -51,7 +52,7 @@ public class MultiPlayer {
 	cam.onFrameChange();
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
-	this.loadLevel(level);
+	this.loadLevel("mountain");
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(cam);
 	this.setKey();
@@ -71,8 +72,6 @@ public class MultiPlayer {
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	GameManager.getIstance().addPhysics();
 	GameManager.getIstance().addPointLightToScene();
-	//GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
-	this.bornPosition();
 	this.render = new GameRender(terrainQuad);
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
     }
@@ -109,16 +108,5 @@ public class MultiPlayer {
     private void setupAmbientSound() {
 	this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 	this.ambient.playSound();
-    }
-
-    public void bornPosition() {
-	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.client.getNameModel());
-	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
-	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
-	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
-	this.nodeScene.attachChild(GameManager.getIstance().getNodeThief());
-	GameManager.getIstance().getNodeThief().addCharacterControll();
-	GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
-	//GameManager.getIstance().getNodeThief().move
     }
 }

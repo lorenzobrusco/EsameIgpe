@@ -4,23 +4,21 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.AbstractMap;
-import java.util.HashMap;
-
-import singlePlayer.model.NodeCharacter;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class Server extends Thread {
 
     private final static int PORT = 8080;
     private final ServerSocket server;
     private final String TERRAIN;
-    private final AbstractMap<String, NodeCharacter> players;
+    private final Collection<ClientManager> players;
     private boolean start;
 
     public Server(final String path) throws UnknownHostException, IOException {
 	this.server = new ServerSocket(PORT);
 	this.TERRAIN = path;
-	this.players = new HashMap<>();
+	this.players = new ArrayList<>();
 	this.start = true;
     }
 
@@ -33,7 +31,8 @@ public class Server extends Thread {
 		Socket client = server.accept();
 		ClientManager clientManager = new ClientManager(this, client);
 		clientManager.start();
-		//this.addPlayer(clientManager);
+		this.newPlayer();
+		this.addPlayer(clientManager);
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
@@ -41,19 +40,22 @@ public class Server extends Thread {
 
     }
 
+    public void newPlayer(){
+	for(ClientManager managers : this.players){
+	    managers.setNewPlayer(true);
+	}
+    }
+    
     public void stopServer() {
 	this.start = false;
     }
 
-    public void addPlayer(ClientManager clientManager) {
-	if (!this.players.containsKey(clientManager.getAddress()))
-	    this.players.put(clientManager.getAddress(), clientManager.makePlayer());
-
+    public synchronized void addPlayer(ClientManager clientManager) {
+	this.players.add(clientManager);
     }
 
-    public void remuvePlayer(ClientManager clientManager) {
-	if (this.players.containsKey(clientManager.getAddress()))
-	    this.players.remove(clientManager.getAddress());
+    public synchronized void remuvePlayer(ClientManager clientManager) {
+	this.players.remove(clientManager);
     }
 
     public String getTERRAIN() {

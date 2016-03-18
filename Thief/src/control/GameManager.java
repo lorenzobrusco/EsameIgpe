@@ -1,6 +1,7 @@
 package control;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -31,7 +32,8 @@ public class GameManager {
 	private static GameManager manager;
 	private Stack<NodeModel> spatial;
 	private ArrayList<NodeModel> nodeRender;
-	private ArrayList<NodeEnemy> enemies;
+	private ArrayList<NodeCharacter> enemies;
+	private HashMap< String , NodeCharacter> players;
 	private ArrayList<PointLight> lights;
 	private GameControl control;
 	private PanelGame game;
@@ -53,6 +55,7 @@ public class GameManager {
 		this.nodeRender = new ArrayList<>();
 		this.enemies = new ArrayList<>();
 		this.lights = new ArrayList<>();
+		this.players = new HashMap<>();
 		this.editor = false;
 	}
 
@@ -118,9 +121,9 @@ public class GameManager {
 	}
 
 	public void startEnemiesIntelligence() {
-		for (NodeEnemy enemy : this.enemies) {
-			enemy.runIntelligence();
-			enemy.attack();
+		for (NodeCharacter enemy : this.enemies) {
+			((NodeEnemy) enemy).runIntelligence();
+			enemy.endAttack();
 		}
 	}
 
@@ -128,7 +131,7 @@ public class GameManager {
 		this.enemies.add(enemy);
 	}
 
-	public ArrayList<NodeEnemy> getModelEnemys() {
+	public ArrayList<NodeCharacter> getModelEnemys() {
 		return this.enemies;
 	}
 
@@ -151,7 +154,7 @@ public class GameManager {
 		game.repaint();
 	}
 
-	public ArrayList<NodeEnemy> getEnemys() {
+	public ArrayList<NodeCharacter> getEnemys() {
 		return this.enemies;
 	}
 
@@ -191,6 +194,18 @@ public class GameManager {
 		this.thief = thief;
 	}
 
+	public HashMap<String, NodeCharacter> getPlayers(){
+	    return this.players;
+	}
+	
+	public void addPlayes(String address, NodeCharacter player){
+	    this.players.put(address, player);
+	}
+	
+	public void removePlayers(String address){
+	    this.removePlayers(address);
+	}
+	
 	public NodeModel getBonfire() {
 		return bonfire;
 	}
