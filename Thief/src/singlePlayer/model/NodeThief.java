@@ -108,7 +108,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     public void stop() {
 	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	//this.walkingOnGrassSound.stopSound();
+	//this.walkingOnGrassSound.stopSound(); //TODO test
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
@@ -116,7 +116,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     public void run() {
 	this.resetCurrentTime();
-	//this.walkingOnGrassSound.playSound();
+	//this.walkingOnGrassSound.playSound(); //TODO test
 	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 	vector3f.y = -2f;
 	this.characterControl.setWalkDirection(vector3f);
@@ -132,7 +132,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    super.death();
 	    this.resetCurrentTime();
 	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	    this.walkingOnGrassSound.stopSound();
+	   // this.walkingOnGrassSound.stopSound(); //TODO test
 	}
     }
 
@@ -239,7 +239,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    if (closest != null) {
 		enemy.isStricken(this.getDAMAGE());
 		if (enemy.isDead()) {
-		    this.enemyWin.playSound();
+//		    this.enemyWin.playSound();//TODO test
 		}
 	    }
 	}
@@ -250,7 +250,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
-//	\this.playScream();
+//	this.playScream();//TODO test
 
     }
 
@@ -312,12 +312,12 @@ public class NodeThief extends NodeCharacter implements Collition {
     }
 
     public void playEnemyView() {
-	this.enemyView.playSound();
+//	this.enemyView.playSound();
     }
 
     @Override
     protected void setupAudio() {
-//	if (!GameManager.getIstance().isEditor()) {
+	if (!GameManager.getIstance().isEditor()) {
 //	    this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false, false, false, 0.09f, false);
 //	    this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
 //	    this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
@@ -335,6 +335,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 //	    this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f, false);
 //	    this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
 //	    this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
-//	}
+	}
     }
 }

@@ -37,19 +37,14 @@ public class MultiPlayer {
 
     public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
 	    String nameModel) {
-	try {
-	    this.client = new Client(namePlayer, nameModel, address);
-	    this.client.start();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
 	cam.setFrustumFar(200);
 	cam.onFrameChange();
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
-	this.loadLevel("mountain");
+	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode);
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(cam);
 	this.setKey();
@@ -57,15 +52,21 @@ public class MultiPlayer {
 
     }
 
-    public void loadLevel(String level) {
+    public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode) {
 	final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
 	this.nodeScene.attachChild(terrainQuad);
 	this.nodeScene.addLight(loadTerrain.makeAmbientLight());
 	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	this.nodeScene.addControl(rigidBodyControl);
+	try {
+	    this.client = new Client(namePlayer, nameModel, address, rootNode);
+	    this.client.start();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
 	this.client.bornPosition(nodeScene);
-	this.rootNode.attachChild(nodeScene);	
+	this.rootNode.attachChild(nodeScene);
 	GameManager.getIstance().setTerrain(nodeScene);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	GameManager.getIstance().addPhysics();
@@ -75,12 +76,9 @@ public class MultiPlayer {
     }
 
     public void simpleUpdate(Float tpf) {
-	if (GameManager.getIstance().getNodeThief().isControlRender()) {
-	    this.render.rayRendering();
-	}
+	this.render.rayRendering();
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
-	//GameManager.getIstance().startEnemiesIntelligence();
     }
 
     private void setKey() {

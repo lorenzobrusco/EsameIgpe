@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server extends Thread {
 
@@ -18,7 +18,7 @@ public class Server extends Thread {
     public Server(final String path) throws UnknownHostException, IOException {
 	this.server = new ServerSocket(PORT);
 	this.TERRAIN = path;
-	this.players = new ArrayList<>();
+	this.players = new ConcurrentLinkedQueue<>();
 	this.start = true;
     }
 
@@ -30,9 +30,8 @@ public class Server extends Thread {
 	    try {
 		Socket client = server.accept();
 		ClientManager clientManager = new ClientManager(this, client);
-		clientManager.start();
 		this.newPlayer();
-		this.addPlayer(clientManager);
+		clientManager.start();
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }

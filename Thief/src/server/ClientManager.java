@@ -33,7 +33,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
     private final static String WHOAREYOU = "who are you?";
-    private final static String WHOIS = "who is?";
+    private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
     private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
@@ -62,7 +62,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
-	    System.out.println("ciao");
 	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
 		this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
 		this.fileTransfer(socket);
@@ -78,12 +77,23 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    final float z = Float.parseFloat(this.INPUT.readLine());
 	    this.startPosition = new Vector3f(x, y, z);
 	    if (new Format(this.address).itIsCorrectFormat()) {
-		System.out.println(address);
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
 		this.establishedConnection = true;
+		if (this.INPUT.readLine().equals(WHOISTHERE)) {
+		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
+		    for (ClientManager manager : this.server.getPlayers()) {
+			manager.communicationNewPlayer(this.address, this.nameModel,
+				String.valueOf(this.startPosition.x), String.valueOf(this.startPosition.y),
+				String.valueOf(this.startPosition.z));
+			this.communicationNewPlayer(manager.address, manager.nameModel,
+				String.valueOf(manager.startPosition.x), String.valueOf(manager.startPosition.y),
+				String.valueOf(manager.startPosition.z));
+		    }
+
+		}
+		this.server.addPlayer(this);
 	    } else
 		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
-	    System.out.println(establishedConnection);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -111,7 +121,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
 	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
-	    System.out.println(this.INPUT.readLine());
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -133,19 +142,15 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	return null;
     }
 
-    @Override
     public void communicationNewPlayer(String name, String model, String x, String y, String z) {
 	try {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
-	    if (INPUT.readLine().equals(WHOIS)) {
-		this.OUTPUT.writeBytes(name + "\n");
-		this.OUTPUT.writeBytes(model + "\n");
-		this.OUTPUT.writeBytes(x + "\n");
-		this.OUTPUT.writeBytes(y + "\n");
-		this.OUTPUT.writeBytes(z + "\n");
-		this.OUTPUT.writeBytes(name + "\n");
-		this.newPlayer = false;
-	    }
+	    this.OUTPUT.writeBytes(name + "\n");
+	    this.OUTPUT.writeBytes(model + "\n");
+	    this.OUTPUT.writeBytes(x + "\n");
+	    this.OUTPUT.writeBytes(y + "\n");
+	    this.OUTPUT.writeBytes(z + "\n");
+	    this.newPlayer = false;
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -157,19 +162,20 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-	    if (this.newPlayer) {
-		this.notifyAllNewPlayer();
-	    }
-	    this.communicationState();
+	    // if (this.newPlayer) {
+	    // this.notifyAllNewPlayer();
+	    // }
+	    // this.communicationState();
 	}
     }
 
     public void notifyAllNewPlayer() {
-	System.out.println(nameClient + "si è collegato");
 	for (ClientManager manager : this.server.getPlayers()) {
 	    manager.setNewPlayer(true);
-	    manager.communicationNewPlayer(this.address, this.nameClient, String.valueOf(this.startPosition.x),
+	    System.out.println("invio i miei dati al nuovo player");
+	    manager.communicationNewPlayer(this.address, this.nameModel, String.valueOf(this.startPosition.x),
 		    String.valueOf(this.startPosition.y), String.valueOf(this.startPosition.z));
+
 	}
     }
 
@@ -179,8 +185,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	OutputStream outputStream = null;
 	try {
 	    File file = new File(PATH + this.server.getTERRAIN() + ".j3o");
-	    System.out.println("mando");
-
 	    byte[] terrain = new byte[(int) file.length()];
 	    FileInputStream inputTerrain = new FileInputStream(file);
 	    outputTerrain = new BufferedInputStream(inputTerrain);
@@ -188,7 +192,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    outputStream = client.getOutputStream();
 	    outputStream.write(terrain, 0, terrain.length);
 	    outputStream.flush();
-	    System.out.println("Done.");
+
 	    return true;
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -200,10 +204,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		e.printStackTrace();
 	    }
 	}
-    }
-
-    public void notifyNewPlayers() {
-
     }
 
     public Server getServer() {

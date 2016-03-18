@@ -12,15 +12,12 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-
 import control.GameManager;
 import multiPlayer.protocols.CommunicationProtocol;
 import singlePlayer.model.NodeCharacter;
-import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeThief;
 
 public class Client extends Thread implements CommunicationProtocol {
@@ -33,6 +30,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
     private final static String NEWPLAYER = "it's arrive a new player";
+    private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String SENDSTATE = "send your state";
     private final static String ENDSENDSTATE = "end send your state";
     private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
@@ -58,12 +56,14 @@ public class Client extends Thread implements CommunicationProtocol {
     private final String namePlayer;
     private final String nameModel;
     private String nameTerrain;
+    private final Node rootNode;
 
-    public Client(final String namePlayer, final String nameModel, final String address)
+    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode)
 	    throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
-	this.establishedConnection = false;
+	this.establishedConnection = true;
 	this.namePlayer = namePlayer;
+	this.rootNode = rootNode;
 	this.nameModel = PATHMODEL + nameModel + File.separator + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -93,18 +93,28 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(IAM + "\n");
 		this.OUTPUT.writeBytes(this.namePlayer + "\n");
 		this.OUTPUT.writeBytes(this.nameModel + "\n");
-//		this.bornPosition();
-//		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
-//		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
-//		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
-		
-		this.OUTPUT.writeBytes(50+ "\n");
+		// this.bornPosition();
+		// this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x
+		// + "\n");
+		// this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y
+		// + "\n");
+		// this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z
+		// + "\n");
+
+		this.OUTPUT.writeBytes(50 + "\n");
 		this.OUTPUT.writeBytes(0 + "\n");
 		this.OUTPUT.writeBytes(50 + "\n");
 	    }
-	    if (this.INPUT.readLine().equals(YOUAREWELCOME))
+	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
-	    else if (this.INPUT.readLine().equals(TRYAGAIN))
+		this.OUTPUT.writeBytes(WHOISTHERE + "\n");
+		int size = Integer.parseInt(this.INPUT.readLine());
+		for (int i = 0; i < size; i++) {
+		    if (this.INPUT.readLine().equals(NEWPLAYER))
+			this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
+				INPUT.readLine());
+		}
+	    } else if (this.INPUT.readLine().equals(TRYAGAIN))
 		this.startConnection();
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -160,12 +170,12 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
-    @Override
-    public void communicationNewPlayer(String name, String model, String x, String y, String z) {
+    public void communicationNewPlayer() {
 	try {
-	    if(INPUT.readLine().equals(NEWPLAYER))
-		OUTPUT.writeBytes(WHOIS + "\n");
-	    	this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine());
+	    OUTPUT.writeBytes(WHOIS + "\n");
+	    this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
+		    INPUT.readLine());
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -176,7 +186,15 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-	   // this.communicationState();
+	    try {
+		final String message = INPUT.readLine();
+		if (message.equals(NEWPLAYER))
+		    this.communicationNewPlayer();
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	    // this.communicationState();
 	}
     }
 
@@ -193,8 +211,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    int current = bytesRead;
 	    do {
 		bytesRead = is.read(mybytearray, current, (mybytearray.length - current));
-		System.out.println("byte " + bytesRead);
-		System.out.println("current " + current);
 		if (bytesRead >= 0)
 		    current += bytesRead;
 	    } while (bytesRead > -1);
@@ -220,17 +236,21 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	scene.attachChild(GameManager.getIstance().getNodeThief());
-	GameManager.getIstance().getNodeThief().addCharacterControll();
-	GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
     }
-    
+
     public void addNewPlayers(String name, String model, String x, String y, String z) {
+	System.out.println(name + " - " + model + " - (" + x + ", " + y + ", " + z + " )");
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
-	spatial.setLocalTranslation(new Vector3f(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z)));
-	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), LIFENUMBER, DAMAGE);
-	GameManager.getIstance().addModelEnemy((NodeEnemy) players);
+	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
+	spatial.setLocalTranslation(vector3f);
+	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), vector3f, LIFENUMBER,
+		DAMAGE);
+	players.addCharacterControll();
+	GameManager.getIstance().addModelEnemy(players);
+	GameManager.getIstance().addModel(players);
 	GameManager.getIstance().getTerrain().attachChild(players);
 	GameManager.getIstance().addPlayes(name, players);
+	rootNode.updateGeometricState();
     }
 
     public String getNamePlayer() {

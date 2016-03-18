@@ -14,19 +14,28 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, int life, int DAMAGE) {
 	super(model, dimensionControll, life, DAMAGE);
     }
-    
-    public void setWalkDirection(Vector3f direction){
+
+    public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE) {
+	super(model, dimensionControll, intersect,life, DAMAGE);
+    }
+
+    public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE) {
+   	super(model, dimensionControll, intersect,life, DAMAGE);
+       }
+
+
+    public void setWalkDirection(Vector3f direction) {
 	this.characterControl.setWalkDirection(direction);
     }
-    
-    public void setViewDirection(Vector3f view){
+
+    public void setViewDirection(Vector3f view) {
 	this.characterControl.setViewDirection(view);
     }
-    
+
     @Override
-    public void startAttack(){
+    public void startAttack() {
 	super.startAttack();
     }
-    
-    //TODO Implementare questa classe per i nemici del multiplayer
+
+    // TODO Implementare questa classe per i nemici del multiplayer
 }

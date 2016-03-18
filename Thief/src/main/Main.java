@@ -105,7 +105,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	multiplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.player = new SinglePlayer(viewPort, rootNode, cam, "ai1", true, true, true);
+	this.player = new SinglePlayer(viewPort, rootNode, cam, "test", true, true, true);
 	this.initKeys();
 	this.menuSound.stopSound();
     }
@@ -116,7 +116,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam,  "160.97.123.113", "lorenzo", "Jarvan");
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.1.39", "lorenzo", "Jarvan");
 	flyCam.setEnabled(true);
 	this.initKeys();
 	this.menuSound.stopSound();
@@ -210,12 +210,12 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     }
 
-    public void openMultiPlayer(){
-	
+    public void openMultiPlayer() {
+
 	nifty.exit();
 	multiPlayer();
     }
-    
+
     public void startGrow(String nameButton) {
 
 	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
