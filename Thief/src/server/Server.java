@@ -7,23 +7,27 @@ import java.net.UnknownHostException;
 import java.util.AbstractMap;
 import java.util.HashMap;
 
+import singlePlayer.model.NodeCharacter;
+
 public class Server extends Thread {
 
     private final static int PORT = 8080;
     private final ServerSocket server;
     private final String TERRAIN;
-    private final AbstractMap<String, ClientManager> players;
+    private final AbstractMap<String, NodeCharacter> players;
+    private boolean start;
 
     public Server(final String path) throws UnknownHostException, IOException {
 	this.server = new ServerSocket(PORT);
 	this.TERRAIN = path;
 	this.players = new HashMap<>();
+	this.start = true;
     }
 
     @Override
     public void run() {
 
-	while (true) {
+	while (this.start) {
 
 	    try {
 		Socket client = server.accept();
@@ -37,9 +41,13 @@ public class Server extends Thread {
 
     }
 
+    public void stopServer() {
+	this.start = false;
+    }
+
     public void addPlayer(ClientManager clientManager) {
 	if (!this.players.containsKey(clientManager.getAddress()))
-	    this.players.put(clientManager.getAddress(), clientManager);
+	    this.players.put(clientManager.getAddress(), clientManager.makePlayer());
 
     }
 
@@ -60,5 +68,5 @@ public class Server extends Thread {
 	    e.printStackTrace();
 	}
     }
-    
+
 }

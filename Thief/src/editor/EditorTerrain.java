@@ -104,8 +104,8 @@ public class EditorTerrain implements ScreenController {
 
 		// TODO elimina thief e bon fire gia presenti
 
-		// this.terrain.detachChild(this.thiefModel);
-		// this.terrain.detachChild(this.bonFireModel);
+//		 this.terrain.detachChild(this.thiefModel.getModel());
+//		 this.terrain.detachChild(this.bonFireModel.getModel());
 	}
 
 	public void simpleUpdate(float tpf) {

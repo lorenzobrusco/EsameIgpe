@@ -11,14 +11,24 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+
+import com.jme3.math.Vector3f;
+
 import multiPlayer.protocols.CommunicationProtocol;
 import server.formatIP.Format;
+import singlePlayer.model.NodeCharacter;
 
 public class ClientManager extends Thread implements CommunicationProtocol {
 
     private final Server server;
     private Socket socket;
     private String nameClient;
+    private String nameModel;
+    private final BufferedReader INPUT;
+    private final DataOutputStream OUTPUT;
+    private boolean establishedConnection;
+    private final static int LIFE = 100;
+    private final static int DAMAGE = 5;
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
@@ -33,9 +43,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
     private final static String PATH = "assets" + File.separator + "MultiPlayer" + File.separator;
-    private final BufferedReader INPUT;
-    private final DataOutputStream OUTPUT;
-    private boolean establishedConnection;
 
     public ClientManager(Server server, Socket socket) throws IOException {
 	this.server = server;
@@ -58,8 +65,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    }
 	    if (this.INPUT.readLine().equals(KNOCK))
 		this.OUTPUT.writeBytes(HOWAREYOU + "\n");
-	    this.nameClient = this.INPUT.readLine();
-
+	    	this.nameClient = this.INPUT.readLine();
+	    	this.nameModel = this.INPUT.readLine();
 	    if (new Format(this.nameClient).itIsCorrectFormat()) {
 		System.out.println(nameClient);
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
@@ -155,6 +162,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
+    public NodeCharacter makePlayer(){
+	NodeCharacter player = new NodeCharacter(this.nameModel, new Vector3f(2.0f, 5.5f, 45f), LIFE, DAMAGE);
+	
+	return player;
+    }
+    
     public Server getServer() {
 	return server;
     }
