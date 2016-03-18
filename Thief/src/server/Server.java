@@ -57,6 +57,10 @@ public class Server extends Thread {
     public synchronized void remuvePlayer(ClientManager clientManager) {
 	this.players.remove(clientManager);
     }
+    
+    public synchronized Collection<ClientManager> getPlayers(){
+	return this.players;
+    }
 
     public String getTERRAIN() {
 	return TERRAIN;

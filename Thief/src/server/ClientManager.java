@@ -144,6 +144,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(y + "\n");
 		this.OUTPUT.writeBytes(z + "\n");
 		this.OUTPUT.writeBytes(name + "\n");
+		this.newPlayer = false;
 	    }
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -156,10 +157,19 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-	    if(this.newPlayer){
-		
+	    if (this.newPlayer) {
+		this.notifyAllNewPlayer();
 	    }
 	    this.communicationState();
+	}
+    }
+
+    public void notifyAllNewPlayer() {
+	System.out.println(nameClient + "si è collegato");
+	for (ClientManager manager : this.server.getPlayers()) {
+	    manager.setNewPlayer(true);
+	    manager.communicationNewPlayer(this.address, this.nameClient, String.valueOf(this.startPosition.x),
+		    String.valueOf(this.startPosition.y), String.valueOf(this.startPosition.z));
 	}
     }
 
@@ -204,21 +214,40 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	return this.address;
     }
 
-    public String getNameClient() {
-	return address;
-    }
-
-    public void setNameClient(String nameClient) {
+    public void setAddress(String nameClient) {
 	this.address = nameClient;
     }
 
+    public String getNameClient() {
+	return nameClient;
+    }
+
+    public void setNameClient(String nameClient) {
+	this.nameClient = nameClient;
+    }
+
+    public String getNameModel() {
+	return nameModel;
+    }
+
+    public void setNameModel(String nameModel) {
+	this.nameModel = nameModel;
+    }
+
+    public Vector3f getStartPosition() {
+	return startPosition;
+    }
+
+    public void setStartPosition(Vector3f startPosition) {
+	this.startPosition = startPosition;
+    }
+
     public boolean isNewPlayer() {
-        return newPlayer;
+	return newPlayer;
     }
 
     public void setNewPlayer(boolean newPlayer) {
-        this.newPlayer = newPlayer;
+	this.newPlayer = newPlayer;
     }
 
 }
-

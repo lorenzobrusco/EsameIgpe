@@ -9,17 +9,14 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import editor.LoadTerrain;
 import singlePlayer.Sound;
-import singlePlayer.model.NodeThief;
 
 public class MultiPlayer {
 
@@ -67,6 +64,7 @@ public class MultiPlayer {
 	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	this.nodeScene.addControl(rigidBodyControl);
+	this.client.bornPosition(nodeScene);
 	this.rootNode.attachChild(nodeScene);	
 	GameManager.getIstance().setTerrain(nodeScene);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);

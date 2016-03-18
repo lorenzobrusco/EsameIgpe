@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import control.GameManager;
@@ -92,10 +93,14 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(IAM + "\n");
 		this.OUTPUT.writeBytes(this.namePlayer + "\n");
 		this.OUTPUT.writeBytes(this.nameModel + "\n");
-		this.bornPosition();
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
+//		this.bornPosition();
+//		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
+//		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
+//		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
+		
+		this.OUTPUT.writeBytes(50+ "\n");
+		this.OUTPUT.writeBytes(0 + "\n");
+		this.OUTPUT.writeBytes(50 + "\n");
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME))
 		this.establishedConnection = true;
@@ -132,7 +137,6 @@ public class Client extends Thread implements CommunicationProtocol {
 							  // GameManager.getIstance().getNodeThief().getLIFE()
 	    if (this.INPUT.readLine().equals(ACNOWLEDGEDLIFE))
 		this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
-	    System.out.println("ho mandato le info");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -172,7 +176,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-	    this.communicationState();
+	   // this.communicationState();
 	}
     }
 
@@ -210,12 +214,12 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void bornPosition() {
+    public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
 	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
-	GameManager.getIstance().getTerrain().attachChild(GameManager.getIstance().getNodeThief());
+	scene.attachChild(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().addCharacterControll();
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(GameManager.getIstance().getNodeThief());
     }
@@ -245,13 +249,4 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.nameTerrain = nameTerrain;
     }
 
-    public static void main(String[] args) {
-	try {
-	    new Client("lorenzo", "Jarvan", "160.97.123.113").start();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-    }
-
-    
 }
