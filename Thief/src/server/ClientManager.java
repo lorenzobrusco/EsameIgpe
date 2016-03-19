@@ -39,9 +39,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String CLOSE = "close connection";
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
+    private final static String PLAYER = "the player: ";
     private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
     private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
     private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
+    private final static String ENDSENDSTATE = "end send your state";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
     private final static String PATH = "assets" + File.separator + "MultiPlayer" + File.separator;
@@ -118,9 +120,42 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
+	    Vector3f walkdirection = null;
+	    Vector3f viewdirection = null;
+	    int life = 0;
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
+	    walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
+		    Float.parseFloat(INPUT.readLine()));
+	    viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
+		    Float.parseFloat(INPUT.readLine()));
+	    // TODO leggo i valori e creo il vector3f
 	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
+	    // TODO leggo il valore della vita
+	    life = Integer.parseInt(INPUT.readLine());
+	    if (INPUT.readLine().equals(ENDSENDSTATE)){
+		for(ClientManager manager : this.server.getPlayers()){
+		    manager.statePlayer(walkdirection, viewdirection, life);
+		}
+	    }
+		;// TODO metodo che comunica a tutti lo spostamento
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    public void statePlayer(Vector3f walk, Vector3f view, int life) {
+	try {
+	    this.OUTPUT.writeBytes(PLAYER + "\n");
+	    this.OUTPUT.writeBytes(this.address + "\n");
+	    this.OUTPUT.writeBytes(walk.x + "\n");
+	    this.OUTPUT.writeBytes(walk.y + "\n");
+	    this.OUTPUT.writeBytes(walk.z + "\n");
+	    this.OUTPUT.writeBytes(view.x + "\n");
+	    this.OUTPUT.writeBytes(view.y + "\n");
+	    this.OUTPUT.writeBytes(view.z + "\n");
+	    this.OUTPUT.writeBytes(life + "\n");
+	    
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -162,10 +197,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	this.startConnection();
 	while (this.establishedConnection) {
-	    // if (this.newPlayer) {
-	    // this.notifyAllNewPlayer();
-	    // }
-	    // this.communicationState();
+	    communicationState();
 	}
     }
 

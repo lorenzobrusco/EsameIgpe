@@ -100,6 +100,14 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		GameManager.getIstance().getBullet().getPhysicsSpace().add(characterControl);
 	}
 
+	public int getLife() {
+	    return life;
+	}
+
+	public void setLife(int life) {
+	    this.life = life;
+	}
+
 	public int getLIFE() {
 		return this.life;
 	}

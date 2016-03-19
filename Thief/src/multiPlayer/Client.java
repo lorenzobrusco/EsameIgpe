@@ -32,11 +32,10 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String SENDSTATE = "send your state";
+    private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
     private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
-    private final static String POSITION = "my position is: ";
     private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
-    private final static String LIFE = "my life is: ";
     private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
@@ -93,14 +92,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(IAM + "\n");
 		this.OUTPUT.writeBytes(this.namePlayer + "\n");
 		this.OUTPUT.writeBytes(this.nameModel + "\n");
-		// this.bornPosition();
-		// this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x
-		// + "\n");
-		// this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y
-		// + "\n");
-		// this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z
-		// + "\n");
-
+		// TODO metodo per trovare un punto dove nascere privo di nemici
+		// e di ostacoli;
 		this.OUTPUT.writeBytes(50 + "\n");
 		this.OUTPUT.writeBytes(0 + "\n");
 		this.OUTPUT.writeBytes(50 + "\n");
@@ -139,18 +132,56 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicationState() {
 
 	try {
-	    if (this.INPUT.readLine().equals(SENDSTATE))
-		this.OUTPUT.writeBytes(POSITION + 100 + "\n"); // TODO
-							       // GameManager.getIstance().getNodeThief().getLocalTranslation()
+	    float x, y, z;
+	    if (GameManager.getIstance().getNodeThief().getCharacterControl() == null) {
+		x = 0;
+		y = 0;
+		z = 0;
+	    } else {
+		x = GameManager.getIstance().getNodeThief().getCharacterControl().getWalkDirection().x;
+		y = GameManager.getIstance().getNodeThief().getCharacterControl().getWalkDirection().y;
+		z = GameManager.getIstance().getNodeThief().getCharacterControl().getWalkDirection().z;
+	    }
+	    this.OUTPUT.writeBytes(x + "\n");
+	    this.OUTPUT.writeBytes(y + "\n");
+	    this.OUTPUT.writeBytes(z + "\n");
+	    if (GameManager.getIstance().getNodeThief().getCharacterControl() == null) {
+		x = 0;
+		y = 0;
+		z = 0;
+	    } else {
+		x = GameManager.getIstance().getNodeThief().getCharacterControl().getViewDirection().x;
+		y = GameManager.getIstance().getNodeThief().getCharacterControl().getViewDirection().y;
+		z = GameManager.getIstance().getNodeThief().getCharacterControl().getViewDirection().z;
+	    }
+	    this.OUTPUT.writeBytes(x + "\n");
+	    this.OUTPUT.writeBytes(y + "\n");
+	    this.OUTPUT.writeBytes(z + "\n");
 	    if (this.INPUT.readLine().equals(ACNOWLEDGEDPOSITION))
-		this.OUTPUT.writeBytes(LIFE + 50 + "\n"); // TODO
-							  // GameManager.getIstance().getNodeThief().getLIFE()
+		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLIFE() + "\n");
 	    if (this.INPUT.readLine().equals(ACNOWLEDGEDLIFE))
 		this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
 
+    }
+
+    public void statePlayer() {
+	try {
+	    String player = this.INPUT.readLine();
+	    Vector3f walk = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
+		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
+	    Vector3f view = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
+		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
+	    int life = Integer.parseInt(this.INPUT.readLine());
+	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().setViewDirection(view);
+	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().setWalkDirection(walk);
+	    GameManager.getIstance().getPlayers().get(player).setLife(life);
+
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
     }
 
     @Override
@@ -190,11 +221,13 @@ public class Client extends Thread implements CommunicationProtocol {
 		final String message = INPUT.readLine();
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
+		if (message.equals(SENDSTATE) && GameManager.getIstance().getNodeThief() != null)
+		    this.communicationState();
+		if (message.equals(PLAYER))
+		    this.statePlayer();
 	    } catch (IOException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	    }
-	    // this.communicationState();
 	}
     }
 
