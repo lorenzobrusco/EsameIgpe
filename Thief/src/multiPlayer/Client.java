@@ -42,8 +42,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String YESIHAVE = "yes, I have";
     private final static String NOIHAVENT = "no, I haven't";
-    private final static String PATH = "assets" + File.separator + "MultiPlayer" + File.separator;
-    private final static String PATHMODEL = "Models" + File.separator + "Characters" + File.separator;
+    private final static String PATH = "assets/MultiPlayer/";
+    private final static String PATHMODEL = "Models/Characters/";
     public final static int FILE_SIZE = 7134962;
     private final static int LIFENUMBER = 100;
     private final static int DAMAGE = 5;
@@ -63,7 +63,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.establishedConnection = true;
 	this.namePlayer = namePlayer;
 	this.rootNode = rootNode;
-	this.nameModel = PATHMODEL + nameModel + File.separator + nameModel + ".mesh.j3o";
+	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
 	this.IAM = this.ipAddress();

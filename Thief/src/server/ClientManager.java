@@ -46,7 +46,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String ENDSENDSTATE = "end send your state";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
-    private final static String PATH = "assets" + File.separator + "MultiPlayer" + File.separator;
+    private final static String PATH = "assets/MultiPlayer/" ;
 
     public ClientManager(Server server, Socket socket) throws IOException {
 	this.server = server;
@@ -136,6 +136,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    if (INPUT.readLine().equals(ENDSENDSTATE)){
 		for(ClientManager manager : this.server.getPlayers()){
 		    manager.statePlayer(walkdirection, viewdirection, life);
+		    this.statePlayer(walkdirection, viewdirection, life);
 		}
 	    }
 		;// TODO metodo che comunica a tutti lo spostamento
