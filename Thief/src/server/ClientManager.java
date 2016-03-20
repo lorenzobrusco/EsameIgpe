@@ -46,7 +46,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String ENDSENDSTATE = "end send your state";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
-    private final static String PATH = "assets/MultiPlayer/" ;
+    private final static String PATH = "assets/MultiPlayer/";
 
     public ClientManager(Server server, Socket socket) throws IOException {
 	this.server = server;
@@ -120,35 +120,35 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
+	    String address;
 	    Vector3f walkdirection = null;
 	    Vector3f viewdirection = null;
 	    int life = 0;
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
-	    this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
+	    address = this.INPUT.readLine();
 	    walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()));
 	    viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()));
-	    // TODO leggo i valori e creo il vector3f
-	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
-	    // TODO leggo il valore della vita
+	    this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
 	    life = Integer.parseInt(INPUT.readLine());
-	    if (INPUT.readLine().equals(ENDSENDSTATE)){
-		for(ClientManager manager : this.server.getPlayers()){
-		    manager.statePlayer(walkdirection, viewdirection, life);
-		    this.statePlayer(walkdirection, viewdirection, life);
+	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
+	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
+		for (ClientManager manager : this.server.getPlayers()) {
+		    if (manager != this)
+			manager.statePlayer(address, walkdirection, viewdirection, life);
 		}
 	    }
-		;// TODO metodo che comunica a tutti lo spostamento
+	    ;// TODO metodo che comunica a tutti lo spostamento
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
     }
 
-    public void statePlayer(Vector3f walk, Vector3f view, int life) {
+    public void statePlayer(String address, Vector3f walk, Vector3f view, int life) {
 	try {
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
-	    this.OUTPUT.writeBytes(this.address + "\n");
+	    this.OUTPUT.writeBytes(address + "\n");
 	    this.OUTPUT.writeBytes(walk.x + "\n");
 	    this.OUTPUT.writeBytes(walk.y + "\n");
 	    this.OUTPUT.writeBytes(walk.z + "\n");
@@ -156,7 +156,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(view.y + "\n");
 	    this.OUTPUT.writeBytes(view.z + "\n");
 	    this.OUTPUT.writeBytes(life + "\n");
-	    
+	    System.out.println(walk + " - " + view);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

@@ -25,7 +25,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static int PORT = 8080;
     private final static String KNOCK = "knock knock";
     private final static String WHOAREYOU = "who are you?";
-    private final static String WHOIS = "who is?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
     private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
@@ -133,6 +132,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	try {
 	    float x, y, z;
+	    this.OUTPUT.writeBytes(this.IAM + "\n");
 	    if (GameManager.getIstance().getNodeThief().getCharacterControl() == null) {
 		x = 0;
 		y = 0;
@@ -175,9 +175,12 @@ public class Client extends Thread implements CommunicationProtocol {
 	    Vector3f view = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
 		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
 	    int life = Integer.parseInt(this.INPUT.readLine());
-	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().setViewDirection(view);
-	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().setWalkDirection(walk);
-	    GameManager.getIstance().getPlayers().get(player).setLife(life);
+	    if (GameManager.getIstance().getPlayers().get(player) != null) {
+		GameManager.getIstance().getPlayers().get(player).getCharacterControl().setViewDirection(view);
+		GameManager.getIstance().getPlayers().get(player).getCharacterControl().setWalkDirection(walk);
+		GameManager.getIstance().getPlayers().get(player).setLife(life);
+		rootNode.updateGeometricState();
+	    }
 
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -203,7 +206,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public void communicationNewPlayer() {
 	try {
-	    OUTPUT.writeBytes(WHOIS + "\n");
 	    this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
 		    INPUT.readLine());
 
@@ -272,7 +274,7 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     public void addNewPlayers(String name, String model, String x, String y, String z) {
-	System.out.println(name + " - " + model + " - (" + x + ", " + y + ", " + z + " )");
+	
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
 	spatial.setLocalTranslation(vector3f);
