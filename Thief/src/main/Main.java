@@ -116,7 +116,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.1.101", "lorenzo", "Jarvan");//TODO inserire ip server 
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.123.113", "lorenzo", "Yasuo");// TODO
+													  // inserire
+													  // ip
+													  // server
 	flyCam.setEnabled(true);
 	this.initKeys();
 	this.menuSound.stopSound();
@@ -139,7 +142,9 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     private void initKeys() {
 	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
 		new KeyTrigger(KeyInput.KEY_TAB));
-	inputManager.addListener(actionListener, "debug", "mouse");
+	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
+		new KeyTrigger(KeyInput.KEY_ESCAPE));
+	inputManager.addListener(actionListener, "debug", "exit", "mouse");
     }
 
     private void mouse() {
@@ -153,7 +158,11 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	    if (name.equals("debug")) {
 		debug = !debug;
 		bulletAppState.setDebugEnabled(debug);
-	    } else if (name.equals("mouse") && !singleplayer) {
+	    } else if (name.equals("exit")) {
+		Main.this.closeGame();
+	    }
+
+	    else if (name.equals("mouse") && !singleplayer) {
 		Main.this.mouse();
 	    }
 	}
@@ -194,6 +203,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     public void closeGame() {
 
+	if (this.multiplayer)
+	    this.multiPlayer.exit();
 	System.exit(0);
 
     }
@@ -204,14 +215,12 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     }
 
     public void openSinglePlayer() {
-
 	nifty.exit();
 	singlePlayer();
 
     }
 
     public void openMultiPlayer() {
-
 	nifty.exit();
 	multiPlayer();
     }

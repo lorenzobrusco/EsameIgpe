@@ -12,7 +12,13 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+
+import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
@@ -33,7 +39,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
-    private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
     private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
     private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
@@ -43,6 +48,11 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String NOIHAVENT = "no, I haven't";
     private final static String PATH = "assets/MultiPlayer/";
     private final static String PATHMODEL = "Models/Characters/";
+    private final static String attack1 = "Attack1";
+    private final static String attack2 = "Attack2";
+    private final static String run = "Run";
+    private final static String rotateClockwise = "rotateClockwise";
+    private final static String rotateCounterClockwise = "rotateCounterClockwise";
     public final static int FILE_SIZE = 7134962;
     private final static int LIFENUMBER = 100;
     private final static int DAMAGE = 5;
@@ -55,13 +65,15 @@ public class Client extends Thread implements CommunicationProtocol {
     private final String nameModel;
     private String nameTerrain;
     private final Node rootNode;
+    private final Camera cam;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode)
-	    throws UnknownHostException, IOException {
+    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode,
+	    final Camera cam) throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.namePlayer = namePlayer;
 	this.rootNode = rootNode;
+	this.cam = cam;
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -117,22 +129,20 @@ public class Client extends Thread implements CommunicationProtocol {
     public void endConnection() {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
-	    if (this.INPUT.readLine().equals(ACNOWLEDGEDCLOSECONNECTION)) {
-		this.socket.close();
-		this.INPUT.close();
-		this.OUTPUT.close();
-	    }
+	    this.establishedConnection = false;
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
     }
 
     @Override
-    public void communicationState() {
+    public synchronized void communicationState() {
 
 	try {
 	    float x, y, z;
 	    this.OUTPUT.writeBytes(this.IAM + "\n");
+	    this.OUTPUT.writeBytes(this.nameModel + "\n");
 	    if (GameManager.getIstance().getNodeThief().getCharacterControl() == null) {
 		x = 0;
 		y = 0;
@@ -167,7 +177,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
-    public void statePlayer() {
+    public synchronized void statePlayer() {
 	try {
 	    String player = this.INPUT.readLine();
 	    Vector3f walk = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
@@ -181,6 +191,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		rootNode.updateGeometricState();
 	    }
+	    System.out.println("client:  " + walk + " ---- " + view);
 
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -217,19 +228,24 @@ public class Client extends Thread implements CommunicationProtocol {
     @Override
     public void run() {
 
-	this.startConnection();
-	while (this.establishedConnection) {
-	    try {
+	try {
+	    this.startConnection();
+	    while (this.establishedConnection) {
 		final String message = INPUT.readLine();
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
-		if (message.equals(SENDSTATE) && GameManager.getIstance().getNodeThief() != null)
+		else if (message.equals(SENDSTATE))
 		    this.communicationState();
-		if (message.equals(PLAYER))
+		else if (message.equals(PLAYER))
 		    this.statePlayer();
-	    } catch (IOException e) {
-		e.printStackTrace();
+		else if (message.equals(CLOSE))
+		    endConnection();
 	    }
+	    this.socket.close();
+	    this.INPUT.close();
+	    this.OUTPUT.close();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 
@@ -270,11 +286,14 @@ public class Client extends Thread implements CommunicationProtocol {
 	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
+	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
+	GameManager.getIstance().getNodeThief().setCam(this.cam);
 	scene.attachChild(GameManager.getIstance().getNodeThief());
+	this.setKey();
     }
 
     public void addNewPlayers(String name, String model, String x, String y, String z) {
-	
+
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
 	spatial.setLocalTranslation(vector3f);
@@ -284,8 +303,29 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
 	GameManager.getIstance().getTerrain().attachChild(players);
+	name += model;
 	GameManager.getIstance().addPlayes(name, players);
 	rootNode.updateGeometricState();
+    }
+
+    public void setKey() {
+	GameManager.getIstance().getApplication().getInputManager().addMapping(run, new KeyTrigger(KeyInput.KEY_W));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(attack1,
+		new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(attack2,
+		new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateClockwise,
+		new KeyTrigger(KeyInput.KEY_A));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateCounterClockwise,
+		new KeyTrigger(KeyInput.KEY_D));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
+		new KeyTrigger(KeyInput.KEY_TAB));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
+		new KeyTrigger(KeyInput.KEY_LCONTROL));
+	GameManager.getIstance().getApplication().getInputManager().addListener(
+		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, "toggleRotate");
+	GameManager.getIstance().getApplication().getInputManager().addListener(
+		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }
 
     public String getNamePlayer() {

@@ -40,10 +40,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
-    private final static String ACNOWLEDGEDCLOSECONNECTION = "ok, closing connection";
     private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
     private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
     private final static String ENDSENDSTATE = "end send your state";
+    private final static String COMMUNICATIONSTATE = "communication state";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
     private final static String PATH = "assets/MultiPlayer/";
@@ -105,12 +105,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void endConnection() {
 	try {
-	    if (this.INPUT.readLine().equals(CLOSE)) {
-		this.INPUT.readLine().equals(ACNOWLEDGEDCLOSECONNECTION);
-		this.socket.close();
-		this.INPUT.close();
-		this.OUTPUT.close();
-	    }
+	    this.OUTPUT.writeBytes(CLOSE + "\n");
+	    this.establishedConnection = false;
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -126,6 +123,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    int life = 0;
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    address = this.INPUT.readLine();
+	    address += this.INPUT.readLine();
 	    walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()));
 	    viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
@@ -135,8 +133,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
 	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
 		for (ClientManager manager : this.server.getPlayers()) {
-		    if (manager != this)
-			manager.statePlayer(address, walkdirection, viewdirection, life);
+		    manager.statePlayer(address, walkdirection, viewdirection, life);
 		}
 	    }
 	    ;// TODO metodo che comunica a tutti lo spostamento
@@ -156,7 +153,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(view.y + "\n");
 	    this.OUTPUT.writeBytes(view.z + "\n");
 	    this.OUTPUT.writeBytes(life + "\n");
-	    System.out.println(walk + " - " + view);
+	    System.out.println("manager: " + walk + " - " + view + life);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -195,10 +192,21 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     @Override
     public void run() {
-
-	this.startConnection();
-	while (this.establishedConnection) {
-	    communicationState();
+	try {
+	    this.startConnection();
+	    while (this.establishedConnection) {
+		String message = this.INPUT.readLine();
+		if (message.equals(COMMUNICATIONSTATE))
+		    communicationState();
+		else if (message.equals(CLOSE))
+		    this.endConnection();
+	    }
+	    this.socket.close();
+	    this.INPUT.close();
+	    this.OUTPUT.close();
+	    this.server.remuvePlayer(this);
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 

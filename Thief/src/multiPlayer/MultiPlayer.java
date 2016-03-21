@@ -5,10 +5,6 @@ import java.io.IOException;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -20,11 +16,6 @@ import singlePlayer.Sound;
 
 public class MultiPlayer {
 
-    private final String attack1 = "Attack1";
-    private final String attack2 = "Attack2";
-    private final String run = "Run";
-    private final String rotateClockwise = "rotateClockwise";
-    private final String rotateCounterClockwise = "rotateCounterClockwise";
     private final ViewPort viewPort;
     private final Node rootNode;
     private Node nodeScene;
@@ -44,35 +35,32 @@ public class MultiPlayer {
 	cam.onFrameChange();
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
-	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode);
-	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
-	GameManager.getIstance().getNodeThief().setCam(cam);
-	this.setKey();
+	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
 	this.setupAmbientSound();
-
     }
 
-    public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode) {
-	final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
-	this.nodeScene.attachChild(terrainQuad);
-	this.nodeScene.addLight(loadTerrain.makeAmbientLight());
-	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
-	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
-	this.nodeScene.addControl(rigidBodyControl);
+    public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode,
+	    Camera cam) {
 	try {
-	    this.client = new Client(namePlayer, nameModel, address, rootNode);
+	    final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
+	    this.nodeScene.attachChild(terrainQuad);
+	    this.nodeScene.addLight(loadTerrain.makeAmbientLight());
+	    this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
+	    this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
+	    this.nodeScene.addControl(rigidBodyControl);
+	    this.client = new Client(namePlayer, nameModel, address, rootNode, cam);
+	    this.client.bornPosition(nodeScene);
 	    this.client.start();
+	    this.rootNode.attachChild(nodeScene);
+	    GameManager.getIstance().setTerrain(nodeScene);
+	    GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
+	    GameManager.getIstance().addPhysics();
+	    GameManager.getIstance().addPointLightToScene();
+	    this.render = new GameRender(terrainQuad);
+	    this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
-	this.client.bornPosition(nodeScene);
-	this.rootNode.attachChild(nodeScene);
-	GameManager.getIstance().setTerrain(nodeScene);
-	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
-	GameManager.getIstance().addPhysics();
-	GameManager.getIstance().addPointLightToScene();
-	this.render = new GameRender(terrainQuad);
-	this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
     }
 
     public void simpleUpdate(Float tpf) {
@@ -81,24 +69,8 @@ public class MultiPlayer {
 	    GameManager.getIstance().getNodeThief().stop();
     }
 
-    private void setKey() {
-	GameManager.getIstance().getApplication().getInputManager().addMapping(run, new KeyTrigger(KeyInput.KEY_W));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(attack1,
-		new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(attack2,
-		new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateClockwise,
-		new KeyTrigger(KeyInput.KEY_A));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateCounterClockwise,
-		new KeyTrigger(KeyInput.KEY_D));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-		new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
-		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, "toggleRotate");
-	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
+    public void exit() {
+	this.client.endConnection();
     }
 
     private void setupAmbientSound() {
