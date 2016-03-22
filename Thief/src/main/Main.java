@@ -116,7 +116,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.120.37", "lollo", "Rengar");// TODO
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.1.2", "lollo", "Yasuo");// TODO
 													  // inserire
 													  // ip
 													  // server

@@ -196,10 +196,12 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		rootNode.updateGeometricState();
 	    }
-	    System.out.println("client: " + player + "------" + walk + " ---- " + view);
+//	    System.out.println("client: " + player + "------" + walk + " ---- " + view);
 
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    System.out.println("errore di lettura");
+	} catch (NumberFormatException ex){
+	    System.err.println("errore");
 	}
     }
 

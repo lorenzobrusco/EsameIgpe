@@ -37,7 +37,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    this.channel.setAnim(idle);
 	} else {
 	    this.characterControl.setWalkDirection(direction);
-	    this.channel.setAnim(run);
+	    if (!this.channel.getAnimationName().equals(run))
+		this.channel.setAnim(run);
 	    if (this.getWorldTranslation().y < -9f) {
 		this.death();
 	    }
