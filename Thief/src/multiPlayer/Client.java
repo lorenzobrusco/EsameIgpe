@@ -109,9 +109,9 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(this.nameModel + "\n");
 		// TODO metodo per trovare un punto dove nascere privo di nemici
 		// e di ostacoli;
-		this.OUTPUT.writeBytes(50 + "\n");
+		this.OUTPUT.writeBytes(20 + "\n");
 		this.OUTPUT.writeBytes(0 + "\n");
-		this.OUTPUT.writeBytes(50 + "\n");
+		this.OUTPUT.writeBytes(20 + "\n");
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
@@ -174,6 +174,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    if (next) {
 		this.next = false;
+		System.out.println(next);
 		this.states.add(new ModelState(walk, view, life));
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    }
@@ -199,9 +200,9 @@ public class Client extends Thread implements CommunicationProtocol {
 //	    System.out.println("client: " + player + "------" + walk + " ---- " + view);
 
 	} catch (IOException e) {
-	    System.out.println("errore di lettura");
-	} catch (NumberFormatException ex){
-	    System.err.println("errore");
+	    System.out.println("connection");
+	} catch (NumberFormatException ex) {
+	    System.out.println("cast float");
 	}
     }
 
@@ -289,7 +290,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
-	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
+	spatial.setLocalTranslation(new Vector3f(20, 0, 20));
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);

@@ -114,17 +114,18 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
-	    
+
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    String address = this.INPUT.readLine();
 	    address += this.INPUT.readLine();
-	    final Vector3f walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
-		    Float.parseFloat(INPUT.readLine()));
-	    final Vector3f viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
-		    Float.parseFloat(INPUT.readLine()));
+	    final Vector3f walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
+		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
+	    final Vector3f viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
+		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
 
 	    final int life = Integer.parseInt(INPUT.readLine());
-//	    System.out.println("CMS: " + address + " --- " + walkdirection + " ------ "+ viewdirection);
+	    // System.out.println("CMS: " + address + " --- " + walkdirection +
+	    // " ------ "+ viewdirection);
 	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
 		for (ClientManager manager : this.server.getPlayers()) {
 		    manager.statePlayer(address, walkdirection, viewdirection, life);
@@ -132,7 +133,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    }
 	    ;// TODO metodo che comunica a tutti lo spostamento
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    System.out.println("client : connection");
+	} catch (NumberFormatException ex) {
+	    System.out.println("client : cast float");
 	}
     }
 
