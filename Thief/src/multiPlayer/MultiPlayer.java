@@ -56,6 +56,7 @@ public class MultiPlayer {
 	    GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	    GameManager.getIstance().addPhysics();
 	    GameManager.getIstance().addPointLightToScene();
+	    GameManager.getIstance().setClient(client);
 	    this.render = new GameRender(terrainQuad);
 	    this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
 	} catch (IOException e) {
@@ -64,9 +65,11 @@ public class MultiPlayer {
     }
 
     public void simpleUpdate(Float tpf) {
-	this.render.rayRendering();
+	if (GameManager.getIstance().getNodeThief().isControlRender()) {
+		this.render.rayRendering();
+	}
 	if (!GameManager.getIstance().getNodeThief().isRun())
-	    GameManager.getIstance().getNodeThief().stop();
+		GameManager.getIstance().getNodeThief().stop();
     }
 
     public void exit() {

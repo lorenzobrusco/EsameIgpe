@@ -40,10 +40,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
-    private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
-    private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
     private final static String ENDSENDSTATE = "end send your state";
-    private final static String COMMUNICATIONSTATE = "communication state";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
     private final static String PATH = "assets/MultiPlayer/";
@@ -117,20 +114,17 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
-	    String address;
-	    Vector3f walkdirection = null;
-	    Vector3f viewdirection = null;
-	    int life = 0;
+	    
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
-	    address = this.INPUT.readLine();
+	    String address = this.INPUT.readLine();
 	    address += this.INPUT.readLine();
-	    walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
+	    final Vector3f walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()));
-	    viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
+	    final Vector3f viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()));
-	    this.OUTPUT.writeBytes(ACNOWLEDGEDPOSITION + "\n");
-	    life = Integer.parseInt(INPUT.readLine());
-	    this.OUTPUT.writeBytes(ACNOWLEDGEDLIFE + "\n");
+
+	    final int life = Integer.parseInt(INPUT.readLine());
+//	    System.out.println("CMS: " + address + " --- " + walkdirection + " ------ "+ viewdirection);
 	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
 		for (ClientManager manager : this.server.getPlayers()) {
 		    manager.statePlayer(address, walkdirection, viewdirection, life);
@@ -153,7 +147,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(view.y + "\n");
 	    this.OUTPUT.writeBytes(view.z + "\n");
 	    this.OUTPUT.writeBytes(life + "\n");
-	    System.out.println("manager: " + walk + " - " + view + life);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -196,9 +189,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		String message = this.INPUT.readLine();
-		if (message.equals(COMMUNICATIONSTATE))
-		    communicationState();
-		else if (message.equals(CLOSE))
+		if (message.equals(SENDSTATE))
+		    this.communicationState();
+		if (message.equals(CLOSE))
 		    this.endConnection();
 	    }
 	    this.socket.close();
@@ -213,7 +206,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void notifyAllNewPlayer() {
 	for (ClientManager manager : this.server.getPlayers()) {
 	    manager.setNewPlayer(true);
-	    System.out.println("invio i miei dati al nuovo player");
 	    manager.communicationNewPlayer(this.address, this.nameModel, String.valueOf(this.startPosition.x),
 		    String.valueOf(this.startPosition.y), String.valueOf(this.startPosition.z));
 

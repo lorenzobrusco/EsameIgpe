@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -39,8 +41,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
-    private final static String ACNOWLEDGEDPOSITION = "ok, acnwoledged position";
-    private final static String ACNOWLEDGEDLIFE = "ok, acnwoledged life";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
@@ -61,9 +61,11 @@ public class Client extends Thread implements CommunicationProtocol {
     private final BufferedReader INPUT;
     private final DataOutputStream OUTPUT;
     private boolean establishedConnection;
+    private boolean next;
     private final String namePlayer;
     private final String nameModel;
     private String nameTerrain;
+    private Queue<ModelState> states;
     private final Node rootNode;
     private final Camera cam;
 
@@ -71,9 +73,11 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final Camera cam) throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
+	this.next = true;
 	this.namePlayer = namePlayer;
 	this.rootNode = rootNode;
 	this.cam = cam;
+	this.states = new LinkedBlockingQueue<>();
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -137,47 +141,48 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     @Override
-    public synchronized void communicationState() {
+    public void communicationState() {
 
 	try {
-	    float x, y, z;
+
+	    ModelState stateModel = this.states.poll();
+
 	    this.OUTPUT.writeBytes(this.IAM + "\n");
 	    this.OUTPUT.writeBytes(this.nameModel + "\n");
-	    if (GameManager.getIstance().getNodeThief().getCharacterControl() == null) {
-		x = 0;
-		y = 0;
-		z = 0;
-	    } else {
-		x = GameManager.getIstance().getNodeThief().getCharacterControl().getWalkDirection().x;
-		y = GameManager.getIstance().getNodeThief().getCharacterControl().getWalkDirection().y;
-		z = GameManager.getIstance().getNodeThief().getCharacterControl().getWalkDirection().z;
-	    }
-	    this.OUTPUT.writeBytes(x + "\n");
-	    this.OUTPUT.writeBytes(y + "\n");
-	    this.OUTPUT.writeBytes(z + "\n");
-	    if (GameManager.getIstance().getNodeThief().getCharacterControl() == null) {
-		x = 0;
-		y = 0;
-		z = 0;
-	    } else {
-		x = GameManager.getIstance().getNodeThief().getCharacterControl().getViewDirection().x;
-		y = GameManager.getIstance().getNodeThief().getCharacterControl().getViewDirection().y;
-		z = GameManager.getIstance().getNodeThief().getCharacterControl().getViewDirection().z;
-	    }
-	    this.OUTPUT.writeBytes(x + "\n");
-	    this.OUTPUT.writeBytes(y + "\n");
-	    this.OUTPUT.writeBytes(z + "\n");
-	    if (this.INPUT.readLine().equals(ACNOWLEDGEDPOSITION))
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLIFE() + "\n");
-	    if (this.INPUT.readLine().equals(ACNOWLEDGEDLIFE))
-		this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
+
+	    this.OUTPUT.writeBytes(stateModel.getWalk().x + "\n");
+	    this.OUTPUT.writeBytes(stateModel.getWalk().y + "\n");
+	    this.OUTPUT.writeBytes(stateModel.getWalk().z + "\n");
+
+	    this.OUTPUT.writeBytes(stateModel.getView().x + "\n");
+	    this.OUTPUT.writeBytes(stateModel.getView().y + "\n");
+	    this.OUTPUT.writeBytes(stateModel.getView().z + "\n");
+
+	    this.OUTPUT.writeBytes(stateModel.getLife() + "\n");
+
+	    this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
+
+	    this.next = true;
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
 
     }
 
-    public synchronized void statePlayer() {
+    public void notifyUpdate(Vector3f walk, Vector3f view, int life) {
+	try {
+	    if (next) {
+		this.next = false;
+		this.states.add(new ModelState(walk, view, life));
+		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    }
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+    }
+
+    public void statePlayer() {
 	try {
 	    String player = this.INPUT.readLine();
 	    Vector3f walk = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
@@ -186,12 +191,12 @@ public class Client extends Thread implements CommunicationProtocol {
 		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
 	    int life = Integer.parseInt(this.INPUT.readLine());
 	    if (GameManager.getIstance().getPlayers().get(player) != null) {
-		GameManager.getIstance().getPlayers().get(player).getCharacterControl().setViewDirection(view);
-		GameManager.getIstance().getPlayers().get(player).getCharacterControl().setWalkDirection(walk);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setViewDirection(view);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setWalkDirection(walk);
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		rootNode.updateGeometricState();
 	    }
-	    System.out.println("client:  " + walk + " ---- " + view);
+	    System.out.println("client: " + player + "------" + walk + " ---- " + view);
 
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -219,7 +224,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
 		    INPUT.readLine());
-
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

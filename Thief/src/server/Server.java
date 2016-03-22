@@ -39,25 +39,31 @@ public class Server extends Thread {
 
     }
 
-    public void newPlayer(){
-	for(ClientManager managers : this.players){
+    public void newPlayer() {
+	for (ClientManager managers : this.players) {
 	    managers.setNewPlayer(true);
 	}
     }
-    
+
     public void stopServer() {
 	this.start = false;
     }
 
     public synchronized void addPlayer(ClientManager clientManager) {
-	this.players.add(clientManager);
+	boolean exist = false;
+	for (ClientManager manager : this.players) {
+	    if (manager.getAddress().equals(clientManager.getAddress()))
+		exist = true;
+	}
+	if (!exist)
+	    this.players.add(clientManager);
     }
 
     public synchronized void remuvePlayer(ClientManager clientManager) {
 	this.players.remove(clientManager);
     }
-    
-    public synchronized Collection<ClientManager> getPlayers(){
+
+    public synchronized Collection<ClientManager> getPlayers() {
 	return this.players;
     }
 

@@ -21,6 +21,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import editor.LoadTerrain;
 import logic.World;
+import multiPlayer.Client;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -45,6 +46,7 @@ public class GameManager {
     private Node terrain;
     private AudioRenderer audioRenderer;
     private boolean editor;
+    private Client client;
     private float worldXExtent;
     private float worldZExtent;
     private boolean[][] secondLayer;
@@ -84,6 +86,14 @@ public class GameManager {
     public void setPanelGame(PanelGame game) {
 	control = new GameControl(new World(1200, 650, 0));
 	this.game = game;
+    }
+
+    public void setClient(final Client client) {
+	this.client = client;
+    }
+    
+    public Client getClient(){
+	return this.client;
     }
 
     public void addPointShadow(Vector3f localTranslation) {
