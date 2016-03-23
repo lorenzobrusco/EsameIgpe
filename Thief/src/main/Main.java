@@ -116,10 +116,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.1.2", "lollo", "Yasuo");// TODO
-													  // inserire
-													  // ip
-													  // server
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.120.37", "Lorenzo", "Yasuo");
+	// TODO inserire ip server
 	flyCam.setEnabled(true);
 	this.initKeys();
 	this.menuSound.stopSound();
@@ -174,25 +172,21 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     @Override
     public void onAction(String arg0, boolean arg1, float arg2) {
-	// TODO Auto-generated method stub
 
     }
 
     @Override
     public void bind(Nifty arg0, Screen arg1) {
-	// TODO Auto-generated method stub
 
     }
 
     @Override
     public void onEndScreen() {
-	// TODO Auto-generated method stub
 
     }
 
     @Override
     public void onStartScreen() {
-	// TODO Auto-generated method stub
 
     }
 

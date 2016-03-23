@@ -46,6 +46,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String YESIHAVE = "yes, I have";
     private final static String NOIHAVENT = "no, I haven't";
+    private final static String DELETE = "delete this player ";
     private final static String PATH = "assets/MultiPlayer/";
     private final static String PATHMODEL = "Models/Characters/";
     private final static String attack1 = "Attack1";
@@ -57,14 +58,14 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static int LIFENUMBER = 100;
     private final static int DAMAGE = 5;
     private final String IAM;
+    private final String namePlayer;
+    private final String nameModel;
+    private String nameTerrain;
     private final Socket socket;
     private final BufferedReader INPUT;
     private final DataOutputStream OUTPUT;
     private boolean establishedConnection;
     private boolean next;
-    private final String namePlayer;
-    private final String nameModel;
-    private String nameTerrain;
     private Queue<ModelState> states;
     private final Node rootNode;
     private final Camera cam;
@@ -133,6 +134,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void endConnection() {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
+	    this.OUTPUT.writeBytes(IAM + nameModel + "\n");
 	    this.establishedConnection = false;
 
 	} catch (IOException e) {
@@ -160,6 +162,8 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    this.OUTPUT.writeBytes(stateModel.getLife() + "\n");
 
+	    this.OUTPUT.writeBytes(stateModel.isAttack() + "\n");
+
 	    this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
 
 	    this.next = true;
@@ -170,12 +174,12 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
-    public void notifyUpdate(Vector3f walk, Vector3f view, int life) {
+    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack) {
 	try {
 	    if (next) {
 		this.next = false;
 		System.out.println(next);
-		this.states.add(new ModelState(walk, view, life));
+		this.states.add(new ModelState(walk, view, life, attack));
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    }
 	} catch (IOException e) {
@@ -183,26 +187,51 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void statePlayer() {
+    public void communicateExitPlayer() {
 	try {
-	    String player = this.INPUT.readLine();
-	    Vector3f walk = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
+	    String player = INPUT.readLine();
+	    this.remuveModel(player);
+	} catch (IOException e) {
+	    // TODO da gestire
+	}
+    }
+
+    public void statePlayer() {
+	String player = null;
+	try {
+	    player = this.INPUT.readLine();
+
+	    final Vector3f walk = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
 		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
-	    Vector3f view = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
+
+	    final Vector3f view = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
 		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
-	    int life = Integer.parseInt(this.INPUT.readLine());
+
+	    final int life = Integer.parseInt(this.INPUT.readLine());
+
+	    final boolean attack = Boolean.parseBoolean(INPUT.readLine());
+
 	    if (GameManager.getIstance().getPlayers().get(player) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setViewDirection(view);
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setWalkDirection(walk);
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
+		if (attack)
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
 		rootNode.updateGeometricState();
 	    }
-//	    System.out.println("client: " + player + "------" + walk + " ---- " + view);
+	    // TODO controllare ogni n secondi che la posizione dei nemici
+	    // corrisponda con quella che il server consosce
 
 	} catch (IOException e) {
 	    System.out.println("connection");
 	} catch (NumberFormatException ex) {
-	    System.out.println("cast float");
+	    if (GameManager.getIstance().getPlayers().get(player) != null) {
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
+			.setViewDirection(new Vector3f(0, -2f, 0));
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
+			.setWalkDirection(new Vector3f(0, -2f, 0));
+		rootNode.updateGeometricState();
+	    }
 	}
     }
 
@@ -245,8 +274,10 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.communicationState();
 		else if (message.equals(PLAYER))
 		    this.statePlayer();
+		else if (message.equals(DELETE))
+		    this.communicateExitPlayer();
 		else if (message.equals(CLOSE))
-		    endConnection();
+		    this.endConnection();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();
@@ -291,7 +322,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
 	spatial.setLocalTranslation(new Vector3f(20, 0, 20));
-	GameManager.getIstance().setNodeThief(new NodeThief(spatial));
+	GameManager.getIstance().setNodeThief(new NodeThief(spatial, true));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(this.cam);
@@ -311,7 +342,15 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addModel(players);
 	GameManager.getIstance().getTerrain().attachChild(players);
 	name += model;
+	players.setName(name);
 	GameManager.getIstance().addPlayes(name, players);
+	rootNode.updateGeometricState();
+    }
+
+    public void remuveModel(String key) {
+	GameManager.getIstance().getTerrain().detachChild(GameManager.getIstance().getPlayers().get(key));
+	GameManager.getIstance().removePlayers(key);
+	GameManager.getIstance().remuveModel(key);
 	rootNode.updateGeometricState();
     }
 

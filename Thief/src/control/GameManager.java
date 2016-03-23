@@ -188,6 +188,15 @@ public class GameManager {
 	spatial.add(model);
     }
 
+    public void remuveModel(String name){
+	for(NodeModel model : this.spatial){
+	    if(model.getName().equals(name)){
+		this.spatial.remove(model);
+		return;
+	    }
+	}
+    }
+    
     public Stack<NodeModel> getModels() {
 	return spatial;
     }

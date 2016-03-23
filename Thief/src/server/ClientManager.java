@@ -43,6 +43,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String ENDSENDSTATE = "end send your state";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
+    private final static String DELETE = "delete this player ";
     private final static String PATH = "assets/MultiPlayer/";
 
     public ClientManager(Server server, Socket socket) throws IOException {
@@ -103,6 +104,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void endConnection() {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
+	    String client = this.INPUT.readLine();
 	    this.establishedConnection = false;
 
 	} catch (IOException e) {
@@ -116,19 +118,24 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+
 	    String address = this.INPUT.readLine();
 	    address += this.INPUT.readLine();
+
 	    final Vector3f walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
+
 	    final Vector3f viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
 
 	    final int life = Integer.parseInt(INPUT.readLine());
+
+	    final boolean attack = Boolean.parseBoolean(INPUT.readLine());
 	    // System.out.println("CMS: " + address + " --- " + walkdirection +
 	    // " ------ "+ viewdirection);
 	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
 		for (ClientManager manager : this.server.getPlayers()) {
-		    manager.statePlayer(address, walkdirection, viewdirection, life);
+		    manager.statePlayer(address, walkdirection, viewdirection, life, attack);
 		}
 	    }
 	    ;// TODO metodo che comunica a tutti lo spostamento
@@ -139,7 +146,18 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void statePlayer(String address, Vector3f walk, Vector3f view, int life) {
+    public void communicateExitPlayer(String player) {
+	try {
+	    this.OUTPUT.writeBytes(DELETE + "\n");
+	    for (ClientManager manager : this.server.getPlayers()) {
+		//TODO finire
+	    }
+	} catch (IOException e) {
+	    // TODO da gestire
+	}
+    }
+
+    public void statePlayer(String address, Vector3f walk, Vector3f view, int life, boolean attack) {
 	try {
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
 	    this.OUTPUT.writeBytes(address + "\n");
@@ -150,6 +168,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(view.y + "\n");
 	    this.OUTPUT.writeBytes(view.z + "\n");
 	    this.OUTPUT.writeBytes(life + "\n");
+	    this.OUTPUT.writeBytes(attack + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}

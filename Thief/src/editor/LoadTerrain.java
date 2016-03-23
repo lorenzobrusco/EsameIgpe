@@ -69,7 +69,7 @@ public class LoadTerrain {
 	}
 
 	private void createNodeThief(TerrainQuad terrain, Spatial spatial, boolean editor) {
-		NodeThief nodeModel = new NodeThief(spatial);
+		NodeThief nodeModel = new NodeThief(spatial,false);
 		GameManager.getIstance().setNodeThief(nodeModel);
 		GameManager.getIstance().addModel(nodeModel);
 		if (editor) {

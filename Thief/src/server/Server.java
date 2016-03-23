@@ -75,7 +75,6 @@ public class Server extends Thread {
 	try {
 	    new Server("mountain").start();
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
     }

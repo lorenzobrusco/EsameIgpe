@@ -71,6 +71,12 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void startAttack() {
 	super.startAttack();
     }
+    
+    @Override
+    public void checkCollition() {
+     
+        super.checkCollition();
+    }
 
     @Override
     public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {

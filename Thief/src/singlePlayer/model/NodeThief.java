@@ -30,6 +30,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean changeAttack;
     private boolean waitAnimation;
     private boolean notify;
+    private boolean multiplayer;
     private int controlRender;
     private final int RENDER = 25;
     private final float SPEED = 15;
@@ -50,12 +51,13 @@ public class NodeThief extends NodeCharacter implements Collition {
     private int currentTime;
     private int talkFrequence;
 
-    public NodeThief(Spatial model) {
+    public NodeThief(Spatial model, boolean multiplayer) {
 	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10000, 10);
 	this.controlRender = RENDER;
 	this.isRun = false;
 	this.waitAnimation = false;
 	this.notify = false;
+	this.multiplayer = multiplayer;
 	this.currentTime = (int) System.currentTimeMillis();
 	this.talkFrequence = 20;
 	this.setViewed(true);
@@ -73,30 +75,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     }
 
-    public ChaseCamera getCamera() {
-	return this.camera;
-    }
-
-    public Camera getCameraDir() {
-	return this.cameraDirection;
-    }
-
-    public BetterCharacterControl getControl() {
-	return this.characterControl;
-    }
-
-    public boolean isRun() {
-	return this.isRun;
-    }
-
-    public boolean isSinglePlayer() {
-	return isSinglePlayer;
-    }
-
-    public void setSinglePlayer(boolean isSinglePlayer) {
-	this.isSinglePlayer = isSinglePlayer;
-    }
-
     public boolean isControlRender() {
 	if (!this.isRun) {
 	    this.saySomething();
@@ -110,7 +88,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     public void stop() {
 	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	// this.walkingOnGrassSound.stopSound(); //TODO test
+	// this.walkingOnGrassSound.stopSound();
+	// TODO test
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
@@ -118,7 +97,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     public void run() {
 	this.resetCurrentTime();
-	// this.walkingOnGrassSound.playSound(); //TODO test
+	// this.walkingOnGrassSound.playSound();
+	// TODO test
 	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 	vector3f.y = -2f;
 	this.characterControl.setWalkDirection(vector3f);
@@ -134,7 +114,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    super.death();
 	    this.resetCurrentTime();
 	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	    // this.walkingOnGrassSound.stopSound(); //TODO test
+	    // this.walkingOnGrassSound.stopSound();
+	    // TODO test
 	}
     }
 
@@ -150,86 +131,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    this.channel.setSpeed(0.7f);
 	    this.waitAnimation = true;
 
-	}
-    }
-
-    public AnalogListener analogListener = new AnalogListener() {
-	public void onAnalog(String name, float value, float tpf) {
-	    if (name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
-		run();
-	    }
-	    if (name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
-		Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
-		rotateL.multLocal(viewDirection);
-	    } else if (name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
-		Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
-		rotateR.multLocal(viewDirection);
-	    }
-	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-		    characterControl.getViewDirection(), getLIFE());
-	    viewDirection.y = -2f;
-	    characterControl.setViewDirection(viewDirection);
-	}
-    };
-
-    public ActionListener actionListener = new ActionListener() {
-	public void onAction(String name, boolean pressed, float value) {
-	    if (name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
-		GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-			characterControl.getViewDirection(), getLIFE());
-		NodeThief.this.isRun = true;
-		NodeThief.this.channel.setAnim(run);
-	    } else if (name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
-		GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-			characterControl.getViewDirection(), getLIFE());
-		NodeThief.this.stop();
-		NodeThief.this.isRun = false;
-		NodeThief.this.channel.setAnim(idle);
-	    } else if (name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
-		    && !NodeThief.this.waitAnimation) {
-		GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-			characterControl.getViewDirection(), getLIFE());
-		NodeThief.this.stop();
-		NodeThief.this.isRun = false;
-		NodeThief.this.waitAnimation = true;
-		if (!NodeThief.this.changeAttack) {
-		    NodeThief.this.channel.setAnim(attack1);
-		    NodeThief.this.channel.setSpeed(3f);
-		} else {
-		    NodeThief.this.channel.setAnim(attack4);
-		    NodeThief.this.channel.setSpeed(2f);
-		}
-		NodeThief.this.startAttack();
-		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
-		NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
-	    } else if (name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
-		    && !NodeThief.this.waitAnimation && !NodeThief.this.isRun) {
-		NodeThief.this.stop();
-		NodeThief.this.isRun = false;
-		NodeThief.this.sitNearToBonFire();
-	    }
-	}
-    };
-
-    @Override
-    public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
-
-	if (arg2.equals(attack1)) {
-	    arg1.setAnim(idle);
-	    NodeThief.this.waitAnimation = false;
-	    NodeThief.this.endAttack();
-	}
-	if (arg2.equals(attack4)) {
-	    NodeThief.this.waitAnimation = false;
-	    arg1.setAnim(idle);
-	    NodeThief.this.endAttack();
-	}
-	if (arg2.equals(bonfire)) {
-	    arg1.setAnim(idle);
-	    NodeThief.this.waitAnimation = false;
-	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
-		enemy.resetAll();
-	    }
 	}
     }
 
@@ -249,6 +150,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
     }
 
+    public void resetCurrentTime() {
+	this.currentTime = (int) System.currentTimeMillis();
+    }
+
     @Override
     public void startAttack() {
 	this.resetCurrentTime();
@@ -258,8 +163,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     }
 
-    public void resetCurrentTime() {
-	this.currentTime = (int) System.currentTimeMillis();
+    public void notifyUpdate(boolean attack) {
+
+	if (this.multiplayer)
+	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
+		    characterControl.getViewDirection(), getLIFE(), attack);
+
     }
 
     private void saySomething() {
@@ -318,10 +227,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 	// this.talkFrequence) {
 	// this.currentTime = (int) System.currentTimeMillis();
 	// }
+	// TODO tenere commentati fin quando non saranno presi tutti i file
+	// audio per ogni personaggio
     }
 
     public void playEnemyView() {
 	// this.enemyView.playSound();
+	// TODO tenere commentati fin quando non saranno presi tutti i file
+	// audio per ogni personaggio
     }
 
     @Override
@@ -361,6 +274,108 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    // 1.0f, false);
 	    // this.enemyView = new Sound(this, "EnemyView", false, false,
 	    // false, 1.0f, false);
+	    // TODO tenere commentati fin quando non saranno presi tutti i file
+	    // audio per ogni personaggio
 	}
+    }
+
+    public AnalogListener analogListener = new AnalogListener() {
+	public void onAnalog(String name, float value, float tpf) {
+	    if (name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+		run();
+	    }
+	    if (name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+		Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
+		rotateL.multLocal(viewDirection);
+	    } else if (name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+		Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
+		rotateR.multLocal(viewDirection);
+	    }
+	    NodeThief.this.notifyUpdate(false);
+	    viewDirection.y = -2f;
+	    characterControl.setViewDirection(viewDirection);
+	}
+    };
+
+    public ActionListener actionListener = new ActionListener() {
+	public void onAction(String name, boolean pressed, float value) {
+	    if (name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+		NodeThief.this.notifyUpdate(false);
+		NodeThief.this.isRun = true;
+		NodeThief.this.channel.setAnim(run);
+	    } else if (name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+		NodeThief.this.notifyUpdate(false);
+		NodeThief.this.stop();
+		NodeThief.this.isRun = false;
+		NodeThief.this.channel.setAnim(idle);
+	    } else if (name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
+		    && !NodeThief.this.waitAnimation) {
+		NodeThief.this.notifyUpdate(true);
+		NodeThief.this.stop();
+		NodeThief.this.isRun = false;
+		NodeThief.this.waitAnimation = true;
+		if (!NodeThief.this.changeAttack) {
+		    NodeThief.this.channel.setAnim(attack1);
+		    NodeThief.this.channel.setSpeed(3f);
+		} else {
+		    NodeThief.this.channel.setAnim(attack4);
+		    NodeThief.this.channel.setSpeed(2f);
+		}
+		NodeThief.this.startAttack();
+		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
+		NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
+	    } else if (name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
+		    && !NodeThief.this.waitAnimation && !NodeThief.this.isRun) {
+		NodeThief.this.stop();
+		NodeThief.this.isRun = false;
+		NodeThief.this.sitNearToBonFire();
+	    }
+	}
+    };
+
+    @Override
+    public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
+
+	if (arg2.equals(attack1)) {
+	    arg1.setAnim(idle);
+	    NodeThief.this.waitAnimation = false;
+	    NodeThief.this.endAttack();
+	}
+	if (arg2.equals(attack4)) {
+	    NodeThief.this.waitAnimation = false;
+	    arg1.setAnim(idle);
+	    NodeThief.this.endAttack();
+	}
+	if (arg2.equals(bonfire)) {
+	    arg1.setAnim(idle);
+	    NodeThief.this.waitAnimation = false;
+	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+		enemy.resetAll();
+	    }
+	}
+    }
+
+    public ChaseCamera getCamera() {
+	return this.camera;
+    }
+
+    public Camera getCameraDir() {
+	return this.cameraDirection;
+    }
+
+    public BetterCharacterControl getControl() {
+	return this.characterControl;
+    }
+
+    public boolean isRun() {
+	return this.isRun;
+    }
+
+    public boolean isSinglePlayer() {
+	return isSinglePlayer;
+    }
+
+    public void setSinglePlayer(boolean isSinglePlayer) {
+	this.isSinglePlayer = isSinglePlayer;
     }
 }
