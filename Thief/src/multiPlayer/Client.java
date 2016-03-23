@@ -112,6 +112,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
 		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
 		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
+		
+		System.out.println(nameModel + "---" + GameManager.getIstance().getNodeThief().getLocalTranslation());
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
@@ -339,6 +341,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
 	spatial.setLocalTranslation(vector3f);
+	System.out.println(vector3f);
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), vector3f, LIFENUMBER,
 		DAMAGE, name);
 	players.addCharacterControll();
