@@ -105,6 +105,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
 	    String client = this.INPUT.readLine();
+	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
 
 	} catch (IOException e) {
@@ -150,10 +151,18 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.OUTPUT.writeBytes(DELETE + "\n");
 	    for (ClientManager manager : this.server.getPlayers()) {
-		//TODO finire
+		manager.sendPlayerToDelete(player);
 	    }
 	} catch (IOException e) {
 	    // TODO da gestire
+	}
+    }
+
+    public void sendPlayerToDelete(String player) {
+	try {
+	    this.OUTPUT.writeBytes(player + "\n");
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 

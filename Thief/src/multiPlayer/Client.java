@@ -352,6 +352,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().removePlayers(key);
 	GameManager.getIstance().remuveModel(key);
 	rootNode.updateGeometricState();
+	//rootNode.fo
     }
 
     public void setKey() {
