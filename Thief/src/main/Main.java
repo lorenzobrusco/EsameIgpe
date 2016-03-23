@@ -91,7 +91,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     @Override
     public void simpleUpdate(float tpf) {
-	super.simpleUpdate(tpf);
 	if (singleplayer)
 	    player.simpleUpdate(tpf);
 	else if (editor)
@@ -117,8 +116,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.0.11", "Lorenzo", "Rengar");
-	// TODO inserire ip server 
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.1.12", "Lorenzo", "Yasuo");	// TODO inserire ip server 
 	flyCam.setEnabled(true);
 	this.initKeys();
 	this.menuSound.stopSound();

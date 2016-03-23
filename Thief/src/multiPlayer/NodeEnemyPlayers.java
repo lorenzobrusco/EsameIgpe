@@ -82,10 +82,10 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void startAttack() {
 	super.startAttack();
 	this.waitAnimation = true;
-	if (switchAttack)
+	if (!switchAttack)
 	    this.channel.setAnim(attack1);
 	else
-	    this.channel.setAnim(attack2);
+	    this.channel.setAnim(attack4);
 	this.switchAttack = !this.switchAttack;
     }
 

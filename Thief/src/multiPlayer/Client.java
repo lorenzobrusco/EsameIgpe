@@ -109,9 +109,9 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(this.nameModel + "\n");
 		// TODO metodo per trovare un punto dove nascere privo di nemici
 		// e di ostacoli;
-		this.OUTPUT.writeBytes(20 + "\n");
-		this.OUTPUT.writeBytes(0 + "\n");
-		this.OUTPUT.writeBytes(20 + "\n");
+		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
+		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
+		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
@@ -217,7 +217,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
-//		rootNode.updateGeometricState();
+//		rootNode.updateLogicalState(1f);
+		rootNode.updateGeometricState();
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
@@ -230,7 +231,8 @@ public class Client extends Thread implements CommunicationProtocol {
 			.setViewDirection(new Vector3f(0, -2f, 0));
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
 			.setWalkDirection(new Vector3f(0, -2f, 0));
-//		rootNode.updateGeometricState();
+//		rootNode.updateLogicalState(1f);
+		rootNode.updateGeometricState();
 	    }
 	}
     }
@@ -322,7 +324,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
-	spatial.setLocalTranslation(new Vector3f(20, 0, 20));
+	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial, true));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
@@ -345,8 +347,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getTerrain().attachChild(players);
 	players.setName(name);
 	GameManager.getIstance().addPlayes(name, players);
-	// rootNode.updateGeometricState();
 	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
+	rootNode.updateLogicalState(1f);
+	rootNode.updateGeometricState();
     }
 
     public void removeModel(String key) {
@@ -355,6 +358,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		.addNotifyStateModel(new NotifyStateModel(false, GameManager.getIstance().getPlayers().get(key)));
 	GameManager.getIstance().removePlayers(key);
 	GameManager.getIstance().removeModel(key);
+	rootNode.updateLogicalState(1f);
+	rootNode.updateGeometricState();
 
     }
 
