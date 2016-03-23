@@ -59,7 +59,7 @@ public class Server extends Thread {
 	    this.players.add(clientManager);
     }
 
-    public synchronized void remuvePlayer(ClientManager clientManager) {
+    public synchronized void removePlayer(ClientManager clientManager) {
 	this.players.remove(clientManager);
     }
 

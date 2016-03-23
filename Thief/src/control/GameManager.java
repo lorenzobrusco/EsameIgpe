@@ -1,8 +1,12 @@
 package control;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioRenderer;
@@ -22,6 +26,7 @@ import com.jme3.scene.debug.WireBox;
 import editor.LoadTerrain;
 import logic.World;
 import multiPlayer.Client;
+import multiPlayer.NotifyStateModel;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -31,11 +36,12 @@ import singlePlayer.travel.PanelGame;
 public class GameManager {
 
     private static GameManager manager;
-    private Stack<NodeModel> spatial;
-    private ArrayList<NodeModel> nodeRender;
-    private ArrayList<NodeCharacter> enemies;
-    private HashMap<String, NodeCharacter> players;
-    private ArrayList<PointLight> lights;
+    private Collection<NodeModel> spatial;
+    private Collection<NodeModel> nodeRender;
+    private Collection<NodeCharacter> enemies;
+    private Collection<PointLight> lights;
+    private Collection<NotifyStateModel> notifyStateModels;
+    private AbstractMap<String, NodeCharacter> players;
     private GameControl control;
     private PanelGame game;
     private SimpleApplication application;
@@ -58,6 +64,7 @@ public class GameManager {
 	this.enemies = new ArrayList<>();
 	this.lights = new ArrayList<>();
 	this.players = new HashMap<>();
+	this.notifyStateModels = new ConcurrentLinkedQueue<>();
 	this.editor = false;
     }
 
@@ -91,8 +98,8 @@ public class GameManager {
     public void setClient(final Client client) {
 	this.client = client;
     }
-    
-    public Client getClient(){
+
+    public Client getClient() {
 	return this.client;
     }
 
@@ -141,7 +148,7 @@ public class GameManager {
 	this.enemies.add(enemy);
     }
 
-    public ArrayList<NodeCharacter> getModelEnemys() {
+    public Collection<NodeCharacter> getModelEnemys() {
 	return this.enemies;
     }
 
@@ -156,7 +163,7 @@ public class GameManager {
 	this.nodeRender.remove(model);
     }
 
-    public ArrayList<NodeModel> getNodeModel() {
+    public Collection<NodeModel> getNodeModel() {
 	return this.nodeRender;
     }
 
@@ -164,7 +171,7 @@ public class GameManager {
 	game.repaint();
     }
 
-    public ArrayList<NodeCharacter> getEnemys() {
+    public Collection<NodeCharacter> getEnemys() {
 	return this.enemies;
     }
 
@@ -188,16 +195,28 @@ public class GameManager {
 	spatial.add(model);
     }
 
-    public void remuveModel(String name){
-	for(NodeModel model : this.spatial){
-	    if(model.getName().equals(name)){
+    public void addNotifyStateModel(NotifyStateModel notifyStateModel) {
+	this.notifyStateModels.add(notifyStateModel);
+    }
+
+    public NotifyStateModel getNotifyStateModel() {
+	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
+    }
+
+    public Collection<NotifyStateModel> getNotyStateModels() {
+	return this.notifyStateModels;
+    }
+
+    public void removeModel(String name) {
+	for (NodeModel model : this.spatial) {
+	    if (model.getName().equals(name)) {
 		this.spatial.remove(model);
 		return;
 	    }
 	}
     }
-    
-    public Stack<NodeModel> getModels() {
+
+    public Collection<NodeModel> getModels() {
 	return spatial;
     }
 
@@ -213,7 +232,7 @@ public class GameManager {
 	this.thief = thief;
     }
 
-    public HashMap<String, NodeCharacter> getPlayers() {
+    public AbstractMap<String, NodeCharacter> getPlayers() {
 	return this.players;
     }
 
@@ -222,7 +241,7 @@ public class GameManager {
     }
 
     public void removePlayers(String address) {
-	this.removePlayers(address);
+	this.players.remove(address);
     }
 
     public NodeModel getBonfire() {
@@ -233,7 +252,7 @@ public class GameManager {
 	this.bonfire = bonfire;
     }
 
-    public ArrayList<PointLight> getLights() {
+    public Collection<PointLight> getLights() {
 	return this.lights;
     }
 

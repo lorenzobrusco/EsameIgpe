@@ -65,11 +65,21 @@ public class MultiPlayer {
     }
 
     public void simpleUpdate(Float tpf) {
-	if (GameManager.getIstance().getNodeThief().isControlRender()) {
-		this.render.rayRendering();
-	}
+	if (GameManager.getIstance().getNodeThief().isControlRender())
+	    this.render.rayRendering();
 	if (!GameManager.getIstance().getNodeThief().isRun())
-		GameManager.getIstance().getNodeThief().stop();
+	    GameManager.getIstance().getNodeThief().stop();
+	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {
+	    System.out.println("state");
+	    NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
+	    if (stateModel.isAttach()) {
+		GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
+	    } else {
+		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
+	    }
+
+	}
+
     }
 
     public void exit() {

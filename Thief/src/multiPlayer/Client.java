@@ -14,7 +14,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -67,11 +66,11 @@ public class Client extends Thread implements CommunicationProtocol {
     private boolean establishedConnection;
     private boolean next;
     private Queue<ModelState> states;
-    private final Node rootNode;
+    private Node rootNode;
     private final Camera cam;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode,
-	    final Camera cam) throws UnknownHostException, IOException {
+    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode, final Camera cam)
+	    throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.next = true;
@@ -190,7 +189,8 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicateExitPlayer() {
 	try {
 	    String player = INPUT.readLine();
-	    this.remuveModel(player);
+	    System.out.println(player);
+	    this.removeModel(player);
 	} catch (IOException e) {
 	    // TODO da gestire
 	}
@@ -217,7 +217,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
-		rootNode.updateGeometricState();
+		 rootNode.updateGeometricState();
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
@@ -268,6 +268,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = INPUT.readLine();
+		System.out.println(message);
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
 		else if (message.equals(SENDSTATE))
@@ -345,14 +346,15 @@ public class Client extends Thread implements CommunicationProtocol {
 	players.setName(name);
 	GameManager.getIstance().addPlayes(name, players);
 	rootNode.updateGeometricState();
+	//GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
     }
 
-    public void remuveModel(String key) {
-	GameManager.getIstance().getTerrain().detachChild(GameManager.getIstance().getPlayers().get(key));
+    public void removeModel(String key) {
+
+	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, GameManager.getIstance().getPlayers().get(key)));
 	GameManager.getIstance().removePlayers(key);
-	GameManager.getIstance().remuveModel(key);
-	rootNode.updateGeometricState();
-	//rootNode.fo
+	GameManager.getIstance().removeModel(key);
+
     }
 
     public void setKey() {
