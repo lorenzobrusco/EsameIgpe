@@ -133,8 +133,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    final int life = Integer.parseInt(INPUT.readLine());
 
 	    final boolean attack = Boolean.parseBoolean(INPUT.readLine());
-	    // System.out.println("CMS: " + address + " --- " + walkdirection +
-	    // " ------ "+ viewdirection);
+	     System.out.println("CMS: " + address + " --- " + walkdirection +
+	     " ------ "+ viewdirection);
 	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
 		for (ClientManager manager : this.server.getPlayers()) {
 		    manager.statePlayer(address, walkdirection, viewdirection, life, attack);

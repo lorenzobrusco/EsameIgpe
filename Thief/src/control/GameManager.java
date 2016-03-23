@@ -33,6 +33,13 @@ import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
 import singlePlayer.travel.PanelGame;
 
+/*
+ * 	Questa classe, oltre ad essere un singleton
+ * 	viene utilizzata per gestire, memorizzare, 
+ * 	controllare tutto ciò che avviene in fasi di
+ * 	gioco
+ * 
+ */
 public class GameManager {
 
     private static GameManager manager;
@@ -68,11 +75,19 @@ public class GameManager {
 	this.editor = false;
     }
 
+    /*
+     * Questo metodo imposta il SimpleApplication in modo da poter caricare i
+     * modelli, le texture, e quant'altro da qualsiasi parte del codice
+     */
     public void setParams(SimpleApplication application) {
 	this.loadTerrain = new LoadTerrain();
 	this.application = application;
     }
 
+    /*
+     * Questo metodo imposta il nodo Terreno in modo da poter attaccare e
+     * staccare un modello da qualsiasi parte del gioco
+     */
     public void setTerrain(Node terrain) {
 	this.terrain = terrain;
 	this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
@@ -84,25 +99,28 @@ public class GameManager {
 	this.bulletAppState = appState;
     }
 
+    /*
+     * Metodo necessario per richiamare il gameManager da qualsiasi parte del
+     * codice
+     */
     public static GameManager getIstance() {
 	if (manager == null)
 	    manager = new GameManager();
 	return manager;
     }
 
+    /*
+     * Metodo deprecato
+     */
     public void setPanelGame(PanelGame game) {
 	control = new GameControl(new World(1200, 650, 0));
 	this.game = game;
     }
 
-    public void setClient(final Client client) {
-	this.client = client;
-    }
-
-    public Client getClient() {
-	return this.client;
-    }
-
+    /*
+     * Cre un pointLight in una data posizione e lo aggiunge ad una 
+     * collezioni di pointLight
+     */
     public void addPointShadow(Vector3f localTranslation) {
 
 	PointLight light = new PointLight();
@@ -113,12 +131,18 @@ public class GameManager {
 
     }
 
+    /*
+     * Vengo attaccati i pointLight al terreno
+     */
     public void addPointLightToScene() {
 	for (PointLight light : this.lights) {
 	    terrain.addLight(light);
 	}
     }
 
+    /*
+     * Viene aggiunta la pisica al gioco
+     */
     public synchronized void addPhysics() {
 	for (NodeModel model : spatial) {
 
@@ -137,6 +161,10 @@ public class GameManager {
 	}
     }
 
+    /*
+     * Lancia l'intelligenza artificiale del nemico nel
+     * singlePlayer
+     */
     public void startEnemiesIntelligence() {
 	for (NodeCharacter enemy : this.enemies) {
 	    ((NodeEnemy) enemy).runIntelligence();
@@ -144,14 +172,10 @@ public class GameManager {
 	}
     }
 
-    public void addModelEnemy(NodeCharacter enemy) {
-	this.enemies.add(enemy);
-    }
-
-    public Collection<NodeCharacter> getModelEnemys() {
-	return this.enemies;
-    }
-
+    /*
+     * Vengo aggiunti i modeli da renderizzare nel collezione
+     * 
+     */
     public boolean addModelRender(NodeModel model) {
 	if (this.nodeRender.contains(model))
 	    return false;
@@ -159,54 +183,10 @@ public class GameManager {
 	return true;
     }
 
-    public void detachModelRender(NodeModel model) {
-	this.nodeRender.remove(model);
-    }
-
-    public Collection<NodeModel> getNodeModel() {
-	return this.nodeRender;
-    }
-
-    public void repaint() {
-	game.repaint();
-    }
-
-    public Collection<NodeCharacter> getEnemys() {
-	return this.enemies;
-    }
-
-    public Node getTerrain() {
-	return this.terrain;
-    }
-
-    public GameControl getControl() {
-	return control;
-    }
-
-    public Application getApplication() {
-	return application;
-    }
-
-    public BulletAppState getBullet() {
-	return bulletAppState;
-    }
-
-    public void addModel(NodeModel model) {
-	spatial.add(model);
-    }
-
-    public void addNotifyStateModel(NotifyStateModel notifyStateModel) {
-	this.notifyStateModels.add(notifyStateModel);
-    }
-
-    public NotifyStateModel getNotifyStateModel() {
-	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
-    }
-
-    public Collection<NotifyStateModel> getNotyStateModels() {
-	return this.notifyStateModels;
-    }
-
+    /*
+     * Controlla se il modello esiste, e se esiste lo toglie
+     * logicamente dal gioco
+     */
     public void removeModel(String name) {
 	for (NodeModel model : this.spatial) {
 	    if (model.getName().equals(name)) {
@@ -214,6 +194,64 @@ public class GameManager {
 		return;
 	    }
 	}
+    }
+
+    
+    //TODO Daviede
+     
+    public void makeSecondLayer() {
+	for (Spatial model : this.getModels()) {
+	    if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
+		this.makeModelPerimeter(model);
+		System.out
+			.println(model.getName() + " " + "xExtent " + ((BoundingBox) model.getWorldBound()).getXExtent()
+				+ ", " + "zExtent " + ((BoundingBox) model.getWorldBound()).getZExtent());
+		this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
+			+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
+				+ (int) this.worldZExtent)] = true;
+	    }
+	}
+    }
+
+    
+    
+
+    public void printSecondLayer() {
+	for (int x = 0; x < this.secondLayer.length; x++) {
+	    for (int z = 0; z < this.secondLayer[x].length; z++) {
+		if (this.secondLayer[x][z])
+		    System.out.println("obstacle on " + (x - this.worldXExtent) + " " + (z - this.worldZExtent));
+	    }
+	}
+    }
+
+    private void makeModelPerimeter(Spatial model) {
+
+	BoundingBox boundingBox = new BoundingBox();
+	boundingBox.setXExtent((((BoundingBox) model.getWorldBound()).getXExtent()) + 2);
+	boundingBox.setZExtent((((BoundingBox) model.getWorldBound()).getZExtent()) + 2);
+
+	final WireBox wireBox2 = new WireBox();
+	wireBox2.fromBoundingBox(boundingBox);
+	wireBox2.setLineWidth(0f);
+	final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
+
+	final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+		"Common/MatDefs/Misc/Unshaded.j3md");
+	boxAttach.setMaterial(material);
+
+	material.setColor("Color", ColorRGBA.Red);
+	((Node) model).attachChild(boxAttach);
+	boundingBox.setCenter(boxAttach.getLocalTranslation());
+
+    }
+
+    public void setClient(final Client client) {
+	this.client = client;
+    }
+
+    public Client getClient() {
+	return this.client;
     }
 
     public Collection<NodeModel> getModels() {
@@ -272,51 +310,63 @@ public class GameManager {
 	return this.editor;
     }
 
-    public void makeSecondLayer() {
-	for (Spatial model : this.getModels()) {
-	    if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
-		this.makeModelPerimeter(model);
-		System.out
-			.println(model.getName() + " " + "xExtent " + ((BoundingBox) model.getWorldBound()).getXExtent()
-				+ ", " + "zExtent " + ((BoundingBox) model.getWorldBound()).getZExtent());
-		this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
-			+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
-				+ (int) this.worldZExtent)] = true;
-	    }
-	}
+    public void addModelEnemy(NodeCharacter enemy) {
+	this.enemies.add(enemy);
     }
 
+    public Collection<NodeCharacter> getModelEnemys() {
+	return this.enemies;
+    }
+
+    public void detachModelRender(NodeModel model) {
+	this.nodeRender.remove(model);
+    }
+
+    public Collection<NodeModel> getNodeModel() {
+	return this.nodeRender;
+    }
+
+    public void repaint() {
+	game.repaint();
+    }
+
+    public Collection<NodeCharacter> getEnemys() {
+	return this.enemies;
+    }
+
+    public Node getTerrain() {
+	return this.terrain;
+    }
+
+    public GameControl getControl() {
+	return control;
+    }
+
+    public Application getApplication() {
+	return application;
+    }
+
+    public BulletAppState getBullet() {
+	return bulletAppState;
+    }
+
+    public void addModel(NodeModel model) {
+	spatial.add(model);
+    }
+
+    public void addNotifyStateModel(NotifyStateModel notifyStateModel) {
+	this.notifyStateModels.add(notifyStateModel);
+    }
+
+    public NotifyStateModel getNotifyStateModel() {
+	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
+    }
+
+    public Collection<NotifyStateModel> getNotyStateModels() {
+	return this.notifyStateModels;
+    }
+    
     public boolean[][] getSecondLayer() {
 	return this.secondLayer;
-    }
-
-    public void printSecondLayer() {
-	for (int x = 0; x < this.secondLayer.length; x++) {
-	    for (int z = 0; z < this.secondLayer[x].length; z++) {
-		if (this.secondLayer[x][z])
-		    System.out.println("obstacle on " + (x - this.worldXExtent) + " " + (z - this.worldZExtent));
-	    }
-	}
-    }
-
-    private void makeModelPerimeter(Spatial model) {
-
-	BoundingBox boundingBox = new BoundingBox();
-	boundingBox.setXExtent((((BoundingBox) model.getWorldBound()).getXExtent()) + 2);
-	boundingBox.setZExtent((((BoundingBox) model.getWorldBound()).getZExtent()) + 2);
-
-	final WireBox wireBox2 = new WireBox();
-	wireBox2.fromBoundingBox(boundingBox);
-	wireBox2.setLineWidth(0f);
-	final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
-
-	final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
-		"Common/MatDefs/Misc/Unshaded.j3md");
-	boxAttach.setMaterial(material);
-
-	material.setColor("Color", ColorRGBA.Red);
-	((Node) model).attachChild(boxAttach);
-	boundingBox.setCenter(boxAttach.getLocalTranslation());
-
     }
 }

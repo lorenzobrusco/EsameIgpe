@@ -17,6 +17,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import multiPlayer.NodeEnemyPlayers;
 import singlePlayer.Collition;
 import singlePlayer.Sound;
 
@@ -29,7 +30,6 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean isSinglePlayer;
     private boolean changeAttack;
     private boolean waitAnimation;
-    private boolean notify;
     private boolean multiplayer;
     private int controlRender;
     private final int RENDER = 25;
@@ -56,7 +56,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.controlRender = RENDER;
 	this.isRun = false;
 	this.waitAnimation = false;
-	this.notify = false;
 	this.multiplayer = multiplayer;
 	this.currentTime = (int) System.currentTimeMillis();
 	this.talkFrequence = 20;
@@ -145,6 +144,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 		enemy.isStricken(this.getDAMAGE());
 		if (enemy.isDead()) {
 		    // this.enemyWin.playSound();//TODO test
+		}
+		if (enemy instanceof NodeEnemyPlayers) {
+		    System.out.println(((NodeEnemyPlayers) enemy).getKeyModel());
 		}
 	    }
 	}

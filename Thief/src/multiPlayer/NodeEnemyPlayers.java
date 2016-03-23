@@ -8,27 +8,38 @@ import singlePlayer.model.NodeCharacter;
 
 public class NodeEnemyPlayers extends NodeCharacter {
 
-    // private final static int SPEED = 15;
     private boolean waitAnimation;
+    private boolean switchAttack;
+    private final String keyModel;
 
-    public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE) {
+    public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
+	this.switchAttack = false;
+	this.keyModel = key;
     }
 
-    public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, int life, int DAMAGE) {
+    public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
+	this.switchAttack = false;
+	this.keyModel = key;
     }
 
-    public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE) {
-	super(model, dimensionControll, intersect, life, DAMAGE);
+    public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
+	    String key) {
+	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
+	this.switchAttack = false;
+	this.keyModel = key;
     }
 
-    public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE) {
-	super(model, dimensionControll, intersect, life, DAMAGE);
+    public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
+	    String key) {
+	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
+	this.switchAttack = false;
+	this.keyModel = key;
     }
 
     public void setWalkDirection(Vector3f direction) {
@@ -70,12 +81,17 @@ public class NodeEnemyPlayers extends NodeCharacter {
     @Override
     public void startAttack() {
 	super.startAttack();
+	this.waitAnimation = true;
+	if (switchAttack)
+	    this.channel.setAnim(attack1);
+	else
+	    this.channel.setAnim(attack2);
+	this.switchAttack = !this.switchAttack;
     }
-    
+
     @Override
     public void checkCollition() {
-     
-        super.checkCollition();
+	super.checkCollition();
     }
 
     @Override
@@ -92,6 +108,10 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    NodeEnemyPlayers.this.endAttack();
 	}
     }
+
+   public String getKeyModel(){
+       return this.keyModel;
+   }
 
     // TODO Implementare questa classe per i nemici del multiplayer
 }

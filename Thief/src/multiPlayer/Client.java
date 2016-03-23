@@ -69,8 +69,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private Node rootNode;
     private final Camera cam;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode, final Camera cam)
-	    throws UnknownHostException, IOException {
+    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode,
+	    final Camera cam) throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.next = true;
@@ -132,6 +132,7 @@ public class Client extends Thread implements CommunicationProtocol {
     @Override
     public void endConnection() {
 	try {
+
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
 	    this.OUTPUT.writeBytes(IAM + nameModel + "\n");
 	    this.establishedConnection = false;
@@ -177,7 +178,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    if (next) {
 		this.next = false;
-		System.out.println(next);
 		this.states.add(new ModelState(walk, view, life, attack));
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    }
@@ -189,7 +189,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicateExitPlayer() {
 	try {
 	    String player = INPUT.readLine();
-	    System.out.println(player);
+	    // System.out.println(player);
 	    this.removeModel(player);
 	} catch (IOException e) {
 	    // TODO da gestire
@@ -217,20 +217,20 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
-		 rootNode.updateGeometricState();
+//		rootNode.updateGeometricState();
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
 
 	} catch (IOException e) {
-	    System.out.println("connection");
+	    // System.out.println("connection");
 	} catch (NumberFormatException ex) {
 	    if (GameManager.getIstance().getPlayers().get(player) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
 			.setViewDirection(new Vector3f(0, -2f, 0));
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
 			.setWalkDirection(new Vector3f(0, -2f, 0));
-		rootNode.updateGeometricState();
+//		rootNode.updateGeometricState();
 	    }
 	}
     }
@@ -268,7 +268,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = INPUT.readLine();
-		System.out.println(message);
+		// System.out.println(message);
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
 		else if (message.equals(SENDSTATE))
@@ -333,25 +333,26 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public void addNewPlayers(String name, String model, String x, String y, String z) {
 
+	name += model;
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
 	spatial.setLocalTranslation(vector3f);
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), vector3f, LIFENUMBER,
-		DAMAGE);
+		DAMAGE, name);
 	players.addCharacterControll();
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
 	GameManager.getIstance().getTerrain().attachChild(players);
-	name += model;
 	players.setName(name);
 	GameManager.getIstance().addPlayes(name, players);
-	rootNode.updateGeometricState();
-	//GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
+	// rootNode.updateGeometricState();
+	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
     }
 
     public void removeModel(String key) {
 
-	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, GameManager.getIstance().getPlayers().get(key)));
+	GameManager.getIstance()
+		.addNotifyStateModel(new NotifyStateModel(false, GameManager.getIstance().getPlayers().get(key)));
 	GameManager.getIstance().removePlayers(key);
 	GameManager.getIstance().removeModel(key);
 
