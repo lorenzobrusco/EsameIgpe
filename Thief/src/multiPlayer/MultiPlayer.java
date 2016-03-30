@@ -48,7 +48,7 @@ public class MultiPlayer {
 	    this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	    this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	    this.nodeScene.addControl(rigidBodyControl);
-	    this.client = new Client(namePlayer, nameModel, address, rootNode, cam);
+	    this.client = new Client(namePlayer, nameModel, address, cam);
 	    this.client.bornPosition(nodeScene);
 	    this.client.start();
 	    this.rootNode.attachChild(nodeScene);

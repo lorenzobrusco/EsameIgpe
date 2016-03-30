@@ -70,16 +70,14 @@ public class Client extends Thread implements CommunicationProtocol {
     private boolean establishedConnection;
     private boolean next;
     private Queue<ModelState> states;
-    private Node rootNode;
     private final Camera cam;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final Node rootNode,
-	    final Camera cam) throws UnknownHostException, IOException {
+    public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
+	    throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.next = true;
 	this.namePlayer = namePlayer;
-	this.rootNode = rootNode;
 	this.cam = cam;
 	this.states = new LinkedBlockingQueue<>();
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
@@ -195,7 +193,6 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicateExitPlayer() {
 	try {
 	    String player = INPUT.readLine();
-	    // System.out.println(player);
 	    this.removeModel(player);
 	} catch (IOException e) {
 	    // TODO da gestire
@@ -223,22 +220,17 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
-		// rootNode.updateLogicalState(1f);
-		// rootNode.updateGeometricState();
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
 
 	} catch (IOException e) {
-	    // System.out.println("connection");
 	} catch (NumberFormatException ex) {
 	    if (GameManager.getIstance().getPlayers().get(player) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
 			.setViewDirection(new Vector3f(0, -2f, 0));
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
 			.setWalkDirection(new Vector3f(0, -2f, 0));
-		// rootNode.updateLogicalState(1f);
-		rootNode.updateGeometricState();
 	    }
 	}
     }
@@ -247,7 +239,6 @@ public class Client extends Thread implements CommunicationProtocol {
     public void syncWithServer() {
 
 	try {
-	    System.out.println("entro");
 	    this.OUTPUT.writeBytes(SENDPOSITION + "\n");
 	    this.OUTPUT.writeBytes(this.IAM + "\n");
 	    this.OUTPUT.writeBytes(this.nameModel + "\n");
@@ -270,7 +261,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final Vector3f localPlayer = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
 		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
 
-	    GameManager.getIstance().getPlayers().get(player).setLocalTranslation(localPlayer);
+	    System.out.println(player + " --------- " + localPlayer);
+	    // TODO sincronizzazione da rivedere
+	    // GameManager.getIstance().getPlayers().get(player).setLocalTranslation(localPlayer);
 
 	} catch (IOException e) {
 	    // TODO
@@ -394,13 +387,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	players.addCharacterControll();
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
-	GameManager.getIstance().getTerrain().attachChild(players);
 	players.setName(name);
 	GameManager.getIstance().addPlayes(name, players);
-	// GameManager.getIstance().addNotifyStateModel(new
-	// NotifyStateModel(true, players));
-	rootNode.updateLogicalState(1f);
-	rootNode.updateGeometricState();
+	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
     }
 
     public void removeModel(String key) {
@@ -409,8 +398,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().removeModel(key);
 	GameManager.getIstance()
 		.addNotifyStateModel(new NotifyStateModel(false, GameManager.getIstance().getPlayers().get(key)));
-	// rootNode.updateLogicalState(1f);
-	// rootNode.updateGeometricState();
 
     }
 
