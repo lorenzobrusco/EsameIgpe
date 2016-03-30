@@ -41,6 +41,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
+    private final static String SENDPOSITION = "send my position";
+    private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
     private final static String DELETE = "delete this player ";
@@ -133,8 +135,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    final int life = Integer.parseInt(INPUT.readLine());
 
 	    final boolean attack = Boolean.parseBoolean(INPUT.readLine());
-	     System.out.println("CMS: " + address + " --- " + walkdirection +
-	     " ------ "+ viewdirection);
+	    System.out.println("CMS: " + address + " --- " + walkdirection + " ------ " + viewdirection);
 	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
 		for (ClientManager manager : this.server.getPlayers()) {
 		    manager.statePlayer(address, walkdirection, viewdirection, life, attack);
@@ -183,6 +184,41 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
+    // TODO inizio sincronizzazione col server
+
+    public void syncWithServer() {
+
+	try {
+	    String player = this.INPUT.readLine();
+	    player += this.INPUT.readLine();
+	    final Vector3f local = new Vector3f(Float.parseFloat(INPUT.readLine()),
+		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
+	    for(ClientManager manager : this.server.getPlayers()){
+		manager.syncPlayers(player, local);
+	    }
+	} catch (IOException e) {
+	    // TODO
+	}
+
+    }
+
+    public void syncPlayers(String player, Vector3f local) {
+
+	try {
+	    
+	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
+	    this.OUTPUT.writeBytes(player + "\n");
+	    this.OUTPUT.writeBytes(local.x + "\n");
+	    this.OUTPUT.writeBytes(local.y + "\n");
+	    this.OUTPUT.writeBytes(local.z + "\n");
+	    
+	} catch (IOException e) {
+	    // TODO
+	}
+    }
+    
+    // TODO fine sincronizzazione col server
+
     @Override
     public String ipAddress() {
 	URL url;
@@ -224,6 +260,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.communicationState();
 		if (message.equals(CLOSE))
 		    this.endConnection();
+		if(message.equals(SENDPOSITION))
+		    this.syncWithServer();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();

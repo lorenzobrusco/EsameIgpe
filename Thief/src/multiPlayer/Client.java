@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.time.LocalTime;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import com.jme3.input.KeyInput;
@@ -40,6 +41,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
+    private final static String SENDPOSITION = "send my position";
+    private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
@@ -56,6 +59,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public final static int FILE_SIZE = 7134962;
     private final static int LIFENUMBER = 100;
     private final static int DAMAGE = 5;
+    private int currentTime;
     private final String IAM;
     private final String namePlayer;
     private final String nameModel;
@@ -112,7 +116,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
 		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
 		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
-		
+
 		System.out.println(nameModel + "---" + GameManager.getIstance().getNodeThief().getLocalTranslation());
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
@@ -219,8 +223,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
-//		rootNode.updateLogicalState(1f);
-		rootNode.updateGeometricState();
+		// rootNode.updateLogicalState(1f);
+		// rootNode.updateGeometricState();
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
@@ -233,11 +237,47 @@ public class Client extends Thread implements CommunicationProtocol {
 			.setViewDirection(new Vector3f(0, -2f, 0));
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player))
 			.setWalkDirection(new Vector3f(0, -2f, 0));
-//		rootNode.updateLogicalState(1f);
+		// rootNode.updateLogicalState(1f);
 		rootNode.updateGeometricState();
 	    }
 	}
     }
+
+    // TODO inizio sincronizzazione col server
+    public void syncWithServer() {
+
+	try {
+	    System.out.println("entro");
+	    this.OUTPUT.writeBytes(SENDPOSITION + "\n");
+	    this.OUTPUT.writeBytes(this.IAM + "\n");
+	    this.OUTPUT.writeBytes(this.nameModel + "\n");
+	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
+	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
+	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
+	    this.currentTime = (int) LocalTime.now().getSecond();
+	} catch (IOException e) {
+	    // TODO
+
+	}
+    }
+
+    public void syncPlayers() {
+
+	try {
+
+	    final String player = this.INPUT.readLine();
+
+	    final Vector3f localPlayer = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
+		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
+
+	    GameManager.getIstance().getPlayers().get(player).setLocalTranslation(localPlayer);
+
+	} catch (IOException e) {
+	    // TODO
+	}
+    }
+
+    // TODO fine sincronizzazione col server
 
     @Override
     public String ipAddress() {
@@ -270,9 +310,14 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	try {
 	    this.startConnection();
+	    this.currentTime = (int) LocalTime.now().getSecond();
 	    while (this.establishedConnection) {
-		final String message = INPUT.readLine();
-		// System.out.println(message);
+		System.out.println(LocalTime.now().getSecond() - this.currentTime);
+		if (LocalTime.now().getSecond() - this.currentTime >= 7) {
+		    this.syncWithServer();
+		}
+		final String message = this.INPUT.readLine();
+
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
 		else if (message.equals(SENDSTATE))
@@ -283,6 +328,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.communicateExitPlayer();
 		else if (message.equals(CLOSE))
 		    this.endConnection();
+		else if (message.equals(SYNCPLAYERS))
+		    this.syncPlayers();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();
@@ -350,19 +397,20 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getTerrain().attachChild(players);
 	players.setName(name);
 	GameManager.getIstance().addPlayes(name, players);
-	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
+	// GameManager.getIstance().addNotifyStateModel(new
+	// NotifyStateModel(true, players));
 	rootNode.updateLogicalState(1f);
 	rootNode.updateGeometricState();
     }
 
     public void removeModel(String key) {
 
-	GameManager.getIstance()
-		.addNotifyStateModel(new NotifyStateModel(false, GameManager.getIstance().getPlayers().get(key)));
 	GameManager.getIstance().removePlayers(key);
 	GameManager.getIstance().removeModel(key);
-	rootNode.updateLogicalState(1f);
-	rootNode.updateGeometricState();
+	GameManager.getIstance()
+		.addNotifyStateModel(new NotifyStateModel(false, GameManager.getIstance().getPlayers().get(key)));
+	// rootNode.updateLogicalState(1f);
+	// rootNode.updateGeometricState();
 
     }
 

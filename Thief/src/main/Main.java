@@ -83,7 +83,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().getApplication().getGuiViewPort());
 	this.nifty = niftyDisplay.getNifty();
 	this.nifty.fromXml("Interface/screenMenu.xml", "start", this);
-
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 
 	this.menuSound.playSound();
@@ -116,7 +115,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "192.168.1.12", "Lorenzo", "Yasuo");	// TODO inserire ip server 
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.120.37", "Lorenzo", "Yasuo");
+	// TODO inserire ip server 
 	flyCam.setEnabled(true);
 	this.initKeys();
 	this.menuSound.stopSound();
@@ -186,6 +186,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     @Override
     public void onStartScreen() {
+	
 
     }
 

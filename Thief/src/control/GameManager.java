@@ -354,11 +354,11 @@ public class GameManager {
 	spatial.add(model);
     }
 
-    public void addNotifyStateModel(NotifyStateModel notifyStateModel) {
+    public synchronized void addNotifyStateModel(NotifyStateModel notifyStateModel) {
 	this.notifyStateModels.add(notifyStateModel);
     }
 
-    public NotifyStateModel getNotifyStateModel() {
+    public synchronized NotifyStateModel getNotifyStateModel() {
 	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
     }
 
