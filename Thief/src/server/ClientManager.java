@@ -78,6 +78,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    final float y = Float.parseFloat(this.INPUT.readLine());
 	    final float z = Float.parseFloat(this.INPUT.readLine());
 	    this.startPosition = new Vector3f(x, y, z);
+	    System.out.println("startPosition :  " + startPosition);
 	    if (new Format(this.address).itIsCorrectFormat()) {
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
 		this.establishedConnection = true;
@@ -87,9 +88,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 			manager.communicationNewPlayer(this.address, this.nameModel,
 				String.valueOf(this.startPosition.x), String.valueOf(this.startPosition.y),
 				String.valueOf(this.startPosition.z));
-			this.communicationNewPlayer(manager.address, manager.nameModel,
-				String.valueOf(manager.startPosition.x), String.valueOf(manager.startPosition.y),
-				String.valueOf(manager.startPosition.z));
+//			this.communicationNewPlayer(manager.address, manager.nameModel,
+//				String.valueOf(manager.startPosition.x), String.valueOf(manager.startPosition.y),
+//				String.valueOf(manager.startPosition.z));
 		    }
 
 		}
@@ -255,7 +256,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.startConnection();
 	    while (this.establishedConnection) {
-		String message = this.INPUT.readLine();
+		final String message = this.INPUT.readLine();
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
 		if (message.equals(CLOSE))

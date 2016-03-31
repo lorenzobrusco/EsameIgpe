@@ -115,7 +115,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.120.37", "Lorenzo", "Yasuo");
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.220.221", "Lorenzo", "Yasuo");
 	// TODO inserire ip server 
 	flyCam.setEnabled(true);
 	this.initKeys();

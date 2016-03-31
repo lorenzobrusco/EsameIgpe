@@ -70,7 +70,6 @@ public class MultiPlayer {
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
 	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {
-	    System.out.println("state");
 	    NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
 	    if (stateModel.isAttach()) {
 		GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
