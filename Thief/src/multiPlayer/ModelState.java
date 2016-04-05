@@ -6,13 +6,15 @@ public class ModelState {
 
     private Vector3f walk;
     private Vector3f view;
+    private Vector3f location;
     private boolean attack;
     private int life;
 
-    public ModelState(Vector3f walk, Vector3f view, int life, boolean attack) {
+    public ModelState(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location) {
 
 	this.walk = walk;
 	this.view = view;
+	this.location = location;
 	this.life = life;
 	this.attack = attack;
     }
@@ -39,6 +41,14 @@ public class ModelState {
 
     public void setView(Vector3f view) {
 	this.view = view;
+    }
+    
+    public Vector3f getLocation() {
+        return location;
+    }
+
+    public void setLocation(Vector3f location) {
+        this.location = location;
     }
 
     public int getLife() {

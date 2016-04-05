@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.time.LocalTime;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import com.jme3.input.KeyInput;
@@ -59,7 +58,6 @@ public class Client extends Thread implements CommunicationProtocol {
     public final static int FILE_SIZE = 7134962;
     private final static int LIFENUMBER = 100;
     private final static int DAMAGE = 5;
-    private int currentTime;
     private final String IAM;
     private final String namePlayer;
     private final String nameModel;
@@ -164,6 +162,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(stateModel.getView().y + "\n");
 	    this.OUTPUT.writeBytes(stateModel.getView().z + "\n");
 
+	    this.OUTPUT.writeBytes(stateModel.getLocation().x + "\n");
+	    this.OUTPUT.writeBytes(stateModel.getLocation().y + "\n");
+	    this.OUTPUT.writeBytes(stateModel.getLocation().z + "\n");
+
 	    this.OUTPUT.writeBytes(stateModel.getLife() + "\n");
 
 	    this.OUTPUT.writeBytes(stateModel.isAttack() + "\n");
@@ -178,11 +180,11 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
-    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack) {
+    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location) {
 	try {
 	    if (next) {
 		this.next = false;
-		this.states.add(new ModelState(walk, view, life, attack));
+		this.states.add(new ModelState(walk, view, life, attack, location));
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    }
 	} catch (IOException e) {
@@ -233,25 +235,25 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     // TODO inizio sincronizzazione col server
-    public void syncWithServer() {
-
-	try {
-	    System.out.println("send");
-	    this.OUTPUT.writeBytes(SENDPOSITION + "\n");
-	    this.OUTPUT.writeBytes(this.IAM + "\n");
-	    this.OUTPUT.writeBytes(this.nameModel + "\n");
-	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
-	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
-	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
-
-	    System.out.println("invio i miei dati " + GameManager.getIstance().getNodeThief().getLocalTranslation().x
-		    + GameManager.getIstance().getNodeThief().getLocalTranslation().y
-		    + GameManager.getIstance().getNodeThief().getLocalTranslation().z);
-	} catch (IOException e) {
-	    // TODO
-	    System.out.println("eccezzioni nel syncWithServer");
-	}
-    }
+//    public void syncWithServer() {
+//
+//	try {
+//	    System.out.println("send");
+//	    this.OUTPUT.writeBytes(SENDPOSITION + "\n");
+//	    this.OUTPUT.writeBytes(this.IAM + "\n");
+//	    this.OUTPUT.writeBytes(this.nameModel + "\n");
+//	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
+//	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
+//	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
+//
+//	    System.out.println("invio i miei dati " + GameManager.getIstance().getNodeThief().getLocalTranslation().x
+//		    + GameManager.getIstance().getNodeThief().getLocalTranslation().y
+//		    + GameManager.getIstance().getNodeThief().getLocalTranslation().z);
+//	} catch (IOException e) {
+//	    // TODO
+//	    System.out.println("eccezzioni nel syncWithServer");
+//	}
+//    }
 
     public void syncPlayers() {
 
@@ -259,15 +261,11 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    final String player = this.INPUT.readLine();
 
-	    // final Vector3f localPlayer = new
-	    // Vector3f(Float.parseFloat(this.INPUT.readLine()),
-	    // Float.parseFloat(this.INPUT.readLine()),
-	    // Float.parseFloat(this.INPUT.readLine()));
+	    final Vector3f localPlayer = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
+		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
 
-	    System.out.println(player + " ------");
-	    // TODO sincronizzazione da rivedere
-	    System.out.println(GameManager.getIstance().getPlayers().get(player));
-	    // GameManager.getIstance().getPlayers().get(player).setLocalTranslation(localPlayer);
+	    // System.out.println(GameManager.getIstance().getPlayers().get(player));
+	    GameManager.getIstance().getPlayers().get(player).setLocalTranslation(localPlayer);
 
 	} catch (IOException e) {
 	    // TODO
@@ -308,15 +306,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	try {
 	    this.startConnection();
-	    this.currentTime = (int) System.currentTimeMillis();
 	    while (this.establishedConnection) {
-		// TODO run
-		// System.out.println("tempo: " + (int)
-		// (System.currentTimeMillis() - this.currentTime) + " end ");
-		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
-		    this.syncWithServer();
-		    this.currentTime = (int) System.currentTimeMillis();
-		}
 		final String message = this.INPUT.readLine();
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
@@ -374,7 +364,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
-	spatial.setLocalTranslation(new Vector3f(50, 0, 50));
+	spatial.setLocalTranslation(new Vector3f(30, 0, 30));
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial, true));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
@@ -388,6 +378,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	name += model;
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
+	System.out.println(vector3f);
 	spatial.setLocalTranslation(vector3f);
 
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), vector3f, LIFENUMBER,

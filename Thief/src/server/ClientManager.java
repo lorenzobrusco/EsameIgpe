@@ -24,11 +24,14 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private String address;
     private String nameClient;
     private String nameModel;
+    private String player;
     private Vector3f startPosition;
+    private Vector3f currentPosition;
     private final BufferedReader INPUT;
     private final DataOutputStream OUTPUT;
     private boolean establishedConnection;
-    public boolean newPlayer;
+    private boolean newPlayer;
+    private int currentTime;
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
@@ -74,10 +77,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.address = this.INPUT.readLine();
 	    this.nameClient = this.INPUT.readLine();
 	    this.nameModel = this.INPUT.readLine();
+	    this.player = this.address + this.nameModel;
 	    final float x = Float.parseFloat(this.INPUT.readLine());
 	    final float y = Float.parseFloat(this.INPUT.readLine());
 	    final float z = Float.parseFloat(this.INPUT.readLine());
 	    this.startPosition = new Vector3f(x, y, z);
+	    this.currentPosition = this.startPosition;
 	    System.out.println("startPosition :  " + startPosition);
 	    if (new Format(this.address).itIsCorrectFormat()) {
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
@@ -88,9 +93,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 			manager.communicationNewPlayer(this.address, this.nameModel,
 				String.valueOf(this.startPosition.x), String.valueOf(this.startPosition.y),
 				String.valueOf(this.startPosition.z));
-//			this.communicationNewPlayer(manager.address, manager.nameModel,
-//				String.valueOf(manager.startPosition.x), String.valueOf(manager.startPosition.y),
-//				String.valueOf(manager.startPosition.z));
+			this.communicationNewPlayer(manager.address, manager.nameModel,
+				String.valueOf(manager.startPosition.x), String.valueOf(manager.startPosition.y),
+				String.valueOf(manager.startPosition.z));
 		    }
 
 		}
@@ -132,6 +137,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final Vector3f viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
 		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
+
+	    this.currentPosition = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
+		    Float.parseFloat(INPUT.readLine()));
 
 	    final int life = Integer.parseInt(INPUT.readLine());
 
@@ -189,16 +197,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     public void syncWithServer() {
 
-	try {
-	    String player = this.INPUT.readLine();
-	    player += this.INPUT.readLine();
-	    final Vector3f local = new Vector3f(Float.parseFloat(INPUT.readLine()),
-		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
-	    for(ClientManager manager : this.server.getPlayers()){
-		manager.syncPlayers(player, local);
-	    }
-	} catch (IOException e) {
-	    // TODO
+	for (ClientManager manager : this.server.getPlayers()) {
+	    manager.syncPlayers(player, currentPosition);
 	}
 
     }
@@ -206,18 +206,18 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void syncPlayers(String player, Vector3f local) {
 
 	try {
-	    
+
 	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
 	    this.OUTPUT.writeBytes(player + "\n");
 	    this.OUTPUT.writeBytes(local.x + "\n");
 	    this.OUTPUT.writeBytes(local.y + "\n");
 	    this.OUTPUT.writeBytes(local.z + "\n");
-	    
+
 	} catch (IOException e) {
 	    // TODO
 	}
     }
-    
+
     // TODO fine sincronizzazione col server
 
     @Override
@@ -255,14 +255,18 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void run() {
 	try {
 	    this.startConnection();
+	    this.currentTime = (int) System.currentTimeMillis();
 	    while (this.establishedConnection) {
+		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
+		    this.syncWithServer();
+		}
 		final String message = this.INPUT.readLine();
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
 		if (message.equals(CLOSE))
 		    this.endConnection();
-		if(message.equals(SENDPOSITION))
-		    this.syncWithServer();
+//		if (message.equals(SENDPOSITION))
+//		    this.syncWithServer();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();
@@ -351,6 +355,14 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     public void setNewPlayer(boolean newPlayer) {
 	this.newPlayer = newPlayer;
+    }
+
+    public Vector3f getCurrentPosition() {
+	return currentPosition;
+    }
+
+    public void setCurrentPosition(Vector3f currentPosition) {
+	this.currentPosition = currentPosition;
     }
 
 }

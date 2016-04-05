@@ -169,7 +169,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	if (this.multiplayer)
 	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-		    characterControl.getViewDirection(), getLIFE(), attack);
+		    characterControl.getViewDirection(), getLIFE(), attack, this.getLocalTranslation());
 
     }
 

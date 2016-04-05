@@ -28,7 +28,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
-	super(model, dimensionControll, life, DAMAGE);
+	super(model, dimensionControll, intersect, life, DAMAGE);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.keyModel = key;
@@ -36,7 +36,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
-	super(model, dimensionControll, life, DAMAGE);
+	super(model, dimensionControll, intersect, life, DAMAGE);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.keyModel = key;
@@ -109,9 +109,9 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
     }
 
-   public String getKeyModel(){
-       return this.keyModel;
-   }
+    public String getKeyModel() {
+	return this.keyModel;
+    }
 
     // TODO Implementare questa classe per i nemici del multiplayer
 }
