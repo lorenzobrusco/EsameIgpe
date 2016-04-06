@@ -44,7 +44,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
-    private final static String SENDPOSITION = "send my position";
     private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
@@ -198,7 +197,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void syncWithServer() {
 
 	for (ClientManager manager : this.server.getPlayers()) {
-	    manager.syncPlayers(player, currentPosition);
+	    if (manager != this)
+		manager.syncPlayers(player, currentPosition);
 	}
 
     }
@@ -257,7 +257,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    this.currentTime = (int) System.currentTimeMillis();
 	    while (this.establishedConnection) {
-		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
+		if ((int) System.currentTimeMillis() - this.currentTime >= 10000) {
 		    this.syncWithServer();
 		}
 		final String message = this.INPUT.readLine();
@@ -265,8 +265,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.communicationState();
 		if (message.equals(CLOSE))
 		    this.endConnection();
-//		if (message.equals(SENDPOSITION))
-//		    this.syncWithServer();
+		// if (message.equals(SENDPOSITION))
+		// this.syncWithServer();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();
