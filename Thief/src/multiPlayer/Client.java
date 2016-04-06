@@ -40,7 +40,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
     private final static String ENDSENDSTATE = "end send your state";
-    private final static String SENDPOSITION = "send my position";
     private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
@@ -264,8 +263,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final Vector3f localPlayer = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
 		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
 
-	    // System.out.println(GameManager.getIstance().getPlayers().get(player));
-	    GameManager.getIstance().getPlayers().get(player).setLocalTranslation(localPlayer);
+	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
 	    // TODO
