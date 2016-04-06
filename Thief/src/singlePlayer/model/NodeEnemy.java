@@ -160,6 +160,7 @@ public class NodeEnemy extends NodeCharacter {
 	super.resetAll();
 	this.waitAnimation = false;
 	this.runIntelligence();
+	this.lifeBar = new LifeBar(this);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
     }
 

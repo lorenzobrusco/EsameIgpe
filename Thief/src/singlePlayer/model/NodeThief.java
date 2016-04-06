@@ -173,12 +173,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 			if (closest != null) {
 				enemy.isStricken(this.getDAMAGE());
 				((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
-
 				if (enemy.isDead()) {
 					// this.enemyWin.playSound();//TODO test
-				((NodeEnemy) enemy).getLifeBar().detachChild(((NodeEnemy) enemy).getLifeBar().getGreenGeometry());
-					enemy.detachChild(((NodeEnemy) enemy).getLifeBar());
-					enemy.updateGeometricState();
+					((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
+				((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 				}
 				if (enemy instanceof NodeEnemyPlayers) {
 					System.out.println(((NodeEnemyPlayers) enemy).getKeyModel());
