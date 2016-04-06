@@ -17,6 +17,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.tools.SizeValue;
 import multiPlayer.NodeEnemyPlayers;
 import singlePlayer.Collition;
 import singlePlayer.Sound;
@@ -50,9 +52,52 @@ public class NodeThief extends NodeCharacter implements Collition {
     private Sound enemyView;
     private int currentTime;
     private int talkFrequence;
+    
+    
+    
+    @Override
+	public void setLifeBar (Element lifeBar)
+	{
+		this.progressBarElement = lifeBar;
+	}
+	
+	
+	@Override
+	public void setDamageLifeBar(int damage) 
+	{
+           
+          
+        if(life>0)
+        {
+        	life-=damage; 
+        	if(life == 0)
+        		progressBarElement.setVisible(false);
+        	else
+        	{
+        	 int value = (life*100)/STARTLIFE;        	 
+             progressBarElement.setConstraintWidth(new SizeValue( value + "%"));
+             progressBarElement.getParent().layoutElements();
+           	}
+        }
+      
+      
+ 
+        
+    }
+
+	
+	  public void resetLifeBar()
+      {
+      
+      	progressBarElement.setConstraintWidth(new SizeValue( 100 + "%"));
+        progressBarElement.getParent().layoutElements();
+        
+       
+      	
+      }
 
     public NodeThief(Spatial model, boolean multiplayer) {
-	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10000, 10);
+	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
 	this.controlRender = RENDER;
 	this.isRun = false;
 	this.waitAnimation = false;
@@ -124,7 +169,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 		.distance(GameManager.getIstance().getBonfire().getLocalTranslation()) < BONFIREDISTANCE
 		&& this.isSinglePlayer) {
 	    this.resetAll();
-	    this.bonfireSound.playSound();
+	    this.resetLifeBar();
+	   // this.bonfireSound.playSound();
 	    this.channel.setAnim("BonFire");
 	    this.channel.setLoopMode(LoopMode.DontLoop);
 	    this.channel.setSpeed(0.7f);
@@ -332,6 +378,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.isRun = false;
 		NodeThief.this.sitNearToBonFire();
 	    }
+	    else if (name.equals("damage") && !pressed )
+		{
+			int damage = 1;
+			NodeThief.this.setDamageLifeBar(damage);
+			
+		}
 	}
     };
 

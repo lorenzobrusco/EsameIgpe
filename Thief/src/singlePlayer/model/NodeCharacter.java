@@ -13,6 +13,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import control.GameManager;
+import de.lessvoid.nifty.elements.Element;
 import singlePlayer.Sound;
 
 public class NodeCharacter extends NodeModel implements AnimEventListener {
@@ -30,8 +31,8 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected final String run = "Run";
     protected final String rotateLeft = "rotateLeft";
     protected final String rotateRight = "rotateRight";
-    private final int STARTLIFE;
-    private int life;
+    protected final int STARTLIFE;
+    protected int life;
     private final int DAMAGE;
     protected final Node node = new Node("attackBox");
     protected boolean alive;
@@ -42,6 +43,12 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected Sound scream3;
     protected Sound scream4;
     private boolean viewed;
+    
+    protected Element progressBarElement;
+    
+	public void setLifeBar (Element lifeBar){}
+	
+	public  void setDamageLifeBar(int damage){}
 
     public NodeCharacter(Spatial model, Vector3f dimensionControll, int life, final int DAMAGE) {
 	super(model, dimensionControll);
@@ -153,6 +160,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 	if (this.alive) {
 	    this.life -= DAMAGE;
+		this.setDamageLifeBar(DAMAGE);
 
 	    if (this.isDead()) {
 		this.deathSound.playSound();

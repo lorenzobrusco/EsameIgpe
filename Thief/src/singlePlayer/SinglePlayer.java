@@ -13,9 +13,14 @@ import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.SizeValue;
 import editor.LoadTerrain;
 
-public class SinglePlayer {
+public class SinglePlayer implements ScreenController {
 
 	private final String attack1 = "Attack1";
 	private final String attack2 = "Attack2";
@@ -31,8 +36,11 @@ public class SinglePlayer {
 	private final LoadTerrain loadTerrain;
 	private GameRender render;
 	private Sound ambient;
+	private Nifty nifty;
+	
+	private Element progressBarElement;
 
-	public SinglePlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, boolean shadows, boolean fog, boolean water) {
+	public SinglePlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, boolean shadows, boolean fog, boolean water, Nifty nifty) {
 		this.viewPort = viewPort;
 		this.rootNode = rootNode;
 		cam.setFrustumFar(200);
@@ -46,6 +54,9 @@ public class SinglePlayer {
 		GameManager.getIstance().makeSecondLayer();
 		GameManager.getIstance().printSecondLayer();
 		this.setupAmbientSound();
+		
+		this.nifty = nifty;		
+	    loadNifty();
 	}
 
 	public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
@@ -88,14 +99,44 @@ public class SinglePlayer {
 		GameManager.getIstance().getApplication().getInputManager().addMapping(bonfire, new KeyTrigger(KeyInput.KEY_F));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 				new KeyTrigger(KeyInput.KEY_LCONTROL));
+		GameManager.getIstance().getApplication().getInputManager().addMapping("damage",
+				new KeyTrigger(KeyInput.KEY_P));
 		GameManager.getIstance().getApplication().getInputManager().addListener(
-				GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, bonfire, "toggleRotate");
+				GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, bonfire, "toggleRotate","damage");
 		GameManager.getIstance().getApplication().getInputManager().addListener(
 				GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
+	}
+	
+	private void loadNifty()
+	{
+		
+		this.nifty.fromXml("Interface/singlePlayer.xml", "lifeBarScreen", this);
+		this.progressBarElement = nifty.getScreen("lifeBarScreen").findElementByName("progressbar");
+	    this.progressBarElement.setConstraintWidth(new SizeValue(100+"%"));	    
+	    GameManager.getIstance().getNodeThief().setLifeBar(progressBarElement);
+	
 	}
 
 	private void setupAmbientSound() {
 		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 		this.ambient.playSound();
+	}
+
+	@Override
+	public void bind(Nifty arg0, Screen arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEndScreen() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStartScreen() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -104,7 +104,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	multiplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true);
+	this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true,nifty);
 	this.initKeys();
 	this.menuSound.stopSound();
     }
@@ -115,7 +115,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.220.142", "Lorenzo", "Yasuo");
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.220.142", "Antonio", "Rengar");
 	// TODO inserire ip server 
 	flyCam.setEnabled(true);
 	this.initKeys();
