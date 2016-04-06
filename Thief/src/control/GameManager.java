@@ -22,7 +22,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
 import com.jme3.scene.debug.WireBox;
 
 import de.lessvoid.nifty.Nifty;
@@ -30,9 +29,7 @@ import de.lessvoid.nifty.builder.ControlBuilder;
 import de.lessvoid.nifty.builder.ControlDefinitionBuilder;
 import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.tools.SizeValue;
 import editor.LoadTerrain;
 import logic.World;
 import multiPlayer.Client;
@@ -332,7 +329,7 @@ public class GameManager {
 
 	public void addModelEnemy(NodeCharacter enemy) {
 		this.enemies.add(enemy);
-		
+
 	}
 
 	public Collection<NodeCharacter> getModelEnemys() {
@@ -405,7 +402,7 @@ public class GameManager {
 
 		final ControlDefinitionBuilder builderInstanceLifeBar = new ControlDefinitionBuilder("lifeBarEnemy") {
 			{
-				
+
 				controller(modelGame);
 				image(new ImageBuilder() {
 					{
@@ -432,18 +429,17 @@ public class GameManager {
 
 		builderInstanceLifeBar.registerControlDefintion(nifty);
 
-		final ControlBuilder builderLifeBar = new ControlBuilder("lifeBar"+character.getKeyCharacter(), "lifeBarEnemy");
+		final ControlBuilder builderLifeBar = new ControlBuilder("lifeBar" + character.getKeyCharacter(),
+				"lifeBarEnemy");
 		builderLifeBar.height(4 + "%");
 		builderLifeBar.width(10 + "%");
-		builderLifeBar.x((int)character.getLocalTranslation().x+"px");
-		builderLifeBar.y((int)character.getLocalTranslation().z+"px");
-		final Element lifeBarEnemy =builderLifeBar.build(nifty, nifty.getCurrentScreen(), screen.findElementByName("layerLifeBarEnemy"));
-		
-		System.out.println(point.x+"  "+point.y);
-		
-		
-		
-		
+		builderLifeBar.x((int) character.getLocalTranslation().x + "px");
+		builderLifeBar.y((int) character.getLocalTranslation().z + "px");
+		final Element lifeBarEnemy = builderLifeBar.build(nifty, nifty.getCurrentScreen(),
+				screen.findElementByName("layerLifeBarEnemy"));
+
+		System.out.println(point.x + "  " + point.y);
+
 		// e.setConstraintWidth(new SizeValue(100+"%"));
 		// e.getParent().layoutElements();
 
@@ -466,7 +462,5 @@ public class GameManager {
 	public void setPoint(java.awt.Point point) {
 		this.point = point;
 	}
-	
-	
 
 }

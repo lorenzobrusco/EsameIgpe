@@ -14,13 +14,9 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.ControlBuilder;
-import de.lessvoid.nifty.builder.ControlDefinitionBuilder;
-import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import de.lessvoid.nifty.tools.SizeValue;
 import editor.LoadTerrain;
 
 public class SinglePlayer implements ScreenController {
@@ -39,7 +35,7 @@ public class SinglePlayer implements ScreenController {
 	private final LoadTerrain loadTerrain;
 	private GameRender render;
 	private Sound ambient;
-	private Nifty nifty;
+
 	
 	private Element progressBarElement;
 	

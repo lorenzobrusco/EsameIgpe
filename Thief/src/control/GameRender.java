@@ -2,7 +2,7 @@ package control;
 
 import com.jme3.terrain.geomipmap.TerrainQuad;
 
-import de.lessvoid.nifty.tools.SizeValue;
+
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;

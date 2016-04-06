@@ -1,6 +1,6 @@
 package main;
 
-import org.lwjgl.opengl.Display;
+
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
@@ -17,7 +17,6 @@ import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import de.lessvoid.nifty.tools.LinearInterpolator.Point;
 import editor.EditorTerrain;
 import multiPlayer.MultiPlayer;
 import singlePlayer.SinglePlayer;

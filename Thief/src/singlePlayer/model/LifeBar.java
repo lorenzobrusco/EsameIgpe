@@ -5,10 +5,8 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
-
 import control.GameManager;
-import de.lessvoid.nifty.tools.SizeValue;
+
 
 public class LifeBar extends Node {
 	private int maxLife = 100;
@@ -23,7 +21,7 @@ public class LifeBar extends Node {
 
 	public LifeBar(NodeCharacter character) {
 
-		ColorRGBA color = new ColorRGBA(0, 64, 0, 1);
+		
 		this.character = character;
 		this.life = this.character.getLife();
 		this.limitRedLife = (this.character.getLife() * 40) / 100;
