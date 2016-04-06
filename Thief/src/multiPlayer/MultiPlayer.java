@@ -11,10 +11,13 @@ import com.jme3.scene.Node;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
 import singlePlayer.Sound;
 
-public class MultiPlayer {
+public class MultiPlayer implements ScreenController {
 
     private final ViewPort viewPort;
     private final Node rootNode;
@@ -89,4 +92,22 @@ public class MultiPlayer {
 	this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 	this.ambient.playSound();
     }
+
+	@Override
+	public void bind(Nifty arg0, Screen arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEndScreen() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStartScreen() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -25,10 +25,13 @@ public class NodeEnemy extends NodeCharacter {
     private boolean waitAnimation;
     private final float DISTANCE;
     private Geometry box;
+    private LifeBar lifeBar;
 
     public NodeEnemy(Spatial model, Vector3f dimensionControll, Vector3f intersection) {
 	super(model, dimensionControll, intersection, 50, 10);
 	this.artificialIntelligence = new AI(this);
+	this.lifeBar = new LifeBar(this);
+
 	this.setBoundingBox();
 	this.isRun = false;
 	this.hasFound = false;
@@ -205,4 +208,13 @@ public class NodeEnemy extends NodeCharacter {
 	this.box = box;
     }
 
+	public LifeBar getLifeBar() {
+		return lifeBar;
+	}
+
+	public void setLifeBar(LifeBar lifeBar) {
+		this.lifeBar = lifeBar;
+	}
+
+    
 }

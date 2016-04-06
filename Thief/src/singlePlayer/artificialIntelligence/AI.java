@@ -12,7 +12,7 @@ import singlePlayer.model.NodeModel;
 public class AI {
 
 	private final NodeEnemy enemy;
-	private final Way way;
+
 	private final float SPEED = 15;
 	private final int RIGHT = 1;
 	private final int LEFT = 2;
@@ -22,7 +22,7 @@ public class AI {
 	public AI(final NodeEnemy enemy) {
 		this.enemy = enemy;
 		this.stopSearchThief = false;
-		this.way = new Way(this.enemy);
+		
 	}
 
 	public void run() {
@@ -41,15 +41,12 @@ public class AI {
 				this.enemyTranslate(enemy, thiefDirection, distance);
 				if (this.collisionResults((BoundingBox) this.enemy.getBox().getWorldBound())) {
 					this.stopSearchThief = true;
-					if (!this.collisionResults((BoundingBox) this.way.getRightBox().getWorldBound())) {
-						this.alternativeWay(this.RIGHT);
-					} else if (!this.collisionResults((BoundingBox) this.way.getLeftBox().getWorldBound())) {
-						this.alternativeWay(this.LEFT);
-					}
+//					
 				}
 			} else if (distance <= this.enemy.getDISTANCE() && !this.enemy.hasFound()) {
 				stop();
 				this.enemy.setHasFound(true);
+				this.enemy.attack();
 			}
 		} else
 			this.controll();

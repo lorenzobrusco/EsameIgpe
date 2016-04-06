@@ -1,5 +1,7 @@
 package main;
 
+import org.lwjgl.opengl.Display;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
@@ -15,6 +17,7 @@ import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
+import de.lessvoid.nifty.tools.LinearInterpolator.Point;
 import editor.EditorTerrain;
 import multiPlayer.MultiPlayer;
 import singlePlayer.SinglePlayer;
@@ -33,25 +36,33 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     private NiftyJmeDisplay niftyDisplay;
     private Nifty nifty;
     private Sound menuSound;
+    private static final String pathSinglePlayer = "singlePlayer.SinglePlayer";
+    private static final String pathEditor = "editor.EditorTerrain";
+    private static final String pathMultiPlayer = "multiPlayer.MultiPlayer";
+    
 
-    public Main() {
+    public Main(java.awt.Point point) {
+    	GameManager.getIstance().setPoint(point);
 
     }
 
     public static void main(String[] args) {
-	Main app = new Main();
-	// AppSettings gameSettings = new AppSettings(false);
-	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-	// gameSettings.setFullscreen(true);
-	// gameSettings.setVSync(true);
-	// gameSettings.setTitle("Thief");
-	// gameSettings.setUseInput(true);
-	// gameSettings.setFrameRate(500);
-	// gameSettings.setSamples(0);
-	// gameSettings.setRenderer("LWJGL-OpenGL2");
-	// app.setSettings(gameSettings);
-	// app.setShowSettings(false);
+	 AppSettings gameSettings = new AppSettings(false);
+//	 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+//	 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+	 
+	 gameSettings.setResolution(800,600);
+	 
+	 gameSettings.setFullscreen(false);
+	 gameSettings.setVSync(true);
+	 gameSettings.setTitle("Thief");
+	 gameSettings.setUseInput(true);
+	 gameSettings.setFrameRate(500);
+	 gameSettings.setSamples(0);
+	 gameSettings.setRenderer("LWJGL-OpenGL2");
+	 Main app = new Main (new java.awt.Point(gameSettings.getWidth(),gameSettings.getHeight()));
+	 app.setSettings(gameSettings);
+	 app.setShowSettings(false);
 
 	// disable statistics
 	app.setDisplayFps(false);
@@ -69,6 +80,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
+	
 
 	GameManager.getIstance().setParams(this);
 	GameManager.getIstance().setBullet(bulletAppState);
@@ -84,6 +96,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	this.nifty = niftyDisplay.getNifty();
 	this.nifty.fromXml("Interface/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
+	GameManager.getIstance().setNifty(nifty);
 
 	this.menuSound.playSound();
     }
@@ -104,7 +117,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	multiplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
-	this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true,nifty);
+	GameManager.getIstance().setModelGame(pathSinglePlayer);
+	this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true);
 	this.initKeys();
 	this.menuSound.stopSound();
     }
@@ -115,6 +129,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	editor = false;
 	GameManager.getIstance().setEditor(false);
+	GameManager.getIstance().setModelGame(pathMultiPlayer);
 	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.220.142", "Antonio", "Rengar");
 	// TODO inserire ip server 
 	flyCam.setEnabled(true);
@@ -128,6 +143,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	singleplayer = false;
 	multiplayer = false;
 	GameManager.getIstance().setEditor(true);
+	GameManager.getIstance().setModelGame(pathEditor);
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain", nifty);
 	mouseInput.setCursorVisible(false);
 	flyCam.setEnabled(true);
@@ -209,7 +225,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     }
 
     public void openSinglePlayer() {
-	nifty.exit();
+	GameManager.getIstance().getNifty().exit();
 	singlePlayer();
 
     }

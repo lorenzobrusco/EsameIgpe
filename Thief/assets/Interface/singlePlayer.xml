@@ -4,10 +4,10 @@
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
  
-    <controlDefinition name = "loadingbar" controller="singlePlayer.SinglePlayer">
+    <controlDefinition name = "lifeBarThief" controller="singlePlayer.SinglePlayer">
         <image filename="Interface/border.png" childLayout="absolute" 
                imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15">
-            <image id="progressbar" x="0" y="0" filename="Interface/inner.png" width="100%" height="100%"
+            <image id="progressbarThief" x="0" y="0" filename="Interface/inner.png" width="100%" height="100%"
                    imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15" />
         </image>
     </controlDefinition>
@@ -27,8 +27,8 @@
              	<panel id = "panelDownLeft" childLayout="horizontal" width="30%" height="30%"> 
           	      <panel id = "space1" childLayout="horizontal" width="17%"/>
           	      <panel id = "panelLifeBar" childLayout="vertical" >
-                  		<control name="loadingbar"  width="100%" height="40%" />   
-                  		<control id="loadingtext" name="label" align="center" 
+                  		<control name="lifeBarThief"  width="100%" height="40%" />   
+                  		<control id="nameThief" name="label" align="center" 
                          text="THIEF " font="Interface/Fonts/Morpheus.fnt"/>     
                   </panel> 
              </panel>
