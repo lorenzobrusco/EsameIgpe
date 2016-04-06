@@ -14,7 +14,8 @@ public class NodeModel extends Node {
 	protected BetterCharacterControl characterControl;
 	protected final Vector3f dimensionControll;
 	protected final Vector3f normalGravity = new Vector3f(0, -9.81f, 0);
-	private Sound ambientSonund;
+	private Sound chapelSound;
+	private Sound bonfireSound;
 
 	public NodeModel(Spatial model, Vector3f dimensionControll) {
 		this.spatial = model;
@@ -27,7 +28,7 @@ public class NodeModel extends Node {
 	}
 
 	public NodeModel(String path, Vector3f dimensionControll) {
-		this.spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/" + path);
+		this.spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/" + path );
 		this.spatial.setShadowMode(RenderQueue.ShadowMode.Inherit);
 		this.setName(this.spatial.getName());
 		this.dimensionControll = dimensionControll;
@@ -48,6 +49,8 @@ public class NodeModel extends Node {
 	}
 
 	public NodeModel(String path, Vector3f dimensionControll, Vector3f intersection) {
+		System.out.println("secondo");
+		System.out.println(path);
 		this.spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/" + path);
 		this.spatial.setShadowMode(RenderQueue.ShadowMode.Inherit);
 		this.setName(this.spatial.getName());
@@ -83,19 +86,32 @@ public class NodeModel extends Node {
 	}
 
 	protected void setupAudio() {
-		// TODO if temporaneo
 		if (this.name.equals("Chapel")) {
-			this.ambientSonund = new Sound(this, "Bell", false, true, false, 1.5f, false);
+			this.chapelSound = new Sound(this, "Bell", false, true, false, 1.5f, false);
+		}
+		if (this.name.equals("Bonfire")) {
+			this.bonfireSound = new Sound(this, "Bonfire", false, true, true, 1.5f, false);
 		}
 	}
 
-	public void playSound() {
-		if (this.ambientSonund != null)
-			this.ambientSonund.playSound();
+	public void playChapelSound() {
+		if (this.chapelSound != null)
+			this.chapelSound.playSound();
 	}
 
-	public void stopSound() {
-		if (this.ambientSonund != null)
-			this.ambientSonund.stopSound();
+	public void stopChapelSound() {
+		if (this.chapelSound != null)
+			this.chapelSound.stopSound();
+	}
+
+	public void playBonfireSound() {
+		if (this.bonfireSound != null) {
+			this.bonfireSound.playSound();
+		}
+	}
+
+	public void stopBonfireSound() {
+		if (this.bonfireSound != null)
+			this.bonfireSound.stopSound();
 	}
 }

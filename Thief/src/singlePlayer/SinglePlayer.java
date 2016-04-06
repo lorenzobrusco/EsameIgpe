@@ -32,20 +32,23 @@ public class SinglePlayer {
 	private GameRender render;
 	private Sound ambient;
 
-	public SinglePlayer(ViewPort viewPort, Node rootNode, Camera cam, String level) {
+	public SinglePlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, boolean shadows, boolean fog, boolean water) {
 		this.viewPort = viewPort;
 		this.rootNode = rootNode;
 		cam.setFrustumFar(200);
 		cam.onFrameChange();
 		this.loadTerrain = new LoadTerrain();
 		this.nodeScene = new Node("Scene");
-		this.loadLevel(level);
+		this.loadLevel(level, shadows, fog, water);
+		GameManager.getIstance().getNodeThief().setSinglePlayer(true);
 		GameManager.getIstance().getNodeThief().setCam(cam);
 		this.setKey();
+		GameManager.getIstance().makeSecondLayer();
+		GameManager.getIstance().printSecondLayer();
 		this.setupAmbientSound();
 	}
 
-	public void loadLevel(String level) {
+	public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
 		TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
 		this.nodeScene.attachChild(terrainQuad);
 		this.nodeScene.addLight(loadTerrain.makeAmbientLight());
@@ -58,7 +61,7 @@ public class SinglePlayer {
 		GameManager.getIstance().addPhysics();
 		GameManager.getIstance().addPointLightToScene();
 		this.render = new GameRender(terrainQuad);
-		this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
+		this.viewPort.addProcessor(loadTerrain.makeFilter(shadows, fog, water));
 	}
 
 	public void simpleUpdate(Float tpf) {
@@ -92,7 +95,7 @@ public class SinglePlayer {
 	}
 
 	private void setupAmbientSound() {
-		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 1.0f, false);
+		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 		this.ambient.playSound();
 	}
 }

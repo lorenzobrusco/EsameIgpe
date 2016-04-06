@@ -1,227 +1,372 @@
 package control;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioRenderer;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.PointLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
 import editor.LoadTerrain;
 import logic.World;
+import multiPlayer.Client;
+import multiPlayer.NotifyStateModel;
+import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
 import singlePlayer.travel.PanelGame;
 
+/*
+ * 	Questa classe, oltre ad essere un singleton
+ * 	viene utilizzata per gestire, memorizzare, 
+ * 	controllare tutto ciò che avviene in fasi di
+ * 	gioco
+ * 
+ */
 public class GameManager {
 
-	private static GameManager manager;
+    private static GameManager manager;
+    private Collection<NodeModel> spatial;
+    private Collection<NodeModel> nodeRender;
+    private Collection<NodeCharacter> enemies;
+    private Collection<PointLight> lights;
+    private Collection<NotifyStateModel> notifyStateModels;
+    private AbstractMap<String, NodeCharacter> players;
+    private GameControl control;
+    private PanelGame game;
+    private SimpleApplication application;
+    private BulletAppState bulletAppState;
+    private LoadTerrain loadTerrain;
+    private NodeThief thief;
+    private NodeModel bonfire;
+    private Node terrain;
+    private AudioRenderer audioRenderer;
+    private boolean editor;
+    private Client client;
+    private float worldXExtent;
+    private float worldZExtent;
+    private boolean[][] secondLayer;
 
-	private Stack<NodeModel> spatial;
+    private GameManager() {
 
-	private ArrayList<NodeModel> nodeRender;
+	this.spatial = new Stack<>();
+	this.nodeRender = new ArrayList<>();
+	this.enemies = new ArrayList<>();
+	this.lights = new ArrayList<>();
+	this.players = new HashMap<>();
+	this.notifyStateModels = new ConcurrentLinkedQueue<>();
+	this.editor = false;
+    }
 
-	private ArrayList<NodeEnemy> enemies;
+    /*
+     * Questo metodo imposta il SimpleApplication in modo da poter caricare i
+     * modelli, le texture, e quant'altro da qualsiasi parte del codice
+     */
+    public void setParams(SimpleApplication application) {
+	this.loadTerrain = new LoadTerrain();
+	this.application = application;
+    }
 
-	private ArrayList<PointLight> lights;
+    /*
+     * Questo metodo imposta il nodo Terreno in modo da poter attaccare e
+     * staccare un modello da qualsiasi parte del gioco
+     */
+    public void setTerrain(Node terrain) {
+	this.terrain = terrain;
+	this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
+	this.worldZExtent = ((BoundingBox) this.terrain.getWorldBound()).getZExtent();
+	this.secondLayer = new boolean[(((int) (worldXExtent * 2)) + 1)][(((int) (worldZExtent * 2)) + 1)];
+    }
 
-	private GameControl control;
+    public void setBullet(BulletAppState appState) {
+	this.bulletAppState = appState;
+    }
 
-	private PanelGame game;
+    /*
+     * Metodo necessario per richiamare il gameManager da qualsiasi parte del
+     * codice
+     */
+    public static GameManager getIstance() {
+	if (manager == null)
+	    manager = new GameManager();
+	return manager;
+    }
 
-	private SimpleApplication application;
+    /*
+     * Metodo deprecato
+     */
+    public void setPanelGame(PanelGame game) {
+	control = new GameControl(new World(1200, 650, 0));
+	this.game = game;
+    }
 
-	private BulletAppState bulletAppState;
+    /*
+     * Cre un pointLight in una data posizione e lo aggiunge ad una 
+     * collezioni di pointLight
+     */
+    public void addPointShadow(Vector3f localTranslation) {
 
-	private LoadTerrain loadTerrain;
+	PointLight light = new PointLight();
+	light.setColor(new ColorRGBA(0.8f, 0.7f, 0.5f, 0.2f));
+	light.setRadius(40f);
+	light.setPosition(new Vector3f(localTranslation.x, localTranslation.y + 1f, localTranslation.z));
+	this.lights.add(light);
 
-	private NodeThief thief;
+    }
 
-	private NodeModel bonfire;
-
-	private Node terrain;
-
-	private AudioRenderer audioRenderer;
-
-	private boolean editor;
-
-	private GameManager() {
-
-		this.spatial = new Stack<>();
-		this.nodeRender = new ArrayList<>();
-		this.enemies = new ArrayList<>();
-		this.lights = new ArrayList<>();
-		this.editor = false;
+    /*
+     * Vengo attaccati i pointLight al terreno
+     */
+    public void addPointLightToScene() {
+	for (PointLight light : this.lights) {
+	    terrain.addLight(light);
 	}
+    }
 
-	public void setParams(SimpleApplication application) {
-		this.loadTerrain = new LoadTerrain();
-		this.application = application;
+    /*
+     * Viene aggiunta la pisica al gioco
+     */
+    public synchronized void addPhysics() {
+	for (NodeModel model : spatial) {
+
+	    if (model.getName().contains("Chapel") || model.getName().contains("Tree")
+		    || model.getName().contains("House") || model.getName().contains("HouseMedium")
+		    || model.getName().contains("HouseTwo") || model.getName().contains("WindMill")
+		    || model.getName().contains("Portal") || model.getName().contains("Castle")
+		    || model.getName().contains("Bonfire")) {
+		CollisionShape collisionShape = CollisionShapeFactory.createMeshShape(model);
+		RigidBodyControl body = new RigidBodyControl(collisionShape, 0);
+		model.addControl(body);
+	    } else {
+		model.addCharacterControll();
+	    }
+	    bulletAppState.getPhysicsSpace().add(model);
 	}
+    }
 
-	public void setTerrain(Node terrain) {
-		this.terrain = terrain;
+    /*
+     * Lancia l'intelligenza artificiale del nemico nel
+     * singlePlayer
+     */
+    public void startEnemiesIntelligence() {
+	for (NodeCharacter enemy : this.enemies) {
+	    ((NodeEnemy) enemy).runIntelligence();
+	    enemy.endAttack();
 	}
+    }
 
-	public void setBullet(BulletAppState appState) {
-		this.bulletAppState = appState;
+    /*
+     * Vengo aggiunti i modeli da renderizzare nel collezione
+     * 
+     */
+    public boolean addModelRender(NodeModel model) {
+	if (this.nodeRender.contains(model))
+	    return false;
+	this.nodeRender.add(model);
+	return true;
+    }
+
+    /*
+     * Controlla se il modello esiste, e se esiste lo toglie
+     * logicamente dal gioco
+     */
+    public void removeModel(String name) {
+	for (NodeModel model : this.spatial) {
+	    if (model.getName().equals(name)) {
+		this.spatial.remove(model);
+		return;
+	    }
 	}
+    }
 
-	public static GameManager getIstance() {
-		if (manager == null)
-			manager = new GameManager();
-		return manager;
+    
+    //TODO Daviede
+     
+    public void makeSecondLayer() {
+	for (Spatial model : this.getModels()) {
+	    if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
+		this.makeModelPerimeter(model);
+		System.out
+			.println(model.getName() + " " + "xExtent " + ((BoundingBox) model.getWorldBound()).getXExtent()
+				+ ", " + "zExtent " + ((BoundingBox) model.getWorldBound()).getZExtent());
+		this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
+			+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
+				+ (int) this.worldZExtent)] = true;
+	    }
 	}
+    }
 
-	public void setPanelGame(PanelGame game) {
-		control = new GameControl(new World(1200, 650, 0));
-		this.game = game;
+    
+    
+
+    public void printSecondLayer() {
+	for (int x = 0; x < this.secondLayer.length; x++) {
+	    for (int z = 0; z < this.secondLayer[x].length; z++) {
+		if (this.secondLayer[x][z])
+		    System.out.println("obstacle on " + (x - this.worldXExtent) + " " + (z - this.worldZExtent));
+	    }
 	}
+    }
 
-	public void addPointShadow(Vector3f localTranslation) {
+    private void makeModelPerimeter(Spatial model) {
 
-		PointLight light = new PointLight();
-		light.setColor(new ColorRGBA(0.8f, 0.7f, 0.5f, 0.2f));
-		light.setRadius(40f);
-		light.setPosition(new Vector3f(localTranslation.x, localTranslation.y + 1f, localTranslation.z));
-		this.lights.add(light);
+	BoundingBox boundingBox = new BoundingBox();
+	boundingBox.setXExtent((((BoundingBox) model.getWorldBound()).getXExtent()) + 2);
+	boundingBox.setZExtent((((BoundingBox) model.getWorldBound()).getZExtent()) + 2);
 
-	}
+	final WireBox wireBox2 = new WireBox();
+	wireBox2.fromBoundingBox(boundingBox);
+	wireBox2.setLineWidth(0f);
+	final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
 
-	public void addPointLightToScene() {
-		for (PointLight light : this.lights) {
-			terrain.addLight(light);
-		}
-	}
+	final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+		"Common/MatDefs/Misc/Unshaded.j3md");
+	boxAttach.setMaterial(material);
 
-	public void addPhysics() {
-		for (NodeModel model : spatial) {
+	material.setColor("Color", ColorRGBA.Red);
+	((Node) model).attachChild(boxAttach);
+	boundingBox.setCenter(boxAttach.getLocalTranslation());
 
-			if (model.getName().contains("Chapel") || model.getName().contains("Tree")
-					|| model.getName().contains("House") || model.getName().contains("HouseMedium")
-					|| model.getName().contains("HouseTwo") || model.getName().contains("WindMill")
-					|| model.getName().contains("Portal") || model.getName().contains("Castle")
-					|| model.getName().contains("Bonfire")) {
-				CollisionShape collisionShape = CollisionShapeFactory.createMeshShape(model);
-				RigidBodyControl body = new RigidBodyControl(collisionShape, 0);
-				model.addControl(body);
-			} else {
-				model.addCharacterControll();
-			}
-			bulletAppState.getPhysicsSpace().add(model);
-		}
-	}
+    }
 
-	public void startEnemiesIntelligence() {
-		for (NodeEnemy enemy : this.enemies) {
-			enemy.runIntelligence();
-			enemy.attack();
-		}
-	}
+    public void setClient(final Client client) {
+	this.client = client;
+    }
 
-	public void addModelEnemy(NodeEnemy enemy) {
-		this.enemies.add(enemy);
-	}
+    public Client getClient() {
+	return this.client;
+    }
 
-	public ArrayList<NodeEnemy> getModelEnemys() {
-		return this.enemies;
-	}
+    public Collection<NodeModel> getModels() {
+	return spatial;
+    }
 
-	public boolean addModelRender(NodeModel model) {
-		if (this.nodeRender.contains(model))
-			return false;
-		this.nodeRender.add(model);
-		return true;
-	}
+    public LoadTerrain getLoadTerrain() {
+	return loadTerrain;
+    }
 
-	public void detachModelRender(NodeModel model) {
-		this.nodeRender.remove(model);
-	}
+    public NodeThief getNodeThief() {
+	return thief;
+    }
 
-	public ArrayList<NodeModel> getNodeModel() {
-		return this.nodeRender;
-	}
+    public void setNodeThief(NodeThief thief) {
+	this.thief = thief;
+    }
 
-	public void repaint() {
-		game.repaint();
-	}
+    public AbstractMap<String, NodeCharacter> getPlayers() {
+	return this.players;
+    }
 
-	public ArrayList<NodeEnemy> getEnemys() {
-		return this.enemies;
-	}
+    public void addPlayes(String address, NodeCharacter player) {
+	this.players.put(address, player);
+    }
 
-	public Node getTerrain() {
-		return this.terrain;
-	}
+    public void removePlayers(String address) {
+	this.players.remove(address);
+    }
 
-	public GameControl getControl() {
-		return control;
-	}
+    public NodeModel getBonfire() {
+	return bonfire;
+    }
 
-	public Application getApplication() {
-		return application;
-	}
+    public void setBonfire(NodeModel bonfire) {
+	this.bonfire = bonfire;
+    }
 
-	public BulletAppState getBullet() {
-		return bulletAppState;
-	}
+    public Collection<PointLight> getLights() {
+	return this.lights;
+    }
 
-	public void addModel(NodeModel model) {
-		spatial.add(model);
-	}
+    public void setAudioRender(AudioRenderer audioRenderer) {
+	this.audioRenderer = audioRenderer;
+    }
 
-	public Stack<NodeModel> getModels() {
-		return spatial;
-	}
+    public AudioRenderer getAudioRender() {
+	return this.audioRenderer;
+    }
 
-	public LoadTerrain getLoadTerrain() {
-		return loadTerrain;
-	}
+    public void setEditor(boolean editor) {
+	this.editor = editor;
+    }
 
-	public NodeThief getNodeThief() {
-		return thief;
-	}
+    public boolean isEditor() {
+	return this.editor;
+    }
 
-	public void setNodeThief(NodeThief thief) {
-		this.thief = thief;
-	}
+    public void addModelEnemy(NodeCharacter enemy) {
+	this.enemies.add(enemy);
+    }
 
-	public NodeModel getBonfire() {
-		return bonfire;
-	}
+    public Collection<NodeCharacter> getModelEnemys() {
+	return this.enemies;
+    }
 
-	public void setBonfire(NodeModel bonfire) {
-		this.bonfire = bonfire;
-	}
+    public void detachModelRender(NodeModel model) {
+	this.nodeRender.remove(model);
+    }
 
-	public ArrayList<PointLight> getLights() {
-		return this.lights;
-	}
+    public Collection<NodeModel> getNodeModel() {
+	return this.nodeRender;
+    }
 
-//	public Node getRoootNode() {
-//		return this.application.getRootNode();
-//	}
+    public void repaint() {
+	game.repaint();
+    }
 
-	public void setAudioRender(AudioRenderer audioRenderer) {
-		this.audioRenderer = audioRenderer;
-	}
+    public Collection<NodeCharacter> getEnemys() {
+	return this.enemies;
+    }
 
-	public AudioRenderer getAudioRender() {
-		return this.audioRenderer;
-	}
+    public Node getTerrain() {
+	return this.terrain;
+    }
 
-	public void setEditor(boolean editor) {
-		this.editor = editor;
-	}
+    public GameControl getControl() {
+	return control;
+    }
 
-	public boolean isEditor() {
-		return this.editor;
-	}
+    public Application getApplication() {
+	return application;
+    }
+
+    public BulletAppState getBullet() {
+	return bulletAppState;
+    }
+
+    public void addModel(NodeModel model) {
+	spatial.add(model);
+    }
+
+    public synchronized void addNotifyStateModel(NotifyStateModel notifyStateModel) {
+	this.notifyStateModels.add(notifyStateModel);
+    }
+
+    public synchronized NotifyStateModel getNotifyStateModel() {
+	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
+    }
+
+    public Collection<NotifyStateModel> getNotyStateModels() {
+	return this.notifyStateModels;
+    }
+    
+    public boolean[][] getSecondLayer() {
+	return this.secondLayer;
+    }
 }
