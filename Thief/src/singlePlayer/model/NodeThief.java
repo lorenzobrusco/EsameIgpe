@@ -1,5 +1,7 @@
 package singlePlayer.model;
 
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -17,12 +19,14 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.SizeValue;
 import multiPlayer.NodeEnemyPlayers;
 import singlePlayer.Collition;
+import singlePlayer.SinglePlayer;
 import singlePlayer.Sound;
 
 public class NodeThief extends NodeCharacter implements Collition {
@@ -56,6 +60,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private int currentTime;
 	private int talkFrequence;
 	private int lifeWanted;
+	private Element lifeBarThief;
+	private Element borderLifeBarThief;
 	private final NiftyImage innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
 			"Interface/innerLifeRed.png", false);
 	private final NiftyImage innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
@@ -72,7 +78,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.talkFrequence = 20;
 		this.setViewed(true);
 		this.setupAudio();
-
+		
+		
 	}
 
 	public void setCam(Camera cam) {
@@ -137,7 +144,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				.distance(GameManager.getIstance().getBonfire().getLocalTranslation()) < BONFIREDISTANCE
 				&& this.isSinglePlayer) {
 			this.resetAll();
-			this.resetLifeBar();
+			this.resetProgressBar();
 			// this.bonfireSound.playSound();
 			this.channel.setAnim("BonFire");
 			this.channel.setLoopMode(LoopMode.DontLoop);
@@ -191,8 +198,16 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
 
 	@Override
-	public void setLifeBar(Element lifeBar) {
-		this.lifeBarThief = lifeBar;
+	public void setLifeBar(Element lifeBar, Element border) {
+		this.lifeBarThief = lifeBar;		
+	    this.borderLifeBarThief = border;
+	    NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+				"Interface/borderLife"+this.getModel().getName()+".png", false);		
+		borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
+		borderLifeBarThief.getParent().layoutElements();
+		
+		 resetProgressBar();
+			
 	}
 
 	@Override
@@ -212,16 +227,35 @@ public class NodeThief extends NodeCharacter implements Collition {
 			lifeBarThief.setVisible(false);
 
 	}
-
-	public void resetLifeBar() {
-
-		lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarGreen);
-		sizeLifeBar = 28;
-		lifeBarThief.setConstraintWidth(new SizeValue(28 + "%"));
-		lifeBarThief.setConstraintX(new SizeValue(11 + "%"));
+	
+	// GENERA LA BARRA DELLA VITA
+	public void resetProgressBar()
+	{
+		
+		
+		if(lifeBarThief!=null)
+		lifeBarThief.markForRemoval();
+			
+		ImageBuilder b = new ImageBuilder() {
+			{
+				
+				filename("Interface/innerLife.png");
+				x("15%");
+				y("76%");
+				width("22%");
+				height("3%");
+				imageMode("resize:15,2,15,15,15,2,15,2,15,2,15,15");
+			}
+		};
+		
+		Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("panelProgressBar");	
+		this.lifeBarThief= b.build(GameManager.getIstance().getNifty(),GameManager.getIstance().getNifty().getCurrentScreen(),layer);	
 		lifeBarThief.getParent().layoutElements();
-
+		
 	}
+
+
+	
 
 	private void saySomething() {
 		// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 ==

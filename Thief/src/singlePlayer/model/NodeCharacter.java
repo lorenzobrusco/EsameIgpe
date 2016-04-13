@@ -44,10 +44,9 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	protected Sound scream4;
 	private boolean viewed;
 	private Vector3f startPosition;
+	
 
-	protected Element lifeBarThief;
-
-	public void setLifeBar(Element lifeBar) {
+	public void setLifeBar(Element lifeBar, Element Border) {
 	}
 
 	public void setDamageLifeBar(int damage) {

@@ -14,6 +14,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -37,7 +38,8 @@ public class SinglePlayer implements ScreenController {
 	private Sound ambient;
 
 	
-	private Element progressBarElement;
+	private Element progressLifeBarThief;
+	private Element borderLifeBarThief;
 	
 	
 	public SinglePlayer(ViewPort viewPort, Node rootNode, Camera cam, String level, boolean shadows, boolean fog, boolean water) {
@@ -106,14 +108,15 @@ public class SinglePlayer implements ScreenController {
 				GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
 	}
 	
+	
+		
 	private void loadNifty()
 	{
 		
 		GameManager.getIstance().getNifty().fromXml("Interface/singlePlayer.xml", "lifeBarScreen", this);
-		this.progressBarElement = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("progressbarThief");
 		
-	   
-	    GameManager.getIstance().getNodeThief().setLifeBar(progressBarElement);
+		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("borderLifeBarThief");		
+		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief);
 	
 	}
 
@@ -123,7 +126,7 @@ public class SinglePlayer implements ScreenController {
 	}
 
 	@Override
-	public void bind(Nifty arg0, Screen arg1) {
+	public void bind(Nifty d, Screen arg1) {
 		
 		
 	}
@@ -136,7 +139,7 @@ public class SinglePlayer implements ScreenController {
 
 	@Override
 	public void onStartScreen() {
-		
+	
 		
 	}
 }

@@ -3,13 +3,13 @@
 <nifty>
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
-
+    
+   
     <screen id="lifeBarScreen" controller="singlePlayer.SinglePlayer">
     
           <layer id="layerProgressBar" childLayout="vertical" >
         	 <panel id = "panelProgressBar" childLayout="absolute" >        	
-        	    <image id="progressbarThief" x="15%" y="76%" filename="Interface/innerLife.png" width="22%" height="3%"
-                         imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15"  />        	 
+        	        	 
         	 </panel>
           	 
           
@@ -17,7 +17,7 @@
     
           <layer id="layerBorder" childLayout="vertical" >
         	 <panel id = "panelBorderLifeBar" childLayout="absolute" >        	
-        	    <image filename="Interface/borderLife.png"  width="37%" height="18%" x="2%" y="70%"/>        	 
+        	    <image id="borderLifeBarThief" filename="Interface/borderLife.png"  width="37%" height="18%" x="2%" y="70%"/>        	 
         	 </panel>
           	 
           

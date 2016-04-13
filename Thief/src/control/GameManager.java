@@ -228,7 +228,7 @@ public class GameManager {
 		for (int x = 0; x < this.secondLayer.length; x++) {
 			for (int z = 0; z < this.secondLayer[x].length; z++) {
 				if (this.secondLayer[x][z])
-					System.out.println("obstacle on " + (x - this.worldXExtent) + " " + (z - this.worldZExtent));
+					;//System.out.println("obstacle on " + (x - this.worldXExtent) + " " + (z - this.worldZExtent));
 			}
 		}
 	}
@@ -438,7 +438,7 @@ public class GameManager {
 		final Element lifeBarEnemy = builderLifeBar.build(nifty, nifty.getCurrentScreen(),
 				screen.findElementByName("layerLifeBarEnemy"));
 
-		System.out.println(point.x + "  " + point.y);
+		//System.out.println(point.x + "  " + point.y);
 
 		// e.setConstraintWidth(new SizeValue(100+"%"));
 		// e.getParent().layoutElements();
