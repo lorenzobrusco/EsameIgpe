@@ -203,8 +203,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    this.borderLifeBarThief = border;
 	    NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
 				"Interface/borderLife"+this.getModel().getName()+".png", false);		
-		borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
-		borderLifeBarThief.getParent().layoutElements();
+		this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
+		this.borderLifeBarThief.getParent().layoutElements();
 		
 		 resetProgressBar();
 			
@@ -214,17 +214,17 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public void setDamageLifeBar(int damage) {
 
 		int value = (life * sizeLifeBar) / STARTLIFE;
-		lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
-		lifeBarThief.getParent().layoutElements();
+		this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
+		this.lifeBarThief.getParent().layoutElements();
 
 		if (life <= lifeWanted) {
 
-			lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);
-			lifeBarThief.getParent().layoutElements();
+			this.lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);
+			this.lifeBarThief.getParent().layoutElements();
 		}
 
 		if (life <= 0)
-			lifeBarThief.setVisible(false);
+			this.lifeBarThief.setVisible(false);
 
 	}
 	
@@ -233,8 +233,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	{
 		
 		
-		if(lifeBarThief!=null)
-		lifeBarThief.markForRemoval();
+		if(this.lifeBarThief!=null)
+		this.lifeBarThief.markForRemoval();
 			
 		ImageBuilder b = new ImageBuilder() {
 			{
@@ -250,7 +250,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		
 		Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("panelProgressBar");	
 		this.lifeBarThief= b.build(GameManager.getIstance().getNifty(),GameManager.getIstance().getNifty().getCurrentScreen(),layer);	
-		lifeBarThief.getParent().layoutElements();
+		this.lifeBarThief.getParent().layoutElements();
 		
 	}
 
