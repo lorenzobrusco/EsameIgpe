@@ -45,17 +45,16 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	private boolean viewed;
 	private Vector3f startPosition;
 
-	protected Element progressBarElement;
+	protected Element lifeBarThief;
 
 	public void setLifeBar(Element lifeBar) {
 	}
 
 	public void setDamageLifeBar(int damage) {
 	}
-	
+
 	public void setVisibleLifeBar() {
 	}
-	
 
 	public NodeCharacter(Spatial model, Vector3f dimensionControll, int life, final int DAMAGE) {
 		super(model, dimensionControll);

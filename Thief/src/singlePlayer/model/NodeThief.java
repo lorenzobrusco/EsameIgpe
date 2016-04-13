@@ -39,7 +39,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private final int RENDER = 25;
 	private final float SPEED = 15;
 	private final float BONFIREDISTANCE = 10f;
-	private int sizeLifeBar= 22;
+	private int sizeLifeBar = 22;
 	private Vector3f viewDirection = new Vector3f(0, 0, 1);
 	private Sound walkingOnGrassSound;
 	private Sound swordSound;
@@ -56,22 +56,20 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private int currentTime;
 	private int talkFrequence;
 	private int lifeWanted;
-	private NiftyImage innerLifeBarRed;
-	private NiftyImage innerLifeBarGreen;
-
-
+	private final NiftyImage innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+			"Interface/innerLifeRed.png", false);
+	private final NiftyImage innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+			"Interface/innerLife.png", false);
 
 	public NodeThief(Spatial model, boolean multiplayer) {
 		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
-		this.lifeWanted = (life*40)/100;
+		this.lifeWanted = (life * 40) / 100;
 		this.controlRender = RENDER;
 		this.isRun = false;
 		this.waitAnimation = false;
 		this.multiplayer = multiplayer;
 		this.currentTime = (int) System.currentTimeMillis();
-		this.talkFrequence = 20;		
-		this.innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/innerLifeRed.png" ,false);
-		this.innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/innerLife.png" ,false);
+		this.talkFrequence = 20;
 		this.setViewed(true);
 		this.setupAudio();
 
@@ -125,7 +123,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (this.alive) {
 			super.death();
 			this.resetCurrentTime();
-			this.progressBarElement.setVisible(false);
+			this.lifeBarThief.setVisible(false);
 			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 
 			// this.walkingOnGrassSound.stopSound();
@@ -191,40 +189,37 @@ public class NodeThief extends NodeCharacter implements Collition {
 					characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation());
 
 	}
-	
+
 	@Override
 	public void setLifeBar(Element lifeBar) {
-		this.progressBarElement = lifeBar;
+		this.lifeBarThief = lifeBar;
 	}
 
 	@Override
 	public void setDamageLifeBar(int damage) {
 
-		int value = (life * sizeLifeBar) / STARTLIFE;		
-		progressBarElement.setConstraintWidth(new SizeValue(value + "%"));
-		progressBarElement.getParent().layoutElements();
-		
-		
-		if (life <= lifeWanted )
-		{
-					   
-            progressBarElement.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);		  
-		    progressBarElement.getParent().layoutElements();
+		int value = (life * sizeLifeBar) / STARTLIFE;
+		lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
+		lifeBarThief.getParent().layoutElements();
+
+		if (life <= lifeWanted) {
+
+			lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);
+			lifeBarThief.getParent().layoutElements();
 		}
-		
+
 		if (life <= 0)
-			progressBarElement.setVisible(false);
+			lifeBarThief.setVisible(false);
 
 	}
 
 	public void resetLifeBar() {
-		
-		
-		progressBarElement.getRenderer(ImageRenderer.class).setImage(innerLifeBarGreen);
+
+		lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarGreen);
 		sizeLifeBar = 28;
-		progressBarElement.setConstraintWidth(new SizeValue(28 + "%"));
-		progressBarElement.setConstraintX(new SizeValue(11+"%"));
-		progressBarElement.getParent().layoutElements();
+		lifeBarThief.setConstraintWidth(new SizeValue(28 + "%"));
+		lifeBarThief.setConstraintX(new SizeValue(11 + "%"));
+		lifeBarThief.getParent().layoutElements();
 
 	}
 
@@ -388,8 +383,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 				NodeThief.this.sitNearToBonFire();
 			} else if (name.equals("damage") && !pressed) {
 				int damage = 1;
-				
-				NodeThief.this.setLife(NodeThief.this.life-damage);
+
+				NodeThief.this.setLife(NodeThief.this.life - damage);
 				NodeThief.this.setDamageLifeBar(damage);
 
 			}
