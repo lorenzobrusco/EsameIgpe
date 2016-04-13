@@ -3,58 +3,28 @@
 <nifty>
     <useStyles filename="nifty-default-styles.xml" />
     <useControls filename="nifty-default-controls.xml" />
- 
-    <controlDefinition name = "lifeBarThief" controller="singlePlayer.SinglePlayer">
-        <image filename="Interface/border.png" childLayout="absolute" 
-               imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15">
-            <image id="progressbarThief" x="0" y="0" filename="Interface/inner.png" width="100%" height="100%"
-                   imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15" />
-        </image>
-    </controlDefinition>
- 
- 
+
     <screen id="lifeBarScreen" controller="singlePlayer.SinglePlayer">
-        <layer id="layerLifeBarPlayer" childLayout="center" >
-        
-        <panel id = "centralPanel" childLayout="vertical"  > 
-        
-          <panel id = "panelUp" childLayout="horizontal" height="50%"> 
-            
-             </panel>
-          
-             <panel id = "panelDown" childLayout="vertical" height="50%" > 
-                <panel id = "space" childLayout="horizontal" width="20%" />
-             	<panel id = "panelDownLeft" childLayout="horizontal" width="30%" height="30%"> 
-          	      <panel id = "space1" childLayout="horizontal" width="17%"/>
-          	      <panel id = "panelLifeBar" childLayout="vertical" >
-                  		<control name="lifeBarThief"  width="100%" height="40%" />   
-                  		<control id="nameThief" name="label" align="center" 
-                         text="THIEF " font="Interface/Fonts/Morpheus.fnt"/>     
-                  </panel> 
-             </panel>
-          
-          
-          
-            </panel>
-        
-        <!-- 
-            <panel id = "centralPanel" childLayout="vertical"  height="32%" width="70%" backgroundColor="#ffff">
-              <panel id = "space" childLayout="vertical"  height="10%" />
-                <control name="loadingbar"  width="40%" height="20%" />
-                <control id="loadingtext" name="label" align="center" 
-                         text="                                                  "/>
-            </panel>
-             -->
-            
-            </panel>
-        </layer>
-        
-          <layer id="layerLifeBarEnemy" childLayout="absolute" >
-          
-          
-          
+    
+          <layer id="layerProgressBar" childLayout="vertical" >
+        	 <panel id = "panelProgressBar" childLayout="absolute" >        	
+        	    <image id="progressbarThief" x="15%" y="76%" filename="Interface/innerLife.png" width="22%" height="3%"
+                         imageMode="resize:15,2,15,15,15,2,15,2,15,2,15,15"  />        	 
+        	 </panel>
+          	 
           
           </layer>
+    
+          <layer id="layerBorder" childLayout="vertical" >
+        	 <panel id = "panelBorderLifeBar" childLayout="absolute" >        	
+        	    <image filename="Interface/borderLife.png"  width="37%" height="18%" x="2%" y="70%"/>        	 
+        	 </panel>
+          	 
+          
+          </layer>
+ 
+          
+         
         
     </screen>
  

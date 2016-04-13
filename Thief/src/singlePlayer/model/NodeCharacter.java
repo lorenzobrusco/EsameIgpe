@@ -52,6 +52,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 	public void setDamageLifeBar(int damage) {
 	}
+	
+	public void setVisibleLifeBar() {
+	}
+	
 
 	public NodeCharacter(Spatial model, Vector3f dimensionControll, int life, final int DAMAGE) {
 		super(model, dimensionControll);
@@ -260,6 +264,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 			this.deathSound.playSound();
 		this.alive = false;
 		this.channel.setAnim(death, 0.50f);
+
 		this.channel.setLoopMode(LoopMode.DontLoop);
 	}
 

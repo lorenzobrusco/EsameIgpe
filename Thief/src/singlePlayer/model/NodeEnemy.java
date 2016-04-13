@@ -28,7 +28,7 @@ public class NodeEnemy extends NodeCharacter {
     private LifeBar lifeBar;
 
     public NodeEnemy(Spatial model, Vector3f dimensionControll, Vector3f intersection) {
-	super(model, dimensionControll, intersection, 50, 10);
+	super(model, dimensionControll, intersection, 50, 1);
 	this.artificialIntelligence = new AI(this);
 	this.lifeBar = new LifeBar(this);
 

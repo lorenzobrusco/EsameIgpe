@@ -111,6 +111,7 @@ public class SinglePlayer implements ScreenController {
 		
 		GameManager.getIstance().getNifty().fromXml("Interface/singlePlayer.xml", "lifeBarScreen", this);
 		this.progressBarElement = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("progressbarThief");
+		
 	   
 	    GameManager.getIstance().getNodeThief().setLifeBar(progressBarElement);
 	

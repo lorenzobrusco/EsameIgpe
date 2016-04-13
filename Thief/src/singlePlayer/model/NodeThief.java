@@ -18,6 +18,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.SizeValue;
 import multiPlayer.NodeEnemyPlayers;
 import singlePlayer.Collition;
@@ -37,6 +39,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private final int RENDER = 25;
 	private final float SPEED = 15;
 	private final float BONFIREDISTANCE = 10f;
+	private int sizeLifeBar= 22;
 	private Vector3f viewDirection = new Vector3f(0, 0, 1);
 	private Sound walkingOnGrassSound;
 	private Sound swordSound;
@@ -52,42 +55,23 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private Sound enemyView;
 	private int currentTime;
 	private int talkFrequence;
+	private int lifeWanted;
+	private NiftyImage innerLifeBarRed;
+	private NiftyImage innerLifeBarGreen;
 
-	@Override
-	public void setLifeBar(Element lifeBar) {
-		this.progressBarElement = lifeBar;
-	}
 
-	@Override
-	public void setDamageLifeBar(int damage) {
-		if (life > 0) {
-			life -= damage;
-			if (life == 0)
-				progressBarElement.setVisible(false);
-			else {
-				int value = (life * 100) / STARTLIFE;
-				progressBarElement.setConstraintWidth(new SizeValue(value + "%"));
-				progressBarElement.getParent().layoutElements();
-			}
-		}
-
-	}
-
-	public void resetLifeBar() {
-
-		progressBarElement.setConstraintWidth(new SizeValue(100 + "%"));
-		progressBarElement.getParent().layoutElements();
-
-	}
 
 	public NodeThief(Spatial model, boolean multiplayer) {
-		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 1000, 10);
+		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
+		this.lifeWanted = (life*40)/100;
 		this.controlRender = RENDER;
 		this.isRun = false;
 		this.waitAnimation = false;
 		this.multiplayer = multiplayer;
 		this.currentTime = (int) System.currentTimeMillis();
-		this.talkFrequence = 20;
+		this.talkFrequence = 20;		
+		this.innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/innerLifeRed.png" ,false);
+		this.innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/innerLife.png" ,false);
 		this.setViewed(true);
 		this.setupAudio();
 
@@ -141,7 +125,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (this.alive) {
 			super.death();
 			this.resetCurrentTime();
+			this.progressBarElement.setVisible(false);
 			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+
 			// this.walkingOnGrassSound.stopSound();
 			// TODO test
 		}
@@ -176,7 +162,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				if (enemy.isDead()) {
 					// this.enemyWin.playSound();//TODO test
 					((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
-				((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
+					((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 				}
 				if (enemy instanceof NodeEnemyPlayers) {
 					System.out.println(((NodeEnemyPlayers) enemy).getKeyModel());
@@ -203,6 +189,42 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (this.multiplayer)
 			GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
 					characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation());
+
+	}
+	
+	@Override
+	public void setLifeBar(Element lifeBar) {
+		this.progressBarElement = lifeBar;
+	}
+
+	@Override
+	public void setDamageLifeBar(int damage) {
+
+		int value = (life * sizeLifeBar) / STARTLIFE;		
+		progressBarElement.setConstraintWidth(new SizeValue(value + "%"));
+		progressBarElement.getParent().layoutElements();
+		
+		
+		if (life <= lifeWanted )
+		{
+					   
+            progressBarElement.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);		  
+		    progressBarElement.getParent().layoutElements();
+		}
+		
+		if (life <= 0)
+			progressBarElement.setVisible(false);
+
+	}
+
+	public void resetLifeBar() {
+		
+		
+		progressBarElement.getRenderer(ImageRenderer.class).setImage(innerLifeBarGreen);
+		sizeLifeBar = 28;
+		progressBarElement.setConstraintWidth(new SizeValue(28 + "%"));
+		progressBarElement.setConstraintX(new SizeValue(11+"%"));
+		progressBarElement.getParent().layoutElements();
 
 	}
 
@@ -365,7 +387,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 				NodeThief.this.isRun = false;
 				NodeThief.this.sitNearToBonFire();
 			} else if (name.equals("damage") && !pressed) {
-				int damage = 10;
+				int damage = 1;
+				
+				NodeThief.this.setLife(NodeThief.this.life-damage);
 				NodeThief.this.setDamageLifeBar(damage);
 
 			}
