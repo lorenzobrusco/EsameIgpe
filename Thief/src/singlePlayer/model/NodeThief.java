@@ -210,6 +210,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			
 	}
 
+	//
 	@Override
 	public void setDamageLifeBar(int damage) {
 

@@ -41,7 +41,7 @@
 							<onEndHover name="nop" onStartEffect="endGrow(multiPlayerButton)" />
 
 						</effect>
-						<interact onClick="openMultiPlayer()" />
+						<interact onClick="loadScreen(multiPlayerScreen)" />
 					</image>
 				</panel>
 				<panel id="editorPanel" height="10%" childLayout="center">
@@ -146,6 +146,50 @@
 			</panel>
 
 		</layer>
+	</screen>
+	
+	<screen id="multiPlayerScreen" controller="main.Main">
+		<layer id="background_MultiPlayer" childLayout="center">
+			<image filename="Interface/MultiPlayer/backgroundMultiPlayer2.png" width="100%" height="100%" />
+		</layer>
+
+		
+		<layer id="foreground_MultiPlayer" childLayout="horizontal">
+			<panel id="spaceForCentreMP" width="14%" childLayout="center"/>		
+			<panel id="centralPanelMP" width="73%" childLayout="vertical">
+				<panel id="spaceForTitolMP" height="23%" childLayout="center" />				
+				<panel id="PanelImageMP" height="58%" width="100%" childLayout="horizontal">				
+						<image id ="arrowLeft" filename="Interface/MultiPlayer/arrowLeft.png" width="5%" height="15%" valign="center"/>
+						<panel id="spaceForTitolMP1" width="10%" childLayout="center" />	
+						<image id ="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png" />	
+						<panel id="spaceForTitolMP2" width="10%" childLayout="center" />						
+						<image id ="arrowRight" filename="Interface/MultiPlayer/arrowRight.png" width="5%" height="15%" valign="center"/>				
+				</panel>
+						<panel id="buttonPanelMP" childLayout="vertical" >
+						<panel id="spaceForTitolMP3" height="40%" childLayout="center" />	
+							<image filename="Interface/MultiPlayer/startGameButton.png" id="startGameButton" align="center"
+						                   width="40%" height="60%" visibleToMouse="true">
+	                   <!-- 
+						<effect>
+							<onStartHover name="nop" onStartEffect="startGrow(startGameButton)" />
+							<onEndHover name="nop" onStartEffect="endGrow(startGameButton)" />
+
+						</effect>
+						<interact onClick="loadScreen(start)" />
+						  -->
+					</image>
+						</panel>
+					
+					
+					
+			</panel>
+			
+			
+				
+		</layer>
+		
+		
+		
 	</screen>
 
 

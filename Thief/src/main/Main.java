@@ -97,7 +97,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
 
-	this.menuSound.playSound();
+	//this.menuSound.playSound();
     }
 
     @Override
@@ -143,7 +143,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	multiplayer = false;
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
-	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain", nifty);
+	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 	mouseInput.setCursorVisible(false);
 	flyCam.setEnabled(true);
 	this.initKeys();
@@ -236,7 +236,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     public void startGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);	
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }

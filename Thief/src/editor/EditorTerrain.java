@@ -63,8 +63,7 @@ public class EditorTerrain implements ScreenController {
 	private TerrainQuad terrain;
 	private Geometry marker;
 	private BitmapText hintText;
-	private boolean raiseTerrain = false;
-	private Nifty nifty;
+	private boolean raiseTerrain = false;	
 	private LoadTerrain loadTerrain;
 	private NodeThief thiefModel;
 	private NodeModel bonFireModel;
@@ -78,10 +77,9 @@ public class EditorTerrain implements ScreenController {
 	private Sound editorSound;
 
 	public EditorTerrain(Node rootNode, Camera cam, BitmapFont guiFont, Node guiNode, ViewPort port,
-			AppSettings settings, String path, Nifty nifty) {
+			AppSettings settings, String path) {
 
-		this.rootNode = rootNode;
-		this.nifty = nifty;
+		this.rootNode = rootNode;		
 		this.cam = cam;
 		this.guiFont = guiFont;
 		this.guiNode = guiNode;
@@ -93,12 +91,12 @@ public class EditorTerrain implements ScreenController {
 		this.makeScene(path + ".j3o");
 		this.cam.setLocation(new Vector3f(0, 128, 0));
 		this.cam.lookAtDirection(new Vector3f(0, -1f, 0).normalizeLocal(), Vector3f.UNIT_X);
-		this.makeNiftyEditor();
 		this.loadHintText();
 		this.initCrossHairs();
 		this.createMarker();
 		this.setKey();
 		this.rootNode.addLight(loadTerrain.makeAmbientLight());
+		this.makeNiftyEditor();
 		this.setupAudio();
 		this.editorSound.playSound();
 
@@ -173,13 +171,13 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	public void save() {
-		if (this.nifty.getCurrentScreen().findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText()
+		if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText()
 				.equals("")) {
 			new SaveTerrain(this.rootNode).saveModel("default");
 		} else {
-			new SaveTerrain(this.rootNode).saveModel(this.nifty.getCurrentScreen()
+			new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
 					.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
-			this.nifty.getCurrentScreen().findNiftyControl("textfieldSaveTerrain", TextField.class).setText("");
+			GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("textfieldSaveTerrain", TextField.class).setText("");
 		}
 		this.readScenes();
 	}
@@ -201,18 +199,18 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	public void reset() {
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	public void load() {
 		this.loadScene(
-				this.nifty.getCurrentScreen().findNiftyControl("listBox", ListBox.class).getFocusItem().toString());
+				GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("listBox", ListBox.class).getFocusItem().toString());
 	}
 
 	public void deleteScene() {
 		File file = new File("assets" + File.separator + "Scenes" + File.separator
-				+ this.nifty.getCurrentScreen().findNiftyControl("listBox", ListBox.class).getFocusItem().toString());
+				+ GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("listBox", ListBox.class).getFocusItem().toString());
 		System.out.println(file.toString());
 		if (file.exists() && !(file.toString().contains("mountain")))
 			file.delete();
@@ -349,9 +347,8 @@ public class EditorTerrain implements ScreenController {
 
 	private void makeNiftyEditor() {
 
-		this.nifty.fromXml("Interface/editor.xml", "start", this);
-
-	}
+		GameManager.getIstance().getNifty().fromXml("Interface/editor.xml", "start", this);	
+		}
 
 	private void createMarker() {
 		Sphere sphere = new Sphere(8, 8, 10.5f);
@@ -373,8 +370,8 @@ public class EditorTerrain implements ScreenController {
 		tree.moveModel(tree.getModel().getLocalTranslation());
 		this.spatials.add((Node) tree.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makeEnemy(Vector3f intersect) {
@@ -426,8 +423,8 @@ public class EditorTerrain implements ScreenController {
 
 		this.spatials.add((Node) enemy.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makeBuilder(Vector3f intersect) {
@@ -456,8 +453,8 @@ public class EditorTerrain implements ScreenController {
 		builder.moveModel(builder.getModel().getLocalTranslation());
 		this.spatials.add((Node) builder.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makeChapel(Vector3f intersect) {
@@ -468,8 +465,8 @@ public class EditorTerrain implements ScreenController {
 		builder.moveModel(builder.getModel().getLocalTranslation());
 		this.spatials.add((Node) builder.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makeCastle(Vector3f intersect) {
@@ -481,8 +478,8 @@ public class EditorTerrain implements ScreenController {
 		castle.moveModel(castle.getModel().getLocalTranslation());
 		this.spatials.add((Node) castle.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makeBonFire(Vector3f intersect) {// TODO togliete commenti per
@@ -541,8 +538,8 @@ public class EditorTerrain implements ScreenController {
 		this.bonFireModel.moveModel(this.bonFireModel.getModel().getLocalTranslation());
 		this.spatials.add((Node) this.bonFireModel.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makePortal(Vector3f intersect) {
@@ -552,8 +549,8 @@ public class EditorTerrain implements ScreenController {
 		portal.moveModel(portal.getModel().getLocalTranslation());
 		this.spatials.add((Node) portal.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void makeThief(Vector3f intersect) {// TODO togliete commenti per
@@ -566,14 +563,14 @@ public class EditorTerrain implements ScreenController {
 		this.terrain.attachChild(thiefModel.getModel());
 		this.spatials.add((Node) this.thiefModel.getModel());
 		this.setName();
-		this.nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
-				.setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
+		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
+				.setValue(GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class).getMin());
 	}
 
 	private void readScenes() {
 
 		@SuppressWarnings("unchecked")
-		ListBox<String> listBox = this.nifty.getCurrentScreen().findNiftyControl("listBox", ListBox.class);
+		ListBox<String> listBox = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("listBox", ListBox.class);
 		listBox.clear();
 		try {
 			Files.walk(Paths.get("assets/Scenes")).forEach(filePath -> {
@@ -589,14 +586,14 @@ public class EditorTerrain implements ScreenController {
 
 	private void setName() {
 		if (this.spatials.isEmpty()) {
-			this.nifty.getCurrentScreen().findNiftyControl("NameModel", Label.class).setText("Model:");
+			GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("NameModel", Label.class).setText("Model:");
 			return;
 		}
 		if (this.spatials.peek().getName().contains("wukong")) {
-			this.nifty.getCurrentScreen().findNiftyControl("NameModel", Label.class).setText("Model: Yasuo");
+			GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("NameModel", Label.class).setText("Model: Yasuo");
 		} else {
 			String[] split = this.spatials.peek().getName().split("-");
-			this.nifty.getCurrentScreen().findNiftyControl("NameModel", Label.class).setText("Model:" + split[0]);
+			GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("NameModel", Label.class).setText("Model:" + split[0]);
 		}
 	}
 
@@ -620,15 +617,15 @@ public class EditorTerrain implements ScreenController {
 
 	public void startGrow(String nameButton) {
 
-		NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
-		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
 	public void endGrow(String nameButton) {
 
-		NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
-		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
