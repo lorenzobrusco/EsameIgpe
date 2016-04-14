@@ -158,25 +158,41 @@
 			<panel id="spaceForCentreMP" width="14%" childLayout="center"/>		
 			<panel id="centralPanelMP" width="73%" childLayout="vertical">
 				<panel id="spaceForTitolMP" height="23%" childLayout="center" />				
-				<panel id="PanelImageMP" height="58%" width="100%" childLayout="horizontal">				
-						<image id ="arrowLeft" filename="Interface/MultiPlayer/arrowLeft.png" width="5%" height="15%" valign="center"/>
+				<panel id="PanelImageMP" height="58%" width="100%" childLayout="horizontal" >				
+						<image id ="arrowLeft" filename="Interface/arrowLeft.png" width="5%" height="15%" valign="center">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(arrowLeft)" />
+									<onEndHover name="nop" onStartEffect="endGrow(arrowLeft)" />
+		
+								</effect>
+								<interact onClick="redoCharacter()" />
+						
+						</image>
 						<panel id="spaceForTitolMP1" width="10%" childLayout="center" />	
 						<image id ="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png" />	
 						<panel id="spaceForTitolMP2" width="10%" childLayout="center" />						
-						<image id ="arrowRight" filename="Interface/MultiPlayer/arrowRight.png" width="5%" height="15%" valign="center"/>				
+						<image id ="arrowRight" filename="Interface/arrowRight.png" width="5%" height="15%" valign="center">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
+									<onEndHover name="nop" onStartEffect="endGrow(arrowRight)" />
+		
+								</effect>
+								<interact onClick="nextCharacter()" />
+						
+						</image>
+									
 				</panel>
 						<panel id="buttonPanelMP" childLayout="vertical" >
 						<panel id="spaceForTitolMP3" height="40%" childLayout="center" />	
-							<image filename="Interface/MultiPlayer/startGameButton.png" id="startGameButton" align="center"
-						                   width="40%" height="60%" visibleToMouse="true">
-	                   <!-- 
+							<image filename="Interface/startGameButton.png" id="startGameButton" align="center"
+						                   width="40%" height="60%" visibleToMouse="true">	                   
 						<effect>
 							<onStartHover name="nop" onStartEffect="startGrow(startGameButton)" />
 							<onEndHover name="nop" onStartEffect="endGrow(startGameButton)" />
 
 						</effect>
 						<interact onClick="loadScreen(start)" />
-						  -->
+						  
 					</image>
 						</panel>
 					

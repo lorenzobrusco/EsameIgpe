@@ -2,6 +2,11 @@ package main;
 
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
@@ -38,10 +43,14 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     private static final String pathSinglePlayer = "singlePlayer.SinglePlayer";
     private static final String pathEditor = "editor.EditorTerrain";
     private static final String pathMultiPlayer = "multiPlayer.MultiPlayer";
+    private int indexCharacter;
+    
+    private ArrayList<String> characters;
     
 
-    public Main(java.awt.Point point) {
-    	GameManager.getIstance().setPoint(point);
+    public Main() {
+    	
+    	
 
     }
 
@@ -59,7 +68,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	 gameSettings.setFrameRate(500);
 	 gameSettings.setSamples(0);
 	 gameSettings.setRenderer("LWJGL-OpenGL2");
-	 Main app = new Main (new java.awt.Point(gameSettings.getWidth(),gameSettings.getHeight()));
+	 Main app = new Main ();
 	 app.setSettings(gameSettings);
 	 app.setShowSettings(false);
 
@@ -79,6 +88,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
+	this.indexCharacter=0;
 	
 
 	GameManager.getIstance().setParams(this);
@@ -92,12 +102,14 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().getApplication().getInputManager(),
 		GameManager.getIstance().getApplication().getAudioRenderer(),
 		GameManager.getIstance().getApplication().getGuiViewPort());
-	this.nifty = niftyDisplay.getNifty();
+	this.nifty = niftyDisplay.getNifty();	
 	this.nifty.fromXml("Interface/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
+	loadCharacter();
+	
 
-	//this.menuSound.playSound();
+	this.menuSound.playSound();
     }
 
     @Override
@@ -129,7 +141,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	editor = false;
 	GameManager.getIstance().setEditor(false);
 	GameManager.getIstance().setModelGame(pathMultiPlayer);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.220.142", "Antonio", "Rengar");
+	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.220.142", "Antonio", characters.get(indexCharacter));
 	// TODO inserire ip server 
 	flyCam.setEnabled(true);
 	this.initKeys();
@@ -205,11 +217,58 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     }
 
-    public void loadScreen(String nextScreen) {
-	nifty.gotoScreen(nextScreen);
+	public void loadScreen(String nextScreen) {
 
+		nifty.gotoScreen(nextScreen);
+
+	}
+
+    
+    public void loadCharacter()
+    {
+    	
+    	 characters = new ArrayList<String>();
+    	try {
+			Files.walk(Paths.get("assets/Interface/MultiPlayer/PlayerImage")).forEach(filePath -> {
+				if (Files.isRegularFile(filePath)) {
+					String[] split = filePath.getFileName().toString().split("\\.");
+					characters.add(split[0]);		
+					
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			
+		}
+		 	
+    	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/MultiPlayer/PlayerImage/"+ characters.get(0)+".png",false);
+    	Element niftyElement = nifty.getScreen("multiPlayerScreen").findElementByName("imagePlayer");
+    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);   
     }
-
+    
+    
+    public void nextCharacter()
+    {
+    	if (indexCharacter == characters.size()-1)
+    		indexCharacter = 0;
+    	else
+    	indexCharacter++;    	
+    	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/MultiPlayer/PlayerImage/"+ characters.get(indexCharacter)+".png",false);
+    	Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
+    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);    	
+    }
+    
+    public void redoCharacter()
+    {
+    	if(indexCharacter == 0)
+    		indexCharacter = characters.size()-1;
+    	else
+    	indexCharacter--;    	
+    	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/MultiPlayer/PlayerImage/"+ characters.get(indexCharacter)+".png",false);
+    	Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
+    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);    	
+    }
     public void closeGame() {
 
 	if (this.multiplayer)
