@@ -3,8 +3,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
 	<useStyles filename="nifty-default-styles.xml" />
+		<useStyles filename="Interface/provaStyle.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 
+    <controlDefinition name="IP" defaultFocusElement="textField" >
+     <panel childLayout="absolute">
+      <image filename="Interface/cornice.png" x="35%" y="30%" width="30%" height="60%"/>
+      <control id="textfieldIP" style="my-textfield" name="textfield" width="40%" x="40%" y="45%"  />
+     </panel>
+    </controlDefinition>
+
+  
+  
 	<screen id="start" controller="main.Main">
 		<layer id="background_start" childLayout="center">
 			<image filename="Interface/background.jpg" width="100%" height="100%" />
@@ -158,7 +168,8 @@
 			<panel id="spaceForCentreMP" width="14%" childLayout="center"/>		
 			<panel id="centralPanelMP" width="73%" childLayout="vertical">
 				<panel id="spaceForTitolMP" height="23%" childLayout="center" />				
-				<panel id="PanelImageMP" height="58%" width="100%" childLayout="horizontal" >				
+				<panel id="PanelImageMP" height="58%" childLayout="horizontal" >	
+						<panel id="spaceForTitolMP1" width="10%" childLayout="center" />			
 						<image id ="arrowLeft" filename="Interface/arrowLeft.png" width="5%" height="15%" valign="center">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(arrowLeft)" />
@@ -168,9 +179,9 @@
 								<interact onClick="redoCharacter()" />
 						
 						</image>
-						<panel id="spaceForTitolMP1" width="10%" childLayout="center" />	
-						<image id ="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png" />	
-						<panel id="spaceForTitolMP2" width="10%" childLayout="center" />						
+						<panel id="spaceForTitolMP2" width="5%" childLayout="center" />	
+						<image id ="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png" height="100%" width="60%"/>	
+						<panel id="spaceForTitolMP3" width="5%" childLayout="center" />						
 						<image id ="arrowRight" filename="Interface/arrowRight.png" width="5%" height="15%" valign="center">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
@@ -183,6 +194,7 @@
 									
 				</panel>
 						<panel id="buttonPanelMP" childLayout="vertical" >
+						<control name="IP" id="ciao" width="100%" height="60%"/>
 						<panel id="spaceForTitolMP3" height="40%" childLayout="center" />	
 							<image filename="Interface/startGameButton.png" id="startGameButton" align="center"
 						                   width="40%" height="60%" visibleToMouse="true">	                   

@@ -2,6 +2,7 @@ package main;
 
 
 
+import java.awt.TextField;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,6 +16,8 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
+import com.jogamp.graph.font.Font;
+
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
@@ -198,7 +201,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
     @Override
     public void onAction(String arg0, boolean arg1, float arg2) {
-
+    	
+   
     }
 
     @Override
@@ -245,6 +249,9 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
     	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/MultiPlayer/PlayerImage/"+ characters.get(0)+".png",false);
     	Element niftyElement = nifty.getScreen("multiPlayerScreen").findElementByName("imagePlayer");
     	niftyElement.getRenderer(ImageRenderer.class).setImage(image);   
+    	
+   
+    	
     }
     
     

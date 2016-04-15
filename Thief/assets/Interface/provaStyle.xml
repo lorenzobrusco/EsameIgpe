@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<nifty-styles >
+
+ <style id="my-textfield#panel">
+    <attributes childLayout="overlay" height="23px" />
+ 
+  </style>
+
+
+  <style id="my-textfield#field">
+    <attributes childLayout="center" childClip="true"  padding="0px,2px"/>
+
+  </style>
+  
+  
+  <!-- the text in the input field -->
+  <style id="my-textfield#text" base="base-font">
+    <attributes color="#822f" visibleToMouse="false" align="left" valign="center" textHAlign="left" width="100px"
+height="23px"/>
+  
+  </style>
+
+  <!-- the cursor is rendered in a separate layer on top of the input field and this is the parent panel of this -->
+  <style id="my-textfield#cursor-panel">
+    <attributes childLayout="absolute" padding="0px,2px" />
+  </style>
+
+
+</nifty-styles>
