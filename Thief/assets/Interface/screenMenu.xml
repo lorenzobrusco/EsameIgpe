@@ -7,10 +7,18 @@
 	<useControls filename="nifty-default-controls.xml" />
 
     <controlDefinition name="IP" defaultFocusElement="textField" >
-     <panel childLayout="absolute">
+      <panel childLayout="absolute">
       <image filename="Interface/cornice.png" x="35%" y="30%" width="30%" height="60%"/>
-      <control id="textfieldIP" style="my-textfield" name="textfield" width="40%" x="40%" y="45%"  />
+      <control id="textfieldIP" style="my-textfield" name="textfield" width="100%" x="40%" y="45%" maxLength="15"  />
      </panel>
+    </controlDefinition>
+    
+     <controlDefinition name="IP1" > 
+        <panel id="titlePanel1234" childLayout="center">
+		      <image filename="Interface/cornice.png" x="35%" y="30%" width="30%" height="60%"/>
+		      <text font="Interface/Fonts/Morpheus.fnt"  color="#f00f" text="Hello World!"
+		            align="center" valign="center" />		            
+        </panel>
     </controlDefinition>
 
   
@@ -180,8 +188,8 @@
 						
 						</image>
 						<panel id="spaceForTitolMP2" width="5%" childLayout="center" />	
-						<image id ="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png" height="100%" width="60%"/>	
-						<panel id="spaceForTitolMP3" width="5%" childLayout="center" />						
+						<image id ="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png" height="100%" width="50%"/>	
+						<panel id="spaceForTitolMP4" width="5%" childLayout="center" />						
 						<image id ="arrowRight" filename="Interface/arrowRight.png" width="5%" height="15%" valign="center">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
@@ -193,26 +201,54 @@
 						</image>
 									
 				</panel>
-						<panel id="buttonPanelMP" childLayout="vertical" >
-						<control name="IP" id="ciao" width="100%" height="60%"/>
-						<panel id="spaceForTitolMP3" height="40%" childLayout="center" />	
-							<image filename="Interface/startGameButton.png" id="startGameButton" align="center"
-						                   width="40%" height="60%" visibleToMouse="true">	                   
-						<effect>
-							<onStartHover name="nop" onStartEffect="startGrow(startGameButton)" />
-							<onEndHover name="nop" onStartEffect="endGrow(startGameButton)" />
+						<panel id="OptionsPanelMP" childLayout="vertical" >
+						<panel id="textFieldPanelMP" childLayout="horizontal" height="15%">
+			  			<control name="textfield" id="textFieldIP" maxLength="15" align="left" width="30%" text="IP-address" >
+			  			<interact onClick="resetParamsTextfield(textFieldIP)" />			  			
+			  			</control>
+			  			<panel id="spaceForTitolMP5" width="35%" childLayout="center" />
+			  			<control name="textfield" id="textFieldName" maxLength="20" align="left" width="30%" text="Insert Your Name" >
+			  			<interact onClick="resetParamsTextfield(textFieldName)" />			  			
+			  			</control>
+			  			</panel>						
+							<panel id="buttonPanelMP" childLayout="horizontal">							
+							<image filename="Interface/returnButton.png" id="returnButton" width="30%" height="60%" visibleToMouse="true">
 
-						</effect>
-						<interact onClick="loadScreen(start)" />
+								    <effect>
+									<onStartHover name="nop" onStartEffect="startGrow(returnButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(returnButton)" />
+		
+								    </effect>
+								    <interact onClick="loadScreen(start)" />
+					       </image>
+							
+							
+						   <image filename="Interface/serverButton.png" id="serverButton" width="30%" height="60%" visibleToMouse="true">
+
+								    <effect>
+									<onStartHover name="nop" onStartEffect="startGrow(serverButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(serverButton)" />
+		
+								    </effect>
+								    <interact onClick="loadScreen(start)" />
+					                </image>
+							
+							<image filename="Interface/startGameButton.png" id="startGameButton" align="center"
+						                   width="30%" height="60%" visibleToMouse="true">	                   
+						     <effect>
+							 <onStartHover name="nop" onStartEffect="startGrow(startGameButton)" />
+							 <onEndHover name="nop" onStartEffect="endGrow(startGameButton)" />
+						     </effect>
+						     <interact onClick="openMultiPlayer()" />
 						  
-					</image>
+					       </image>
 						</panel>
 					
 					
 					
 			</panel>
 			
-			
+			</panel>
 				
 		</layer>
 		

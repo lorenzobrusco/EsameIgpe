@@ -17,9 +17,8 @@
   
   
   <!-- the text in the input field -->
-  <style id="my-textfield#text" base="base-font">
-    <attributes color="#822f" visibleToMouse="false" align="left" valign="center" textHAlign="left" width="100px"
-height="23px"/>
+  <style id="my-textfield#text">
+    <attributes color="#822f" visibleToMouse="true" align="left" valign="center" textHAlign="left" font="Interface/Fonts/Morpheus.fnt" /> 
   
   </style>
 
