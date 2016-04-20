@@ -15,6 +15,9 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -73,7 +76,7 @@ public class GameManager {
 	private boolean[][] secondLayer;
 	private Nifty nifty;
 	private String modelGame;
-	private java.awt.Point point;
+	private boolean paused;
 
 	private GameManager() {
 
@@ -85,6 +88,7 @@ public class GameManager {
 		this.notifyStateModels = new ConcurrentLinkedQueue<>();
 		this.enemiesLifeBar = new HashMap<>();
 		this.editor = false;
+		this.paused = false;
 
 	}
 
@@ -94,7 +98,9 @@ public class GameManager {
 	 */
 	public void setParams(SimpleApplication application) {
 		this.loadTerrain = new LoadTerrain();
-		this.application = application;
+		this.application = application;		
+		
+		
 	}
 
 	/*
@@ -455,12 +461,37 @@ public class GameManager {
 		this.modelGame = modelGame;
 	}
 
-	public java.awt.Point getPoint() {
-		return point;
+		
+	
+	public boolean isPaused()
+	{
+			return this.paused;
+		
 	}
-
-	public void setPoint(java.awt.Point point) {
-		this.point = point;
+	
+	public void pauseGame()
+	{
+		this.paused = true;	
+		application.getInputManager().setCursorVisible(true);	
+		thief.getCamera().setEnabled(false);
+		
+		//this.inputManager.setCursorVisible(!this.inputManager.isCursorVisible());
+		for(NodeCharacter enemy : enemies)
+			((NodeEnemy) enemy).pauseIntelligence();
+		
 	}
+	
+	public void resumeGame()
+	{
+		this.paused = false;
+		thief.getCamera().setEnabled(true);
+		thief.getCamera().setDragToRotate(false);
+		application.getInputManager().setCursorVisible(false);
+		for(NodeCharacter enemy : enemies)
+			((NodeEnemy) enemy).resumeIntelligence();
+		
+	}
+	
+	
 
 }

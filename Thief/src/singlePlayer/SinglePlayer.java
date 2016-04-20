@@ -78,11 +78,12 @@ public class SinglePlayer implements ScreenController {
 
 	public void simpleUpdate(Float tpf) {
 		//if (GameManager.getIstance().getNodeThief().isControlRender()) {
-			this.render.rayRendering();
+		this.render.rayRendering();
 		//}
 		if (!GameManager.getIstance().getNodeThief().isRun())
 			GameManager.getIstance().getNodeThief().stop();
 		GameManager.getIstance().startEnemiesIntelligence();
+			
 	}
 
 	private void setKey() {

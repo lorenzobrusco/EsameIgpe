@@ -217,5 +217,15 @@ public class NodeEnemy extends NodeCharacter {
 		this.lifeBar = lifeBar;
 	}
 
+    public void pauseIntelligence()
+    {
+    	
+    	artificialIntelligence.pause();
+    }
     
+    public void resumeIntelligence()
+    {
+    	
+    	artificialIntelligence.resume();
+    }
 }

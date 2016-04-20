@@ -89,7 +89,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.camera.setMinVerticalRotation(0.2f);
 		this.camera.setDragToRotate(false);
 		this.camera.setDefaultDistance(25f);
-
+		
 	}
 
 	public boolean isControlRender() {
@@ -368,13 +368,13 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	public AnalogListener analogListener = new AnalogListener() {
 		public void onAnalog(String name, float value, float tpf) {
-			if (name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+			if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused() ) {
 				run();
 			}
-			if (name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+			if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused()) {
 				Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
 				rotateL.multLocal(viewDirection);
-			} else if (name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+			} else if ((name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused()) {
 				Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
 				rotateR.multLocal(viewDirection);
 			}
@@ -386,17 +386,17 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	public ActionListener actionListener = new ActionListener() {
 		public void onAction(String name, boolean pressed, float value) {
-			if (name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+			if ((name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 				NodeThief.this.notifyUpdate(false);
 				NodeThief.this.isRun = true;
 				NodeThief.this.channel.setAnim(run);
-			} else if (name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) {
+			} else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 				NodeThief.this.notifyUpdate(false);
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
 				NodeThief.this.channel.setAnim(idle);
-			} else if (name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
-					&& !NodeThief.this.waitAnimation) {
+			} else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
+					&& !NodeThief.this.waitAnimation)  && !GameManager.getIstance().isPaused()) {
 				NodeThief.this.notifyUpdate(true);
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
@@ -411,21 +411,34 @@ public class NodeThief extends NodeCharacter implements Collition {
 				NodeThief.this.startAttack();
 				NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
 				NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
-			} else if (name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
-					&& !NodeThief.this.waitAnimation && !NodeThief.this.isRun) {
+			} else if ((name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
+					&& !NodeThief.this.waitAnimation && !NodeThief.this.isRun)  && !GameManager.getIstance().isPaused()) {
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
 				NodeThief.this.sitNearToBonFire();
-			} else if (name.equals("damage") && !pressed) {
-				int damage = 1;
-
-				NodeThief.this.setLife(NodeThief.this.life - damage);
-				NodeThief.this.setDamageLifeBar(damage);
-
+			} else if ((name.equals("damage") && !pressed)) {
+//				int damage = 1;
+//				NodeThief.this.setLife(NodeThief.this.life - damage);
+//				NodeThief.this.setDamageLifeBar(damage);
+				
+				
+				if (!GameManager.getIstance().isPaused() )
+				{
+					System.out.println("PAUSA");
+					GameManager.getIstance().pauseGame();
+				}
+				
+				else
+				{
+					System.out.println("STOP PAUSA");
+					GameManager.getIstance().resumeGame();
+				
+				}
 			}
 		}
 	};
 
+	
 	@Override
 	public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
 

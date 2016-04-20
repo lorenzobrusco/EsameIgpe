@@ -24,6 +24,18 @@ public class AI {
 		this.stopSearchThief = false;
 		
 	}
+	
+	
+	public void pause()
+	{
+		
+		
+	}
+	
+	public void resume()
+	{
+	
+	}
 
 	public void run() {
 

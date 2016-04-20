@@ -641,8 +641,9 @@ public class EditorTerrain implements ScreenController {
 		this.rootNode.detachAllChildren();
 		this.viewPort.clearProcessors();
 		GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
-		GameManager.getIstance().getApplication().getInputManager().deleteMapping("mouse");
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("mouse");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("debug");
 	}
 
 	@Override

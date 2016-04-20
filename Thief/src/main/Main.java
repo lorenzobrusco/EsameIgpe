@@ -75,6 +75,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		app.setDisplayFps(false);
 		app.setDisplayStatView(false);
 		app.start();
+		
 
 	}
 
@@ -89,8 +90,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.editor = false;
 		this.indexCharacter = 0;
 		this.ipAddress = "";
-		this.namePlayer = "";
-
+		this.namePlayer = "";	
+	
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);
 		this.setupAudio();
@@ -107,7 +108,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 		GameManager.getIstance().setNifty(nifty);
 		loadCharacter();
-
 		this.menuSound.playSound();
 	}
 
@@ -131,6 +131,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true);
 		this.initKeys();
 		this.menuSound.stopSound();
+		
+		
+		
+		
 	}
 
 	public void multiPlayer() {
