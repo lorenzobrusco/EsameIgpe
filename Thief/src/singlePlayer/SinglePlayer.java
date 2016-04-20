@@ -115,7 +115,7 @@ public class SinglePlayer implements ScreenController {
 		
 		GameManager.getIstance().getNifty().fromXml("Interface/singlePlayer.xml", "lifeBarScreen", this);		
 		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("borderLifeBarThief");		
-		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief);
+		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief,"Yasuo");
 	
 	}
 

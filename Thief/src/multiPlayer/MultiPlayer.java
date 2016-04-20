@@ -12,6 +12,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
@@ -28,18 +29,26 @@ public class MultiPlayer implements ScreenController {
     private GameRender render;
     private Sound ambient;
     private Client client = null;
+    
+    private String nameModel;
+	private Element progressLifeBarThief;
+	private Element borderLifeBarThief;
 
     public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
 	    String nameModel) {
-
+    this.nameModel = nameModel;
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
 	cam.setFrustumFar(200);
 	cam.onFrameChange();
+	this.nameModel = nameModel;
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
-	this.setupAmbientSound();
+
+	loadNifty();
+	this.setupAmbientSound();	
+	
     }
 
     public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode,
@@ -110,4 +119,15 @@ public class MultiPlayer implements ScreenController {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private void loadNifty()
+	{
+		
+		GameManager.getIstance().getNifty().fromXml("Interface/multiPlayer.xml", "lifeBarScreen", this);		
+		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("borderLifeBarThief");	
+		System.out.println(nameModel);
+		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief,nameModel);
+	
+	}
+	
 }

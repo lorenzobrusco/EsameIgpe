@@ -46,7 +46,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	private Vector3f startPosition;
 	
 
-	public void setLifeBar(Element lifeBar, Element Border) {
+	public void setLifeBar(Element lifeBar, Element Border, String nameModel) {
 	}
 
 	public void setDamageLifeBar(int damage) {

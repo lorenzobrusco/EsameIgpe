@@ -198,12 +198,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
 
 	@Override
-	public void setLifeBar(Element lifeBar, Element border) {
+	public void setLifeBar(Element lifeBar, Element border, String nameModel) {
 		this.lifeBarThief = lifeBar;		
 	    this.borderLifeBarThief = border;
 	    NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-				"Interface/borderLife"+this.getModel().getName()+".png", false);		
-		this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
+				"Interface/MultiPlayer/borderLifeCharacters/borderLife"+nameModel+".png", false);		
+	   	this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
 		this.borderLifeBarThief.getParent().layoutElements();
 		
 		 resetProgressBar();
@@ -242,7 +242,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				
 				filename("Interface/innerLife.png");
 				x("15%");
-				y("76%");
+				y("86%");
 				width("22%");
 				height("3%");
 				imageMode("resize:15,2,15,15,15,2,15,2,15,2,15,15");

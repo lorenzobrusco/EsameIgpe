@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.vecmath.GMatrix;
+
 public class EditorTerrain implements ScreenController {
 
 	private Node rootNode;
@@ -633,8 +635,14 @@ public class EditorTerrain implements ScreenController {
 		this.editorSound = new Sound(this.terrain, "Editor", false, false, true, 1.0f, false);
 	}
 
-	public void closeEditor() {
-
+	public void closeEditor() 
+	{
+		GameManager.getIstance().getNifty().exit();
+		this.rootNode.detachAllChildren();
+		this.viewPort.clearProcessors();
+		GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("mouse");
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 	}
 
 	@Override

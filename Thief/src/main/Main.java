@@ -55,10 +55,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	public static void main(String[] args) {
 		AppSettings gameSettings = new AppSettings(false);
-		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+//		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+//		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 
-//		gameSettings.setResolution(800, 600);
+		gameSettings.setResolution(800, 600);
 
 		gameSettings.setFullscreen(false);
 		gameSettings.setVSync(true);
@@ -144,7 +144,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 				.getDisplayedText();
 		GameManager.getIstance().setEditor(false);
 		GameManager.getIstance().setModelGame(pathMultiPlayer);
-		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, ipAddress, namePlayer,
+		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.121.230", "Antonio",
 				characters.get(indexCharacter));
 		// TODO inserire ip server
 		flyCam.setEnabled(true);
