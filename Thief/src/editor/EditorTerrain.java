@@ -637,13 +637,14 @@ public class EditorTerrain implements ScreenController {
 
 	public void closeEditor() 
 	{
+    
+		GameManager.getIstance().getApplication().getInputManager().clearMappings();
 		GameManager.getIstance().getNifty().exit();
 		this.rootNode.detachAllChildren();
 		this.viewPort.clearProcessors();
+		this.guiNode.detachAllChildren();
 		GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
-		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-		GameManager.getIstance().getApplication().getInputManager().deleteMapping("mouse");
-		GameManager.getIstance().getApplication().getInputManager().deleteMapping("debug");
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);	
 	}
 
 	@Override

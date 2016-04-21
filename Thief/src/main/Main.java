@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.BlenderKey.LoadingResults;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
@@ -54,10 +55,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	public static void main(String[] args) {
 		AppSettings gameSettings = new AppSettings(false);
-//		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-//		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 
-		gameSettings.setResolution(800, 600);
+		//gameSettings.setResolution(800, 600);
 
 		gameSettings.setFullscreen(false);
 		gameSettings.setVSync(true);
@@ -95,9 +96,9 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().setBullet(bulletAppState);
 		this.setupAudio();
 		this.flyCam.setMoveSpeed(100f);
-
-		mouseInput.setCursorVisible(true);
 		this.flyCam.setEnabled(false);
+		mouseInput.setCursorVisible(true);
+		
 		this.niftyDisplay = new NiftyJmeDisplay(GameManager.getIstance().getApplication().getAssetManager(),
 				GameManager.getIstance().getApplication().getInputManager(),
 				GameManager.getIstance().getApplication().getAudioRenderer(),
@@ -125,14 +126,13 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = true;
 		multiplayer = false;
 		editor = false;
+		this.cam.clearViewportChanged();
 		GameManager.getIstance().setEditor(false);
+		this.flyCam.setEnabled(false);
 		GameManager.getIstance().setModelGame(pathSinglePlayer);
 		this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true);
 		this.initKeys();
 		this.menuSound.stopSound();
-		
-		
-		
 		
 	}
 
@@ -141,6 +141,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		multiplayer = true;
 		singleplayer = false;
 		editor = false;
+		this.flyCam.setEnabled(false);
 		namePlayer = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("textFieldName", TextField.class)
 				.getDisplayedText();
 		ipAddress = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("textFieldIP", TextField.class)
@@ -160,11 +161,11 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		editor = true;
 		singleplayer = false;
 		multiplayer = false;
+		this.flyCam.setEnabled(true);
 		GameManager.getIstance().setEditor(true);
 		GameManager.getIstance().setModelGame(pathEditor);
 		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 		mouseInput.setCursorVisible(false);
-		flyCam.setEnabled(true);
 		this.initKeys();
 		this.menuSound.stopSound();
 
@@ -225,7 +226,14 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	public void loadScreen(String nextScreen) {
 
+	   if(nextScreen.equals("serverScreen") )
+	   {	
+			setImageServer();
+	   }
+			
 		nifty.gotoScreen(nextScreen);
+		
+		
 
 	}
 
@@ -247,9 +255,34 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 		NiftyImage image = nifty.getRenderEngine().createImage(null,
 				"Interface/MultiPlayer/PlayerImage/" + characters.get(0) + ".png", false);
-		Element niftyElement = nifty.getScreen("multiPlayerScreen").findElementByName("imagePlayer");
+		Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
+	}
+	
+	
+	public void setImageServer()
+	{
+		
+		if(GameManager.getIstance().getServer()==null || !GameManager.getIstance().getServer().isStart() )
+		{
+			System.out.println("server non attivo");
+		NiftyImage image = nifty.getRenderEngine().createImage(null,
+				"Interface/serverIsClose.png", false);
+		Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+		}
+		
+		else if (GameManager.getIstance().getServer().isStart())
+		{
+			System.out.println("server attivo");
+			NiftyImage image = nifty.getRenderEngine().createImage(null,
+					"Interface/serverIsOpen.png", false);
+			Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
+			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+		}
+		
+		
 	}
 
 	public void resetParamsTextfield(String nameTextField) {

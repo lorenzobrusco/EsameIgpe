@@ -102,6 +102,8 @@
 			</panel>
 		</layer>
 	</screen>
+	
+	
 	<screen id="settingsScreen" controller="main.Main">
 		<layer id="background_settings" childLayout="center">
 			<image filename="Interface/background.jpg" width="100%" height="100%" />
@@ -229,7 +231,8 @@
 									<onEndHover name="nop" onStartEffect="endGrow(serverButton)" />
 		
 								    </effect>
-								    <interact onClick="loadScreen(serverScreen)" />
+								     <interact onClick="loadScreen(serverScreen)" />  
+								   
 					                </image>
 							
 							<image filename="Interface/startGameButton.png" id="startGameButton" align="center"
@@ -260,13 +263,19 @@
 		<layer id="foreground_Server" childLayout="horizontal">
 			<panel id="spaceForCentreMP" width="14%" childLayout="center"/>		
 			<panel id="centralPanelMP" width="73%" childLayout="vertical">
-			<panel id="spaceForTitolMP" height="18%" childLayout="center"/>	
-			<panel id="PanelIP" height="8%" childLayout="center">
-			   <text id="myIP" font="Interface/Fonts/Morpheus-24.fnt" color="#f4e75a" text="Your  IP-ADDRESS:   ${CALL.getIPAddress()} " height="10%"/>
+			<panel id="spaceForTitolMP" height="18%" childLayout="center" />	
+			<panel id="PanelIP"  childLayout="vertical"  >		
+		    <text id="myIP" font="Interface/Fonts/Morpheus-20.fnt" color="#f4e75a" text="Your  IP-ADDRESS:   ${CALL.getIPAddress()} "/>
+			<panel id="spaceForTitolMP" height="7%" childLayout="center" />
+			<panel id="spaceForTitolMP" childLayout="horizontal">
+			<text id="stateServer" font="Interface/Fonts/Morpheus-20.fnt" color="#f4e75a" text="State: " valign="center"/>
+			<image id ="serverState" filename="Interface/serverIsOpen.png" width="4%" height="40%" valign="center"/>	
+			</panel>	
+			 
 			</panel>				
 				<panel id="PanelImageMP" height="58%" childLayout="horizontal" >	
 						<panel id="spaceForTitolMP1" width="10%" childLayout="center"  />			
-						<image id ="arrowLeft" filename="Interface/arrowLeft.png" width="5%" height="15%" valign="center">
+						<image id ="arrowLeft" filename="Interface/arrowLeft.png" width="4%" height="15%" valign="center">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(arrowLeft)" />
 									<onEndHover name="nop" onStartEffect="endGrow(arrowLeft)" />

@@ -427,10 +427,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 				
 				else
 				{
-					Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
-					element.setVisible(!element.isVisible());					
 					GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");					
 					GameManager.getIstance().resumeGame();
+					Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
+					element.setVisible(false);					
 				
 				}
 			}
