@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
@@ -148,7 +147,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 				.getDisplayedText();
 		GameManager.getIstance().setEditor(false);
 		GameManager.getIstance().setModelGame(pathMultiPlayer);
-		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.121.230", "Antonio",
+		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.121.26", "Antonio",
 				characters.get(indexCharacter));
 		// TODO inserire ip server
 		flyCam.setEnabled(true);
@@ -254,9 +253,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	}
 
 	public void resetParamsTextfield(String nameTextField) {
+		System.out.println("sono qui");
 		if (nameTextField.equals("textFieldName"))
 			if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-					.getDisplayedText().equals("Insert Your Name"))
+					.getDisplayedText().equals("Your Name"))
 				GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
 						.setText("");
 		
@@ -328,6 +328,28 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
 		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+	
+	public String getIPAddress()
+	{
+		return GameManager.getIstance().ipAddress();
+		
+	}
+	
+	
+	public void startServer() {
+		
+		
+		 GameManager.getIstance().startServer("");
+		 this.nifty.gotoScreen("multiPlayerScreen");
+		 
+	}
+	
+	
+	public void closeServer()
+	{
+		
+		GameManager.getIstance().getServer().setStart(false);
 	}
 
 }

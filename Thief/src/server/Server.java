@@ -28,6 +28,7 @@ public class Server extends Thread {
 	while (this.start) {
 
 	    try {
+	    	
 		Socket client = server.accept();
 		ClientManager clientManager = new ClientManager(this, client);
 		this.newPlayer();
@@ -70,13 +71,16 @@ public class Server extends Thread {
     public String getTERRAIN() {
 	return TERRAIN;
     }
+    
+    
 
-    public static void main(String[] args) {
-	try {
-	    new Server("mountain").start();
-	} catch (IOException e) {
-	    e.printStackTrace();
+    public boolean isStart() {
+		return start;
 	}
-    }
+
+	public void setStart(boolean start) {
+		this.start = start;
+	}
+
 
 }

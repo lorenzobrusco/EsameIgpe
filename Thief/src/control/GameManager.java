@@ -1,5 +1,11 @@
 package control;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +43,7 @@ import editor.LoadTerrain;
 import logic.World;
 import multiPlayer.Client;
 import multiPlayer.NotifyStateModel;
+import server.Server;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -77,6 +84,7 @@ public class GameManager {
 	private Nifty nifty;
 	private String modelGame;
 	private boolean paused;
+	private Server server;
 
 	private GameManager() {
 
@@ -89,6 +97,7 @@ public class GameManager {
 		this.enemiesLifeBar = new HashMap<>();
 		this.editor = false;
 		this.paused = false;
+		
 
 	}
 
@@ -498,6 +507,43 @@ public class GameManager {
 		
 	}
 	
+	 public String ipAddress() {
+			URL url;
+			try {
+			    url = new URL("http://checkip.amazonaws.com/");
+			    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+			    return br.readLine();
+			} catch (MalformedURLException e) {
+			    System.out.println("eccezzioni nel ipAddress");
+			} catch (IOException e) {
+			    System.out.println("eccezzioni nel ipAddress");
+			}
+
+			
+			
+			return null;
+
+		    }
+
+	public Server getServer() {
+		return server;
+	}
+
+	public void startServer(String path) {
+		try {
+			this.server = new Server("mountain");
+			this.server.start();			
+		} catch (UnknownHostException e) {
+		
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+	}
+
 	
+	 
+	 
 
 }
