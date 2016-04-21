@@ -16,18 +16,21 @@ import control.GameRender;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
 
 public class SinglePlayer implements ScreenController {
 
-	private final String attack1 = "Attack1";
-	private final String attack2 = "Attack2";
-	private final String run = "Run";
-	private final String rotateClockwise = "rotateClockwise";
-	private final String rotateCounterClockwise = "rotateCounterClockwise";
-	private final String bonfire = "BonFire";
+	private final String ATTACK1 = "Attack1";
+	private final String ATTACK2 = "Attack2";
+	private final String RUN = "Run";
+	private final String ROTATECLOCKWISE = "rotateClockwise";
+	private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
+	private final String BONFIRE = "BonFire";
+	private final String PAUSE = "Pause";
 	private final ViewPort viewPort;
 	private final Node rootNode;
 	private Node nodeScene;
@@ -87,26 +90,26 @@ public class SinglePlayer implements ScreenController {
 	}
 
 	private void setKey() {
-		GameManager.getIstance().getApplication().getInputManager().addMapping(run, new KeyTrigger(KeyInput.KEY_W));
-		GameManager.getIstance().getApplication().getInputManager().addMapping(attack1,
+		GameManager.getIstance().getApplication().getInputManager().addMapping(RUN, new KeyTrigger(KeyInput.KEY_W));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK1,
 				new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		GameManager.getIstance().getApplication().getInputManager().addMapping(attack2,
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK2,
 				new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-		GameManager.getIstance().getApplication().getInputManager().addMapping(rotateClockwise,
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECLOCKWISE,
 				new KeyTrigger(KeyInput.KEY_A));
-		GameManager.getIstance().getApplication().getInputManager().addMapping(rotateCounterClockwise,
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECOUNTERCLOCKWISE,
 				new KeyTrigger(KeyInput.KEY_D));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
 				new KeyTrigger(KeyInput.KEY_TAB));
-		GameManager.getIstance().getApplication().getInputManager().addMapping(bonfire, new KeyTrigger(KeyInput.KEY_F));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(BONFIRE, new KeyTrigger(KeyInput.KEY_F));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 				new KeyTrigger(KeyInput.KEY_LCONTROL));
-		GameManager.getIstance().getApplication().getInputManager().addMapping("damage",
+		GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE,
 				new KeyTrigger(KeyInput.KEY_P));
 		GameManager.getIstance().getApplication().getInputManager().addListener(
-				GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, bonfire, "toggleRotate","damage");
+				GameManager.getIstance().getNodeThief().actionListener, RUN, ATTACK1, ATTACK2, BONFIRE, "toggleRotate",PAUSE);
 		GameManager.getIstance().getApplication().getInputManager().addListener(
-				GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
+				GameManager.getIstance().getNodeThief().analogListener, RUN, ROTATECLOCKWISE, ROTATECOUNTERCLOCKWISE);
 	}
 	
 	
@@ -123,6 +126,47 @@ public class SinglePlayer implements ScreenController {
 	private void setupAmbientSound() {
 		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 		this.ambient.playSound();
+	}
+	
+	public void startGrow(String nameButton) {
+
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+
+	public void endGrow(String nameButton) {
+
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+	
+	public void openCloseSureExitButton()
+	{
+		Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
+		element.setVisible(!element.isVisible());
+		
+	}
+	
+	public void resumeGame()
+	{
+		GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
+		GameManager.getIstance().resumeGame();
+		
+	}
+	
+	public void quitGame()
+	{
+		openCloseSureExitButton();
+		GameManager.getIstance().setPaused(false);
+		GameManager.getIstance().getApplication().getInputManager().clearMappings();
+		GameManager.getIstance().getNifty().exit();
+		this.rootNode.detachAllChildren();
+		this.viewPort.clearProcessors();
+		GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);		
+		
 	}
 
 	@Override

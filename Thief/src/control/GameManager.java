@@ -469,13 +469,19 @@ public class GameManager {
 		
 	}
 	
+	public void setPaused(boolean value)
+	{
+		this.paused = value;
+		
+	}
+	
+	
 	public void pauseGame()
 	{
 		this.paused = true;	
 		application.getInputManager().setCursorVisible(true);	
 		thief.getCamera().setEnabled(false);
 		
-		//this.inputManager.setCursorVisible(!this.inputManager.isCursorVisible());
 		for(NodeCharacter enemy : enemies)
 			((NodeEnemy) enemy).pauseIntelligence();
 		

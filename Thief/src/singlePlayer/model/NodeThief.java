@@ -416,21 +416,20 @@ public class NodeThief extends NodeCharacter implements Collition {
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
 				NodeThief.this.sitNearToBonFire();
-			} else if ((name.equals("damage") && !pressed)) {
-//				int damage = 1;
-//				NodeThief.this.setLife(NodeThief.this.life - damage);
-//				NodeThief.this.setDamageLifeBar(damage);
-				
-				
+			} else if ((name.equals("Pause") && !pressed)) {
+	
 				if (!GameManager.getIstance().isPaused() )
 				{
-					System.out.println("PAUSA");
+		
+					GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
 					GameManager.getIstance().pauseGame();
 				}
 				
 				else
 				{
-					System.out.println("STOP PAUSA");
+					Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
+					element.setVisible(!element.isVisible());					
+					GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");					
 					GameManager.getIstance().resumeGame();
 				
 				}
