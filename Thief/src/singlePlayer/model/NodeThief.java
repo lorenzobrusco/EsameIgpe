@@ -39,6 +39,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private boolean changeAttack;
 	private boolean waitAnimation;
 	private boolean multiplayer;
+	private boolean chatboxIsEnable;
 	private int controlRender;
 	private final int RENDER = 25;
 	private final float SPEED = 15;
@@ -73,6 +74,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.controlRender = RENDER;
 		this.isRun = false;
 		this.waitAnimation = false;
+		this.chatboxIsEnable = false;
 		this.multiplayer = multiplayer;
 		this.currentTime = (int) System.currentTimeMillis();
 		this.talkFrequence = 20;
@@ -88,7 +90,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.camera = new ChaseCamera(cam, this.spatial, GameManager.getIstance().getApplication().getInputManager());
 		this.camera.setMinVerticalRotation(0.2f);
 		this.camera.setDragToRotate(false);
-		this.camera.setDefaultDistance(25f);
+		this.camera.setDefaultDistance(25f);		
 		
 	}
 
@@ -433,6 +435,24 @@ public class NodeThief extends NodeCharacter implements Collition {
 					element.setVisible(false);					
 				
 				}
+			}
+			else if ( (name.equals("chatBox") && !isSinglePlayer) && !pressed )
+			{
+				if ( !chatboxIsEnable )
+				{
+				Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("chatMultiPlayer");
+				el.setVisible(!el.isVisible());		
+				GameManager.getIstance().pauseGame();
+				chatboxIsEnable = !chatboxIsEnable;
+				}
+				else
+				{
+					Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("chatMultiPlayer");
+					el.setVisible(!el.isVisible());		
+					GameManager.getIstance().resumeGame();
+					chatboxIsEnable = !chatboxIsEnable;						
+				}
+					
 			}
 		}
 	};

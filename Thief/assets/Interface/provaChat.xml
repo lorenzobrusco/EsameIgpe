@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<useStyles filename="nifty-default-styles.xml" />
+	<useStyles filename="Interface/Styles/textFieldStyleChat.xml" />
+	<useStyles filename="Interface/Styles/listboxStyleChat.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+<controlDefinition name="myChat" style="nifty-chat-control" controller="de.lessvoid.nifty.controls.chatcontrol.ChatControl" lines="10" sendLabel="Send" chatLineIconWidth="25px" chatLineIconHeight="25px" chatLineHeight="25px">
+    <panel style="#mainPanel">
+      <panel style="#chatPanel">
+        <panel style="#chatArea" width="100%" height="100%" childLayout="vertical">       
+          <control id="#chatBox" name="listBox" style="nifty-chat-control" vertical="optional" horizontal="off" selection="Disabled" displayItems="$lines" viewConverterClass="de.lessvoid.nifty.controls.chatcontrol.ChatBoxViewConverter">
+            <control name="nifty-chat-line"  chatLineIconWidth="$chatLineIconWidth" chatLineIconHeight="$chatLineIconHeight" chatLineHeight="$chatLineHeight" />
+          </control>
+        </panel>     
+      </panel>
+      <panel style="#spacer"/>
+      <panel style="#chatTextArea" childLayout="horizontal" width="100%">
+        <control id="#chat-text-input" name="textfield" style="my-textfield" height="15%" width="85%"/>  
+        <panel width="3%" childLayout="center"/>             
+         <image id="arrowRight" filename="Interface/arrowRight.png" width="10%" height="10%" align="center">       
+        	<effect>
+							<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
+							<onEndHover name="nop" onStartEffect="endGrow(arrowRight)" />
+
+						</effect>
+						<interact onClick="sendMessage()" />
+			</image>       
+      </panel>
+    </panel>
+ </controlDefinition>
+
+	
+<screen id="start" controller="main.Main">
+
+ <layer id="layerProgressBar" childLayout="horizontal" >
+       <panel id = "1" childLayout="horizontal" width="62%" />             
+       <panel id = "1" childLayout="vertical" backgroundColor="#ffff">   
+       <panel height="3%"/>     	
+        	   <control id="chatId" name="myChat" width="100%" />     	 
+      </panel>          	 
+        
+          </layer>
+
+</screen>
+
+
+</nifty>

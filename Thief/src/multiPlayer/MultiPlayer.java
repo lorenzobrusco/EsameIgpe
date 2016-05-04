@@ -2,6 +2,8 @@ package multiPlayer;
 
 import java.io.IOException;
 
+
+
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -12,7 +14,11 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Chat;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
@@ -31,12 +37,16 @@ public class MultiPlayer implements ScreenController {
     private Client client = null;
     
     private String nameModel;
+    private String namePlayer;
 	private Element progressLifeBarThief;
 	private Element borderLifeBarThief;
+	private final int MAX_CHARACTER_IN_LINE = 80;
+	
 
     public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
 	    String nameModel) {
     this.nameModel = nameModel;
+    this.namePlayer = namePlayer;
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
 	cam.setFrustumFar(200);
@@ -128,6 +138,54 @@ public class MultiPlayer implements ScreenController {
 		System.out.println(nameModel);
 		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief,nameModel);
 	
+	}
+	
+	public void sendMessage()
+	{
+		final Element chatPanel =GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("chatMultiPlayer");	
+		final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer", Chat.class);
+		TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input", TextField.class);	
+		String message = "";
+        String[] tmp = text.getDisplayedText().split(" ");
+		String space = "";
+		
+	    for (int i = 0; i < namePlayer.length() ; i++)
+			space+= " ";
+			space+="          ";
+	
+	
+		for (int i = 0; i< tmp.length; i++)
+		{
+			if(i == 0)
+			message +=namePlayer+": ";	
+			
+			if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
+				{ message += tmp[i]+" ";				 
+				 			  
+				}	
+			else
+				{ chatController.receivedChatLine(message, null);
+				  message = space+tmp[i]+" ";
+				  
+				}
+				
+		}
+		chatController.receivedChatLine(message, null);	
+		text.setText("");
+	}
+	
+	public void startGrow(String nameButton) {
+
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+
+	public void endGrow(String nameButton) {
+
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
+		Element niftyElement =GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 	
 }

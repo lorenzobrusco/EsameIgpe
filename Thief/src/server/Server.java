@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -13,7 +14,7 @@ public class Server extends Thread {
     private final ServerSocket server;
     private final String TERRAIN;
     private final Collection<ClientManager> players;
-    private boolean start;
+    private Boolean start;
 
     public Server(final String path) throws UnknownHostException, IOException {
 	this.server = new ServerSocket(PORT);
@@ -33,11 +34,15 @@ public class Server extends Thread {
 		ClientManager clientManager = new ClientManager(this, client);
 		this.newPlayer();
 		clientManager.start();
-	    } catch (IOException e) {
-		e.printStackTrace();
+	    } 
+	    catch(SocketTimeoutException timeoutException){
+	    	System.out.println("time out");
+	    }
+	    catch (IOException e) {
+
 	    }
 	}
-
+	
     }
 
     public void newPlayer() {
@@ -47,8 +52,18 @@ public class Server extends Thread {
     }
 
     public void stopServer() {
-	this.start = false;
-    }
+    	new Thread(){
+    		@Override
+    		public void run() {
+    			try{
+    				Server.this.start = false;
+    				Server.this.server.close();
+    			}
+    			catch (Exception e) {// TODO: handle exception
+				}
+    		}
+    	}.run();
+	}
 
     public synchronized void addPlayer(ClientManager clientManager) {
 	boolean exist = false;
@@ -71,16 +86,17 @@ public class Server extends Thread {
     public String getTERRAIN() {
 	return TERRAIN;
     }
-    
-    
 
-    public boolean isStart() {
-		return start;
+	public Boolean isStart() {	
+		return this.start;
 	}
 
-	public void setStart(boolean start) {
+	public void setStart(Boolean start) {
 		this.start = start;
 	}
+    
+    
+
 
 
 }

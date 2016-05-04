@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import com.jme3.app.SimpleApplication;
-import com.jme3.asset.BlenderKey.LoadingResults;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.input.KeyInput;
@@ -13,7 +12,6 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
-
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.TextField;
@@ -40,6 +38,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 	private NiftyJmeDisplay niftyDisplay;
 	private Nifty nifty;
 	private Sound menuSound;
+	
 	private static final String pathSinglePlayer = "singlePlayer.SinglePlayer";
 	private static final String pathEditor = "editor.EditorTerrain";
 	private static final String pathMultiPlayer = "multiPlayer.MultiPlayer";
@@ -55,10 +54,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	public static void main(String[] args) {
 		AppSettings gameSettings = new AppSettings(false);
-		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+//		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+//		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 
-		//gameSettings.setResolution(800, 600);
+		gameSettings.setResolution(800, 600);
 
 		gameSettings.setFullscreen(false);
 		gameSettings.setVSync(true);
@@ -75,7 +74,6 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		app.setDisplayFps(false);
 		app.setDisplayStatView(false);
 		app.start();
-		
 
 	}
 
@@ -89,16 +87,16 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.multiplayer = false;
 		this.editor = false;
 		this.indexCharacter = 0;
-		this.ipAddress = "";
-		this.namePlayer = "";	
-	
+		this.ipAddress = "192.168.1.48";
+		this.namePlayer = "Antonio";
+
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);
 		this.setupAudio();
 		this.flyCam.setMoveSpeed(100f);
 		this.flyCam.setEnabled(false);
 		mouseInput.setCursorVisible(true);
-		
+
 		this.niftyDisplay = new NiftyJmeDisplay(GameManager.getIstance().getApplication().getAssetManager(),
 				GameManager.getIstance().getApplication().getInputManager(),
 				GameManager.getIstance().getApplication().getAudioRenderer(),
@@ -107,8 +105,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.nifty.fromXml("Interface/screenMenu.xml", "start", this);
 		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 		GameManager.getIstance().setNifty(nifty);
-		loadCharacter();
-		this.menuSound.playSound();
+	
+		//this.menuSound.playSound();
 	}
 
 	@Override
@@ -133,7 +131,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true);
 		this.initKeys();
 		this.menuSound.stopSound();
-		
+
 	}
 
 	public void multiPlayer() {
@@ -142,16 +140,17 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = false;
 		editor = false;
 		this.flyCam.setEnabled(false);
-		namePlayer = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("textFieldName", TextField.class)
-				.getDisplayedText();
-		ipAddress = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("textFieldIP", TextField.class)
-				.getDisplayedText();
+//		namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
+//				.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
+//		ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
+//				.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
 		GameManager.getIstance().setEditor(false);
 		GameManager.getIstance().setModelGame(pathMultiPlayer);
-		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, "160.97.121.26", "Antonio",
+		System.out.println("ho scelto il personaggio: "+characters.get(indexCharacter));
+		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, ipAddress, namePlayer,
 				characters.get(indexCharacter));
 		// TODO inserire ip server
-		flyCam.setEnabled(true);
+		
 		this.initKeys();
 		this.menuSound.stopSound();
 	}
@@ -176,7 +175,9 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 				new KeyTrigger(KeyInput.KEY_TAB));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 				new KeyTrigger(KeyInput.KEY_ESCAPE));
-		inputManager.addListener(actionListener, "debug", "exit", "mouse");
+		GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
+				new KeyTrigger(KeyInput.KEY_ESCAPE));
+		inputManager.addListener(actionListener, "debug", "exit", "mouse" ,"chatBox");
 	}
 
 	private void mouse() {
@@ -197,6 +198,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 			else if (name.equals("mouse") && !singleplayer) {
 				Main.this.mouse();
 			}
+		
 		}
 	};
 
@@ -204,36 +206,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
 	}
 
-	@Override
-	public void onAction(String arg0, boolean arg1, float arg2) {
-
-	}
-
-	@Override
-	public void bind(Nifty arg0, Screen arg1) {
-
-	}
-
-	@Override
-	public void onEndScreen() {
-
-	}
-
-	@Override
-	public void onStartScreen() {
-
-	}
+	
 
 	public void loadScreen(String nextScreen) {
-
-	   if(nextScreen.equals("serverScreen") )
-	   {	
-			setImageServer();
-	   }
-			
 		nifty.gotoScreen(nextScreen);
-		
-		
 
 	}
 
@@ -259,47 +235,53 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
 	}
-	
-	
-	public void setImageServer()
-	{
-		
-		if(GameManager.getIstance().getServer()==null || !GameManager.getIstance().getServer().isStart() )
-		{
-			System.out.println("server non attivo");
-		NiftyImage image = nifty.getRenderEngine().createImage(null,
-				"Interface/serverIsClose.png", false);
-		Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
-		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-		}
-		
-		else if (GameManager.getIstance().getServer().isStart())
-		{
-			System.out.println("server attivo");
-			NiftyImage image = nifty.getRenderEngine().createImage(null,
-					"Interface/serverIsOpen.png", false);
+
+	public void openServerScreen() {
+
+		if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
+			NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/serverIsClose.png", false);
 			Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
+					.setVisible(false);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
+					.setVisible(true);
+
 		}
-		
-		
+
+		else if (GameManager.getIstance().getServer().isStart()) {
+
+			NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/serverIsOpen.png", false);
+			Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
+			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
+					.setVisible(true);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
+					.setVisible(false);
+		}
+
+		loadScreen("serverScreen");
+
 	}
 
 	public void resetParamsTextfield(String nameTextField) {
-		System.out.println("sono qui");
-		if (nameTextField.equals("textFieldName"))
+
+		if (nameTextField.equals("myTextFieldName"))
 			if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
 					.getDisplayedText().equals("Your Name"))
 				GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
 						.setText("");
-		
 
-		if (nameTextField.equals("textFieldIP"))
+		if (nameTextField.equals("myTextFieldIP"))
 			if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-					.getDisplayedText().equals("IP-address"))
+					.getDisplayedText().equals("IP-address")
+					|| (GameManager.getIstance().getNifty().getCurrentScreen()
+							.findNiftyControl(nameTextField, TextField.class).getDisplayedText().equals(getIPAddress())
+							&& GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+									.findElementByName("myTextFieldIP").isFocusable()))
 				GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
 						.setText("");
-		;
 
 	}
 
@@ -312,6 +294,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 				"Interface/MultiPlayer/PlayerImage/" + characters.get(indexCharacter) + ".png", false);
 		Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+		
+		System.out.println(characters.get(indexCharacter));
 	}
 
 	public void redoCharacter() {
@@ -323,6 +307,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 				"Interface/MultiPlayer/PlayerImage/" + characters.get(indexCharacter) + ".png", false);
 		Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+		
+		System.out.println(characters.get(indexCharacter));
 	}
 
 	public void closeGame() {
@@ -344,9 +330,41 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	}
 
-	public void openMultiPlayer() {
+	public void openMultiPlayerGame() {
 		nifty.exit();
 		multiPlayer();
+	}
+	
+	
+
+
+
+	public void openMultiPlayerScreen() {
+
+		if (characters == null) 
+		{
+
+			loadCharacter();
+		}
+
+		if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
+			System.out.println("server attivo");
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("imServerImage")
+					.setVisible(true);
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+					.findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+					.setFocusable(false);
+		} else {
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("imServerImage")
+					.setVisible(false);
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+					.setFocusable(true);
+
+		}
+
+		loadScreen("multiPlayerScreen");
+
 	}
 
 	public void startGrow(String nameButton) {
@@ -362,27 +380,43 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
-	
-	public String getIPAddress()
-	{
+
+	public String getIPAddress() {
 		return GameManager.getIstance().ipAddress();
-		
-	}
-	
-	
-	public void startServer() {
-		
-		
-		 GameManager.getIstance().startServer("");
-		 this.nifty.gotoScreen("multiPlayerScreen");
-		 
-	}
-	
-	
-	public void closeServer()
-	{
-		
-		GameManager.getIstance().getServer().setStart(false);
+
 	}
 
+	public void startServer() {
+
+		GameManager.getIstance().startServer("");
+		openServerScreen();
+
+	}
+
+	public void closeServer() {
+
+		GameManager.getIstance().getServer().stopServer();
+		openServerScreen();
+	}
+
+	
+	@Override
+	public void onAction(String arg0, boolean arg1, float arg2) {
+
+	}
+
+	@Override
+	public void bind(Nifty arg0, Screen arg1) {
+
+	}
+
+	@Override
+	public void onEndScreen() {
+
+	}
+
+	@Override
+	public void onStartScreen() {
+
+	}
 }

@@ -490,7 +490,6 @@ public class GameManager {
 		this.paused = true;	
 		application.getInputManager().setCursorVisible(true);	
 		thief.getCamera().setEnabled(false);
-		
 		for(NodeCharacter enemy : enemies)
 			((NodeEnemy) enemy).pauseIntelligence();
 		
