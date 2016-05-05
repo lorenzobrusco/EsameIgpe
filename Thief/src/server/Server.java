@@ -66,12 +66,12 @@ public class Server extends Thread {
 	}
 
     public synchronized void addPlayer(ClientManager clientManager) {
-	boolean exist = false;
-	for (ClientManager manager : this.players) {
-	    if (manager.getAddress().equals(clientManager.getAddress()))
-		exist = true;
-	}
-	if (!exist)
+//	boolean exist = false;
+//	for (ClientManager manager : this.players) {
+//	    if (manager.getAddress().equals(clientManager.getAddress()))
+//		exist = true;
+//	}
+//	if (!exist)
 	    this.players.add(clientManager);
     }
 

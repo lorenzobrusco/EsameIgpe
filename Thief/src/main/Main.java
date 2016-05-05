@@ -54,10 +54,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 	public static void main(String[] args) {
 		AppSettings gameSettings = new AppSettings(false);
-//		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-//		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+		 gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+		 java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 
-		gameSettings.setResolution(800, 600);
+//		gameSettings.setResolution(800, 600);
 
 		gameSettings.setFullscreen(false);
 		gameSettings.setVSync(true);
@@ -87,8 +87,8 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		this.multiplayer = false;
 		this.editor = false;
 		this.indexCharacter = 0;
-		this.ipAddress = "192.168.1.48";
-		this.namePlayer = "Antonio";
+		this.ipAddress = "";
+		this.namePlayer = "";
 
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);
@@ -140,15 +140,16 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		singleplayer = false;
 		editor = false;
 		this.flyCam.setEnabled(false);
-//		namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
-//				.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
-//		ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
-//				.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
+		namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
+				.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
+		ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
+				.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
+		System.out.println(namePlayer+"  "+ipAddress);
 		GameManager.getIstance().setEditor(false);
-		GameManager.getIstance().setModelGame(pathMultiPlayer);
-		System.out.println("ho scelto il personaggio: "+characters.get(indexCharacter));
+		GameManager.getIstance().setModelGame(pathMultiPlayer);	
 		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, ipAddress, namePlayer,
 				characters.get(indexCharacter));
+		GameManager.getIstance().getNodeThief().setNamePlayer(namePlayer);
 		// TODO inserire ip server
 		
 		this.initKeys();
@@ -295,7 +296,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 		
-		System.out.println(characters.get(indexCharacter));
+		
 	}
 
 	public void redoCharacter() {
@@ -308,7 +309,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 		
-		System.out.println(characters.get(indexCharacter));
+		
 	}
 
 	public void closeGame() {
@@ -351,10 +352,10 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 			System.out.println("server attivo");
 			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("imServerImage")
 					.setVisible(true);
-			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-					.findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
-			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-					.setFocusable(false);
+//			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+//					.findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
+//			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+//					.setFocusable(false);
 		} else {
 			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("imServerImage")
 					.setVisible(false);

@@ -31,6 +31,8 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	protected final String run = "Run";
 	protected final String rotateLeft = "rotateLeft";
 	protected final String rotateRight = "rotateRight";
+	protected final String pause ="Pause";
+	protected final String chatBox = "chatBox";
 	protected final int STARTLIFE;
 	protected int life;
 	private final int DAMAGE;

@@ -49,6 +49,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String YESIHAVE = "yes, I have";
     private final static String DELETE = "delete this player ";
     private final static String PATH = "assets/MultiPlayer/";
+    private final static String SENDMESSAGE="Can I send a message?";
+    private final static String OKYOUSENDMESSAGE="OK, you can";
+    private final static String MESSAGERICEIVED="Thanks for your message";
 
     public ClientManager(Server server, Socket socket) throws IOException {
 	this.server = server;
@@ -265,6 +268,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.communicationState();
 		if (message.equals(CLOSE))
 		    this.endConnection();
+		if(message.equals(SENDMESSAGE))
+			this.riceivedMessageForChatBox();
 		// if (message.equals(SENDPOSITION))
 		// this.syncWithServer();
 	    }
@@ -277,7 +282,49 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void notifyAllNewPlayer() {
+    public void riceivedMessageForChatBox() 
+    {
+    	
+    	try {
+//			this.OUTPUT.writeBytes(OKYOUSENDMESSAGE + "\n");
+//			System.out.println("CLIENTMANAGER: puoi inviare il messaggio");
+			String player = this.INPUT.readLine();			
+			String message = this.INPUT.readLine();
+			
+			this.OUTPUT.writeBytes(MESSAGERICEIVED + "\n");
+			
+			for(ClientManager manager : server.getPlayers() )
+			{
+				System.out.println(manager.getNameClient() );
+				manager.sendMessageForChatBox(player, message);
+			
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+    
+    
+    public void sendMessageForChatBox(String player, String message)
+    {
+    	try {
+			this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
+//			if (this.INPUT.readLine().equals(OKYOUSENDMESSAGE))			
+				this.OUTPUT.writeBytes(player+"\n");
+				this.OUTPUT.writeBytes(message+"\n");
+//			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	
+    }
+
+	public void notifyAllNewPlayer() {
 	for (ClientManager manager : this.server.getPlayers()) {
 	    manager.setNewPlayer(true);
 	    manager.communicationNewPlayer(this.address, this.nameModel, String.valueOf(this.startPosition.x),

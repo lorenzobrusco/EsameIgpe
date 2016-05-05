@@ -37,10 +37,10 @@ public class MultiPlayer implements ScreenController {
     private Client client = null;
     
     private String nameModel;
-    private String namePlayer;
 	private Element progressLifeBarThief;
 	private Element borderLifeBarThief;
 	private final int MAX_CHARACTER_IN_LINE = 80;
+	private String namePlayer;
 	
 
     public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
@@ -142,36 +142,11 @@ public class MultiPlayer implements ScreenController {
 	
 	public void sendMessage()
 	{
-		final Element chatPanel =GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("chatMultiPlayer");	
-		final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer", Chat.class);
+
 		TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input", TextField.class);	
-		String message = "";
-        String[] tmp = text.getDisplayedText().split(" ");
-		String space = "";
-		
-	    for (int i = 0; i < namePlayer.length() ; i++)
-			space+= " ";
-			space+="          ";
-	
-	
-		for (int i = 0; i< tmp.length; i++)
-		{
-			if(i == 0)
-			message +=namePlayer+": ";	
-			
-			if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
-				{ message += tmp[i]+" ";				 
-				 			  
-				}	
-			else
-				{ chatController.receivedChatLine(message, null);
-				  message = space+tmp[i]+" ";
-				  
-				}
-				
-		}
-		chatController.receivedChatLine(message, null);	
+		GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
 		text.setText("");
+		
 	}
 	
 	public void startGrow(String nameButton) {

@@ -490,8 +490,8 @@ public class GameManager {
 		this.paused = true;	
 		application.getInputManager().setCursorVisible(true);	
 		thief.getCamera().setEnabled(false);
-		for(NodeCharacter enemy : enemies)
-			((NodeEnemy) enemy).pauseIntelligence();
+//		for(NodeCharacter enemy : enemies)
+//			((NodeEnemy) enemy).pauseIntelligence();
 		
 	}
 	
@@ -501,9 +501,9 @@ public class GameManager {
 		thief.getCamera().setEnabled(true);
 		thief.getCamera().setDragToRotate(false);
 		application.getInputManager().setCursorVisible(false);
-		for(NodeCharacter enemy : enemies)
-			((NodeEnemy) enemy).resumeIntelligence();
-		
+//		for(NodeCharacter enemy : enemies)
+//			((NodeEnemy) enemy).resumeIntelligence();
+//		
 	}
 	
 	 public String ipAddress() {

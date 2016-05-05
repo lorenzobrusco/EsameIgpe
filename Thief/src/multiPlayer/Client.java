@@ -23,6 +23,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import de.lessvoid.nifty.controls.Chat;
 import multiPlayer.protocols.CommunicationProtocol;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeThief;
@@ -49,6 +50,14 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String DELETE = "delete this player ";
     private final static String PATH = "assets/MultiPlayer/";
     private final static String PATHMODEL = "Models/Characters/";
+ 
+    private final static String SENDMESSAGE="Can I send a message?";
+    private final static String OKYOUSENDMESSAGE="OK, you can";
+   
+    private final static String debug = "debug";
+    private final static String mouse = "mouse";
+    private final static String chatBox = "chatBox";
+    private final static String toggleRotate = "toggleRotate";    
     private final static String attack1 = "Attack1";
     private final static String attack2 = "Attack2";
     private final static String run = "Run";
@@ -68,6 +77,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private boolean next;
     private Queue<ModelState> states;
     private final Camera cam;
+    
 
     public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
 	    throws UnknownHostException, IOException {
@@ -318,6 +328,8 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.endConnection();
 		else if (message.equals(SYNCPLAYERS))
 		    this.syncPlayers();
+		else if (message.equals(SENDMESSAGE))
+			this.riceivedMessage();
 
 	    }
 	    this.socket.close();
@@ -411,17 +423,59 @@ public class Client extends Thread implements CommunicationProtocol {
 		new KeyTrigger(KeyInput.KEY_A));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateCounterClockwise,
 		new KeyTrigger(KeyInput.KEY_D));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
+	GameManager.getIstance().getApplication().getInputManager().addMapping(debug,
 		new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
+	GameManager.getIstance().getApplication().getInputManager().addMapping(mouse,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
+	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox,
 			new KeyTrigger(KeyInput.KEY_9));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, "toggleRotate" ,"chatBox");
+		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate ,chatBox);
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }
+    
+  
+    
+	public void sendMessage(String displayedText) 
+	{
+		try {
+			this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
+		
+//			if (this.INPUT.readLine().equals(OKYOUSENDMESSAGE) ) {
+			{
+				
+				this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getNamePlayer() + "\n");
+				this.OUTPUT.writeBytes(displayedText + "\n");
+			}
+//			else if (this.INPUT.readLine().equals(TRYAGAIN))
+//			{
+//				System.out.println("CLIENT: andata male");
+//			  this.sendMessage(displayedText);
+//			}
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+    
+    public void riceivedMessage()
+	{	
+    	String namePlayer ="";
+    	String messageChatBox = "";
+		try {
+			namePlayer = INPUT.readLine();		
+		    messageChatBox = INPUT.readLine();	   
+		
+		} catch (IOException e) {
+		
+			e.printStackTrace();
+		}		
+		GameManager.getIstance().getNodeThief().printMessageChatBox(namePlayer, messageChatBox);
+		
+	}
 
     public String getNamePlayer() {
 	return namePlayer;
@@ -438,5 +492,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void setNameTerrain(String nameTerrain) {
 	this.nameTerrain = nameTerrain;
     }
+
+
 
 }

@@ -1,5 +1,7 @@
 package singlePlayer.model;
 
+import java.io.IOException;
+
 import javax.swing.plaf.synth.SynthSpinnerUI;
 
 import com.jme3.animation.AnimChannel;
@@ -20,6 +22,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.controls.Chat;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
@@ -67,6 +71,18 @@ public class NodeThief extends NodeCharacter implements Collition {
 			"Interface/innerLifeRed.png", false);
 	private final NiftyImage innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
 			"Interface/innerLife.png", false);
+	
+	private final int MAX_CHARACTER_IN_LINE = 80;
+	private String namePlayer;
+	
+
+	public String getNamePlayer() {
+		return namePlayer;
+	}
+
+	public void setNamePlayer(String namePlayer) {
+		this.namePlayer = namePlayer;
+	}
 
 	public NodeThief(Spatial model, boolean multiplayer) {
 		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
@@ -373,16 +389,18 @@ public class NodeThief extends NodeCharacter implements Collition {
 			if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused() ) {
 				run();
 			}
-			if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused()) {
+			if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 				Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
 				rotateL.multLocal(viewDirection);
 			} else if ((name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused()) {
 				Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
 				rotateR.multLocal(viewDirection);
 			}
-			NodeThief.this.notifyUpdate(false);
+			if(!GameManager.getIstance().isPaused())
+			{NodeThief.this.notifyUpdate(false);
 			viewDirection.y = -2f;
 			characterControl.setViewDirection(viewDirection);
+			}
 		}
 	};
 
@@ -418,7 +436,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				NodeThief.this.stop();
 				NodeThief.this.isRun = false;
 				NodeThief.this.sitNearToBonFire();
-			} else if ((name.equals("Pause") && !pressed)) {
+			} else if ((name.equals(pause) && !pressed)) {
 	
 				if (!GameManager.getIstance().isPaused() )
 				{
@@ -436,7 +454,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				
 				}
 			}
-			else if ( (name.equals("chatBox") && !isSinglePlayer) && !pressed )
+			else if ( (name.equals(chatBox) && !isSinglePlayer) && !pressed )
 			{
 				if ( !chatboxIsEnable )
 				{
@@ -456,7 +474,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			}
 		}
 	};
-
+	
 	
 	@Override
 	public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
@@ -479,6 +497,79 @@ public class NodeThief extends NodeCharacter implements Collition {
 			}
 		}
 	}
+	
+	
+	 public void printMessageChatBox(String namePlayer, String messageChatBox)
+		{	
+			final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer", Chat.class);
+			
+	        String[] tmp = messageChatBox.split(" ");
+			String space = "";
+			String message = "";
+			
+		    for (int i = 0; i < namePlayer.length(); i++)
+				space+= " ";
+				space+="          ";
+		
+		
+			for (int i = 0; i< tmp.length; i++)
+			{
+				if(i == 0)
+				message +=namePlayer+": ";	
+				
+				if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
+					{ message += tmp[i]+" ";				 
+					 			  
+					}	
+				else
+					{ chatController.receivedChatLine(message, null);
+					  message = space+tmp[i]+" ";
+					  
+					}
+					
+			}
+			chatController.receivedChatLine(message, null);	
+			
+			
+			
+		}
+	 
+//	 public void sendMessageChatBox()
+//		{	
+//			final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer", Chat.class);
+//			TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input", TextField.class);		
+//	        String[] tmp = text.getDisplayedText().split(" ");
+//			String space = "";
+//			String message = "";
+//			
+//		    for (int i = 0; i < namePlayer.length(); i++)
+//				space+= " ";
+//				space+="          ";
+//		
+//		
+//			for (int i = 0; i< tmp.length; i++)
+//			{
+//				if(i == 0)
+//				message +=namePlayer+": ";	
+//				
+//				if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
+//					{ message += tmp[i]+" ";				 
+//					 			  
+//					}	
+//				else
+//					{ chatController.receivedChatLine(message, null);
+//					  message = space+tmp[i]+" ";
+//					  
+//					}
+//					
+//			}
+//			chatController.receivedChatLine(message, null);	
+//			GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());		
+//		}
+	 
+	 
+	 
+	 
 
 	public ChaseCamera getCamera() {
 		return this.camera;
