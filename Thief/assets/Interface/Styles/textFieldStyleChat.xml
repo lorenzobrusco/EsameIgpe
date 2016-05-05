@@ -23,7 +23,7 @@
 
   <!-- the text in the input field -->
   <style id="my-textfield#text">
-    <attributes color="#f4e75a"  font="Interface/Fonts/Morpheus-24.fnt" selectionColor="#f4e75a"  visibleToMouse="false" align="left" valign="center" textHAlign="left" />
+    <attributes color="#f4e75a"  font="Interface/Fonts/Morpheus-20.fnt" selectionColor="#f4e75a"  visibleToMouse="false" align="left" valign="center" textHAlign="left" />
     <effect>
       <onFocus name="textColor" post="false" color="#f4e75a" />
     </effect>
