@@ -69,7 +69,7 @@ public class LoadTerrain {
 	}
 
 	private void createNodeThief(TerrainQuad terrain, Spatial spatial, boolean editor) {
-		NodeThief nodeModel = new NodeThief(spatial);
+		NodeThief nodeModel = new NodeThief(spatial,false);
 		GameManager.getIstance().setNodeThief(nodeModel);
 		GameManager.getIstance().addModel(nodeModel);
 		if (editor) {
@@ -127,28 +127,92 @@ public class LoadTerrain {
 				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), editor);
 			} else if (spatial.getName().contains("Jayce")) {
 				spatial.setName("Jayce");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 90f), editor);
 			} else if (spatial.getName().contains("Rengar")) {
 				spatial.setName("Rengar");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3.0f, 6f, 100f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 80f), editor);
 			} else if (spatial.getName().contains("Talon")) {
 				spatial.setName("Talon");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3.0f, 7f, 100f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 50f), editor);
 			} else if (spatial.getName().contains("Wukong")) {
 				spatial.setName("Wukong");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(3.0f, 7f, 100f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.4f, 2.6f, 40f), editor);
 			} else if (spatial.getName().contains("Azir")) {
 				spatial.setName("Azir");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 60f), editor);
 			} else if (spatial.getName().contains("XiinZhao")) {
 				spatial.setName("XiinZhao");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 50f), editor);
 			} else if (spatial.getName().contains("Katarina")) {
 				spatial.setName("Katarina");
-				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 4.5f, 10f), editor);
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.2f, 3.6f, 45f), editor);
+			} else if (spatial.getName().contains("Jarvan")) {
+				spatial.setName("Jarvan");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(2.0f, 5.5f, 45f), editor);
+			} else if (spatial.getName().contains("Fiora")) {
+				spatial.setName("Fiora");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.2f, 4f, 50f), editor);
+			} else if (spatial.getName().contains("Sejuani")) {
+				spatial.setName("Sejuani");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(2.5f, 6f, 280f), editor);
+			} else if (spatial.getName().contains("Volibear")) {
+				spatial.setName("Volibear");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(3f, 7f, 200f), editor);
+			} else if (spatial.getName().contains("WarWick")) {
+				spatial.setName("WarWick");
+				this.createNodeCharacter(terrain, spatial, new Vector3f(1.5f, 4.4f, 150f), editor);
 			} else if (spatial.getName().contains("Yasuo")) {
 				spatial.setName("Yasuo");
 				this.createNodeThief(terrain, spatial, editor);
+			}
+		}
+
+		return terrain;
+	}
+	
+	public TerrainQuad loadTerrainMultiPlayer(String path) {
+		TerrainQuad terrain;
+		Node terrainGeo = (Node) GameManager.getIstance().getApplication().getAssetManager()
+				.loadModel("MultiPlayer/" + path);
+		String something = "";
+		for (Spatial spatial : ((Node) terrainGeo).getChildren())
+			if (spatial.getName().contains("terrain"))
+				something = spatial.getName();
+		terrain = (TerrainQuad) ((Node) terrainGeo).getChild(something);
+		TerrainLodControl control = new TerrainLodControl(terrain,
+				GameManager.getIstance().getApplication().getCamera());
+		control.setLodCalculator(new DistanceLodCalculator(65, 2.7f));
+		terrain.addControl(control);
+		terrain.setShadowMode(ShadowMode.CastAndReceive);
+		for (Spatial spatial : terrain.getChildren()) {
+			if (spatial.getName().contains("Tree")) {
+				spatial.setName("Tree");
+				this.createNodeModel(terrain, spatial, new Vector3f(1.57f, 10f, 1000f), false);
+			} else if (spatial.getName().contains("Portal")) {
+				spatial.setName("Portal");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("Bonfire")) {
+				spatial.setName("Bonfire");
+				GameManager.getIstance().addPointShadow(spatial.getLocalTranslation());
+				this.createNodeModelBonFire(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("Chapel")) {
+				spatial.setName("Chapel");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("Castle")) {
+				spatial.setName("Castle");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("House")) {
+				spatial.setName("House");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("HouseMedium")) {
+				spatial.setName("HouseMedium");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("HouseTwo")) {
+				spatial.setName("HouseTwo");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
+			} else if (spatial.getName().contains("WindMill")) {
+				spatial.setName("WindMill");
+				this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
 			}
 		}
 
@@ -213,4 +277,5 @@ public class LoadTerrain {
 		fog.setFogDensity(3.0f);
 		return fog;
 	}
+	
 }

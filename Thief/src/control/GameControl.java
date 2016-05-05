@@ -9,7 +9,7 @@ import logic.info.WhatIs;
 import logic.object.Tree;
 
 public class GameControl {
-
+//TODO classe da eliminare, era utilizzata per il 2D
     private World world;
     private WhatIs<Boolean, ElementOfWorld> collision_with_object;
 

@@ -13,6 +13,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import control.GameManager;
+import de.lessvoid.nifty.elements.Element;
 import singlePlayer.Sound;
 
 public class NodeCharacter extends NodeModel implements AnimEventListener {
@@ -30,8 +31,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	protected final String run = "Run";
 	protected final String rotateLeft = "rotateLeft";
 	protected final String rotateRight = "rotateRight";
-	private final int STARTLIFE;
-	private int life;
+	protected final String pause ="Pause";
+	protected final String chatBox = "chatBox";
+	protected final int STARTLIFE;
+	protected int life;
 	private final int DAMAGE;
 	protected final Node node = new Node("attackBox");
 	protected boolean alive;
@@ -42,6 +45,17 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	protected Sound scream3;
 	protected Sound scream4;
 	private boolean viewed;
+	private Vector3f startPosition;
+	
+
+	public void setLifeBar(Element lifeBar, Element Border, String nameModel) {
+	}
+
+	public void setDamageLifeBar(int damage) {
+	}
+
+	public void setVisibleLifeBar() {
+	}
 
 	public NodeCharacter(Spatial model, Vector3f dimensionControll, int life, final int DAMAGE) {
 		super(model, dimensionControll);
@@ -80,7 +94,9 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		this.STARTLIFE = life;
 		this.life = life;
 		this.DAMAGE = DAMAGE;
+		this.startPosition = intersection;
 		this.setupAudio();
+
 	}
 
 	public NodeCharacter(String model, Vector3f dimensionControll, Vector3f intersection, int life, final int DAMAGE) {
@@ -93,6 +109,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		this.STARTLIFE = life;
 		this.life = life;
 		this.DAMAGE = DAMAGE;
+		this.startPosition = intersection;
 		this.setupAudio();
 	}
 
@@ -100,8 +117,16 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		GameManager.getIstance().getBullet().getPhysicsSpace().add(characterControl);
 	}
 
-	public int getLIFE() {
-		return this.life;
+	public int getLife() {
+		return life;
+	}
+
+	public void setLife(int life) {
+		this.life = life;
+	}
+
+	public int getStartLife() {
+		return this.STARTLIFE;
 	}
 
 	public int getDAMAGE() {
@@ -109,6 +134,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	}
 
 	public void startAttack() {
+		GameManager.getIstance().getNodeThief().resetCurrentTime();
 		this.playScream();
 		node.setLocalTranslation(this.getLocalTranslation());
 
@@ -144,9 +170,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 		if (this.alive) {
 			this.life -= DAMAGE;
+			this.setDamageLifeBar(DAMAGE);
 
 			if (this.isDead()) {
-				this.deathSound.playSound();
+				// this.deathSound.playSound();
 				this.alive = false;
 				this.channel.setAnim(death);
 				this.channel.setLoopMode(LoopMode.DontLoop);
@@ -159,6 +186,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	public void resetAll() {
 		this.alive = true;
 		this.life = this.STARTLIFE;
+		this.viewed = false;
 		this.channel.setAnim(idle);
 		this.channel.setLoopMode(LoopMode.Loop);
 	}
@@ -172,7 +200,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	}
 
 	public void checkCollition() {
-		;
+
 	}
 
 	@Override
@@ -186,35 +214,40 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 	@Override
 	protected void setupAudio() {
-		if (!GameManager.getIstance().isEditor()) {
-			this.deathSound = new Sound(this, "Death", false, true, false, 1.0f, false);
-			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.0f, false);
-			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.0f, false);
-			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.0f, false);
-			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.0f, false);
-		}
+		// if (!GameManager.getIstance().isEditor()) {
+		// this.deathSound = new Sound(this, "Death", false, true, false, 1.2f,
+		// false);
+		// this.scream1 = new Sound(this, "Scream1", false, true, false, 1.2f,
+		// false);
+		// this.scream2 = new Sound(this, "Scream2", false, true, false, 1.2f,
+		// false);
+		// this.scream3 = new Sound(this, "Scream3", false, true, false, 1.2f,
+		// false);
+		// this.scream4 = new Sound(this, "Scream4", false, true, false, 1.2f,
+		// false);
+		// }
 	}
 
 	protected void playScream() {
-		if (!GameManager.getIstance().isEditor()) {
-			int rand = (int) (Math.random() * 4) + 1;
-			switch (rand) {
-			case 1:
-				this.scream1.playSoundIstance();
-				break;
-			case 2:
-				this.scream2.playSoundIstance();
-				break;
-			case 3:
-				this.scream3.playSoundIstance();
-				break;
-			case 4:
-				this.scream4.playSoundIstance();
-				break;
-			default:
-				break;
-			}
-		}
+		// if (!GameManager.getIstance().isEditor()) {
+		// int rand = (int) (Math.random() * 4) + 1;
+		// switch (rand) {
+		// case 1:
+		// this.scream1.playSoundIstance();
+		// break;
+		// case 2:
+		// this.scream2.playSoundIstance();
+		// break;
+		// case 3:
+		// this.scream3.playSoundIstance();
+		// break;
+		// case 4:
+		// this.scream4.playSoundIstance();
+		// break;
+		// default:
+		// break;
+		// }
+		// }
 	}
 
 	public void setViewed(boolean viewed) {
@@ -231,6 +264,13 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 			this.deathSound.playSound();
 		this.alive = false;
 		this.channel.setAnim(death, 0.50f);
+
 		this.channel.setLoopMode(LoopMode.DontLoop);
+	}
+
+	public int getKeyCharacter() {
+
+		return (this.getName() + this.startPosition).hashCode();
+
 	}
 }
