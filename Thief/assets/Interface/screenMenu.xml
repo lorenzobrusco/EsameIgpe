@@ -173,7 +173,8 @@
 	
 	<screen id="multiPlayerScreen" controller="main.Main">
 		<layer id="background_MultiPlayer" childLayout="center">
-			<image filename="Interface/MultiPlayer/backgroundMultiPlayer2.png" width="100%" height="100%" />
+			<image filename="Interface/background.jpg" width="100%" height="100%" />
+			<image filename="Interface/opacityBackgroundPause.png" width="100%" height="100%" />
 		</layer>
 
 		
@@ -269,7 +270,8 @@
 	
 	<screen id="serverScreen" controller="main.Main">
 	<layer id="background_Server" childLayout="center">
-			<image filename="Interface/serverBackground.png" width="100%" height="100%" />
+			<image filename="Interface/background.jpg" width="100%" height="100%" />
+			<image filename="Interface/opacityBackgroundPause.png" width="100%" height="100%" />
 	</layer>
 	
 		<layer id="foreground_Server" childLayout="horizontal">

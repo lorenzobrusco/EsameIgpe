@@ -59,7 +59,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 
 //		gameSettings.setResolution(800, 600);
 
-		gameSettings.setFullscreen(false);
+		gameSettings.setFullscreen(true);
 		gameSettings.setVSync(true);
 		gameSettings.setTitle("Thief");
 		gameSettings.setUseInput(true);
@@ -128,7 +128,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().setEditor(false);
 		this.flyCam.setEnabled(false);
 		GameManager.getIstance().setModelGame(pathSinglePlayer);
-		this.player = new SinglePlayer(viewPort, rootNode, cam, "test2", true, true, true);
+		this.player = new SinglePlayer(viewPort, rootNode, cam, "emanu", true, true, true);
 		this.initKeys();
 		this.menuSound.stopSound();
 
@@ -177,7 +177,7 @@ public class Main extends SimpleApplication implements ActionListener, ScreenCon
 		GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 				new KeyTrigger(KeyInput.KEY_ESCAPE));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-				new KeyTrigger(KeyInput.KEY_ESCAPE));
+				new KeyTrigger(KeyInput.KEY_RETURN));
 		inputManager.addListener(actionListener, "debug", "exit", "mouse" ,"chatBox");
 	}
 

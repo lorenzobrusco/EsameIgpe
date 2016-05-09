@@ -6,12 +6,22 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import singlePlayer.model.NodeCharacter;
 
+/**
+ * 
+ * This class is online enemy's character
+ *
+ */
+
 public class NodeEnemyPlayers extends NodeCharacter {
 
+    /** time to wait between ends animation */
     private boolean waitAnimation;
+    /** switch animation for attacks */
     private boolean switchAttack;
+    /** make a hash code from name's model */
     private final String keyModel;
 
+    /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
@@ -19,6 +29,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
+    /** builder */
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
@@ -26,6 +37,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
+    /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
 	super(model, dimensionControll, intersect, life, DAMAGE);
@@ -34,6 +46,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
+    /** builder */
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
 	super(model, dimensionControll, intersect, life, DAMAGE);
@@ -42,6 +55,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
+    /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f direction) {
 	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
 	    this.characterControl.setWalkDirection(direction);
@@ -57,10 +71,12 @@ public class NodeEnemyPlayers extends NodeCharacter {
 
     }
 
+    /** this method set enemy's view direction */
     public void setViewDirection(Vector3f view) {
 	this.characterControl.setViewDirection(view);
     }
 
+    /** this method is invoked when character must stop */
     public void stop() {
 	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 	this.channel.setAnim(idle);
@@ -70,14 +86,22 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
     }
 
+    /** this method get waitAnimation */
     public boolean isWaitAnimation() {
 	return waitAnimation;
     }
 
+    /** this method set waitAnimation */
     public void setWaitAnimation(boolean waitAnimation) {
 	this.waitAnimation = waitAnimation;
     }
 
+    /** this method get keyModel */
+    public String getKeyModel() {
+	return this.keyModel;
+    }
+
+    /** this method is invoked when attach enemy */
     @Override
     public void startAttack() {
 	super.startAttack();
@@ -89,11 +113,13 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.switchAttack = !this.switchAttack;
     }
 
+    /** this method check if enemy strikes main character */
     @Override
     public void checkCollition() {
 	super.checkCollition();
     }
 
+    /** jmonkey's method */
     @Override
     public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
 
@@ -109,9 +135,4 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
     }
 
-    public String getKeyModel() {
-	return this.keyModel;
-    }
-
-    // TODO Implementare questa classe per i nemici del multiplayer
 }

@@ -35,563 +35,543 @@ import singlePlayer.Sound;
 
 public class NodeThief extends NodeCharacter implements Collition {
 
-	private ChaseCamera camera;
-	private Camera cameraDirection;
-	private final String bonfire = "BonFire";
-	private boolean isRun;
-	private boolean isSinglePlayer;
-	private boolean changeAttack;
-	private boolean waitAnimation;
-	private boolean multiplayer;
-	private boolean chatboxIsEnable;
-	private int controlRender;
-	private final int RENDER = 25;
-	private final float SPEED = 15;
-	private final float BONFIREDISTANCE = 10f;
-	private int sizeLifeBar = 22;
-	private Vector3f viewDirection = new Vector3f(0, 0, 1);
-	private Sound walkingOnGrassSound;
-	private Sound swordSound;
-	private Sound bonfireSound;
-	private Sound voice1;
-	private Sound voice2;
-	private Sound voice3;
-	private Sound voice4;
-	private Sound voice5;
-	private Sound voice6;
-	private Sound voice7;
-	private Sound enemyWin;
-	private Sound enemyView;
-	private int currentTime;
-	private int talkFrequence;
-	private int lifeWanted;
-	private Element lifeBarThief;
-	private Element borderLifeBarThief;
-	private final NiftyImage innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-			"Interface/innerLifeRed.png", false);
-	private final NiftyImage innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-			"Interface/innerLife.png", false);
-	
-	private final int MAX_CHARACTER_IN_LINE = 80;
-	private String namePlayer;
-	
+    private ChaseCamera camera;
+    private Camera cameraDirection;
+    private final String bonfire = "BonFire";
+    private boolean isRun;
+    private boolean isSinglePlayer;
+    private boolean changeAttack;
+    private boolean waitAnimation;
+    private boolean multiplayer;
+    private boolean chatboxIsEnable;
+    private int controlRender;
+    private final int RENDER = 25;
+    private final float SPEED = 15;
+    private final float BONFIREDISTANCE = 10f;
+    private int sizeLifeBar = 22;
+    private Vector3f viewDirection = new Vector3f(0, 0, 1);
+    private Sound walkingOnGrassSound;
+    private Sound swordSound;
+    private Sound bonfireSound;
+    private Sound voice1;
+    private Sound voice2;
+    private Sound voice3;
+    private Sound voice4;
+    private Sound voice5;
+    private Sound voice6;
+    private Sound voice7;
+    private Sound enemyWin;
+    private Sound enemyView;
+    private int currentTime;
+    private int talkFrequence;
+    private int lifeWanted;
+    private Element lifeBarThief;
+    private Element borderLifeBarThief;
+    private final NiftyImage innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+	    "Interface/innerLifeRed.png", false);
+    private final NiftyImage innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+	    "Interface/innerLife.png", false);
 
-	public String getNamePlayer() {
-		return namePlayer;
+    private final int MAX_CHARACTER_IN_LINE = 80;
+    private String namePlayer;
+
+    public String getNamePlayer() {
+	return namePlayer;
+    }
+
+    public void setNamePlayer(String namePlayer) {
+	this.namePlayer = namePlayer;
+    }
+
+    public NodeThief(Spatial model, boolean multiplayer) {
+	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
+	this.lifeWanted = (life * 40) / 100;
+	this.controlRender = RENDER;
+	this.isRun = false;
+	this.waitAnimation = false;
+	this.chatboxIsEnable = false;
+	this.multiplayer = multiplayer;
+	this.currentTime = (int) System.currentTimeMillis();
+	this.talkFrequence = 20;
+	this.setViewed(true);
+	this.setupAudio();
+
+    }
+
+    public void setCam(Camera cam) {
+
+	this.cameraDirection = cam;
+	this.camera = new ChaseCamera(cam, this.spatial, GameManager.getIstance().getApplication().getInputManager());
+	this.camera.setMinVerticalRotation(0.2f);
+	this.camera.setDragToRotate(false);
+	this.camera.setDefaultDistance(25f);
+
+    }
+
+    public void stop() {
+	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+	// this.walkingOnGrassSound.stopSound();
+	// TODO test
+	if (this.getWorldTranslation().y < -9f) {
+	    this.death();
 	}
+    }
 
-	public void setNamePlayer(String namePlayer) {
-		this.namePlayer = namePlayer;
+    public void run() {
+	this.resetCurrentTime();
+	// this.walkingOnGrassSound.playSound();
+	// TODO test
+	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
+	vector3f.y = -2f;
+	this.characterControl.setWalkDirection(vector3f);
+	this.controlRender++;
+	if (this.getWorldTranslation().y < -9f) {
+	    this.death();
 	}
+    }
 
-	public NodeThief(Spatial model, boolean multiplayer) {
-		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
-		this.lifeWanted = (life * 40) / 100;
-		this.controlRender = RENDER;
-		this.isRun = false;
-		this.waitAnimation = false;
-		this.chatboxIsEnable = false;
-		this.multiplayer = multiplayer;
-		this.currentTime = (int) System.currentTimeMillis();
-		this.talkFrequence = 20;
-		this.setViewed(true);
-		this.setupAudio();
-		
-		
+    @Override
+    public void death() {
+	if (this.alive) {
+	    super.death();
+	    this.resetCurrentTime();
+	    this.lifeBarThief.setVisible(false);
+	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+
+	    // this.walkingOnGrassSound.stopSound();
+	    // TODO test
 	}
+    }
 
-	public void setCam(Camera cam) {
+    public void sitNearToBonFire() {
+	this.resetCurrentTime();
+	if (this.getLocalTranslation()
+		.distance(GameManager.getIstance().getBonfire().getLocalTranslation()) < BONFIREDISTANCE
+		&& this.isSinglePlayer) {
+	    this.resetAll();
+	    this.resetProgressBar();
+	    // this.bonfireSound.playSound();
+	    this.channel.setAnim("BonFire");
+	    this.channel.setLoopMode(LoopMode.DontLoop);
+	    this.channel.setSpeed(0.7f);
+	    this.waitAnimation = true;
 
-		this.cameraDirection = cam;
-		this.camera = new ChaseCamera(cam, this.spatial, GameManager.getIstance().getApplication().getInputManager());
-		this.camera.setMinVerticalRotation(0.2f);
-		this.camera.setDragToRotate(false);
-		this.camera.setDefaultDistance(25f);		
-		
 	}
+    }
 
-	public boolean isControlRender() {
-		if (!this.isRun) {
-			this.saySomething();
+    @Override
+    public void checkCollition() {
+	for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+	    CollisionResults collisionResult = new CollisionResults();
+	    BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
+	    enemy.collideWith(box, collisionResult);
+	    CollisionResult closest = collisionResult.getClosestCollision();
+	    if (closest != null) {
+		enemy.isStricken(this.getDAMAGE());
+		((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
+		if (enemy.isDead()) {
+		    // this.enemyWin.playSound();//TODO test
+		    ((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
+		    ((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 		}
-		if (this.controlRender >= RENDER) {
-			this.controlRender = 0;
-			return true;
-		} else
-			return false;
-	}
-
-	public void stop() {
-		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-		// this.walkingOnGrassSound.stopSound();
-		// TODO test
-		if (this.getWorldTranslation().y < -9f) {
-			this.death();
+		if (enemy instanceof NodeEnemyPlayers) {
+		    System.out.println(((NodeEnemyPlayers) enemy).getKeyModel());
 		}
+	    }
+	}
+    }
+
+    public void resetCurrentTime() {
+	this.currentTime = (int) System.currentTimeMillis();
+    }
+
+    @Override
+    public void startAttack() {
+	this.resetCurrentTime();
+	super.startAttack();
+	this.checkCollition();
+	// this.playScream();//TODO test
+
+    }
+
+    public void notifyUpdate(boolean attack) {
+
+	if (this.multiplayer)
+	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
+		    characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation());
+
+    }
+
+    @Override
+    public void setLifeBar(Element lifeBar, Element border, String nameModel) {
+	this.lifeBarThief = lifeBar;
+	this.borderLifeBarThief = border;
+	NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+		"Interface/MultiPlayer/borderLifeCharacters/borderLife" + nameModel + ".png", false);
+	this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
+	this.borderLifeBarThief.getParent().layoutElements();
+
+	resetProgressBar();
+
+    }
+
+    //
+    @Override
+    public void setDamageLifeBar(int damage) {
+
+	int value = (life * sizeLifeBar) / STARTLIFE;
+	this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
+	this.lifeBarThief.getParent().layoutElements();
+
+	if (life <= lifeWanted) {
+
+	    this.lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);
+	    this.lifeBarThief.getParent().layoutElements();
 	}
 
-	public void run() {
-		this.resetCurrentTime();
-		// this.walkingOnGrassSound.playSound();
-		// TODO test
-		Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
-		vector3f.y = -2f;
-		this.characterControl.setWalkDirection(vector3f);
-		this.controlRender++;
-		if (this.getWorldTranslation().y < -9f) {
-			this.death();
-		}
-	}
+	if (life <= 0)
+	    this.lifeBarThief.setVisible(false);
 
-	@Override
-	public void death() {
-		if (this.alive) {
-			super.death();
-			this.resetCurrentTime();
-			this.lifeBarThief.setVisible(false);
-			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+    }
 
-			// this.walkingOnGrassSound.stopSound();
-			// TODO test
-		}
-	}
+    // GENERA LA BARRA DELLA VITA
+    public void resetProgressBar() {
 
-	public void sitNearToBonFire() {
-		this.resetCurrentTime();
-		if (this.getLocalTranslation()
-				.distance(GameManager.getIstance().getBonfire().getLocalTranslation()) < BONFIREDISTANCE
-				&& this.isSinglePlayer) {
-			this.resetAll();
-			this.resetProgressBar();
-			// this.bonfireSound.playSound();
-			this.channel.setAnim("BonFire");
-			this.channel.setLoopMode(LoopMode.DontLoop);
-			this.channel.setSpeed(0.7f);
-			this.waitAnimation = true;
+	if (this.lifeBarThief != null)
+	    this.lifeBarThief.markForRemoval();
 
-		}
-	}
+	ImageBuilder b = new ImageBuilder() {
+	    {
 
-	@Override
-	public void checkCollition() {
-		for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
-			CollisionResults collisionResult = new CollisionResults();
-			BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
-			enemy.collideWith(box, collisionResult);
-			CollisionResult closest = collisionResult.getClosestCollision();
-			if (closest != null) {
-				enemy.isStricken(this.getDAMAGE());
-				((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
-				if (enemy.isDead()) {
-					// this.enemyWin.playSound();//TODO test
-					((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
-					((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
-				}
-				if (enemy instanceof NodeEnemyPlayers) {
-					System.out.println(((NodeEnemyPlayers) enemy).getKeyModel());
-				}
-			}
-		}
-	}
+		filename("Interface/innerLife.png");
+		x("15%");
+		y("86%");
+		width("22%");
+		height("3%");
+		imageMode("resize:15,2,15,15,15,2,15,2,15,2,15,15");
+	    }
+	};
 
-	public void resetCurrentTime() {
-		this.currentTime = (int) System.currentTimeMillis();
-	}
+	Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		.findElementByName("panelProgressBar");
+	this.lifeBarThief = b.build(GameManager.getIstance().getNifty(),
+		GameManager.getIstance().getNifty().getCurrentScreen(), layer);
+	this.lifeBarThief.getParent().layoutElements();
 
-	@Override
-	public void startAttack() {
-		this.resetCurrentTime();
-		super.startAttack();
-		this.checkCollition();
-		// this.playScream();//TODO test
+    }
 
-	}
-
-	public void notifyUpdate(boolean attack) {
-
-		if (this.multiplayer)
-			GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-					characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation());
-
-	}
-
-	@Override
-	public void setLifeBar(Element lifeBar, Element border, String nameModel) {
-		this.lifeBarThief = lifeBar;		
-	    this.borderLifeBarThief = border;
-	    NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-				"Interface/MultiPlayer/borderLifeCharacters/borderLife"+nameModel+".png", false);		
-	   	this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
-		this.borderLifeBarThief.getParent().layoutElements();
-		
-		 resetProgressBar();
-			
-	}
-
+    private void saySomething() {
+	// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 ==
+	// this.talkFrequence
+	// &&
+	// this.bonfireSound.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.deathSound.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.enemyView.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.enemyWin.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.scream1.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.scream2.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.scream3.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.scream4.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.swordSound.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice1.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice2.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice3.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice4.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice5.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice6.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.voice7.getAudioNode().getStatus().equals(Status.Stopped)
+	// &&
+	// this.walkingOnGrassSound.getAudioNode().getStatus().equals(Status.Stopped)
+	// && this.alive) {
+	// this.resetCurrentTime();
+	// int rand = ((int) (Math.random() * 7)) + 1;
 	//
-	@Override
-	public void setDamageLifeBar(int damage) {
+	// switch (rand) {
+	// case 1:
+	// this.voice1.playSound();
+	// break;
+	// case 2:
+	// this.voice2.playSound();
+	// break;
+	// case 3:
+	// this.voice3.playSound();
+	// break;
+	// case 4:
+	// this.voice4.playSound();
+	// break;
+	// case 5:
+	// this.voice5.playSound();
+	// break;
+	// case 6:
+	// this.voice6.playSound();
+	// break;
+	// case 7:
+	// this.voice7.playSound();
+	// break;
+	// default:
+	// break;
+	// }
+	// }
+	// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >
+	// this.talkFrequence) {
+	// this.currentTime = (int) System.currentTimeMillis();
+	// }
+	// TODO tenere commentati fin quando non saranno presi tutti i file
+	// audio per ogni personaggio
+    }
 
-		int value = (life * sizeLifeBar) / STARTLIFE;
-		this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
-		this.lifeBarThief.getParent().layoutElements();
+    public void playEnemyView() {
+	// this.enemyView.playSound();
+	// TODO tenere commentati fin quando non saranno presi tutti i file
+	// audio per ogni personaggio
+    }
 
-		if (life <= lifeWanted) {
+    @Override
+    protected void setupAudio() {
+	if (!GameManager.getIstance().isEditor()) {
+	    // this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass",
+	    // false, false, false, 0.09f, false);
+	    // this.swordSound = new Sound(this, "Sword", false, false, false,
+	    // 0.1f, false);
+	    // this.deathSound = new Sound(this, "Death", false, false, false,
+	    // 1.0f, false);
+	    // this.bonfireSound = new Sound(this, "Bonfire", false, false,
+	    // false, 1.0f, false);
+	    // this.scream1 = new Sound(this, "Scream1", false, false, false,
+	    // 0.5f, false);
+	    // this.scream2 = new Sound(this, "Scream2", false, false, false,
+	    // 0.5f, false);
+	    // this.scream3 = new Sound(this, "Scream3", false, false, false,
+	    // 0.5f, false);
+	    // this.scream4 = new Sound(this, "Scream4", false, false, false,
+	    // 0.5f, false);
+	    // this.voice1 = new Sound(this, "Voice1", false, false, false,
+	    // 1.0f, false);
+	    // this.voice2 = new Sound(this, "Voice2", false, false, false,
+	    // 1.0f, false);
+	    // this.voice3 = new Sound(this, "Voice3", false, false, false,
+	    // 1.0f, false);
+	    // this.voice4 = new Sound(this, "Voice4", false, false, false,
+	    // 1.0f, false);
+	    // this.voice5 = new Sound(this, "Voice5", false, false, false,
+	    // 1.0f, false);
+	    // this.voice6 = new Sound(this, "Voice6", false, false, false,
+	    // 1.0f, false);
+	    // this.voice7 = new Sound(this, "Voice7", false, false, false,
+	    // 1.0f, false);
+	    // this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
+	    // 1.0f, false);
+	    // this.enemyView = new Sound(this, "EnemyView", false, false,
+	    // false, 1.0f, false);
+	    // TODO tenere commentati fin quando non saranno presi tutti i file
+	    // audio per ogni personaggio
+	}
+    }
 
-			this.lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);
-			this.lifeBarThief.getParent().layoutElements();
+    public AnalogListener analogListener = new AnalogListener() {
+	public void onAnalog(String name, float value, float tpf) {
+	    if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+		    && !GameManager.getIstance().isPaused()) {
+		run();
+	    }
+	    if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+		    && !GameManager.getIstance().isPaused()) {
+		Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
+		rotateL.multLocal(viewDirection);
+	    } else if ((name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+		    && !GameManager.getIstance().isPaused()) {
+		Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
+		rotateR.multLocal(viewDirection);
+	    }
+	    if (!GameManager.getIstance().isPaused()) {
+		NodeThief.this.notifyUpdate(false);
+		viewDirection.y = -2f;
+		characterControl.setViewDirection(viewDirection);
+	    }
+	}
+    };
+
+    public ActionListener actionListener = new ActionListener() {
+	public void onAction(String name, boolean pressed, float value) {
+	    if ((name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+		    && !GameManager.getIstance().isPaused()) {
+		NodeThief.this.notifyUpdate(false);
+		NodeThief.this.isRun = true;
+		NodeThief.this.channel.setAnim(run);
+	    } else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+		    && !GameManager.getIstance().isPaused()) {
+		NodeThief.this.notifyUpdate(false);
+		NodeThief.this.stop();
+		NodeThief.this.isRun = false;
+		NodeThief.this.channel.setAnim(idle);
+	    } else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
+		    && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
+		NodeThief.this.notifyUpdate(true);
+		NodeThief.this.stop();
+		NodeThief.this.isRun = false;
+		NodeThief.this.waitAnimation = true;
+		if (!NodeThief.this.changeAttack) {
+		    NodeThief.this.channel.setAnim(attack1);
+		    NodeThief.this.channel.setSpeed(3f);
+		} else {
+		    NodeThief.this.channel.setAnim(attack4);
+		    NodeThief.this.channel.setSpeed(2f);
+		}
+		NodeThief.this.startAttack();
+		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
+		NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
+	    } else if ((name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
+		    && !NodeThief.this.waitAnimation && !NodeThief.this.isRun)
+		    && !GameManager.getIstance().isPaused()) {
+		NodeThief.this.stop();
+		NodeThief.this.isRun = false;
+		NodeThief.this.sitNearToBonFire();
+	    } else if ((name.equals(pause) && !pressed)) {
+
+		if (!GameManager.getIstance().isPaused()) {
+
+		    GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
+		    GameManager.getIstance().pauseGame();
 		}
 
-		if (life <= 0)
-			this.lifeBarThief.setVisible(false);
+		else {
+		    GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
+		    GameManager.getIstance().resumeGame();
+		    Element element = GameManager.getIstance().getNifty().getCurrentScreen()
+			    .findElementByName("sureExitControl");
+		    element.setVisible(false);
 
-	}
-	
-	// GENERA LA BARRA DELLA VITA
-	public void resetProgressBar()
-	{
-		
-		
-		if(this.lifeBarThief!=null)
-		this.lifeBarThief.markForRemoval();
-			
-		ImageBuilder b = new ImageBuilder() {
-			{
-				
-				filename("Interface/innerLife.png");
-				x("15%");
-				y("86%");
-				width("22%");
-				height("3%");
-				imageMode("resize:15,2,15,15,15,2,15,2,15,2,15,15");
-			}
-		};
-		
-		Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("panelProgressBar");	
-		this.lifeBarThief= b.build(GameManager.getIstance().getNifty(),GameManager.getIstance().getNifty().getCurrentScreen(),layer);	
-		this.lifeBarThief.getParent().layoutElements();
-		
-	}
-
-
-	
-
-	private void saySomething() {
-		// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 ==
-		// this.talkFrequence
-		// &&
-		// this.bonfireSound.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.deathSound.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.enemyView.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.enemyWin.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.scream1.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.scream2.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.scream3.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.scream4.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.swordSound.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice1.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice2.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice3.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice4.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice5.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice6.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.voice7.getAudioNode().getStatus().equals(Status.Stopped)
-		// &&
-		// this.walkingOnGrassSound.getAudioNode().getStatus().equals(Status.Stopped)
-		// && this.alive) {
-		// this.resetCurrentTime();
-		// int rand = ((int) (Math.random() * 7)) + 1;
-		//
-		// switch (rand) {
-		// case 1:
-		// this.voice1.playSound();
-		// break;
-		// case 2:
-		// this.voice2.playSound();
-		// break;
-		// case 3:
-		// this.voice3.playSound();
-		// break;
-		// case 4:
-		// this.voice4.playSound();
-		// break;
-		// case 5:
-		// this.voice5.playSound();
-		// break;
-		// case 6:
-		// this.voice6.playSound();
-		// break;
-		// case 7:
-		// this.voice7.playSound();
-		// break;
-		// default:
-		// break;
-		// }
-		// }
-		// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >
-		// this.talkFrequence) {
-		// this.currentTime = (int) System.currentTimeMillis();
-		// }
-		// TODO tenere commentati fin quando non saranno presi tutti i file
-		// audio per ogni personaggio
-	}
-
-	public void playEnemyView() {
-		// this.enemyView.playSound();
-		// TODO tenere commentati fin quando non saranno presi tutti i file
-		// audio per ogni personaggio
-	}
-
-	@Override
-	protected void setupAudio() {
-		if (!GameManager.getIstance().isEditor()) {
-			// this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass",
-			// false, false, false, 0.09f, false);
-			// this.swordSound = new Sound(this, "Sword", false, false, false,
-			// 0.1f, false);
-			// this.deathSound = new Sound(this, "Death", false, false, false,
-			// 1.0f, false);
-			// this.bonfireSound = new Sound(this, "Bonfire", false, false,
-			// false, 1.0f, false);
-			// this.scream1 = new Sound(this, "Scream1", false, false, false,
-			// 0.5f, false);
-			// this.scream2 = new Sound(this, "Scream2", false, false, false,
-			// 0.5f, false);
-			// this.scream3 = new Sound(this, "Scream3", false, false, false,
-			// 0.5f, false);
-			// this.scream4 = new Sound(this, "Scream4", false, false, false,
-			// 0.5f, false);
-			// this.voice1 = new Sound(this, "Voice1", false, false, false,
-			// 1.0f, false);
-			// this.voice2 = new Sound(this, "Voice2", false, false, false,
-			// 1.0f, false);
-			// this.voice3 = new Sound(this, "Voice3", false, false, false,
-			// 1.0f, false);
-			// this.voice4 = new Sound(this, "Voice4", false, false, false,
-			// 1.0f, false);
-			// this.voice5 = new Sound(this, "Voice5", false, false, false,
-			// 1.0f, false);
-			// this.voice6 = new Sound(this, "Voice6", false, false, false,
-			// 1.0f, false);
-			// this.voice7 = new Sound(this, "Voice7", false, false, false,
-			// 1.0f, false);
-			// this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
-			// 1.0f, false);
-			// this.enemyView = new Sound(this, "EnemyView", false, false,
-			// false, 1.0f, false);
-			// TODO tenere commentati fin quando non saranno presi tutti i file
-			// audio per ogni personaggio
 		}
-	}
-
-	public AnalogListener analogListener = new AnalogListener() {
-		public void onAnalog(String name, float value, float tpf) {
-			if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused() ) {
-				run();
-			}
-			if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
-				Quaternion rotateL = new Quaternion().fromAngleAxis(FastMath.PI * tpf, Vector3f.UNIT_Y);
-				rotateL.multLocal(viewDirection);
-			} else if ((name.equals(rotateCounterClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)&& !GameManager.getIstance().isPaused()) {
-				Quaternion rotateR = new Quaternion().fromAngleAxis(-FastMath.PI * tpf, Vector3f.UNIT_Y);
-				rotateR.multLocal(viewDirection);
-			}
-			if(!GameManager.getIstance().isPaused())
-			{NodeThief.this.notifyUpdate(false);
-			viewDirection.y = -2f;
-			characterControl.setViewDirection(viewDirection);
-			}
+	    } else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
+		if (!chatboxIsEnable) {
+		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+			    .findElementByName("chatMultiPlayer");
+		    el.setVisible(!el.isVisible());
+		    GameManager.getIstance().pauseGame();
+		    chatboxIsEnable = !chatboxIsEnable;
+		} else {
+		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+			    .findElementByName("chatMultiPlayer");
+		    el.setVisible(!el.isVisible());
+		    GameManager.getIstance().resumeGame();
+		    chatboxIsEnable = !chatboxIsEnable;
 		}
-	};
 
-	public ActionListener actionListener = new ActionListener() {
-		public void onAction(String name, boolean pressed, float value) {
-			if ((name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
-				NodeThief.this.notifyUpdate(false);
-				NodeThief.this.isRun = true;
-				NodeThief.this.channel.setAnim(run);
-			} else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
-				NodeThief.this.notifyUpdate(false);
-				NodeThief.this.stop();
-				NodeThief.this.isRun = false;
-				NodeThief.this.channel.setAnim(idle);
-			} else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
-					&& !NodeThief.this.waitAnimation)  && !GameManager.getIstance().isPaused()) {
-				NodeThief.this.notifyUpdate(true);
-				NodeThief.this.stop();
-				NodeThief.this.isRun = false;
-				NodeThief.this.waitAnimation = true;
-				if (!NodeThief.this.changeAttack) {
-					NodeThief.this.channel.setAnim(attack1);
-					NodeThief.this.channel.setSpeed(3f);
-				} else {
-					NodeThief.this.channel.setAnim(attack4);
-					NodeThief.this.channel.setSpeed(2f);
-				}
-				NodeThief.this.startAttack();
-				NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
-				NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
-			} else if ((name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
-					&& !NodeThief.this.waitAnimation && !NodeThief.this.isRun)  && !GameManager.getIstance().isPaused()) {
-				NodeThief.this.stop();
-				NodeThief.this.isRun = false;
-				NodeThief.this.sitNearToBonFire();
-			} else if ((name.equals(pause) && !pressed)) {
-	
-				if (!GameManager.getIstance().isPaused() )
-				{
-		
-					GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
-					GameManager.getIstance().pauseGame();
-				}
-				
-				else
-				{
-					GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");					
-					GameManager.getIstance().resumeGame();
-					Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
-					element.setVisible(false);					
-				
-				}
-			}
-			else if ( (name.equals(chatBox) && !isSinglePlayer) && !pressed )
-			{
-				if ( !chatboxIsEnable )
-				{
-				Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("chatMultiPlayer");
-				el.setVisible(!el.isVisible());		
-				GameManager.getIstance().pauseGame();
-				chatboxIsEnable = !chatboxIsEnable;
-				}
-				else
-				{
-					Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("chatMultiPlayer");
-					el.setVisible(!el.isVisible());		
-					GameManager.getIstance().resumeGame();
-					chatboxIsEnable = !chatboxIsEnable;						
-				}
-					
-			}
-		}
-	};
-	
-	
-	@Override
-	public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
-
-		if (arg2.equals(attack1)) {
-			arg1.setAnim(idle);
-			NodeThief.this.waitAnimation = false;
-			NodeThief.this.endAttack();
-		}
-		if (arg2.equals(attack4)) {
-			NodeThief.this.waitAnimation = false;
-			arg1.setAnim(idle);
-			NodeThief.this.endAttack();
-		}
-		if (arg2.equals(bonfire)) {
-			arg1.setAnim(idle);
-			NodeThief.this.waitAnimation = false;
-			for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
-				enemy.resetAll();
-			}
-		}
+	    }
 	}
-	
-	
-	 public void printMessageChatBox(String namePlayer, String messageChatBox)
-		{	
-			final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer", Chat.class);
-			
-	        String[] tmp = messageChatBox.split(" ");
-			String space = "";
-			String message = "";
-			
-		    for (int i = 0; i < namePlayer.length(); i++)
-				space+= " ";
-				space+="          ";
-		
-		
-			for (int i = 0; i< tmp.length; i++)
-			{
-				if(i == 0)
-				message +=namePlayer+": ";	
-				
-				if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
-					{ message += tmp[i]+" ";				 
-					 			  
-					}	
-				else
-					{ chatController.receivedChatLine(message, null);
-					  message = space+tmp[i]+" ";
-					  
-					}
-					
-			}
-			chatController.receivedChatLine(message, null);	
-			
-			
-			
-		}
-	 
-//	 public void sendMessageChatBox()
-//		{	
-//			final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer", Chat.class);
-//			TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input", TextField.class);		
-//	        String[] tmp = text.getDisplayedText().split(" ");
-//			String space = "";
-//			String message = "";
-//			
-//		    for (int i = 0; i < namePlayer.length(); i++)
-//				space+= " ";
-//				space+="          ";
-//		
-//		
-//			for (int i = 0; i< tmp.length; i++)
-//			{
-//				if(i == 0)
-//				message +=namePlayer+": ";	
-//				
-//				if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
-//					{ message += tmp[i]+" ";				 
-//					 			  
-//					}	
-//				else
-//					{ chatController.receivedChatLine(message, null);
-//					  message = space+tmp[i]+" ";
-//					  
-//					}
-//					
-//			}
-//			chatController.receivedChatLine(message, null);	
-//			GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());		
-//		}
-	 
-	 
-	 
-	 
+    };
 
-	public ChaseCamera getCamera() {
-		return this.camera;
-	}
+    @Override
+    public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
 
-	public Camera getCameraDir() {
-		return this.cameraDirection;
+	if (arg2.equals(attack1)) {
+	    arg1.setAnim(idle);
+	    NodeThief.this.waitAnimation = false;
+	    NodeThief.this.endAttack();
 	}
+	if (arg2.equals(attack4)) {
+	    NodeThief.this.waitAnimation = false;
+	    arg1.setAnim(idle);
+	    NodeThief.this.endAttack();
+	}
+	if (arg2.equals(bonfire)) {
+	    arg1.setAnim(idle);
+	    NodeThief.this.waitAnimation = false;
+	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+		enemy.resetAll();
+	    }
+	}
+    }
 
-	public BetterCharacterControl getControl() {
-		return this.characterControl;
-	}
+    public void printMessageChatBox(String namePlayer, String messageChatBox) {
+	final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen()
+		.findNiftyControl("chatMultiPlayer", Chat.class);
 
-	public boolean isRun() {
-		return this.isRun;
-	}
+	String[] tmp = messageChatBox.split(" ");
+	String space = "";
+	String message = "";
 
-	public boolean isSinglePlayer() {
-		return isSinglePlayer;
-	}
+	for (int i = 0; i < namePlayer.length(); i++)
+	    space += " ";
 
-	public void setSinglePlayer(boolean isSinglePlayer) {
-		this.isSinglePlayer = isSinglePlayer;
+	space += "          ";
+
+	for (int i = 0; i < tmp.length; i++) {
+	    if (i == 0)
+		message += namePlayer + ": ";
+
+	    if ((message.length() + tmp[i].length()) <= MAX_CHARACTER_IN_LINE) {
+		message += tmp[i] + " ";
+
+	    } else {
+		chatController.receivedChatLine(message, null);
+		message = space + tmp[i] + " ";
+
+	    }
+
 	}
+	chatController.receivedChatLine(message, null);
+
+    }
+
+    // public void sendMessageChatBox()
+    // {
+    // final Chat chatController =
+    // GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer",
+    // Chat.class);
+    // TextField text =
+    // GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",
+    // TextField.class);
+    // String[] tmp = text.getDisplayedText().split(" ");
+    // String space = "";
+    // String message = "";
+    //
+    // for (int i = 0; i < namePlayer.length(); i++)
+    // space+= " ";
+    // space+=" ";
+    //
+    //
+    // for (int i = 0; i< tmp.length; i++)
+    // {
+    // if(i == 0)
+    // message +=namePlayer+": ";
+    //
+    // if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
+    // { message += tmp[i]+" ";
+    //
+    // }
+    // else
+    // { chatController.receivedChatLine(message, null);
+    // message = space+tmp[i]+" ";
+    //
+    // }
+    //
+    // }
+    // chatController.receivedChatLine(message, null);
+    // GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
+    // }
+
+    public ChaseCamera getCamera() {
+	return this.camera;
+    }
+
+    public Camera getCameraDir() {
+	return this.cameraDirection;
+    }
+
+    public BetterCharacterControl getControl() {
+	return this.characterControl;
+    }
+
+    public boolean isRun() {
+	return this.isRun;
+    }
+
+    public boolean isSinglePlayer() {
+	return isSinglePlayer;
+    }
+
+    public void setSinglePlayer(boolean isSinglePlayer) {
+	this.isSinglePlayer = isSinglePlayer;
+    }
 }

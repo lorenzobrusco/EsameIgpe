@@ -1,9 +1,6 @@
 package multiPlayer;
 
 import java.io.IOException;
-
-
-
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -14,7 +11,6 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.Chat;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -24,29 +20,44 @@ import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
 import singlePlayer.Sound;
 
+/**
+ * 
+ * This class is manager to multiplayer
+ *
+ */
+
 public class MultiPlayer implements ScreenController {
 
-    private final ViewPort viewPort;
-    private final Node rootNode;
+    /** node with landscape */
     private Node nodeScene;
-    private CollisionShape collisionShape;
-    private RigidBodyControl rigidBodyControl;
+    /** object to load landscape */
     private final LoadTerrain loadTerrain;
+    /** manager to render */
     private GameRender render;
+    /** sounds */
     private Sound ambient;
+    /** manager to player */
     private Client client = null;
-    
+    /** player's name */
     private String nameModel;
-	private Element progressLifeBarThief;
-	private Element borderLifeBarThief;
-	private final int MAX_CHARACTER_IN_LINE = 80;
-	private String namePlayer;
-	
+
+    /***/
+    private Element progressLifeBarThief; // TODO Antonio
+    private Element borderLifeBarThief; // TODO Antonio
+    /***/
+
+    /** jmonkey's object */
+    private RigidBodyControl rigidBodyControl;
+    /** jmonkey's object */
+    private CollisionShape collisionShape;
+    /** jmonkey's object */
+    private final Node rootNode;
+    /** jmonkey's object */
+    private final ViewPort viewPort;
 
     public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
 	    String nameModel) {
-    this.nameModel = nameModel;
-    this.namePlayer = namePlayer;
+	this.nameModel = nameModel;
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
 	cam.setFrustumFar(200);
@@ -55,12 +66,27 @@ public class MultiPlayer implements ScreenController {
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
+	this.loadNifty();
+	this.setupAmbientSound();
 
-	loadNifty();
-	this.setupAmbientSound();	
-	
     }
 
+    /** this method is called for each update */
+    public void simpleUpdate(Float tpf) {
+	this.render.rayRendering();
+	if (!GameManager.getIstance().getNodeThief().isRun())
+	    GameManager.getIstance().getNodeThief().stop();
+	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {
+	    NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
+	    if (stateModel.isAttach()) {
+		GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
+	    } else {
+		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
+	    }
+	}
+    }
+
+    /** this method load landscape */
     public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode,
 	    Camera cam) {
 	try {
@@ -86,81 +112,69 @@ public class MultiPlayer implements ScreenController {
 	}
     }
 
-    public void simpleUpdate(Float tpf) {
-	if (GameManager.getIstance().getNodeThief().isControlRender())
-	    this.render.rayRendering();
-	if (!GameManager.getIstance().getNodeThief().isRun())
-	    GameManager.getIstance().getNodeThief().stop();
-	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {
-	    NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
-	    if (stateModel.isAttach()) {
-		GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
-	    } else {
-		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
-	    }
-
-	}
-
-    }
-
+    /** this method disconnect player */
     public void exit() {
 	this.client.endConnection();
     }
 
+    /** this method set sound */
     private void setupAmbientSound() {
 	this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
 	this.ambient.playSound();
     }
 
-	@Override
-	public void bind(Nifty arg0, Screen arg1) {
-		// TODO Auto-generated method stub
-		
-	}
+    // TODO vedere se tenere qua o meno
+    public void sendMessage() {
 
-	@Override
-	public void onEndScreen() {
-		// TODO Auto-generated method stub
-		
-	}
+	TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",
+		TextField.class);
+	GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
+	text.setText("");
 
-	@Override
-	public void onStartScreen() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void loadNifty()
-	{
-		
-		GameManager.getIstance().getNifty().fromXml("Interface/multiPlayer.xml", "lifeBarScreen", this);		
-		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("borderLifeBarThief");	
-		System.out.println(nameModel);
-		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief,nameModel);
-	
-	}
-	
-	public void sendMessage()
-	{
+    }
 
-		TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input", TextField.class);	
-		GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
-		text.setText("");
-		
-	}
-	
-	public void startGrow(String nameButton) {
+    /** this method load panel 2d */
+    private void loadNifty() {
 
-		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
-		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
-		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-	}
+	GameManager.getIstance().getNifty().fromXml("Interface/multiPlayer.xml", "lifeBarScreen", this);
+	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		.findElementByName("borderLifeBarThief");
+	System.out.println(nameModel);
+	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
 
-	public void endGrow(String nameButton) {
+    }
 
-		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
-		Element niftyElement =GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
-		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-	}
-	
+    /** this method is called when cursor move up a button */
+    public void startGrow(String nameButton) {
+
+	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+		"Interface/" + nameButton + "OnHover.png", false);
+	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+    }
+
+    /** this method is called when editor is close */
+    public void endGrow(String nameButton) {
+
+	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+		"Interface/" + nameButton + ".png", false);
+	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+    }
+
+    /** jmonkey's methods */
+    @Override
+    public void bind(Nifty arg0, Screen arg1) {
+    }
+
+    /** jmonkey's methods */
+    @Override
+    public void onEndScreen() {
+    }
+
+    /** jmonkey's methods */
+    @Override
+    public void onStartScreen() {
+    }
+
 }

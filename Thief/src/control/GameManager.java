@@ -21,9 +21,6 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -32,7 +29,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
-
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ControlBuilder;
 import de.lessvoid.nifty.builder.ControlDefinitionBuilder;
@@ -40,7 +36,6 @@ import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import editor.LoadTerrain;
-import logic.World;
 import multiPlayer.Client;
 import multiPlayer.NotifyStateModel;
 import server.Server;
@@ -48,7 +43,6 @@ import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
-import singlePlayer.travel.PanelGame;
 
 /*
  * 	Questa classe, oltre ad essere un singleton
@@ -67,8 +61,6 @@ public class GameManager {
 	private Collection<NotifyStateModel> notifyStateModels;
 	private AbstractMap<String, NodeCharacter> players;
 	private AbstractMap<Integer, Element> enemiesLifeBar;
-	private GameControl control;
-	private PanelGame game;
 	private SimpleApplication application;
 	private BulletAppState bulletAppState;
 	private LoadTerrain loadTerrain;
@@ -140,10 +132,7 @@ public class GameManager {
 	/*
 	 * Metodo deprecato
 	 */
-	public void setPanelGame(PanelGame game) {
-		control = new GameControl(new World(1200, 650, 0));
-		this.game = game;
-	}
+	
 
 	/*
 	 * Cre un pointLight in una data posizione e lo aggiunge ad una collezioni
@@ -268,6 +257,7 @@ public class GameManager {
 		boundingBox.setCenter(boxAttach.getLocalTranslation());
 
 	}
+	
 
 	public void setClient(final Client client) {
 		this.client = client;
@@ -350,6 +340,10 @@ public class GameManager {
 	public Collection<NodeCharacter> getModelEnemys() {
 		return this.enemies;
 	}
+	
+	public Application getApplication() {
+		return application;
+	    }
 
 	public void detachModelRender(NodeModel model) {
 		this.nodeRender.remove(model);
@@ -359,9 +353,6 @@ public class GameManager {
 		return this.nodeRender;
 	}
 
-	public void repaint() {
-		game.repaint();
-	}
 
 	public Collection<NodeCharacter> getEnemys() {
 		return this.enemies;
@@ -371,13 +362,7 @@ public class GameManager {
 		return this.terrain;
 	}
 
-	public GameControl getControl() {
-		return control;
-	}
-
-	public Application getApplication() {
-		return application;
-	}
+	
 
 	public BulletAppState getBullet() {
 		return bulletAppState;
