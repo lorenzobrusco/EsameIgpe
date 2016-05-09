@@ -321,20 +321,18 @@ public class EditorTerrain implements ScreenController {
 	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("tree", new KeyTrigger(KeyInput.KEY_1));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("thief", new KeyTrigger(KeyInput.KEY_2));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("portal",
-		new KeyTrigger(KeyInput.KEY_4));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("enemy", new KeyTrigger(KeyInput.KEY_3));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("builder",
-		new KeyTrigger(KeyInput.KEY_5));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("chapel",
-		new KeyTrigger(KeyInput.KEY_6));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("windMill",
-		new KeyTrigger(KeyInput.KEY_7));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("bonFire",
-		new KeyTrigger(KeyInput.KEY_8));
+		new KeyTrigger(KeyInput.KEY_2));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("thief", new KeyTrigger(KeyInput.KEY_3));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("enemy", new KeyTrigger(KeyInput.KEY_4));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("portal",
+		new KeyTrigger(KeyInput.KEY_5));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("builder",
+		new KeyTrigger(KeyInput.KEY_6));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("chapel",
+		new KeyTrigger(KeyInput.KEY_7));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("castle",
-		new KeyTrigger(KeyInput.KEY_9));
+		new KeyTrigger(KeyInput.KEY_8));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("Raise",
 		new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("Lower",
