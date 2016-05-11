@@ -328,15 +328,12 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	}
 
 	if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("imServerImage")
-		    .setVisible(true);
 	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
 		    .findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
 	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
 		    .setFocusable(false);
 	} else {
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("imServerImage")
-		    .setVisible(false);
+
 	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
 		    .setFocusable(true);
 	}

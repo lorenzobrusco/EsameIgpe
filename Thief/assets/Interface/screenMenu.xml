@@ -270,17 +270,6 @@
 
 		</layer>
 
-		<layer id="layerImServer" childLayout="horizontal">
-			<panel id="spaceForCentreMPImServer" width="14%" childLayout="center" />
-			<panel id="centralPanelMPImServer" width="73%" childLayout="vertical">
-				<panel id="spaceForTitolMPImServer" height="20%" childLayout="center" />
-				<panel id="panelImServer" height="10%" childLayout="horizontal">
-					<panel id="spacePanelImServer" width="70%" childLayout="horizontal" />
-					<image id="imServerImage" filename="Interface/imServer.png"
-						height="70%" width="25%" align="center" visible="false" />
-				</panel>
-			</panel>
-		</layer>
 	</screen>
 
 	<screen id="serverScreen" controller="game.StartGame">

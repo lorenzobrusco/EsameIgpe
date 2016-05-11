@@ -56,9 +56,8 @@
 			<panel id="panelBorderLifeBar" childLayout="absolute">
 				<image id="borderLifeBarThief"
 					filename="Interface/MultiPlayer/borderLifeCharacters/borderLife.png"
-					width="37%" height="18%" x="2%" y="80%" />
+					width="28%" height="15%" x="2%" y="82%" />
 			</panel>
-
 
 		</layer>
 

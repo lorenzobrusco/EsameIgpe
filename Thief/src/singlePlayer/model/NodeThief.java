@@ -48,7 +48,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private final int RENDER = 25;
     private final float SPEED = 15;
     private final float BONFIREDISTANCE = 10f;
-    private int sizeLifeBar = 22;
+    private int sizeLifeBar = 17;
     private Vector3f viewDirection = new Vector3f(0, 0, 1);
     private Sound walkingOnGrassSound;
     private Sound swordSound;
@@ -240,21 +240,20 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (this.lifeBarThief != null)
 	    this.lifeBarThief.markForRemoval();
 
-	ImageBuilder b = new ImageBuilder() {
+	final ImageBuilder builder = new ImageBuilder() {
 	    {
-
 		filename("Interface/innerLife.png");
-		x("15%");
-		y("86%");
-		width("22%");
-		height("3%");
-		imageMode("resize:15,2,15,15,15,2,15,2,15,2,15,15");
+		x("12%");
+		y("87%");
+		width(NodeThief.this.sizeLifeBar + "%");
+		height("2%");
+		imageMode("resize:7,2,7,7,7,2,7,2,7,2,7,7");
 	    }
 	};
 
 	Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 		.findElementByName("panelProgressBar");
-	this.lifeBarThief = b.build(GameManager.getIstance().getNifty(),
+	this.lifeBarThief = builder.build(GameManager.getIstance().getNifty(),
 		GameManager.getIstance().getNifty().getCurrentScreen(), layer);
 	this.lifeBarThief.getParent().layoutElements();
 
