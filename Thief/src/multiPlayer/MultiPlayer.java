@@ -121,7 +121,7 @@ public class MultiPlayer implements ScreenController {
 	this.ambient.playSound();
     }
 
-    // TODO vedere se tenere qua o meno
+    /** send message when player press send button*/
     public void sendMessage() {
 
 	TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",

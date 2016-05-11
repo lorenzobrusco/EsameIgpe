@@ -67,21 +67,9 @@ public class NodeThief extends NodeCharacter implements Collition {
     private int lifeWanted;
     private Element lifeBarThief;
     private Element borderLifeBarThief;
-    private final NiftyImage innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-	    "Interface/innerLifeRed.png", false);
-    private final NiftyImage innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-	    "Interface/innerLife.png", false);
-
-    private final int MAX_CHARACTER_IN_LINE = 80;
+    private final NiftyImage innerLifeBarRed;
+    private final NiftyImage innerLifeBarGreen;
     private String namePlayer;
-
-    public String getNamePlayer() {
-	return namePlayer;
-    }
-
-    public void setNamePlayer(String namePlayer) {
-	this.namePlayer = namePlayer;
-    }
 
     public NodeThief(Spatial model, boolean multiplayer) {
 	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
@@ -93,6 +81,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.multiplayer = multiplayer;
 	this.currentTime = (int) System.currentTimeMillis();
 	this.talkFrequence = 20;
+	innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+		"Interface/innerLifeRed.png", false);
+	this.innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+		"Interface/innerLife.png", false);
 	this.setViewed(true);
 	this.setupAudio();
 
@@ -482,74 +474,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
     }
 
-    public void printMessageChatBox(String namePlayer, String messageChatBox) {
-	final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("chatMultiPlayer", Chat.class);
-
-	String[] tmp = messageChatBox.split(" ");
-	String space = "";
-	String message = "";
-
-	for (int i = 0; i < namePlayer.length(); i++)
-	    space += " ";
-
-	space += "          ";
-
-	for (int i = 0; i < tmp.length; i++) {
-	    if (i == 0)
-		message += namePlayer + ": ";
-
-	    if ((message.length() + tmp[i].length()) <= MAX_CHARACTER_IN_LINE) {
-		message += tmp[i] + " ";
-
-	    } else {
-		chatController.receivedChatLine(message, null);
-		message = space + tmp[i] + " ";
-
-	    }
-
-	}
-	chatController.receivedChatLine(message, null);
-
-    }
-
-    // public void sendMessageChatBox()
-    // {
-    // final Chat chatController =
-    // GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("chatMultiPlayer",
-    // Chat.class);
-    // TextField text =
-    // GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",
-    // TextField.class);
-    // String[] tmp = text.getDisplayedText().split(" ");
-    // String space = "";
-    // String message = "";
-    //
-    // for (int i = 0; i < namePlayer.length(); i++)
-    // space+= " ";
-    // space+=" ";
-    //
-    //
-    // for (int i = 0; i< tmp.length; i++)
-    // {
-    // if(i == 0)
-    // message +=namePlayer+": ";
-    //
-    // if ((message.length()+tmp[i].length())<= MAX_CHARACTER_IN_LINE )
-    // { message += tmp[i]+" ";
-    //
-    // }
-    // else
-    // { chatController.receivedChatLine(message, null);
-    // message = space+tmp[i]+" ";
-    //
-    // }
-    //
-    // }
-    // chatController.receivedChatLine(message, null);
-    // GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
-    // }
-
     public ChaseCamera getCamera() {
 	return this.camera;
     }
@@ -573,4 +497,13 @@ public class NodeThief extends NodeCharacter implements Collition {
     public void setSinglePlayer(boolean isSinglePlayer) {
 	this.isSinglePlayer = isSinglePlayer;
     }
+
+    public String getNamePlayer() {
+	return namePlayer;
+    }
+
+    public void setNamePlayer(String namePlayer) {
+	this.namePlayer = namePlayer;
+    }
+
 }

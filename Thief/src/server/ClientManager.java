@@ -14,8 +14,8 @@ import java.net.URL;
 
 import com.jme3.math.Vector3f;
 
+import multiPlayer.format.FormatIP;
 import multiPlayer.protocols.CommunicationProtocol;
-import server.formatIP.Format;
 
 public class ClientManager extends Thread implements CommunicationProtocol {
 
@@ -49,9 +49,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String YESIHAVE = "yes, I have";
     private final static String DELETE = "delete this player ";
     private final static String PATH = "assets/MultiPlayer/";
-    private final static String SENDMESSAGE="Can I send a message?";
-    private final static String OKYOUSENDMESSAGE="OK, you can";
-    private final static String MESSAGERICEIVED="Thanks for your message";
+    private final static String SENDMESSAGE = "Can I send a message?";
+    private final static String OKYOUSENDMESSAGE = "OK, you can";
+    private final static String MESSAGERICEIVED = "Thanks for your message";
 
     public ClientManager(Server server, Socket socket) throws IOException {
 	this.server = server;
@@ -86,7 +86,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startPosition = new Vector3f(x, y, z);
 	    this.currentPosition = this.startPosition;
 	    System.out.println("startPosition :  " + startPosition);
-	    if (new Format(this.address).itIsCorrectFormat()) {
+	    if (new FormatIP(this.address).itIsCorrectFormat()) {
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
 		this.establishedConnection = true;
 		if (this.INPUT.readLine().equals(WHOISTHERE)) {
@@ -254,77 +254,34 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     }
 
-    @Override
-    public void run() {
+    public void riceivedMessage() {
 	try {
-	    this.startConnection();
-	    this.currentTime = (int) System.currentTimeMillis();
-	    while (this.establishedConnection) {
-		if ((int) System.currentTimeMillis() - this.currentTime >= 10000) {
-		    this.syncWithServer();
-		}
-		final String message = this.INPUT.readLine();
-		if (message.equals(SENDSTATE))
-		    this.communicationState();
-		if (message.equals(CLOSE))
-		    this.endConnection();
-		if(message.equals(SENDMESSAGE))
-			this.riceivedMessageForChatBox();
-		// if (message.equals(SENDPOSITION))
-		// this.syncWithServer();
+	    String player = this.INPUT.readLine();
+	    String message = this.INPUT.readLine();
+	    for (ClientManager manager : server.getPlayers()) {
+		manager.sendMessage(player, message);
 	    }
-	    this.socket.close();
-	    this.INPUT.close();
-	    this.OUTPUT.close();
-	    this.server.removePlayer(this);
+
 	} catch (IOException e) {
+	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
+
     }
 
-    public void riceivedMessageForChatBox() 
-    {
-    	
-    	try {
-//			this.OUTPUT.writeBytes(OKYOUSENDMESSAGE + "\n");
-//			System.out.println("CLIENTMANAGER: puoi inviare il messaggio");
-			String player = this.INPUT.readLine();			
-			String message = this.INPUT.readLine();
-			
-			this.OUTPUT.writeBytes(MESSAGERICEIVED + "\n");
-			
-			for(ClientManager manager : server.getPlayers() )
-			{
-				System.out.println(manager.getNameClient() );
-				manager.sendMessageForChatBox(player, message);
-			
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+    public void sendMessage(String player, String message) {
+	try {
+	    this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
+	    this.OUTPUT.writeBytes(player + "\n");
+	    this.OUTPUT.writeBytes(message + "\n");
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
 	}
-    
-    
-    public void sendMessageForChatBox(String player, String message)
-    {
-    	try {
-			this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
-//			if (this.INPUT.readLine().equals(OKYOUSENDMESSAGE))			
-				this.OUTPUT.writeBytes(player+"\n");
-				this.OUTPUT.writeBytes(message+"\n");
-//			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	
+
     }
 
-	public void notifyAllNewPlayer() {
+    public void notifyAllNewPlayer() {
 	for (ClientManager manager : this.server.getPlayers()) {
 	    manager.setNewPlayer(true);
 	    manager.communicationNewPlayer(this.address, this.nameModel, String.valueOf(this.startPosition.x),
@@ -357,6 +314,35 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
+	}
+    }
+
+    // TODO run
+    @Override
+    public void run() {
+	try {
+	    this.startConnection();
+	    this.currentTime = (int) System.currentTimeMillis();
+	    while (this.establishedConnection) {
+		if ((int) System.currentTimeMillis() - this.currentTime >= 10000) {
+		    this.syncWithServer();
+		}
+		final String message = this.INPUT.readLine();
+		if (message.equals(SENDSTATE))
+		    this.communicationState();
+		if (message.equals(CLOSE))
+		    this.endConnection();
+		if (message.equals(SENDMESSAGE))
+		    this.riceivedMessage();
+		// if (message.equals(SENDPOSITION))
+		// this.syncWithServer();
+	    }
+	    this.socket.close();
+	    this.INPUT.close();
+	    this.OUTPUT.close();
+	    this.server.removePlayer(this);
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
     }
 

@@ -1,17 +1,17 @@
-package server.formatIP;
+package multiPlayer.format;
 
 /**
  * 
  * this class check if string is a ip
  *
  */
-public class Format {
+public class FormatIP {
 
     /**string to check*/
     private final String ipAddress;
 
     /**builder*/
-    public Format(String ipAddress) {
+    public FormatIP(String ipAddress) {
 	this.ipAddress = ipAddress;
     }
 

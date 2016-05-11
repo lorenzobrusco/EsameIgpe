@@ -688,8 +688,6 @@ public class EditorTerrain implements ScreenController {
 		    || this.currentSpatial.getName().contains("House")
 		    || this.currentSpatial.getName().contains("Castle"))
 		this.currentSpatial.rotate(0.0f, event.getValue(), 0.0f);
-	    else if (!this.currentSpatial.getName().contains("Tree"))
-		this.currentSpatial.rotate(0.0f, 0.0f, event.getValue());
 	}
     }
 
