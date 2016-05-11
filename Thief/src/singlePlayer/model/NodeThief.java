@@ -1,9 +1,5 @@
 package singlePlayer.model;
 
-import java.io.IOException;
-
-import javax.swing.plaf.synth.SynthSpinnerUI;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -22,34 +18,57 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import de.lessvoid.nifty.builder.ImageBuilder;
-import de.lessvoid.nifty.controls.Chat;
-import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.SizeValue;
 import multiPlayer.NodeEnemyPlayers;
 import singlePlayer.Collition;
-import singlePlayer.SinglePlayer;
 import singlePlayer.Sound;
+
+/**
+ * 
+ * this class is main character
+ *
+ */
 
 public class NodeThief extends NodeCharacter implements Collition {
 
+    /** camera attach to main character */
     private ChaseCamera camera;
+    /** jmonkey's camera */
     private Camera cameraDirection;
+    // TODO
     private final String bonfire = "BonFire";
+    /** it's true main character is running */
     private boolean isRun;
+    /** check if is single player */
     private boolean isSinglePlayer;
-    private boolean changeAttack;
-    private boolean waitAnimation;
+    /** check if is multiplayer */
     private boolean multiplayer;
+    /** swicth attach animation */
+    private boolean changeAttack;
+    /** wait that animation is ends */
+    private boolean waitAnimation;
+    // TODO
     private boolean chatboxIsEnable;
-    private int controlRender;
-    private final int RENDER = 25;
-    private final float SPEED = 15;
-    private final float BONFIREDISTANCE = 10f;
-    private int sizeLifeBar = 17;
+    /** distace to rendering */
+    private static final int RENDER = 25;
+    /** speed main character */
+    private static final float SPEED = 15;
+    /** minimum distace to active bonfire */
+    private static final float BONFIREDISTANCE = 10f;
+    /** length lifebar */
+    private static final int SIZELIFEBAR = 17;
+    /** view direction */
     private Vector3f viewDirection = new Vector3f(0, 0, 1);
+    /** minimum threshold for change color to lifebar */
+    private int lifebarThreshold;
+
+    private Element lifeBarThief;
+    private Element borderLifeBarThief;
+
+    /** sounds */
     private Sound walkingOnGrassSound;
     private Sound swordSound;
     private Sound bonfireSound;
@@ -62,36 +81,31 @@ public class NodeThief extends NodeCharacter implements Collition {
     private Sound voice7;
     private Sound enemyWin;
     private Sound enemyView;
-    private int currentTime;
-    private int talkFrequence;
-    private int lifeWanted;
-    private Element lifeBarThief;
-    private Element borderLifeBarThief;
-    private final NiftyImage innerLifeBarRed;
-    private final NiftyImage innerLifeBarGreen;
-    private String namePlayer;
+    /***/
 
+    // TODO davide
+    /** timer to speech */
+    private int currentTime;
+    /** minimum time to speech */
+    private int talkFrequence;
+
+    /** builder */
     public NodeThief(Spatial model, boolean multiplayer) {
 	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
-	this.lifeWanted = (life * 40) / 100;
-	this.controlRender = RENDER;
+	this.lifebarThreshold = (this.life * 40) / 100;
 	this.isRun = false;
 	this.waitAnimation = false;
 	this.chatboxIsEnable = false;
 	this.multiplayer = multiplayer;
 	this.currentTime = (int) System.currentTimeMillis();
 	this.talkFrequence = 20;
-	innerLifeBarRed = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/innerLifeRed.png", false);
-	this.innerLifeBarGreen = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/innerLife.png", false);
 	this.setViewed(true);
 	this.setupAudio();
 
     }
 
+    /** this method set camera */
     public void setCam(Camera cam) {
-
 	this.cameraDirection = cam;
 	this.camera = new ChaseCamera(cam, this.spatial, GameManager.getIstance().getApplication().getInputManager());
 	this.camera.setMinVerticalRotation(0.2f);
@@ -100,41 +114,28 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     }
 
+    /** this method stop main character */
     public void stop() {
 	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	// this.walkingOnGrassSound.stopSound();
-	// TODO test
+	// this.walkingOnGrassSound.stopSound(); // TODO
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
     }
 
+    /** this method is invoked to run main character */
     public void run() {
 	this.resetCurrentTime();
-	// this.walkingOnGrassSound.playSound();
-	// TODO test
+	// this.walkingOnGrassSound.playSound();// TODO test
 	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 	vector3f.y = -2f;
 	this.characterControl.setWalkDirection(vector3f);
-	this.controlRender++;
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
     }
 
-    @Override
-    public void death() {
-	if (this.alive) {
-	    super.death();
-	    this.resetCurrentTime();
-	    this.lifeBarThief.setVisible(false);
-	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-
-	    // this.walkingOnGrassSound.stopSound();
-	    // TODO test
-	}
-    }
-
+    /** this method is called when main character is near bonfire */
     public void sitNearToBonFire() {
 	this.resetCurrentTime();
 	if (this.getLocalTranslation()
@@ -142,108 +143,42 @@ public class NodeThief extends NodeCharacter implements Collition {
 		&& this.isSinglePlayer) {
 	    this.resetAll();
 	    this.resetProgressBar();
-	    // this.bonfireSound.playSound();
+	    // this.bonfireSound.playSound(); //TODO
 	    this.channel.setAnim("BonFire");
 	    this.channel.setLoopMode(LoopMode.DontLoop);
 	    this.channel.setSpeed(0.7f);
 	    this.waitAnimation = true;
-
 	}
     }
 
-    @Override
-    public void checkCollition() {
-	for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
-	    CollisionResults collisionResult = new CollisionResults();
-	    BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
-	    enemy.collideWith(box, collisionResult);
-	    CollisionResult closest = collisionResult.getClosestCollision();
-	    if (closest != null) {
-		enemy.isStricken(this.getDAMAGE());
-		((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
-		if (enemy.isDead()) {
-		    // this.enemyWin.playSound();//TODO test
-		    ((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
-		    ((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
-		}
-		if (enemy instanceof NodeEnemyPlayers) {
-		    System.out.println(((NodeEnemyPlayers) enemy).getKeyModel());
-		}
-	    }
-	}
-    }
-
+    /** this method reset current time */
     public void resetCurrentTime() {
 	this.currentTime = (int) System.currentTimeMillis();
     }
 
-    @Override
-    public void startAttack() {
-	this.resetCurrentTime();
-	super.startAttack();
-	this.checkCollition();
-	// this.playScream();//TODO test
-
-    }
-
+    /** this method, if is multiplayer, notify update */
     public void notifyUpdate(boolean attack) {
-
 	if (this.multiplayer)
 	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
 		    characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation());
 
     }
 
-    @Override
-    public void setLifeBar(Element lifeBar, Element border, String nameModel) {
-	this.lifeBarThief = lifeBar;
-	this.borderLifeBarThief = border;
-	NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/MultiPlayer/borderLifeCharacters/borderLife" + nameModel + ".png", false);
-	this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
-	this.borderLifeBarThief.getParent().layoutElements();
-
-	resetProgressBar();
-
-    }
-
-    //
-    @Override
-    public void setDamageLifeBar(int damage) {
-
-	int value = (life * sizeLifeBar) / STARTLIFE;
-	this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
-	this.lifeBarThief.getParent().layoutElements();
-
-	if (life <= lifeWanted) {
-
-	    this.lifeBarThief.getRenderer(ImageRenderer.class).setImage(innerLifeBarRed);
-	    this.lifeBarThief.getParent().layoutElements();
-	}
-
-	if (life <= 0)
-	    this.lifeBarThief.setVisible(false);
-
-    }
-
-    // GENERA LA BARRA DELLA VITA
+    /** this method reset lifebar */
     public void resetProgressBar() {
-
 	if (this.lifeBarThief != null)
 	    this.lifeBarThief.markForRemoval();
-
 	final ImageBuilder builder = new ImageBuilder() {
 	    {
 		filename("Interface/innerLife.png");
 		x("12%");
 		y("87%");
-		width(NodeThief.this.sizeLifeBar + "%");
+		width(NodeThief.this.SIZELIFEBAR + "%");
 		height("2%");
 		imageMode("resize:7,2,7,7,7,2,7,2,7,2,7,7");
 	    }
 	};
-
-	Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+	final Element layer = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 		.findElementByName("panelProgressBar");
 	this.lifeBarThief = builder.build(GameManager.getIstance().getNifty(),
 		GameManager.getIstance().getNifty().getCurrentScreen(), layer);
@@ -251,6 +186,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     }
 
+    // TODO sound
     private void saySomething() {
 	// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 ==
 	// this.talkFrequence
@@ -317,48 +253,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	// audio per ogni personaggio
     }
 
-    @Override
-    protected void setupAudio() {
-	if (!GameManager.getIstance().isEditor()) {
-	    // this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass",
-	    // false, false, false, 0.09f, false);
-	    // this.swordSound = new Sound(this, "Sword", false, false, false,
-	    // 0.1f, false);
-	    // this.deathSound = new Sound(this, "Death", false, false, false,
-	    // 1.0f, false);
-	    // this.bonfireSound = new Sound(this, "Bonfire", false, false,
-	    // false, 1.0f, false);
-	    // this.scream1 = new Sound(this, "Scream1", false, false, false,
-	    // 0.5f, false);
-	    // this.scream2 = new Sound(this, "Scream2", false, false, false,
-	    // 0.5f, false);
-	    // this.scream3 = new Sound(this, "Scream3", false, false, false,
-	    // 0.5f, false);
-	    // this.scream4 = new Sound(this, "Scream4", false, false, false,
-	    // 0.5f, false);
-	    // this.voice1 = new Sound(this, "Voice1", false, false, false,
-	    // 1.0f, false);
-	    // this.voice2 = new Sound(this, "Voice2", false, false, false,
-	    // 1.0f, false);
-	    // this.voice3 = new Sound(this, "Voice3", false, false, false,
-	    // 1.0f, false);
-	    // this.voice4 = new Sound(this, "Voice4", false, false, false,
-	    // 1.0f, false);
-	    // this.voice5 = new Sound(this, "Voice5", false, false, false,
-	    // 1.0f, false);
-	    // this.voice6 = new Sound(this, "Voice6", false, false, false,
-	    // 1.0f, false);
-	    // this.voice7 = new Sound(this, "Voice7", false, false, false,
-	    // 1.0f, false);
-	    // this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
-	    // 1.0f, false);
-	    // this.enemyView = new Sound(this, "EnemyView", false, false,
-	    // false, 1.0f, false);
-	    // TODO tenere commentati fin quando non saranno presi tutti i file
-	    // audio per ogni personaggio
-	}
-    }
-
+    /** check which button is pressed */
     public AnalogListener analogListener = new AnalogListener() {
 	public void onAnalog(String name, float value, float tpf) {
 	    if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
@@ -382,6 +277,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
     };
 
+    /** check which button is pressed */
     public ActionListener actionListener = new ActionListener() {
 	public void onAction(String name, boolean pressed, float value) {
 	    if ((name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
@@ -452,6 +348,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
     };
 
+    /** jmonkey's method */
     @Override
     public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
 
@@ -474,36 +371,153 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
     }
 
+    /** this methos is called when main character is death */
+    @Override
+    public void death() {
+	if (this.alive) {
+	    super.death();
+	    this.resetCurrentTime();
+	    this.lifeBarThief.setVisible(false);
+	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+	    // this.walkingOnGrassSound.stopSound(); // TODO test
+	}
+    }
+
+    /** this method check if there is a collition with enemies */
+    @Override
+    public void checkCollition() {
+	for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+	    final CollisionResults collisionResult = new CollisionResults();
+	    final BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
+	    enemy.collideWith(box, collisionResult);
+	    final CollisionResult closest = collisionResult.getClosestCollision();
+	    if (closest != null) {
+		enemy.isStricken(this.getDAMAGE());
+		if (enemy instanceof NodeEnemy)
+		    ((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
+		else if (enemy instanceof NodeEnemyPlayers)
+		    ((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
+		// if (enemy.isDead()) {
+		// // this.enemyWin.playSound();//TODO test
+		// ((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
+		// ((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
+		// if (enemy instanceof NodeEnemyPlayers) {
+		// // TODO take point
+		// }
+		// }
+	    }
+	}
+    }
+
+    /** this method start attack */
+    @Override
+    public void startAttack() {
+	this.resetCurrentTime();
+	super.startAttack();
+	this.checkCollition();
+	// this.playScream();//TODO test
+
+    }
+
+    /** this method is called if lifebar isn't create */
+    @Override
+    public void setLifeBar(Element lifeBar, Element border, String nameModel) {
+	this.lifeBarThief = lifeBar;
+	this.borderLifeBarThief = border;
+	final NiftyImage imageLifeBarThief = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+		"Interface/MultiPlayer/borderLifeCharacters/borderLife" + nameModel + ".png", false);
+	this.borderLifeBarThief.getRenderer(ImageRenderer.class).setImage(imageLifeBarThief);
+	this.borderLifeBarThief.getParent().layoutElements();
+	this.resetProgressBar();
+
+    }
+
+    /** this method set lifebar's dimension */
+    @Override
+    public void setDamageLifeBar(int damage) {
+
+	final int value = (life * SIZELIFEBAR) / STARTLIFE;
+	this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
+	this.lifeBarThief.getParent().layoutElements();
+	if (life <= lifebarThreshold) {
+	    this.lifeBarThief.getRenderer(ImageRenderer.class).setImage(GameManager.getIstance().getNifty()
+		    .getRenderEngine().createImage(null, "Interface/innerLifeRed.png", false));
+	    this.lifeBarThief.getParent().layoutElements();
+	}
+	if (life <= 0)
+	    this.lifeBarThief.setVisible(false);
+    }
+
+    /** this method setip sounds */
+    @Override
+    protected void setupAudio() {
+	if (!GameManager.getIstance().isEditor()) {
+	    // this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass",
+	    // false, false, false, 0.09f, false);
+	    // this.swordSound = new Sound(this, "Sword", false, false, false,
+	    // 0.1f, false);
+	    // this.deathSound = new Sound(this, "Death", false, false, false,
+	    // 1.0f, false);
+	    // this.bonfireSound = new Sound(this, "Bonfire", false, false,
+	    // false, 1.0f, false);
+	    // this.scream1 = new Sound(this, "Scream1", false, false, false,
+	    // 0.5f, false);
+	    // this.scream2 = new Sound(this, "Scream2", false, false, false,
+	    // 0.5f, false);
+	    // this.scream3 = new Sound(this, "Scream3", false, false, false,
+	    // 0.5f, false);
+	    // this.scream4 = new Sound(this, "Scream4", false, false, false,
+	    // 0.5f, false);
+	    // this.voice1 = new Sound(this, "Voice1", false, false, false,
+	    // 1.0f, false);
+	    // this.voice2 = new Sound(this, "Voice2", false, false, false,
+	    // 1.0f, false);
+	    // this.voice3 = new Sound(this, "Voice3", false, false, false,
+	    // 1.0f, false);
+	    // this.voice4 = new Sound(this, "Voice4", false, false, false,
+	    // 1.0f, false);
+	    // this.voice5 = new Sound(this, "Voice5", false, false, false,
+	    // 1.0f, false);
+	    // this.voice6 = new Sound(this, "Voice6", false, false, false,
+	    // 1.0f, false);
+	    // this.voice7 = new Sound(this, "Voice7", false, false, false,
+	    // 1.0f, false);
+	    // this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
+	    // 1.0f, false);
+	    // this.enemyView = new Sound(this, "EnemyView", false, false,
+	    // false, 1.0f, false);
+	    // TODO tenere commentati fin quando non saranno presi tutti i file
+	    // audio per ogni personaggio
+	}
+    }
+
+    /** this method get chase camera */
     public ChaseCamera getCamera() {
 	return this.camera;
     }
 
+    /** this method get camera */
     public Camera getCameraDir() {
 	return this.cameraDirection;
     }
 
+    /** this method get controll */
     public BetterCharacterControl getControl() {
 	return this.characterControl;
     }
 
+    /** this method get isRun */
     public boolean isRun() {
 	return this.isRun;
     }
 
+    /** this method get isSinglePlayer */
     public boolean isSinglePlayer() {
 	return isSinglePlayer;
     }
 
+    /** this method set singlePlayer */
     public void setSinglePlayer(boolean isSinglePlayer) {
 	this.isSinglePlayer = isSinglePlayer;
     }
-
-    public String getNamePlayer() {
-	return namePlayer;
-    }
-
-    public void setNamePlayer(String namePlayer) {
-	this.namePlayer = namePlayer;
-    }
-
 }

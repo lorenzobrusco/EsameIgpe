@@ -23,15 +23,23 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
-import de.lessvoid.nifty.controls.Chat;
+import multiPlayer.format.FormatFloat;
 import multiPlayer.format.FormatStringChat;
+import multiPlayer.format.StringBuilder;
 import multiPlayer.protocols.CommunicationProtocol;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeThief;
 
+/**
+ * 
+ * This class represents the Player and communicates with the Server
+ *
+ */
 public class Client extends Thread implements CommunicationProtocol {
-
+    /** port communication */
     private final static int PORT = 8080;
+
+    /** protocols communications with the Server */
     private final static String KNOCK = "knock knock";
     private final static String WHOAREYOU = "who are you?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
@@ -51,10 +59,9 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String DELETE = "delete this player ";
     private final static String PATH = "assets/MultiPlayer/";
     private final static String PATHMODEL = "Models/Characters/";
-
     private final static String SENDMESSAGE = "Can I send a message?";
-    private final static String OKYOUSENDMESSAGE = "OK, you can";
 
+    /** Keyboard Commands */
     private final static String debug = "debug";
     private final static String mouse = "mouse";
     private final static String chatBox = "chatBox";
@@ -64,20 +71,34 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String run = "Run";
     private final static String rotateClockwise = "rotateClockwise";
     private final static String rotateCounterClockwise = "rotateCounterClockwise";
+
+    /** Max file Size */
     public final static int FILE_SIZE = 7134962;
+    /** Life Number Player */
     private final static int LIFENUMBER = 100;
+    /** damage inflicted on the enemy */
     private final static int DAMAGE = 5;
+    /** Player IP Address */
     private final String IAM;
+    /** Player Name */
     private final String namePlayer;
+    /** name of the player character */
     private final String nameModel;
+    /** name of the Terrain */
     private String nameTerrain;
+    /** Camera Player */
+    private final Camera cam;
+    /** Socket of communication with Server */
     private final Socket socket;
+    /** Reader from Server */
     private final BufferedReader INPUT;
+    /** Writer for Server */
     private final DataOutputStream OUTPUT;
+    /** connection stabilished with server */
     private boolean establishedConnection;
+    // TODO NEXT
     private boolean next;
     private Queue<ModelState> states;
-    private final Camera cam;
 
     public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
 	    throws UnknownHostException, IOException {
@@ -93,6 +114,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.IAM = this.ipAddress();
     }
 
+    /** Client connect with Server */
     @Override
     public void startConnection() {
 	try {
@@ -140,6 +162,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
+    /** The player closed connection with server */
     @Override
     public void endConnection() {
 	try {
@@ -153,33 +176,37 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
+    /** the player communicates his position */
     @Override
     public void communicationState() {
 
 	try {
 
+	    //TODO 
 	    ModelState stateModel = this.states.poll();
+	    String line = new StringBuilder().builderString(stateModel.getWalk(), stateModel.getView(), stateModel.getLocation(),
+		    stateModel.getLife(), stateModel.isAttack(), this.IAM, this.nameModel);
+	
+	    this.OUTPUT.writeBytes(line + "\n");
+//	    this.OUTPUT.writeBytes(this.nameModel + "\n");
+//
+//	    this.OUTPUT.writeBytes(stateModel.getWalk().x + "\n");
+//	    this.OUTPUT.writeBytes(stateModel.getWalk().y + "\n");
+//	    this.OUTPUT.writeBytes(stateModel.getWalk().z + "\n");
+//
+//	    this.OUTPUT.writeBytes(stateModel.getView().x + "\n");
+//	    this.OUTPUT.writeBytes(stateModel.getView().y + "\n");
+//	    this.OUTPUT.writeBytes(stateModel.getView().z + "\n");
+//
+//	    this.OUTPUT.writeBytes(stateModel.getLocation().x + "\n");
+//	    this.OUTPUT.writeBytes(stateModel.getLocation().y + "\n");
+//	    this.OUTPUT.writeBytes(stateModel.getLocation().z + "\n");
+//
+//	    this.OUTPUT.writeBytes(stateModel.getLife() + "\n");
+//
+//	    this.OUTPUT.writeBytes(stateModel.isAttack() + "\n");
 
-	    this.OUTPUT.writeBytes(this.IAM + "\n");
-	    this.OUTPUT.writeBytes(this.nameModel + "\n");
-
-	    this.OUTPUT.writeBytes(stateModel.getWalk().x + "\n");
-	    this.OUTPUT.writeBytes(stateModel.getWalk().y + "\n");
-	    this.OUTPUT.writeBytes(stateModel.getWalk().z + "\n");
-
-	    this.OUTPUT.writeBytes(stateModel.getView().x + "\n");
-	    this.OUTPUT.writeBytes(stateModel.getView().y + "\n");
-	    this.OUTPUT.writeBytes(stateModel.getView().z + "\n");
-
-	    this.OUTPUT.writeBytes(stateModel.getLocation().x + "\n");
-	    this.OUTPUT.writeBytes(stateModel.getLocation().y + "\n");
-	    this.OUTPUT.writeBytes(stateModel.getLocation().z + "\n");
-
-	    this.OUTPUT.writeBytes(stateModel.getLife() + "\n");
-
-	    this.OUTPUT.writeBytes(stateModel.isAttack() + "\n");
-
-	    this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
+//	    this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
 
 	    this.next = true;
 
@@ -189,6 +216,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
+    /** This Method communicates an Player Updates */
     public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location) {
 	try {
 	    if (next) {
@@ -201,6 +229,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
+    /** This Method communicates ana player has left the multyplayer */
     public void communicateExitPlayer() {
 	try {
 	    String player = INPUT.readLine();
@@ -211,16 +240,17 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
+    /** This Method Updates state of a Player */
     public void statePlayer() {
 	String player = null;
 	try {
 	    player = this.INPUT.readLine();
 
-	    final Vector3f walk = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
-		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
+	    final Vector3f walk = new FormatFloat().formatVector(this.INPUT.readLine(), this.INPUT.readLine(),
+		    this.INPUT.readLine());
 
-	    final Vector3f view = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
-		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
+	    final Vector3f view = new FormatFloat().formatVector(this.INPUT.readLine(), this.INPUT.readLine(),
+		    this.INPUT.readLine());
 
 	    final int life = Integer.parseInt(this.INPUT.readLine());
 
@@ -239,44 +269,15 @@ public class Client extends Thread implements CommunicationProtocol {
 	} catch (IOException e) {
 	    System.out.println("eccezzioni nel statePlayer");
 	} catch (NumberFormatException ex) {
-	    System.out.println("eccezzioni nel statePlayer");
+	    System.out.println("eccezzioni formato float statePlayer");
 	}
     }
 
-    // TODO inizio sincronizzazione col server
-    // public void syncWithServer() {
-    //
-    // try {
-    // System.out.println("send");
-    // this.OUTPUT.writeBytes(SENDPOSITION + "\n");
-    // this.OUTPUT.writeBytes(this.IAM + "\n");
-    // this.OUTPUT.writeBytes(this.nameModel + "\n");
-    // this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x
-    // + "\n");
-    // this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y
-    // + "\n");
-    // this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z
-    // + "\n");
-    //
-    // System.out.println("invio i miei dati " +
-    // GameManager.getIstance().getNodeThief().getLocalTranslation().x
-    // + GameManager.getIstance().getNodeThief().getLocalTranslation().y
-    // + GameManager.getIstance().getNodeThief().getLocalTranslation().z);
-    // } catch (IOException e) {
-    // // TODO
-    // System.out.println("eccezzioni nel syncWithServer");
-    // }
-    // }
-
     public void syncPlayers() {
-
 	try {
-
 	    final String player = this.INPUT.readLine();
-
-	    final Vector3f localPlayer = new Vector3f(Float.parseFloat(this.INPUT.readLine()),
-		    Float.parseFloat(this.INPUT.readLine()), Float.parseFloat(this.INPUT.readLine()));
-
+	    final Vector3f localPlayer = new FormatFloat().formatVector(this.INPUT.readLine(), this.INPUT.readLine(),
+		    this.INPUT.readLine());
 	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
@@ -286,7 +287,7 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     // TODO fine sincronizzazione col server
-
+    /** This Method return Player IP address */
     @Override
     public String ipAddress() {
 	URL url;
@@ -304,6 +305,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
+    /** This Method communicates that there is a new player */
     public void communicationNewPlayer() {
 	try {
 	    this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
@@ -313,6 +315,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
+    // TODO FileRecieved
     public void fileRecieved(File file) {
 	FileOutputStream fileOutputStream = null;
 	BufferedOutputStream bufferedOutputStream = null;
@@ -345,6 +348,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
+    /**
+     * This Method set the Start Position for a Player where there aren't enemy
+     * or obstacles
+     */
     public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
 	spatial.setLocalTranslation(new Vector3f(30, 0, 30));
@@ -356,6 +363,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.setKey();
     }
 
+    /** This Method add a Player and his Model in the Game's Terrain */
     public void addNewPlayers(String name, String model, String x, String y, String z) {
 
 	name += model;
@@ -366,7 +374,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), vector3f, LIFENUMBER,
 		DAMAGE, name);
-	players.addCharacterControll();
+	players.addCharacterControl();
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
 	players.addPhysicsSpace();
@@ -377,6 +385,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
     }
 
+    /** This Method remove a Model in the Game's Terrain */
     public void removeModel(String key) {
 
 	GameManager.getIstance()
@@ -386,6 +395,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
+    /** This method set Keyboard Command for MultiPlayer */
     public void setKey() {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(run, new KeyTrigger(KeyInput.KEY_W));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(attack1,
@@ -406,10 +416,11 @@ public class Client extends Thread implements CommunicationProtocol {
 		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }
 
+    /** This method Sends a Message for Player's ChatBox */
     public void sendMessage(String displayedText) {
 	try {
 	    this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
-	    this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getNamePlayer() + "\n");
+	    this.OUTPUT.writeBytes(this.namePlayer + "\n");
 	    this.OUTPUT.writeBytes(displayedText + "\n");
 
 	} catch (IOException e) {
@@ -418,20 +429,22 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
+    /** This method Riceived a Message from Player's ChatBox and Print */
     public void riceivedMessage() {
 
 	try {
 	    final String namePlayer = INPUT.readLine();
 	    final String messageChatBox = INPUT.readLine();
 	    new FormatStringChat(namePlayer).printMessageChatBox(messageChatBox);
-	    
+
 	} catch (IOException e) {
-	    //TODO catch
+	    // TODO catch
 	    e.printStackTrace();
 	}
 
     }
 
+    /** Thread's Method */
     @Override
     public void run() {
 

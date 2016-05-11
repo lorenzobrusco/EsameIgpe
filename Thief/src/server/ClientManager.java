@@ -15,6 +15,7 @@ import java.net.URL;
 import com.jme3.math.Vector3f;
 
 import multiPlayer.format.FormatIP;
+import multiPlayer.format.StringBuilder;
 import multiPlayer.protocols.CommunicationProtocol;
 
 public class ClientManager extends Thread implements CommunicationProtocol {
@@ -131,27 +132,26 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
-	    String address = this.INPUT.readLine();
-	    address += this.INPUT.readLine();
+	    String line = this.INPUT.readLine();
+	  
+	    final String key = new StringBuilder().builderKeyPlayer(line);
 
-	    final Vector3f walkdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
-		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
+	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
 
-	    final Vector3f viewdirection = new Vector3f(Float.parseFloat(INPUT.readLine()),
-		    Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()));
+	    final Vector3f viewdirection = new StringBuilder().builderView(line);
 
-	    this.currentPosition = new Vector3f(Float.parseFloat(INPUT.readLine()), Float.parseFloat(INPUT.readLine()),
-		    Float.parseFloat(INPUT.readLine()));
+	    this.currentPosition = new StringBuilder().builderPosition(line);
 
-	    final int life = Integer.parseInt(INPUT.readLine());
+	    final int life = new StringBuilder().builderLife(line);
 
-	    final boolean attack = Boolean.parseBoolean(INPUT.readLine());
+	    final boolean attack = new StringBuilder().builderAttack(line);
+
 	    System.out.println("CMS: " + address + " --- " + walkdirection + " ------ " + viewdirection);
-	    if (INPUT.readLine().equals(ENDSENDSTATE)) {
-		for (ClientManager manager : this.server.getPlayers()) {
-		    manager.statePlayer(address, walkdirection, viewdirection, life, attack);
-		}
+
+	    for (ClientManager manager : this.server.getPlayers()) {
+		manager.statePlayer(key, walkdirection, viewdirection, life, attack);
 	    }
+
 	    ;// TODO metodo che comunica a tutti lo spostamento
 	} catch (IOException e) {
 	    System.out.println("client : connection");

@@ -56,7 +56,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private Nifty nifty;
     /** sound */
     private Sound menuSound;
-
     /** index */
     private int indexCharacter;
     /** characters list */
@@ -165,7 +164,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	GameManager.getIstance().setModelGame(pathMultiPlayer);
 	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, ipAddress, namePlayer,
 		((ArrayList<String>) characters).get(indexCharacter));
-	GameManager.getIstance().getNodeThief().setNamePlayer(namePlayer);
 	this.initKeys();
 	this.menuSound.stopSound();
     }
@@ -400,21 +398,21 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-	AppSettings gameSettings = new AppSettings(false);
-	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-	gameSettings.setFullscreen(true);
-	gameSettings.setVSync(true);
-	gameSettings.setTitle("Thief");
-	gameSettings.setUseInput(true);
-	gameSettings.setFrameRate(500);
-	gameSettings.setSamples(0);
-	gameSettings.setRenderer("LWJGL-OpenGL2");
-
-	app.setSettings(gameSettings);
-	app.setShowSettings(false);
-	app.setDisplayFps(false);
-	app.setDisplayStatView(false);
+//	AppSettings gameSettings = new AppSettings(false);
+//	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+//		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+//	gameSettings.setFullscreen(true);
+//	gameSettings.setVSync(true);
+//	gameSettings.setTitle("Thief");
+//	gameSettings.setUseInput(true);
+//	gameSettings.setFrameRate(500);
+//	gameSettings.setSamples(0);
+//	gameSettings.setRenderer("LWJGL-OpenGL2");
+//
+//	app.setSettings(gameSettings);
+//	app.setShowSettings(false);
+//	app.setDisplayFps(false);
+//	app.setDisplayStatView(false);
 
 	app.start();
 

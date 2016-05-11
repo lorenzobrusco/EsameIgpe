@@ -44,13 +44,7 @@ import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
 
-/*
- * 	Questa classe, oltre ad essere un singleton
- * 	viene utilizzata per gestire, memorizzare, 
- * 	controllare tutto ci� che avviene in fasi di
- * 	gioco
- * 
- */
+
 public class GameManager {
 
 	private static GameManager manager;
@@ -93,10 +87,7 @@ public class GameManager {
 
 	}
 
-	/*
-	 * Questo metodo imposta il SimpleApplication in modo da poter caricare i
-	 * modelli, le texture, e quant'altro da qualsiasi parte del codice
-	 */
+	
 	public void setParams(SimpleApplication application) {
 		this.loadTerrain = new LoadTerrain();
 		this.application = application;		
@@ -104,10 +95,7 @@ public class GameManager {
 		
 	}
 
-	/*
-	 * Questo metodo imposta il nodo Terreno in modo da poter attaccare e
-	 * staccare un modello da qualsiasi parte del gioco
-	 */
+	
 	public void setTerrain(Node terrain) {
 		this.terrain = terrain;
 		this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
@@ -119,25 +107,14 @@ public class GameManager {
 		this.bulletAppState = appState;
 	}
 
-	/*
-	 * Metodo necessario per richiamare il gameManager da qualsiasi parte del
-	 * codice
-	 */
+	
 	public static GameManager getIstance() {
 		if (manager == null)
 			manager = new GameManager();
 		return manager;
 	}
 
-	/*
-	 * Metodo deprecato
-	 */
 	
-
-	/*
-	 * Cre un pointLight in una data posizione e lo aggiunge ad una collezioni
-	 * di pointLight
-	 */
 	public void addPointShadow(Vector3f localTranslation) {
 
 		PointLight light = new PointLight();
@@ -148,18 +125,14 @@ public class GameManager {
 
 	}
 
-	/*
-	 * Vengo attaccati i pointLight al terreno
-	 */
+	
 	public void addPointLightToScene() {
 		for (PointLight light : this.lights) {
 			terrain.addLight(light);
 		}
 	}
 
-	/*
-	 * Viene aggiunta la fisica al gioco
-	 */
+	
 	public synchronized void addPhysics() {
 		for (NodeModel model : spatial) {
 
@@ -172,15 +145,13 @@ public class GameManager {
 				RigidBodyControl body = new RigidBodyControl(collisionShape, 0);
 				model.addControl(body);
 			} else {
-				model.addCharacterControll();
+				model.addCharacterControl();
 			}
 			bulletAppState.getPhysicsSpace().add(model);
 		}
 	}
 
-	/*
-	 * Lancia l'intelligenza artificiale del nemico nel singlePlayer
-	 */
+	
 	public void startEnemiesIntelligence() {
 		for (NodeCharacter enemy : this.enemies) {
 			((NodeEnemy) enemy).runIntelligence();
@@ -188,10 +159,7 @@ public class GameManager {
 		}
 	}
 
-	/*
-	 * Vengo aggiunti i modeli da renderizzare nel collezione
-	 * 
-	 */
+	
 	public boolean addModelRender(NodeModel model) {
 		if (this.nodeRender.contains(model))
 			return false;
@@ -199,10 +167,7 @@ public class GameManager {
 		return true;
 	}
 
-	/*
-	 * Controlla se il modello esiste, e se esiste lo toglie logicamente dal
-	 * gioco
-	 */
+	
 	public void removeModel(String name) {
 		for (NodeModel model : this.spatial) {
 			if (model.getName().equals(name)) {
@@ -214,19 +179,19 @@ public class GameManager {
 
 	// TODO Daviede
 
-	public void makeSecondLayer() {
-		for (Spatial model : this.getModels()) {
-			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
-				this.makeModelPerimeter(model);
-				System.out
-						.println(model.getName() + " " + "xExtent " + ((BoundingBox) model.getWorldBound()).getXExtent()
-								+ ", " + "zExtent " + ((BoundingBox) model.getWorldBound()).getZExtent());
-				this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
-						+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
-								+ (int) this.worldZExtent)] = true;
-			}
-		}
-	}
+//	public void makeSecondLayer() {
+//		for (Spatial model : this.getModels()) {
+//			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
+//				this.makeModelPerimeter(model);
+//				System.out
+//						.println(model.getName() + " " + "xExtent " + ((BoundingBox) model.getWorldBound()).getXExtent()
+//								+ ", " + "zExtent " + ((BoundingBox) model.getWorldBound()).getZExtent());
+//				this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
+//						+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
+//								+ (int) this.worldZExtent)] = true;
+//			}
+//		}
+//	}
 
 	public void printSecondLayer() {
 		for (int x = 0; x < this.secondLayer.length; x++) {
@@ -237,27 +202,27 @@ public class GameManager {
 		}
 	}
 
-	private void makeModelPerimeter(Spatial model) {
-
-		BoundingBox boundingBox = new BoundingBox();
-		boundingBox.setXExtent((((BoundingBox) model.getWorldBound()).getXExtent()) + 2);
-		boundingBox.setZExtent((((BoundingBox) model.getWorldBound()).getZExtent()) + 2);
-
-		final WireBox wireBox2 = new WireBox();
-		wireBox2.fromBoundingBox(boundingBox);
-		wireBox2.setLineWidth(0f);
-		final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
-
-		final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
-				"Common/MatDefs/Misc/Unshaded.j3md");
-		boxAttach.setMaterial(material);
-
-		material.setColor("Color", ColorRGBA.Red);
-		((Node) model).attachChild(boxAttach);
-		boundingBox.setCenter(boxAttach.getLocalTranslation());
-
-	}
-	
+//	private void makeModelPerimeter(Spatial model) {
+//
+//		BoundingBox boundingBox = new BoundingBox();
+//		boundingBox.setXExtent((((BoundingBox) model.getWorldBound()).getXExtent()) + 2);
+//		boundingBox.setZExtent((((BoundingBox) model.getWorldBound()).getZExtent()) + 2);
+//
+//		final WireBox wireBox2 = new WireBox();
+//		wireBox2.fromBoundingBox(boundingBox);
+//		wireBox2.setLineWidth(0f);
+//		final Geometry boxAttach = new Geometry("boxAttach", wireBox2);
+//
+//		final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+//				"Common/MatDefs/Misc/Unshaded.j3md");
+//		boxAttach.setMaterial(material);
+//
+//		material.setColor("Color", ColorRGBA.Red);
+//		((Node) model).attachChild(boxAttach);
+//		boundingBox.setCenter(boxAttach.getLocalTranslation());
+//
+//	}
+//	
 
 	public void setClient(final Client client) {
 		this.client = client;

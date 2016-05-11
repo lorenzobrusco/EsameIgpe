@@ -15,9 +15,17 @@ import com.jme3.scene.debug.WireBox;
 import control.GameManager;
 import singlePlayer.artificialIntelligence.AI;
 
+/**
+ * 
+ * this class is used to create enemy
+ *
+ */
+
 public class NodeEnemy extends NodeCharacter {
 
+    /** artificial intelligence */
     private final AI artificialIntelligence;
+
     private boolean isRun;
     private boolean isStanding;
     private boolean hasFound;
@@ -209,23 +217,21 @@ public class NodeEnemy extends NodeCharacter {
 	this.box = box;
     }
 
-	public LifeBar getLifeBar() {
-		return lifeBar;
-	}
-
-	public void setLifeBar(LifeBar lifeBar) {
-		this.lifeBar = lifeBar;
-	}
-
-    public void pauseIntelligence()
-    {
-    	
-    	artificialIntelligence.pause();
+    public LifeBar getLifeBar() {
+	return lifeBar;
     }
-    
-    public void resumeIntelligence()
-    {
-    	
-    	artificialIntelligence.resume();
+
+    public void setLifeBar(LifeBar lifeBar) {
+	this.lifeBar = lifeBar;
+    }
+
+    public void pauseIntelligence() {
+
+	artificialIntelligence.pause();
+    }
+
+    public void resumeIntelligence() {
+
+	artificialIntelligence.resume();
     }
 }

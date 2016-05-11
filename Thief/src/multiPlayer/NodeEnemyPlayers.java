@@ -4,6 +4,8 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+
+import singlePlayer.model.LifeBar;
 import singlePlayer.model.NodeCharacter;
 
 /**
@@ -20,12 +22,15 @@ public class NodeEnemyPlayers extends NodeCharacter {
     private boolean switchAttack;
     /** make a hash code from name's model */
     private final String keyModel;
+    /**enemy's lifebar*/
+    private final LifeBar lifeBar;
 
     /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
 
@@ -34,6 +39,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	super(model, dimensionControll, life, DAMAGE);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
 
@@ -43,6 +49,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	super(model, dimensionControll, intersect, life, DAMAGE);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
 
@@ -52,6 +59,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	super(model, dimensionControll, intersect, life, DAMAGE);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
 
@@ -99,6 +107,11 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** this method get keyModel */
     public String getKeyModel() {
 	return this.keyModel;
+    }
+
+    /**this method get lifebar*/
+    public LifeBar getLifeBar() {
+        return lifeBar;
     }
 
     /** this method is invoked when attach enemy */
