@@ -40,12 +40,10 @@ public class MultiPlayer implements ScreenController {
     private Client client = null;
     /** player's name */
     private String nameModel;
-
-    /***/
-    private Element progressLifeBarThief; // TODO Antonio
-    private Element borderLifeBarThief; // TODO Antonio
-    /***/
-
+    /** player's lifebar*/
+    private Element progressLifeBarThief;
+    /** character's image*/
+    private Element borderLifeBarThief;
     /** jmonkey's object */
     private RigidBodyControl rigidBodyControl;
     /** jmonkey's object */

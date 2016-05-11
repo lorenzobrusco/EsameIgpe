@@ -35,7 +35,7 @@ public class Server extends Thread {
 	this.start = true;
     }
 
-    /**code's fragmet that thead runnig */
+    /** code's fragmet that thead runnig */
     @Override
     public void run() {
 	while (this.start) {
@@ -52,14 +52,14 @@ public class Server extends Thread {
 
     }
 
-    /**this method notify everyone that a new player is arrived*/
+    /** this method notify everyone that a new player is arrived */
     public void newPlayer() {
 	for (ClientManager managers : this.players) {
 	    managers.setNewPlayer(true);
 	}
     }
 
-    /**this method close server*/
+    /** this method close server */
     public void stopServer() {
 	new Thread() {
 	    @Override
@@ -73,37 +73,38 @@ public class Server extends Thread {
 	}.run();
     }
 
+    /** this method add new player */
     public synchronized void addPlayer(ClientManager clientManager) {
-	// boolean exist = false;
-	// for (ClientManager manager : this.players) {
-	// if (manager.getAddress().equals(clientManager.getAddress())) //TODO Antonio
-	// exist = true;
-	// }
-	// if (!exist)
-	this.players.add(clientManager);
+	boolean exist = false;
+	for (ClientManager manager : this.players) {
+	    if (manager.getAddress().equals(clientManager.getAddress()))
+		exist = true;
+	}
+	if (!exist)
+	    this.players.add(clientManager);
     }
 
-    /**this method remove a player*/
+    /** this method remove a player */
     public synchronized void removePlayer(ClientManager clientManager) {
 	this.players.remove(clientManager);
     }
 
-    /**this method return players*/
+    /** this method return players */
     public synchronized Collection<ClientManager> getPlayers() {
 	return this.players;
     }
 
-    /**this method get terrain*/
+    /** this method get terrain */
     public String getTERRAIN() {
 	return TERRAIN;
     }
 
-    /**this method get start*/
+    /** this method get start */
     public Boolean isStart() {
 	return this.start;
     }
 
-    /**this method set start*/
+    /** this method set start */
     public void setStart(Boolean start) {
 	this.start = start;
     }

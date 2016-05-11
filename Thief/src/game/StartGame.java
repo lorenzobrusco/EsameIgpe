@@ -57,10 +57,13 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** sound */
     private Sound menuSound;
 
-    // TODO Antonio
+    /** index */
     private int indexCharacter;
+    /** characters list */
     private Collection<String> characters;
+    /** player's address */
     private String ipAddress;
+    /** player's name */
     private String namePlayer;
 
     /** builder */
@@ -195,7 +198,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
-    // TODO antonio
+    /** this method load characters list */
     public void loadCharacter() {
 	try {
 	    Files.walk(Paths.get("assets/Interface/MultiPlayer/PlayerImage")).forEach(filePath -> {
@@ -240,7 +243,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
-    // TODO antonio
+    /** this method is invoked when user press on textfield */
     public void resetParamsTextfield(String nameTextField) {
 
 	if (nameTextField.equals("myTextFieldName"))

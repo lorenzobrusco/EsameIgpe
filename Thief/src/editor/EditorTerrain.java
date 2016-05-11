@@ -51,7 +51,6 @@ import java.util.Stack;
  * 
  * This class allow to modify landscape, pull down and pull up terrain, add and
  * modify models
- * 
  *
  */
 
