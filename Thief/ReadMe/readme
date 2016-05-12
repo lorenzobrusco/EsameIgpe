@@ -1,0 +1,26 @@
+Don't touch this classes
+
+	gamerender
+	editorterrain
+	loadterrain
+	saveterrain
+	protocols
+	modelstate
+	multiplayer
+	NodeEnemyPlayers
+	NotifyStateModel
+	Format
+	server
+	collition
+	lifebar
+	main	
+	FormatStringChat
+	nodeModel
+	nodeThief not complete
+
+Classes to modify
+
+	gamemanager
+	client
+	clientmanager
+	all artifical intelligence
