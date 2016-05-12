@@ -148,7 +148,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    System.out.println("CMS: " + address + " --- " + walkdirection + " ------ " + viewdirection);
+	    // TODO
+	    // System.out.println("CMS: " + address + " --- " + walkdirection +
+	    // " ------ " + viewdirection);
 
 	    for (ClientManager manager : this.server.getPlayers()) {
 		manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
@@ -188,16 +190,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    score);
 
 	    this.OUTPUT.writeBytes(line + "\n");
-	    //
-	    // this.OUTPUT.writeBytes(address + "\n");
-	    // this.OUTPUT.writeBytes(walk.x + "\n");
-	    // this.OUTPUT.writeBytes(walk.y + "\n");
-	    // this.OUTPUT.writeBytes(walk.z + "\n");
-	    // this.OUTPUT.writeBytes(view.x + "\n");
-	    // this.OUTPUT.writeBytes(view.y + "\n");
-	    // this.OUTPUT.writeBytes(view.z + "\n");
-	    // this.OUTPUT.writeBytes(life + "\n");
-	    // this.OUTPUT.writeBytes(attack + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -218,11 +210,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	try {
 
+	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",
+		    0);
 	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
-	    this.OUTPUT.writeBytes(player + "\n");
-	    this.OUTPUT.writeBytes(local.x + "\n");
-	    this.OUTPUT.writeBytes(local.y + "\n");
-	    this.OUTPUT.writeBytes(local.z + "\n");
+	    this.OUTPUT.writeBytes(line + "\n");
 
 	} catch (IOException e) {
 	    // TODO
@@ -247,6 +238,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	return null;
     }
 
+    //TODO
     public void communicationNewPlayer(String name, String model, String x, String y, String z) {
 	try {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");

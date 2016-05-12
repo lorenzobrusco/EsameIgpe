@@ -225,6 +225,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void statePlayer() {
 	try {
 	    String line = this.INPUT.readLine();
+	    System.out.println("client: " + line);
 
 	    final String key = new StringBuilder().builderKeyPlayer(line);
 
@@ -258,9 +259,10 @@ public class Client extends Thread implements CommunicationProtocol {
 
     public void syncPlayers() {
 	try {
-	    final String player = this.INPUT.readLine();
-	    final Vector3f localPlayer = new FormatFloat().formatVector(this.INPUT.readLine(), this.INPUT.readLine(),
-		    this.INPUT.readLine());
+	    final String line = this.INPUT.readLine();
+	    final String player = new StringBuilder().builderKeyPlayer(line);
+	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
+	    
 	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
