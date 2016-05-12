@@ -64,6 +64,7 @@ public class SinglePlayer implements ScreenController {
 	this.loadNifty();
 	GameManager.getIstance().printSecondLayer();
 	this.setupAmbientSound();
+	
 
     }
 
@@ -79,6 +80,7 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	GameManager.getIstance().addPhysics();
 	GameManager.getIstance().addPointLightToScene();
+	GameManager.getIstance().setSinglePlayer(this);
 	this.render = new GameRender(terrainQuad);
 	this.viewPort.addProcessor(loadTerrain.makeFilter(shadows, fog, water));
     }
@@ -182,5 +184,18 @@ public class SinglePlayer implements ScreenController {
     @Override
     public void onStartScreen() {
 
+    }
+    
+    public void showMessageBonfire()
+    {
+   
+    	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("MessageForPlayerImage").setVisible(true);
+    	
+    }
+    
+    public void hideMessageBonfire()
+    {
+    	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("MessageForPlayerImage").setVisible(false);
+    	
     }
 }

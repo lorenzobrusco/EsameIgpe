@@ -33,10 +33,10 @@
 				</image>
 			</panel>
 
-		</panel>
-	</controlDefinition>
-
-
+		</panel>	
+		</controlDefinition>
+	
+	
 	<screen id="lifeBarScreen" controller="singlePlayer.SinglePlayer">
 
 		<layer id="layerProgressBar" childLayout="vertical">
@@ -52,6 +52,19 @@
 
 
 		</layer>
+		
+			<layer id="MessageForPlayer" childLayout="vertical">
+			<panel id="panelUp" childLayout="absolute" height="70%"/>
+			
+				<panel id="panelMessage" childLayout="vertical" height="40%" >	
+				<image id="MessageForPlayerImage"
+					filename="Interface/Image/PressBonfire.png"
+					width="30%" height="20%" valign="top" align="center" />
+				</panel>
+
+
+		</layer>
+		
 	</screen>
 
 	<screen id="pauseScreen" controller="singlePlayer.SinglePlayer">
