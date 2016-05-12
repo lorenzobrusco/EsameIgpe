@@ -8,14 +8,14 @@ public class StringBuilder {
     private static final String SEPARATOR = "#";
 
     public String builderString(Vector3f walk, Vector3f view, Vector3f location, int life, boolean attack, String ip,
-	    String model) {
+	    String model, int score) {
 
 	String line = walk.x + DELIMITER + walk.y + DELIMITER + walk.z + SEPARATOR + view.x + DELIMITER + view.y
 		+ DELIMITER + view.z + SEPARATOR + location.x + DELIMITER + location.y + DELIMITER + location.z
-		+ SEPARATOR + life + SEPARATOR + attack + SEPARATOR + ip + model;
+		+ SEPARATOR + life + SEPARATOR + attack + SEPARATOR + ip + model + SEPARATOR + score;
 	return line;
     }
-
+    
     public Vector3f builderWalk(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	Vector3f walk = new Vector3f(Float.parseFloat(split[0]), Float.parseFloat(split[1]),
@@ -55,4 +55,10 @@ public class StringBuilder {
 	return key;
     }
 
+    public int builderScore(String line){
+	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
+	int score = Integer.parseInt(split[12]);
+	return score;
+    }
+    
 }

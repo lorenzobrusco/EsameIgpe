@@ -11,7 +11,6 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -70,8 +69,8 @@ public class MultiPlayer implements ScreenController {
 	this.setupAmbientSound();
 	GameManager.getIstance().setMultiplayer(this);
 	
+	//TODO classifica
 	Element e = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("firstPlayerText");
-	
 	e.getRenderer(TextRenderer.class).setText("Ciao sono Antonio");
     }
 

@@ -133,7 +133,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	    String line = this.INPUT.readLine();
-	  
+
 	    final String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
@@ -146,10 +146,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final boolean attack = new StringBuilder().builderAttack(line);
 
+	    final int score = new StringBuilder().builderScore(line);
+
 	    System.out.println("CMS: " + address + " --- " + walkdirection + " ------ " + viewdirection);
 
 	    for (ClientManager manager : this.server.getPlayers()) {
-		manager.statePlayer(key, walkdirection, viewdirection, life, attack);
+		manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
 	    }
 
 	    ;// TODO metodo che comunica a tutti lo spostamento
@@ -178,18 +180,22 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void statePlayer(String address, Vector3f walk, Vector3f view, int life, boolean attack) {
+    public void statePlayer(String address, Vector3f walk, Vector3f view, int life, boolean attack, int score) {
 	try {
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
-	    this.OUTPUT.writeBytes(address + "\n");
-	    this.OUTPUT.writeBytes(walk.x + "\n");
-	    this.OUTPUT.writeBytes(walk.y + "\n");
-	    this.OUTPUT.writeBytes(walk.z + "\n");
-	    this.OUTPUT.writeBytes(view.x + "\n");
-	    this.OUTPUT.writeBytes(view.y + "\n");
-	    this.OUTPUT.writeBytes(view.z + "\n");
-	    this.OUTPUT.writeBytes(life + "\n");
-	    this.OUTPUT.writeBytes(attack + "\n");
+
+	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
+		    score);
+//
+//	    this.OUTPUT.writeBytes(address + "\n");
+//	    this.OUTPUT.writeBytes(walk.x + "\n");
+//	    this.OUTPUT.writeBytes(walk.y + "\n");
+//	    this.OUTPUT.writeBytes(walk.z + "\n");
+//	    this.OUTPUT.writeBytes(view.x + "\n");
+//	    this.OUTPUT.writeBytes(view.y + "\n");
+//	    this.OUTPUT.writeBytes(view.z + "\n");
+//	    this.OUTPUT.writeBytes(life + "\n");
+//	    this.OUTPUT.writeBytes(attack + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
