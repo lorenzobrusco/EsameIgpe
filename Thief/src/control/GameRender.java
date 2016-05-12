@@ -60,6 +60,8 @@ public class GameRender {
 		    }
 		    if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Bonfire")) {
 			model.playBonfireSound();
+			//TODO qua
+			
 		    } else {
 			model.stopBonfireSound();
 		    }
@@ -68,6 +70,7 @@ public class GameRender {
 			((NodeCharacter) model).setViewed(true);
 			thief.playEnemyView();
 		    }
+		    
 		} else {
 		    GameManager.getIstance().detachModelRender(model);
 		    terrain.detachChild(model);

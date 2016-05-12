@@ -134,7 +134,7 @@ public class MultiPlayer implements ScreenController {
     /** this method load panel 2d */
     private void loadNifty() {
 
-	GameManager.getIstance().getNifty().fromXml("Interface/multiPlayer.xml", "lifeBarScreen", this);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/multiPlayer.xml", "lifeBarScreen", this);
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 		.findElementByName("borderLifeBarThief");
 	System.out.println(nameModel);

@@ -116,7 +116,7 @@ public class SinglePlayer implements ScreenController {
 
     private void loadNifty() {
 
-	GameManager.getIstance().getNifty().fromXml("Interface/singlePlayer.xml", "lifeBarScreen", this);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen", this);
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 		.findElementByName("borderLifeBarThief");
 	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, "Yasuo");
@@ -163,7 +163,7 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getNifty().exit();
 	this.rootNode.detachAllChildren();
 	this.viewPort.clearProcessors();
-	GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 
     }

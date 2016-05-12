@@ -95,7 +95,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		GameManager.getIstance().getApplication().getAudioRenderer(),
 		GameManager.getIstance().getApplication().getGuiViewPort());
 	this.nifty = niftyDisplay.getNifty();
-	this.nifty.fromXml("Interface/screenMenu.xml", "start", this);
+	this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
 
