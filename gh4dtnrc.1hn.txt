@@ -1,0 +1,66 @@
+﻿Merge remote-tracking branch 'refs/remotes/origin/Antonio' into Lorenzo
+
+# Conflicts:
+#	Thief/assets/Interface/Xml/singlePlayer.xml
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please remove the file
+#	.git/MERGE_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch Lorenzo
+# Your branch is up-to-date with 'origin/Lorenzo'.
+#
+# All conflicts fixed but you are still merging.
+#
+# Changes to be committed:
+#	renamed:    Thief/assets/Interface/bonfire.png -> Thief/assets/Interface/Image/Editor/bonfire.png
+#	renamed:    Thief/assets/Interface/buildings.png -> Thief/assets/Interface/Image/Editor/buildings.png
+#	renamed:    Thief/assets/Interface/castle.png -> Thief/assets/Interface/Image/Editor/castle.png
+#	renamed:    Thief/assets/Interface/church.png -> Thief/assets/Interface/Image/Editor/church.png
+#	renamed:    Thief/assets/Interface/enemy.png -> Thief/assets/Interface/Image/Editor/enemy.png
+#	renamed:    Thief/assets/Interface/jasuo.png -> Thief/assets/Interface/Image/Editor/jasuo.png
+#	renamed:    Thief/assets/Interface/mountain.png -> Thief/assets/Interface/Image/Editor/mountain.png
+#	renamed:    Thief/assets/Interface/portal.png -> Thief/assets/Interface/Image/Editor/portal.png
+#	renamed:    Thief/assets/Interface/tree.png -> Thief/assets/Interface/Image/Editor/tree.png
+#	renamed:    Thief/assets/Interface/valley.png -> Thief/assets/Interface/Image/Editor/valley.png
+#	renamed:    Thief/assets/Interface/background.jpg -> Thief/assets/Interface/Image/Graphics/background.jpg
+#	renamed:    Thief/assets/Interface/blackBar.png -> Thief/assets/Interface/Image/Graphics/blackBar.png
+#	renamed:    Thief/assets/Interface/blackBarHorizontal.png -> Thief/assets/Interface/Image/Graphics/blackBarHorizontal.png
+#	renamed:    Thief/assets/Interface/cornice.png -> Thief/assets/Interface/Image/Graphics/frame.png
+#	renamed:    Thief/assets/Interface/opacityBackgroundPause.png -> Thief/assets/Interface/Image/Graphics/opacityBackgroundPause.png
+#	renamed:    Thief/assets/Interface/pauseBackground.png -> Thief/assets/Interface/Image/Graphics/pauseBackground.png
+#	renamed:    Thief/assets/Interface/serverIsClose.png -> Thief/assets/Interface/Image/Graphics/serverIsClose.png
+#	renamed:    Thief/assets/Interface/serverIsOpen.png -> Thief/assets/Interface/Image/Graphics/serverIsOpen.png
+#	renamed:    Thief/assets/Interface/border.png -> Thief/assets/Interface/Image/LifeBar/border.png
+#	renamed:    Thief/assets/Interface/innerLife.png -> Thief/assets/Interface/Image/LifeBar/innerLife.png
+#	renamed:    Thief/assets/Interface/innerLifeRed.png -> Thief/assets/Interface/Image/LifeBar/innerLifeRed.png
+#	renamed:    Thief/assets/Interface/AreyousureText.png -> Thief/assets/Interface/Image/Text/AreyousureText.png
+#	renamed:    Thief/assets/Interface/Image/PressBonfire.png -> Thief/assets/Interface/Image/Text/PressBonfire.png
+#	new file:   Thief/assets/Interface/Image/Text/ScoreText.png
+#	renamed:    Thief/assets/Interface/shadowsText.png -> Thief/assets/Interface/Image/Text/shadowsText.png
+#	renamed:    Thief/assets/Interface/soundText.png -> Thief/assets/Interface/Image/Text/soundText.png
+#	renamed:    Thief/assets/Interface/titleGame.png -> Thief/assets/Interface/Image/Text/titleGame.png
+#	renamed:    Thief/assets/Interface/titleSettings.png -> Thief/assets/Interface/Image/Text/titleSettings.png
+#	deleted:    Thief/assets/Interface/MultiPlayer/backgroundMultiPlayer.png
+#	deleted:    Thief/assets/Interface/MultiPlayer/backgroundMultiPlayer1.png
+#	deleted:    Thief/assets/Interface/MultiPlayer/backgroundMultiPlayer2.png
+#	modified:   Thief/assets/Interface/Styles/listboxStyleChat.xml
+#	modified:   Thief/assets/Interface/Styles/textFieldStyleChat.xml
+#	modified:   Thief/assets/Interface/Xml/editor.xml
+#	modified:   Thief/assets/Interface/Xml/multiPlayer.xml
+#	modified:   Thief/assets/Interface/Xml/screenMenu.xml
+#	modified:   Thief/assets/Interface/Xml/singlePlayer.xml
+#	deleted:    Thief/assets/Interface/background1.jpg
+#	deleted:    Thief/assets/Interface/imServer.png
+#	deleted:    Thief/assets/Interface/inner.png
+#	new file:   Thief/libjinput-osx.dylib
+#	modified:   Thief/src/control/GameManager.java
+#	modified:   Thief/src/game/StartGame.java
+#	modified:   Thief/src/multiPlayer/MultiPlayer.java
+#	modified:   Thief/src/singlePlayer/model/NodeThief.java
+#
+

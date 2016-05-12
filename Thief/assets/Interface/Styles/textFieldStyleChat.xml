@@ -12,7 +12,7 @@
 
   <!-- the actual input field -->
   <style id="my-textfield#field">
-    <attributes childLayout="center" childClip="true"  padding="0px,2px" backgroundImage="Interface/blackBarHorizontal.png"/>
+    <attributes childLayout="center" childClip="true"  padding="0px,2px" backgroundImage="Interface/Image/Graphics/blackBarHorizontal.png"/>
     <effect>
     
       <!--  <onFocus name="colorBar" color="#787875" post="true" inset="1px" /> -->

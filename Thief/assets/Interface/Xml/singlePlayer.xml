@@ -7,7 +7,7 @@
 	<controlDefinition name="sureExit">
 		<panel id="PanelButton" childLayout="vertical" height="70%">
 			<panel id="space1" childLayout="center" height="30%" />
-			<image filename="Interface/AreyousureText.png" id="areSureExit"
+			<image filename="Interface/Image/Text/AreyousureText.png" id="areSureExit"
 				width="90%" height="15%" align="center" valign="center" />
 			<panel id="space2" childLayout="center" height="20%" />
 			<panel id="buttonPanel" childLayout="horizontal" height="30%"
@@ -20,6 +20,7 @@
 						<onEndHover name="nop" onStartEffect="endGrow(yesButton)" />
 					</effect>
 					<interact onClick="quitGame()" />
+
 
 				</image>
 				<panel id="buttonSpace1" childLayout="center" width="10%" />

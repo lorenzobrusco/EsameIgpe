@@ -13,7 +13,7 @@
 				width="93%" height="80%" x="9%" y="17%" maxLength="15" text="IP-address">
 				<interact onClick="resetParamsTextfield(myTextFieldIP)" />
 			</control>
-			<image filename="Interface/cornice.png" x="5%" y="5%" width="100%"
+			<image filename="Interface/Image/Graphics/frame.png" x="5%" y="5%" width="100%"
 				height="100%" />
 		</panel>
 	</controlDefinition>
@@ -25,7 +25,7 @@
 				width="93%" height="80%" x="9%" y="17%" maxLength="15" text="Your Name">
 				<interact onClick="resetParamsTextfield(myTextFieldName)" />
 			</control>
-			<image filename="Interface/cornice.png" x="5%" y="5%" width="100%"
+			<image filename="Interface/Image/Graphics/frame.png" x="5%" y="5%" width="100%"
 				height="100%" />
 		</panel>
 
@@ -34,7 +34,7 @@
 
 	<screen id="start" controller="game.StartGame">
 		<layer id="background_start" childLayout="center">
-			<image filename="Interface/background.jpg" width="100%" height="100%" />
+			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
 		</layer>
 
 		<layer id="foreground_start" childLayout="horizontal">
@@ -42,7 +42,7 @@
 			<panel id="space" width="10%" childLayout="center" />
 			<panel id="panelOptions" width="28%" childLayout="vertical">
 				<panel id="titlePanel" height="20%" childLayout="center">
-					<image filename="Interface/titleGame.png" width="60%" height="90%" />
+					<image filename="Interface/Image/Text/titleGame.png" width="60%" height="90%" />
 				</panel>
 
 				<panel id="space1" height="10%" childLayout="center" />
@@ -113,14 +113,14 @@
 
 	<screen id="settingsScreen" controller="game.StartGame">
 		<layer id="background_settings" childLayout="center">
-			<image filename="Interface/background.jpg" width="100%" height="100%" />
+			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
 		</layer>
 
 		<layer id="foreground_start" childLayout="horizontal">
 			<panel id="space2" width="10%" childLayout="center" />
 			<panel id="panelOptions" width="28%" childLayout="vertical">
 				<panel id="titlePanel" height="20%" childLayout="center">
-					<image filename="Interface/titleSettings.png" width="60%"
+					<image filename="Interface/Image/Text/titleSettings.png" width="60%"
 						height="90%" />
 				</panel>
 
@@ -129,13 +129,13 @@
 					<panel id="optionsPanelLeft" width="50%" childLayout="vertical">
 
 						<panel id="soundPanel" height="20%" childLayout="center">
-							<image filename="Interface/soundText.png" id="soundText"
+							<image filename="Interface/Image/Text/soundText.png" id="soundText"
 								width="150%" height="100%" />
 
 						</panel>
 
 						<panel id="shadowsPanel" height="20%" childLayout="center">
-							<image filename="Interface/shadowsText.png" id="shadowsText"
+							<image filename="Interface/Image/Text/shadowsText.png" id="shadowsText"
 								width="140%" height="100%" />
 						</panel>
 
@@ -179,8 +179,8 @@
 
 	<screen id="multiPlayerScreen" controller="game.StartGame">
 		<layer id="background_MultiPlayer" childLayout="center">
-			<image filename="Interface/background.jpg" width="100%" height="100%" />
-			<image filename="Interface/opacityBackgroundPause.png" width="100%"
+			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
+			<image filename="Interface/Image/Graphics/opacityBackgroundPause.png" width="100%"
 				height="100%" />
 		</layer>
 
@@ -274,8 +274,8 @@
 
 	<screen id="serverScreen" controller="game.StartGame">
 		<layer id="background_Server" childLayout="center">
-			<image filename="Interface/background.jpg" width="100%" height="100%" />
-			<image filename="Interface/opacityBackgroundPause.png" width="100%"
+			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
+			<image filename="Interface/Image/Graphics/opacityBackgroundPause.png" width="100%"
 				height="100%" />
 		</layer>
 
@@ -290,7 +290,7 @@
 					<panel id="spaceForServerMP3" childLayout="horizontal">
 						<text id="stateServer" font="Interface/Fonts/Morpheus-20.fnt"
 							color="#f4e75a" text="State: " valign="center" />
-						<image id="serverState" filename="Interface/serverIsOpen.png"
+						<image id="serverState" filename="Interface/Image/Graphics/serverIsOpen.png"
 							width="4%" height="40%" valign="center" />
 					</panel>
 

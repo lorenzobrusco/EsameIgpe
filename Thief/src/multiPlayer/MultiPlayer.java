@@ -11,9 +11,11 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -67,7 +69,10 @@ public class MultiPlayer implements ScreenController {
 	this.loadNifty();
 	this.setupAmbientSound();
 	GameManager.getIstance().setMultiplayer(this);
-
+	
+	Element e = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("firstPlayerText");
+	
+	e.getRenderer(TextRenderer.class).setText("Ciao sono Antonio");
     }
 
     /** this method is called for each update */
@@ -160,7 +165,12 @@ public class MultiPlayer implements ScreenController {
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
-
+    
+    public void UpdateScore()
+    {
+    	
+    	
+    }
     /** jmonkey's methods */
     @Override
     public void bind(Nifty arg0, Screen arg1) {
