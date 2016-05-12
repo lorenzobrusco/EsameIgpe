@@ -297,7 +297,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-		new KeyTrigger(KeyInput.KEY_RETURN));
+		new KeyTrigger(KeyInput.KEY_9));
 	this.inputManager.addListener(actionListener, "debug", "exit", "mouse", "chatBox");
     }
 
