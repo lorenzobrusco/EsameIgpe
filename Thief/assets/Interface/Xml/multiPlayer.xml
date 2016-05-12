@@ -28,7 +28,7 @@
 				<control id="#chat-text-input" name="textfield" style="my-textfield"
 					height="15%" width="85%" />
 				<panel width="3%" childLayout="center" />
-				<image id="arrowRight" filename="Interface/arrowRight.png"
+				<image id="arrowRight" filename="Interface/Image/Button/arrowRight.png"
 					width="10%" height="10%" align="center" visibleToMouse="true">
 					<effect>
 						<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />

@@ -47,7 +47,7 @@
 
 				<panel id="space1" height="10%" childLayout="center" />
 				<panel id="singlePlayerPanel" height="10%" childLayout="center">
-					<image filename="Interface/singlePlayerButton.png" id="singlePlayerButton"
+					<image filename="Interface/Image/Button/singlePlayerButton.png" id="singlePlayerButton"
 						width="60%" height="90%" visibleToMouse="true">
 
 						<effect>
@@ -60,7 +60,7 @@
 				</panel>
 
 				<panel id="multiPlayerPanel" height="10%" childLayout="center">
-					<image filename="Interface/multiPlayerButton.png" id="multiPlayerButton"
+					<image filename="Interface/Image/Button/multiPlayerButton.png" id="multiPlayerButton"
 						width="60%" height="90%" visibleToMouse="true">
 
 						<effect>
@@ -72,7 +72,7 @@
 					</image>
 				</panel>
 				<panel id="editorPanel" height="10%" childLayout="center">
-					<image filename="Interface/editorButton.png" id="editorButton"
+					<image filename="Interface/Image/Button/editorButton.png" id="editorButton"
 						width="60%" height="90%" visibleToMouse="true">
 
 						<effect>
@@ -85,7 +85,7 @@
 				</panel>
 
 				<panel id="settingsPanel" height="10%" childLayout="center">
-					<image filename="Interface/settingsButton.png" id="settingsButton"
+					<image filename="Interface/Image/Button/settingsButton.png" id="settingsButton"
 						width="60%" height="90%" visibleToMouse="true">
 
 						<effect>
@@ -97,7 +97,7 @@
 					</image>
 				</panel>
 				<panel id="exitPanel" height="10%" childLayout="center">
-					<image filename="Interface/exitButton.png" id="exitButton"
+					<image filename="Interface/Image/Button/exitButton.png" id="exitButton"
 						width="60%" height="90%" visibleToMouse="true">
 						<effect>
 							<onStartHover name="nop" onStartEffect="startGrow(exitButton)" />
@@ -161,7 +161,7 @@
 
 				</panel>
 				<panel id="exitPanel" height="10%" childLayout="center">
-					<image filename="Interface/returnButton.png" id="returnButton"
+					<image filename="Interface/Image/Button/returnButton.png" id="returnButton"
 						width="60%" height="90%" visibleToMouse="true">
 
 						<effect>
@@ -191,7 +191,7 @@
 				<panel id="spaceForTitolMP" height="13%" childLayout="center" />
 				<panel id="PanelImageMP" height="58%" childLayout="horizontal">
 					<panel id="spaceForTitolMP1" width="10%" childLayout="center" />
-					<image id="arrowLeft" filename="Interface/arrowLeft.png"
+					<image id="arrowLeft" filename="Interface/Image/Button/arrowLeft.png"
 						width="5%" height="15%" valign="center">
 						<effect>
 							<onStartHover name="nop" onStartEffect="startGrow(arrowLeft)" />
@@ -205,7 +205,7 @@
 					<image id="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Azir.png"
 						height="100%" width="50%" />
 					<panel id="spaceForTitolMP4" width="5%" childLayout="center" />
-					<image id="arrowRight" filename="Interface/arrowRight.png"
+					<image id="arrowRight" filename="Interface/Image/Button/arrowRight.png"
 						width="5%" height="15%" valign="center">
 						<effect>
 							<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
@@ -228,7 +228,7 @@
 
 					</panel>
 					<panel id="buttonPanelMP" childLayout="horizontal">
-						<image filename="Interface/returnButton.png" id="returnButton"
+						<image filename="Interface/Image/Button/returnButton.png" id="returnButton"
 							width="30%" height="60%" visibleToMouse="true">
 
 							<effect>
@@ -240,7 +240,7 @@
 						</image>
 
 
-						<image filename="Interface/serverButton.png" id="serverButton"
+						<image filename="Interface/Image/Button/serverButton.png" id="serverButton"
 							width="30%" height="60%" visibleToMouse="true">
 
 							<effect>
@@ -251,7 +251,7 @@
 							<interact onClick="openServerScreen()" />
 						</image>
 
-						<image filename="Interface/startGameButton.png" id="startGameButton"
+						<image filename="Interface/Image/Button/startGameButton.png" id="startGameButton"
 							align="center" width="30%" height="60%" visibleToMouse="true">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(startGameButton)" />
@@ -297,7 +297,7 @@
 				</panel>
 				<panel id="PanelImageMP" height="48%" childLayout="horizontal">
 					<panel id="spaceForServerImage" width="10%" childLayout="center" />
-					<image id="arrowLeft" filename="Interface/arrowLeft.png"
+					<image id="arrowLeft" filename="Interface/Image/Button/arrowLeft.png"
 						width="4%" height="15%" valign="center">
 						<effect>
 							<onStartHover name="nop" onStartEffect="startGrow(arrowLeft)" />
@@ -311,7 +311,7 @@
 					<image id="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png"
 						height="100%" width="50%" />
 					<panel id="spaceForServerImage2" width="5%" childLayout="center" />
-					<image id="arrowRight" filename="Interface/arrowRight.png"
+					<image id="arrowRight" filename="Interface/Image/Button/arrowRight.png"
 						width="5%" height="15%" valign="center">
 						<effect>
 							<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
@@ -326,7 +326,7 @@
 
 				<panel id="buttonPanelMP" childLayout="horizontal">
 					<panel id="returnButtonPanel" childLayout="center">
-						<image filename="Interface/returnButton.png" id="returnButton"
+						<image filename="Interface/Image/Button/returnButton.png" id="returnButton"
 							width="50%" height="60%" visibleToMouse="true" valign="top">
 
 							<effect>
@@ -339,7 +339,7 @@
 					</panel>
 					<panel id="spacebuttonPanelMP" width="30%" childLayout="horizontal" />
 					<panel id="startCloseButtonServer" childLayout="center">
-						<image filename="Interface/startServerButton.png" id="startServerButton"
+						<image filename="Interface/Image/Button/startServerButton.png" id="startServerButton"
 							width="50%" height="60%" visibleToMouse="true" valign="top">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(startServerButton)" />
@@ -349,7 +349,7 @@
 
 						</image>
 
-						<image filename="Interface/closeServerButton.png" id="closeServerButton"
+						<image filename="Interface/Image/Button/closeServerButton.png" id="closeServerButton"
 							width="50%" height="60%" visibleToMouse="true" valign="top">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(closeServerButton)" />

@@ -342,7 +342,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is called when cursor move up a button */
     public void startGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + "OnHover.png", false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -350,7 +350,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is called when cursor outside a button */
     public void endGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + ".png", false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }

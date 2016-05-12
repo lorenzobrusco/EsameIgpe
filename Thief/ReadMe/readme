@@ -1,6 +1,6 @@
 Don't touch this classes
 
-	gamerender
+
 	editorterrain
 	loadterrain
 	saveterrain
@@ -19,7 +19,7 @@ Don't touch this classes
 	nodeThief not complete
 
 Classes to modify
-
+	gamerender
 	gamemanager
 	client
 	clientmanager

@@ -700,7 +700,7 @@ public class EditorTerrain implements ScreenController {
     public void startGrow(String nameButton) {
 
 	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/" + nameButton + "OnHover.png", false);
+		"Interface/Image/Button/" + nameButton + "OnHover.png", false);
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -709,7 +709,7 @@ public class EditorTerrain implements ScreenController {
     public void endGrow(String nameButton) {
 
 	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/" + nameButton + ".png", false);
+		"Interface/Image/Button/" + nameButton + ".png", false);
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
