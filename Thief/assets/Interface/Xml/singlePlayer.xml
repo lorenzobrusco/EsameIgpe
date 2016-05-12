@@ -13,7 +13,7 @@
 			<panel id="buttonPanel" childLayout="horizontal" height="30%"
 				width="100%">
 				<panel id="buttonSpace" childLayout="center" width="5%" />
-				<image filename="Interface/yesButton.png" id="yesButton"
+				<image filename="Interface/Image/Button/yesButton.png" id="yesButton"
 					width="40%" height="40%" visibleToMouse="true">
 					<effect>
 						<onStartHover name="nop" onStartEffect="startGrow(yesButton)" />
@@ -23,7 +23,7 @@
 
 				</image>
 				<panel id="buttonSpace1" childLayout="center" width="10%" />
-				<image filename="Interface/noButton.png" id="noButton" width="40%"
+				<image filename="Interface/Image/Button/noButton.png" id="noButton" width="40%"
 					height="40%" visibleToMouse="true">
 					<effect>
 						<onStartHover name="nop" onStartEffect="startGrow(noButton)" />
@@ -33,10 +33,10 @@
 				</image>
 			</panel>
 
-		</panel>
-	</controlDefinition>
-
-
+		</panel>	
+		</controlDefinition>
+	
+	
 	<screen id="lifeBarScreen" controller="singlePlayer.SinglePlayer">
 
 		<layer id="layerProgressBar" childLayout="vertical">
@@ -52,6 +52,19 @@
 
 
 		</layer>
+		
+			<layer id="MessageForPlayer" childLayout="vertical">
+			<panel id="panelUp" childLayout="absolute" height="70%"/>
+			
+				<panel id="panelMessage" childLayout="vertical" height="40%" >	
+				<image id="MessageForPlayerImage"
+					filename="Interface/Image/PressBonfire.png"
+					width="30%" height="20%" valign="top" align="center" />
+				</panel>
+
+
+		</layer>
+		
 	</screen>
 
 	<screen id="pauseScreen" controller="singlePlayer.SinglePlayer">
@@ -67,7 +80,7 @@
 					<control name="sureExit" id="sureExitControl" visible="false" />
 					<panel id="buttonPanel1" childLayout="horizontal" height="30%">
 						<panel id="buttonSpace2" childLayout="center" width="5%" />
-						<image filename="Interface/startMenuButton.png" id="startMenuButton"
+						<image filename="Interface/Image/Button/startMenuButton.png" id="startMenuButton"
 							width="40%" height="40%" visibleToMouse="true">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(startMenuButton)" />
@@ -78,7 +91,7 @@
 
 						<panel id="buttonSpace3" childLayout="center" width="10%" />
 
-						<image filename="Interface/resumeButton.png" id="resumeButton"
+						<image filename="Interface/Image/Button/resumeButton.png" id="resumeButton"
 							width="40%" height="40%" visibleToMouse="true">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(resumeButton)" />

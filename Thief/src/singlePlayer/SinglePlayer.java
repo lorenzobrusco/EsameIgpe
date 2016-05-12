@@ -64,6 +64,7 @@ public class SinglePlayer implements ScreenController {
 	this.loadNifty();
 	GameManager.getIstance().printSecondLayer();
 	this.setupAmbientSound();
+	
 
     }
 
@@ -79,6 +80,7 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	GameManager.getIstance().addPhysics();
 	GameManager.getIstance().addPointLightToScene();
+	GameManager.getIstance().setSinglePlayer(this);
 	this.render = new GameRender(terrainQuad);
 	this.viewPort.addProcessor(loadTerrain.makeFilter(shadows, fog, water));
     }
@@ -116,7 +118,7 @@ public class SinglePlayer implements ScreenController {
 
     private void loadNifty() {
 
-	GameManager.getIstance().getNifty().fromXml("Interface/singlePlayer.xml", "lifeBarScreen", this);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen", this);
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 		.findElementByName("borderLifeBarThief");
 	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, "Yasuo");
@@ -131,7 +133,7 @@ public class SinglePlayer implements ScreenController {
     public void startGrow(String nameButton) {
 
 	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/" + nameButton + "OnHover.png", false);
+		"Interface/Image/Button/" + nameButton + "OnHover.png", false);
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -139,7 +141,7 @@ public class SinglePlayer implements ScreenController {
     public void endGrow(String nameButton) {
 
 	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/" + nameButton + ".png", false);
+		"Interface/Image/Button/" + nameButton + ".png", false);
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -163,7 +165,7 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getNifty().exit();
 	this.rootNode.detachAllChildren();
 	this.viewPort.clearProcessors();
-	GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 
     }
@@ -182,5 +184,18 @@ public class SinglePlayer implements ScreenController {
     @Override
     public void onStartScreen() {
 
+    }
+    
+    public void showMessageBonfire()
+    {
+   
+    	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("MessageForPlayerImage").setVisible(true);
+    	
+    }
+    
+    public void hideMessageBonfire()
+    {
+    	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("MessageForPlayerImage").setVisible(false);
+    	
     }
 }

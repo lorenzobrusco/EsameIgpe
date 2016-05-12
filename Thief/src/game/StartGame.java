@@ -95,7 +95,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		GameManager.getIstance().getApplication().getAudioRenderer(),
 		GameManager.getIstance().getApplication().getGuiViewPort());
 	this.nifty = niftyDisplay.getNifty();
-	this.nifty.fromXml("Interface/screenMenu.xml", "start", this);
+	this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
 
@@ -297,7 +297,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-		new KeyTrigger(KeyInput.KEY_RETURN));
+		new KeyTrigger(KeyInput.KEY_9));
 	this.inputManager.addListener(actionListener, "debug", "exit", "mouse", "chatBox");
     }
 
@@ -342,7 +342,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is called when cursor move up a button */
     public void startGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + "OnHover.png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + "OnHover.png", false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -350,7 +350,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is called when cursor outside a button */
     public void endGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/" + nameButton + ".png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + ".png", false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }

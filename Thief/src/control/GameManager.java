@@ -37,8 +37,10 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import editor.LoadTerrain;
 import multiPlayer.Client;
+import multiPlayer.MultiPlayer;
 import multiPlayer.NotifyStateModel;
 import server.Server;
+import singlePlayer.SinglePlayer;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -61,6 +63,8 @@ public class GameManager {
 	private NodeThief thief;
 	private NodeModel bonfire;
 	private Node terrain;
+	private SinglePlayer singlePlayer;
+	private MultiPlayer multiplayer;
 	private AudioRenderer audioRenderer;
 	private boolean editor;
 	private Client client;
@@ -491,7 +495,24 @@ public class GameManager {
 		}
 	}
 
-	
+	public SinglePlayer getSinglePlayer() {
+		return singlePlayer;
+	}
+
+
+	public void setSinglePlayer(SinglePlayer singlePlayer) {
+		this.singlePlayer = singlePlayer;
+	}
+
+
+	public MultiPlayer getMultiplayer() {
+		return multiplayer;
+	}
+
+
+	public void setMultiplayer(MultiPlayer multiplayer) {
+		this.multiplayer = multiplayer;
+	}
 	 
 	 
 

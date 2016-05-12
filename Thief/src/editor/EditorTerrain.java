@@ -133,7 +133,7 @@ public class EditorTerrain implements ScreenController {
 	/** add landscapeto to main node */
 	this.rootNode.addLight(loadTerrain.makeAmbientLight());
 	/** add panel 2d */
-	this.makeNiftyEditor();
+	this.loadNifty();
 	/** set sound */
 	this.setupSound();
 	/** start sound */
@@ -400,8 +400,8 @@ public class EditorTerrain implements ScreenController {
 
     // TODO move
     /** this method set nifty */
-    private void makeNiftyEditor() {
-	GameManager.getIstance().getNifty().fromXml("Interface/editor.xml", "start", this);
+    private void loadNifty() {
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/editor.xml", "start", this);
     }
 
     /** this method add marker */
@@ -700,7 +700,7 @@ public class EditorTerrain implements ScreenController {
     public void startGrow(String nameButton) {
 
 	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/" + nameButton + "OnHover.png", false);
+		"Interface/Image/Button/" + nameButton + "OnHover.png", false);
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -709,7 +709,7 @@ public class EditorTerrain implements ScreenController {
     public void endGrow(String nameButton) {
 
 	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/" + nameButton + ".png", false);
+		"Interface/Image/Button/" + nameButton + ".png", false);
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -722,7 +722,7 @@ public class EditorTerrain implements ScreenController {
 	this.rootNode.detachAllChildren();
 	this.viewPort.clearProcessors();
 	this.guiNode.detachAllChildren();
-	GameManager.getIstance().getNifty().fromXml("Interface/screenMenu.xml", "start", this);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
     }
 

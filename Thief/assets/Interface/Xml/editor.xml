@@ -16,7 +16,7 @@
 							id="rotate" name="label" text="rotate:" />
 						<control id="sliderRotate" name="horizontalSlider" width="80%" />
 						<panel id="buttonCurrentModel" width="100%" childLayout="horizontal">
-							<image filename="Interface/deleteButton.png" id="deleteButton"
+							<image filename="Interface/Image/Button/deleteButton.png" id="deleteButton"
 								width="50%" height="40%" x="2%" visibleToMouse="true">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(deleteButton)" />
@@ -24,7 +24,7 @@
 								</effect>
 								<interact onClick="delete()" />
 							</image>
-							<image filename="Interface/resetButton.png" id="resetButton"
+							<image filename="Interface/Image/Button/resetButton.png" id="resetButton"
 								width="50%" height="40%" visibleToMouse="true">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(resetButton)" />
@@ -41,7 +41,7 @@
 						<control id="listBox" name="listBox" width="90%" height="80%"
 							align="center" />
 						<panel id="buttonloadTerrain" width="100%" childLayout="horizontal">
-							<image filename="Interface/loadButton.png" id="loadButton"
+							<image filename="Interface/Image/Button/loadButton.png" id="loadButton"
 								width="50%" height="40%" x="2%" visibleToMouse="true">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(loadButton)" />
@@ -49,7 +49,7 @@
 								</effect>
 								<interact onClick="load()" />
 							</image>
-							<image filename="Interface/deleteButton.png" id="deleteSceneButton"
+							<image filename="Interface/Image/Button/deleteButton.png" id="deleteSceneButton"
 								width="50%" height="40%" visibleToMouse="true">
 								<effect>
 									<onStartHover name="nop" onStartEffect="startGrow(deleteSceneButton)" />
@@ -65,7 +65,7 @@
 							name="label" text="Tearrain to save: " color="#ee1f" />
 						<control id="textfieldSaveTerrain" name="textfield" width="80%"
 							align="center" />
-						<image filename="Interface/saveButton.png" id="saveButton"
+						<image filename="Interface/Image/Button/saveButton.png" id="saveButton"
 							width="50%" height="40%" visibleToMouse="true" align="center">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(saveButton)" />
@@ -75,7 +75,7 @@
 						</image>
 					</panel>
 					<panel id="return" width="100%" height="20%" childLayout="vertical">
-						<image filename="Interface/returnButton.png" id="returnButton"
+						<image filename="Interface/Image/Button/returnButton.png" id="returnButton"
 							width="50%" height="40%" visibleToMouse="true" align="center">
 							<effect>
 								<onStartHover name="nop" onStartEffect="startGrow(returnButton)" />
