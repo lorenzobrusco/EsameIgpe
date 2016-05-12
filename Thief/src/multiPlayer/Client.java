@@ -223,7 +223,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** This Method Updates state of a Player */
     public void statePlayer() {
-	String player = null;
 	try {
 	    String line = this.INPUT.readLine();
 
@@ -239,13 +238,13 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    if (GameManager.getIstance().getPlayers().get(player) != null) {
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setViewDirection(viewdirection);
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setWalkDirection(walkdirection);
-		GameManager.getIstance().getPlayers().get(player).setLife(life);
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setScore(score);
+	    if (GameManager.getIstance().getPlayers().get(key) != null) {
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
+		GameManager.getIstance().getPlayers().get(key).setLife(life);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setScore(score);
 		if (attack)
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).startAttack();
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
