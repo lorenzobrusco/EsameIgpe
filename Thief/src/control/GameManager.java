@@ -375,7 +375,7 @@ public class GameManager {
 				controller(modelGame);
 				image(new ImageBuilder() {
 					{
-						filename("Interface/border.png");
+						filename("Interface/Image/LifeBar/border.png");
 						childLayoutAbsolute();
 						imageMode("resize:15,2,15,15,15,2,15,2,15,2,15,15");
 

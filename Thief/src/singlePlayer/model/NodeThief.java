@@ -169,7 +169,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    this.lifeBarThief.markForRemoval();
 	final ImageBuilder builder = new ImageBuilder() {
 	    {
-		filename("Interface/innerLife.png");
+		filename("Interface/Image/LifeBar/innerLife.png");
 		x("12%");
 		y("87%");
 		width(NodeThief.this.SIZELIFEBAR + "%");
@@ -447,7 +447,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.lifeBarThief.getParent().layoutElements();
 	if (life <= lifebarThreshold) {
 	    this.lifeBarThief.getRenderer(ImageRenderer.class).setImage(GameManager.getIstance().getNifty()
-		    .getRenderEngine().createImage(null, "Interface/innerLifeRed.png", false));
+		    .getRenderEngine().createImage(null, "Interface/Image/LifeBar/innerLifeRed.png", false));
 	    this.lifeBarThief.getParent().layoutElements();
 	}
 	if (life <= 0)

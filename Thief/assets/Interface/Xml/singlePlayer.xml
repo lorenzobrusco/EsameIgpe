@@ -7,7 +7,7 @@
 	<controlDefinition name="sureExit">
 		<panel id="PanelButton" childLayout="vertical" height="70%">
 			<panel id="space1" childLayout="center" height="30%" />
-			<image filename="Interface/AreyousureText.png" id="areSureExit"
+			<image filename="Interface/Image/Text/AreyousureText.png" id="areSureExit"
 				width="90%" height="15%" align="center" valign="center" />
 			<panel id="space2" childLayout="center" height="20%" />
 			<panel id="buttonPanel" childLayout="horizontal" height="30%"
@@ -58,7 +58,7 @@
 			
 				<panel id="panelMessage" childLayout="vertical" height="40%" >	
 				<image id="MessageForPlayerImage"
-					filename="Interface/Image/PressBonfire.png"
+					filename="Interface/Image/Text/PressBonfire.png"
 					width="30%" height="20%" valign="top" align="center" />
 				</panel>
 
@@ -69,11 +69,11 @@
 
 	<screen id="pauseScreen" controller="singlePlayer.SinglePlayer">
 		<layer id="pauseBackground" childLayout="center">
-			<image id="pausebackground" filename="Interface/opacityBackgroundPause.png" />
+			<image id="pausebackground" filename="Interface/Image/Graphics/opacityBackgroundPause.png" />
 		</layer>
 		<layer id="pauseLayerForeground" childLayout="center">
 			<panel id="menuPanel" childLayout="center">
-				<image id="pauseSinglePlayer" filename="Interface/pauseBackground.png"
+				<image id="pauseSinglePlayer" filename="Interface/Image/Graphics/pauseBackground.png"
 					width="70%" height="70%" />
 				<panel id="exitPanel" childLayout="vertical" width="70%"
 					height="70%">

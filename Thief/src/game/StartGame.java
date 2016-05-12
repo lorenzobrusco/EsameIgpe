@@ -220,7 +220,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void openServerScreen() {
 
 	if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
-	    final NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/serverIsClose.png", false);
+	    final NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Graphics/serverIsClose.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
@@ -229,7 +229,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		    .setVisible(true);
 	} else if (GameManager.getIstance().getServer().isStart()) {
 
-	    final NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/serverIsOpen.png", false);
+	    final NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Graphics/serverIsOpen.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
