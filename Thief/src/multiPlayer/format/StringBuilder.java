@@ -13,6 +13,9 @@ public class StringBuilder {
 	String line = walk.x + DELIMITER + walk.y + DELIMITER + walk.z + SEPARATOR + view.x + DELIMITER + view.y
 		+ DELIMITER + view.z + SEPARATOR + location.x + DELIMITER + location.y + DELIMITER + location.z
 		+ SEPARATOR + life + SEPARATOR + attack + SEPARATOR + ip + model + SEPARATOR + score;
+//	System.out.println(line);
+//	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
+//	System.out.println(split.length);
 	return line;
     }
     

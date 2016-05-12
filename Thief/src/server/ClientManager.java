@@ -186,16 +186,18 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
 		    score);
-//
-//	    this.OUTPUT.writeBytes(address + "\n");
-//	    this.OUTPUT.writeBytes(walk.x + "\n");
-//	    this.OUTPUT.writeBytes(walk.y + "\n");
-//	    this.OUTPUT.writeBytes(walk.z + "\n");
-//	    this.OUTPUT.writeBytes(view.x + "\n");
-//	    this.OUTPUT.writeBytes(view.y + "\n");
-//	    this.OUTPUT.writeBytes(view.z + "\n");
-//	    this.OUTPUT.writeBytes(life + "\n");
-//	    this.OUTPUT.writeBytes(attack + "\n");
+
+	    this.OUTPUT.writeBytes(line + "\n");
+	    //
+	    // this.OUTPUT.writeBytes(address + "\n");
+	    // this.OUTPUT.writeBytes(walk.x + "\n");
+	    // this.OUTPUT.writeBytes(walk.y + "\n");
+	    // this.OUTPUT.writeBytes(walk.z + "\n");
+	    // this.OUTPUT.writeBytes(view.x + "\n");
+	    // this.OUTPUT.writeBytes(view.y + "\n");
+	    // this.OUTPUT.writeBytes(view.z + "\n");
+	    // this.OUTPUT.writeBytes(life + "\n");
+	    // this.OUTPUT.writeBytes(attack + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
