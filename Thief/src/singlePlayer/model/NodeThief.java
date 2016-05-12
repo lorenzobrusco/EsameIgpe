@@ -52,6 +52,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     // TODO
     private boolean chatboxIsEnable;
     /** distace to rendering */
+    //TODO 
     private static final int RENDER = 25;
     /** speed main character */
     private static final float SPEED = 15;
@@ -59,14 +60,16 @@ public class NodeThief extends NodeCharacter implements Collition {
     private static final float BONFIREDISTANCE = 10f;
     /** length lifebar */
     private static final int SIZELIFEBAR = 17;
+    /**score for multiplayer*/
+    private int score;
     /** view direction */
     private Vector3f viewDirection = new Vector3f(0, 0, 1);
     /** minimum threshold for change color to lifebar */
     private int lifebarThreshold;
-
+    /**thief's Lifebar*/
     private Element lifeBarThief;
     private Element borderLifeBarThief;
-
+    /***/
     /** sounds */
     private Sound walkingOnGrassSound;
     private Sound swordSound;
@@ -92,6 +95,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     public NodeThief(Spatial model, boolean multiplayer) {
 	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
 	this.lifebarThreshold = (this.life * 40) / 100;
+	this.score = 0;
 	this.isRun = false;
 	this.waitAnimation = false;
 	this.chatboxIsEnable = false;
@@ -159,10 +163,15 @@ public class NodeThief extends NodeCharacter implements Collition {
     public void notifyUpdate(boolean attack) {
 	if (this.multiplayer)
 	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-		    characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation());
+		    characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation(), this.score);
 
     }
 
+    /**this method is called when thief kill someone*/
+    public void killSomeOne(){
+	this.score += 10; 
+    }
+    
     /** this method reset lifebar */
     public void resetProgressBar() {
 	if (this.lifeBarThief != null)
@@ -526,4 +535,11 @@ public class NodeThief extends NodeCharacter implements Collition {
     public void setSinglePlayer(boolean isSinglePlayer) {
 	this.isSinglePlayer = isSinglePlayer;
     }
+
+    /**this method get score*/
+    public int getScore() {
+        return score;
+    }
+    
+    
 }

@@ -182,32 +182,13 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	try {
 
-	    //TODO 
+	    // TODO
 	    ModelState stateModel = this.states.poll();
-	    String line = new StringBuilder().builderString(stateModel.getWalk(), stateModel.getView(), stateModel.getLocation(),
-		    stateModel.getLife(), stateModel.isAttack(), this.IAM, this.nameModel);
-	
+	    String line = new StringBuilder().builderString(stateModel.getWalk(), stateModel.getView(),
+		    stateModel.getLocation(), stateModel.getLife(), stateModel.isAttack(), this.IAM, this.nameModel,
+		    stateModel.getScore());
+
 	    this.OUTPUT.writeBytes(line + "\n");
-//	    this.OUTPUT.writeBytes(this.nameModel + "\n");
-//
-//	    this.OUTPUT.writeBytes(stateModel.getWalk().x + "\n");
-//	    this.OUTPUT.writeBytes(stateModel.getWalk().y + "\n");
-//	    this.OUTPUT.writeBytes(stateModel.getWalk().z + "\n");
-//
-//	    this.OUTPUT.writeBytes(stateModel.getView().x + "\n");
-//	    this.OUTPUT.writeBytes(stateModel.getView().y + "\n");
-//	    this.OUTPUT.writeBytes(stateModel.getView().z + "\n");
-//
-//	    this.OUTPUT.writeBytes(stateModel.getLocation().x + "\n");
-//	    this.OUTPUT.writeBytes(stateModel.getLocation().y + "\n");
-//	    this.OUTPUT.writeBytes(stateModel.getLocation().z + "\n");
-//
-//	    this.OUTPUT.writeBytes(stateModel.getLife() + "\n");
-//
-//	    this.OUTPUT.writeBytes(stateModel.isAttack() + "\n");
-
-//	    this.OUTPUT.writeBytes(ENDSENDSTATE + "\n");
-
 	    this.next = true;
 
 	} catch (IOException e) {
@@ -217,11 +198,11 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     /** This Method communicates an Player Updates */
-    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location) {
+    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
 	    if (next) {
 		this.next = false;
-		this.states.add(new ModelState(walk, view, life, attack, location));
+		this.states.add(new ModelState(walk, view, life, attack, location, score));
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    }
 	} catch (IOException e) {
@@ -244,22 +225,25 @@ public class Client extends Thread implements CommunicationProtocol {
     public void statePlayer() {
 	String player = null;
 	try {
-	    player = this.INPUT.readLine();
+	    String line = this.INPUT.readLine();
 
-	    final Vector3f walk = new FormatFloat().formatVector(this.INPUT.readLine(), this.INPUT.readLine(),
-		    this.INPUT.readLine());
+	    final String key = new StringBuilder().builderKeyPlayer(line);
 
-	    final Vector3f view = new FormatFloat().formatVector(this.INPUT.readLine(), this.INPUT.readLine(),
-		    this.INPUT.readLine());
+	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
 
-	    final int life = Integer.parseInt(this.INPUT.readLine());
+	    final Vector3f viewdirection = new StringBuilder().builderView(line);
 
-	    final boolean attack = Boolean.parseBoolean(INPUT.readLine());
+	    final int life = new StringBuilder().builderLife(line);
+
+	    final boolean attack = new StringBuilder().builderAttack(line);
+
+	    final int score = new StringBuilder().builderScore(line);
 
 	    if (GameManager.getIstance().getPlayers().get(player) != null) {
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setViewDirection(view);
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setWalkDirection(walk);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setViewDirection(viewdirection);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setWalkDirection(walkdirection);
 		GameManager.getIstance().getPlayers().get(player).setLife(life);
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).setScore(score);
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(player)).startAttack();
 	    }
@@ -410,10 +394,11 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(mouse,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("sendMessage",
-			new KeyTrigger(KeyInput.KEY_RETURN));
+		new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox, new KeyTrigger(KeyInput.KEY_9));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,"sendMessage");
+		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,
+		"sendMessage");
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }

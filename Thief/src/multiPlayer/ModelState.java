@@ -20,14 +20,17 @@ public class ModelState {
     private boolean attack;
     /** life */
     private int life;
+    /** player's score */
+    private int score;
 
-    public ModelState(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location) {
+    public ModelState(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 
 	this.walk = walk;
 	this.view = view;
 	this.location = location;
 	this.life = life;
 	this.attack = attack;
+	this.score = score;
     }
 
     /** get attach */
@@ -80,4 +83,16 @@ public class ModelState {
 	this.life = life;
     }
 
+    /**this method get score*/
+    public int getScore() {
+        return score;
+    }
+
+    /**this method set score*/
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    
+    
 }
