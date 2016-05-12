@@ -611,7 +611,7 @@ public class EditorTerrain implements ScreenController {
 
     /** this method add a portal */
     private void makePortal(Vector3f intersect) {
-	NodeModel portal = new NodeModel("Specials/Portal/Portal.mesh.j3o", new Vector3f(7.3f, 15f, 1000f));
+	NodeModel portal = new NodeModel("Specials/Portal/Portal.mesh.xml", new Vector3f(7.3f, 15f, 1000f));
 	portal.getModel().setLocalTranslation(intersect);
 	this.terrain.attachChild(portal.getModel());
 	portal.moveModel(portal.getModel().getLocalTranslation());

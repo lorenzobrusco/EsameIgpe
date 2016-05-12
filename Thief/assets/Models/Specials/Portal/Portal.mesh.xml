@@ -14515,7 +14515,7 @@
         </vertexbuffer>
     </sharedgeometry>
     <submeshes>
-        <submesh operationtype="triangle_list" material="Default_Top_left_soffet" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="1532" v1="1530" v2="1531"/>
                 <face v3="1533" v1="1530" v2="1532"/>
@@ -14819,7 +14819,7 @@
                 <face v3="1884" v1="1883" v2="1887"/>
             </faces>
         </submesh>
-        <submesh operationtype="triangle_list" material="Default" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="2" v1="0" v2="1"/>
                 <face v3="3" v1="0" v2="2"/>
@@ -15123,7 +15123,7 @@
                 <face v3="405" v1="404" v2="407"/>
             </faces>
         </submesh>
-        <submesh operationtype="triangle_list" material="Default_Top_right_soffet" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="410" v1="408" v2="409"/>
                 <face v3="411" v1="408" v2="410"/>
@@ -15427,7 +15427,7 @@
                 <face v3="759" v1="758" v2="761"/>
             </faces>
         </submesh>
-        <submesh operationtype="triangle_list" material="Default_Top_Slab" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="764" v1="762" v2="763"/>
                 <face v3="765" v1="762" v2="764"/>
@@ -15731,7 +15731,7 @@
                 <face v3="1135" v1="1134" v2="1137"/>
             </faces>
         </submesh>
-        <submesh operationtype="triangle_list" material="Default_right_pillar" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="1140" v1="1138" v2="1139"/>
                 <face v3="1141" v1="1138" v2="1140"/>
@@ -16035,7 +16035,7 @@
                 <face v3="1527" v1="1526" v2="1529"/>
             </faces>
         </submesh>
-        <submesh operationtype="triangle_list" material="Default_Base_left" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="1890" v1="1888" v2="1889"/>
                 <face v3="1891" v1="1888" v2="1890"/>
@@ -16543,7 +16543,7 @@
                 <face v3="2587" v1="2584" v2="2586"/>
             </faces>
         </submesh>
-        <submesh operationtype="triangle_list" material="Default_Base_right" use32bitindexes="False" usesharedvertices="true">
+        <submesh operationtype="triangle_list" material="RockMaterial" use32bitindexes="False" usesharedvertices="true">
             <faces count="300">
                 <face v3="2590" v1="2588" v2="2589"/>
                 <face v3="2591" v1="2588" v2="2590"/>
