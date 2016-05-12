@@ -15,6 +15,7 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -96,8 +97,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		GameManager.getIstance().getApplication().getGuiViewPort());
 	this.nifty = niftyDisplay.getNifty();
 	this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
+	//this.nifty.fromXml("Interface/Xml/multiPlayer.xml", "lifeBarScreen", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
+	
+
 
 	// this.menuSound.playSound();
     }
@@ -296,9 +300,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		new KeyTrigger(KeyInput.KEY_TAB));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-		new KeyTrigger(KeyInput.KEY_9));
-	this.inputManager.addListener(actionListener, "debug", "exit", "mouse", "chatBox");
+//	GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
+//		new KeyTrigger(KeyInput.KEY_9));
+	this.inputManager.addListener(actionListener, "debug", "exit", "mouse");
     }
 
     /**
@@ -398,9 +402,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-//	AppSettings gameSettings = new AppSettings(false);
+	AppSettings gameSettings = new AppSettings(false);
 //	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 //		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+//	
+//
 //	gameSettings.setFullscreen(true);
 //	gameSettings.setVSync(true);
 //	gameSettings.setTitle("Thief");

@@ -42,14 +42,30 @@
 	</controlDefinition>
 
 
+	<controlDefinition name="Scores">
+	 <panel childLayout="vertical" backgroundImage="Interface/Image/Graphics/blackBarHorizontal.png" width ="20%" height = "17%">
+	 <panel height="4%"/>
+	    <image 	filename="Interface/Image/Text/ScoreText.png" width="60%" height="30%" align="center"/>
+	     <text id="firstPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#2ef12a" text="First Player" align="center"/>	     
+	       <text id="secondPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="Second Player" align="center" />	       
+	         <text id="thirdPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="Third Player" align="center"/>
+
+	</panel>
+	</controlDefinition>
+
 	<screen id="lifeBarScreen" controller="multiPlayer.MultiPlayer">
 
-		<layer id="layerProgressBar" childLayout="vertical">
+		<layer id="layerProgressBar" childLayout="vertical" >
 			<panel id="panelProgressBar" childLayout="absolute">
 
 			</panel>
 
 
+		</layer>
+		
+		<layer id="LayerScore" childLayout="horizontal">
+		<panel childLayout="center" width="1%"/>
+		      <control name="Scores" y="1%"/>
 		</layer>
 
 		<layer id="layerBorder" childLayout="vertical">
@@ -63,8 +79,8 @@
 
 
 		<layer id="layerProgressBar" childLayout="horizontal">
-			<panel id="1" childLayout="horizontal" width="62%" />
-			<panel id="1" childLayout="vertical">
+			<panel  childLayout="horizontal" width="62%" />
+			<panel  childLayout="vertical">
 				<panel height="3%" />
 				<control id="chatMultiPlayer" name="myChat" width="100%"
 					visible="false" />

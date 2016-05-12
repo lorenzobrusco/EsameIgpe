@@ -6,7 +6,7 @@
 		<layer childLayout="center" id="layer">
 			<panel id="centralPanel" childLayout="horizontal">
 				<panel id="leftPanel" width="20%" height="98%" childLayout="vertical"
-					x="1%" backgroundImage="Interface/blackBar.png">
+					x="1%" backgroundImage="Interface/Image/Graphics/blackBar.png">
 					<panel id="currentModel" width="100%" height="30%"
 						childLayout="vertical">
 						<panel id="spaceCurrentModel" height="2%" />
@@ -85,7 +85,7 @@
 						</image>
 					</panel>
 				</panel>
-				<panel id="upPanel" height="15%" backgroundImage="Interface/blackBar.png"
+				<panel id="upPanel" height="15%" backgroundImage="Interface/Image/Graphics/blackBar.png"
 					childLayout="horizontal">
 					<panel id="items" width="100%" height="100%" padding="12%,1%,2%,2%"
 						childLayout="horizontal">
