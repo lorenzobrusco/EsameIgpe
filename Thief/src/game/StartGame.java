@@ -12,10 +12,10 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.renderer.Camera;
 import com.jme3.system.AppSettings;
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -68,15 +68,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** builder */
     public StartGame() {
-
-	this.characters = new ArrayList<String>();
-	this.debug = false;
-	this.singleplayer = false;
-	this.multiplayer = false;
-	this.editor = false;
-	this.indexCharacter = 0;
-	this.ipAddress = "";
-	this.namePlayer = "";
+	this.setup();
     }
 
     /** set parameters */
@@ -97,13 +89,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		GameManager.getIstance().getApplication().getGuiViewPort());
 	this.nifty = niftyDisplay.getNifty();
 	this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
-	//this.nifty.fromXml("Interface/Xml/multiPlayer.xml", "lifeBarScreen", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
-	
-
-
-	// this.menuSound.playSound();
+	// this.menuSound.playSound(); //TODO
     }
 
     /** choosed according to the game type */
@@ -141,7 +129,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.singleplayer = true;
 	this.multiplayer = false;
 	this.editor = false;
-	this.cam.clearViewportChanged();
 	GameManager.getIstance().setEditor(false);
 	this.flyCam.setEnabled(false);
 	GameManager.getIstance().getNifty().exit();
@@ -315,11 +302,22 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	System.exit(0);
     }
 
+    /**this method setup variables*/
+    public void setup(){
+	this.characters = new ArrayList<String>();
+	this.debug = false;
+	this.singleplayer = false;
+	this.multiplayer = false;
+	this.editor = false;
+	this.indexCharacter = 0;
+	this.ipAddress = "";
+	this.namePlayer = "";
+    }
+    
     /** this method disable flycam and set visible cursor */
     private void mouse() {
 	this.inputManager.setCursorVisible(!this.inputManager.isCursorVisible());
 	this.flyCam.setEnabled(!this.flyCam.isEnabled());
-
     }
 
     /** this method is called when user choose multiplayer */
@@ -367,10 +365,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this methos start server */
     public void startServer() {
-
 	GameManager.getIstance().startServer("");
 	openServerScreen();
-
     }
 
     /** this method close server */
@@ -402,7 +398,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-	AppSettings gameSettings = new AppSettings(false);
+//	AppSettings gameSettings = new AppSettings(false);
 //	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 //		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 //	

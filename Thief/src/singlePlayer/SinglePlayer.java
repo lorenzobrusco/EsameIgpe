@@ -1,5 +1,7 @@
 package singlePlayer;
 
+import javax.vecmath.GMatrix;
+
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -14,13 +16,13 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import control.GameRender;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
+import multiPlayer.notify.NotifyBoxAttack;
 
 /**
  * 
@@ -45,7 +47,7 @@ public class SinglePlayer implements ScreenController {
     private final LoadTerrain loadTerrain;
     private GameRender render;
     private Sound ambient;
-
+    private Camera camera;
     private Element progressLifeBarThief;
     private Element borderLifeBarThief;
 
@@ -53,19 +55,18 @@ public class SinglePlayer implements ScreenController {
 	    boolean water) {
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
-	cam.setFrustumFar(200);
-	cam.onFrameChange();
+	this.camera = cam;
+	this.camera.setFrustumFar(200);
+	this.camera.onFrameChange();
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	this.loadLevel(level, shadows, fog, water);
 	GameManager.getIstance().getNodeThief().setSinglePlayer(true);
-	GameManager.getIstance().getNodeThief().setCam(cam);
+	GameManager.getIstance().getNodeThief().setCam(this.camera);
 	this.setKey();
 	this.loadNifty();
 	GameManager.getIstance().printSecondLayer();
 	this.setupAmbientSound();
-	
-
     }
 
     public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
@@ -90,6 +91,13 @@ public class SinglePlayer implements ScreenController {
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
 	GameManager.getIstance().startEnemiesIntelligence();
+	if(!GameManager.getIstance().getBoxsAttack().isEmpty()){
+	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
+	    if(box.isAttach())
+		GameManager.getIstance().getTerrain().attachChild(box.getModel());
+	    else 
+		GameManager.getIstance().getTerrain().detachChild(box.getModel());
+	}
 
     }
 
@@ -163,7 +171,7 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().setPaused(false);
 	GameManager.getIstance().getApplication().getInputManager().clearMappings();
 	GameManager.getIstance().getNifty().exit();
-	this.rootNode.detachAllChildren();
+	this.rootNode.detachChild(nodeScene);
 	this.viewPort.clearProcessors();
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);

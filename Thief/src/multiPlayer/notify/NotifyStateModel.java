@@ -1,4 +1,4 @@
-package multiPlayer;
+package multiPlayer.notify;
 
 import singlePlayer.model.NodeCharacter;
 

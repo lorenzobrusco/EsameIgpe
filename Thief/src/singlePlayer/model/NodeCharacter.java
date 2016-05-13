@@ -14,6 +14,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import control.GameManager;
 import de.lessvoid.nifty.elements.Element;
+import multiPlayer.notify.NotifyBoxAttack;
 import singlePlayer.Sound;
 
 /**
@@ -156,7 +157,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
     /** this method stop attack */
     public void endAttack() {
-	GameManager.getIstance().getTerrain().detachChild(node);
+	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(false, this.node));
     }
 
     /** this method check if there is a collition */
@@ -212,8 +213,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.node.attachChild(boxAttach);
 	this.node.setLocalRotation(this.getLocalRotation());
 	boundingBox.setCenter(boxAttach.getLocalTranslation());
-
-	GameManager.getIstance().getTerrain().attachChild(node);
+	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(true, this.node));
     }
 
     /** this method get isDead */
@@ -223,11 +223,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
     /**this method is called when character is death*/
     public void death() {
-	if (this.alive)
-	    this.deathSound.playSound();
+	//if (this.alive)
+	    ///this.deathSound.playSound();
 	this.alive = false;
 	this.channel.setAnim(death, 0.50f);
-
 	this.channel.setLoopMode(LoopMode.DontLoop);
     }    
 

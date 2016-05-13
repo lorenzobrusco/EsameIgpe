@@ -23,9 +23,9 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
-import multiPlayer.format.FormatFloat;
 import multiPlayer.format.FormatStringChat;
 import multiPlayer.format.StringBuilder;
+import multiPlayer.notify.NotifyStateModel;
 import multiPlayer.protocols.CommunicationProtocol;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeThief;
@@ -36,9 +36,9 @@ import singlePlayer.model.NodeThief;
  *
  */
 public class Client extends Thread implements CommunicationProtocol {
+
     /** port communication */
     private final static int PORT = 8080;
-
     /** protocols communications with the Server */
     private final static String KNOCK = "knock knock";
     private final static String WHOAREYOU = "who are you?";
@@ -49,7 +49,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
-    private final static String ENDSENDSTATE = "end send your state";
     private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
@@ -60,7 +59,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String PATH = "assets/MultiPlayer/";
     private final static String PATHMODEL = "Models/Characters/";
     private final static String SENDMESSAGE = "Can I send a message?";
-
     /** Keyboard Commands */
     private final static String debug = "debug";
     private final static String mouse = "mouse";
@@ -75,7 +73,7 @@ public class Client extends Thread implements CommunicationProtocol {
     /** Max file Size */
     public final static int FILE_SIZE = 7134962;
     /** Life Number Player */
-    private final static int LIFENUMBER = 100;
+    private final static int LIFENUMBER = 50;
     /** damage inflicted on the enemy */
     private final static int DAMAGE = 5;
     /** Player IP Address */
@@ -135,25 +133,22 @@ public class Client extends Thread implements CommunicationProtocol {
 	    }
 	    this.OUTPUT.writeBytes(KNOCK + "\n");
 	    if (this.INPUT.readLine().equals(WHOAREYOU)) {
-		this.OUTPUT.writeBytes(IAM + "\n");
-		this.OUTPUT.writeBytes(this.namePlayer + "\n");
-		this.OUTPUT.writeBytes(this.nameModel + "\n");
-		// TODO metodo per trovare un punto dove nascere privo di nemici
-		// e di ostacoli;
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().x + "\n");
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().y + "\n");
-		this.OUTPUT.writeBytes(GameManager.getIstance().getNodeThief().getLocalTranslation().z + "\n");
 
-		System.out.println(nameModel + "---" + GameManager.getIstance().getNodeThief().getLocalTranslation());
+		final String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
+			GameManager.getIstance().getNodeThief().getLocalTranslation(),
+			GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel, 0);
+		this.OUTPUT.writeBytes(line + "\n");
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
 		this.OUTPUT.writeBytes(WHOISTHERE + "\n");
 		int size = Integer.parseInt(this.INPUT.readLine());
 		for (int i = 0; i < size; i++) {
-		    if (this.INPUT.readLine().equals(NEWPLAYER))
-			this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
-				INPUT.readLine());
+		    if (this.INPUT.readLine().equals(NEWPLAYER)) {
+			String line = this.INPUT.readLine();
+			this.addNewPlayers(new StringBuilder().builderKeyPlayer(line),
+				new StringBuilder().builderModel(line), new StringBuilder().builderPosition(line));
+		    }
 		}
 	    } else if (this.INPUT.readLine().equals(TRYAGAIN))
 		this.startConnection();
@@ -224,10 +219,17 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method Updates state of a Player */
     public void statePlayer() {
 	try {
-	    String line = this.INPUT.readLine();
-	    System.out.println("client: " + line);
 
-	    final String key = new StringBuilder().builderKeyPlayer(line);
+	    String line = this.INPUT.readLine();
+
+	    System.out.println("stateplayer: " + line );
+	    
+	    if(!new StringBuilder().checkString(line))
+		return;
+	    
+	    System.out.println("arrivato");
+	    
+	    String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
 
@@ -262,7 +264,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final String line = this.INPUT.readLine();
 	    final String player = new StringBuilder().builderKeyPlayer(line);
 	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
-	    
 	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
@@ -293,8 +294,9 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method communicates that there is a new player */
     public void communicationNewPlayer() {
 	try {
-	    this.addNewPlayers(INPUT.readLine(), INPUT.readLine(), INPUT.readLine(), INPUT.readLine(),
-		    INPUT.readLine());
+	    String line = this.INPUT.readLine();
+	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
+		    new StringBuilder().builderPosition(line));
 	} catch (IOException e) {
 	    System.out.println("eccezzioni nel communicationNewPlayer");
 	}
@@ -349,22 +351,20 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     /** This Method add a Player and his Model in the Game's Terrain */
-    public void addNewPlayers(String name, String model, String x, String y, String z) {
+    public void addNewPlayers(String name, String model, Vector3f location) {
 
-	name += model;
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
-	Vector3f vector3f = new Vector3f(Float.parseFloat(x), Float.parseFloat(y), Float.parseFloat(z));
-	System.out.println(vector3f);
-	spatial.setLocalTranslation(vector3f);
 
-	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), vector3f, LIFENUMBER,
+	spatial.setLocalTranslation(location);
+
+	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
 		DAMAGE, name);
 	players.addCharacterControl();
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
 	players.addPhysicsSpace();
-	players.setName(name);
-
+	players.setName(model);
+	System.out.println("name: " + name);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(players);
 	GameManager.getIstance().addPlayes(name, players);
 	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
