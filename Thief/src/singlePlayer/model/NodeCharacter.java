@@ -164,7 +164,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     public void isStricken(final int DAMAGE) {
 	if (this.alive) {
 	    this.life -= DAMAGE;
-	    this.setDamageLifeBar(DAMAGE);
 	    if (this.isDead()) {
 		// this.deathSound.playSound(); //TODO
 		this.alive = false;
@@ -301,7 +300,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     }
 
     /** override this method*/
-    public void setDamageLifeBar(int damage){
+    public void setDamageLifeBar(){
 	
     }
 

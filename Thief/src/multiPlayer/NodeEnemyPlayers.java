@@ -113,6 +113,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     @Override
     public void startAttack() {
 	super.startAttack();
+	this.checkCollition();
 	this.waitAnimation = true;
 	if (!switchAttack)
 	    this.channel.setAnim(attack1);

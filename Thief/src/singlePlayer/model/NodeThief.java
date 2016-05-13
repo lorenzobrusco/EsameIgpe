@@ -466,6 +466,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
+
 	// this.playScream();//TODO test
 
     }
@@ -474,7 +475,9 @@ public class NodeThief extends NodeCharacter implements Collition {
     public void isStricken(int DAMAGE) {
         // TODO Auto-generated method stub
         super.isStricken(DAMAGE);
+        this.setDamageLifeBar();
         this.notifyUpdate(false);
+	System.out.println(life);
     }
 
     /** this method is called if lifebar isn't create */
@@ -492,7 +495,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method set lifebar's dimension */
     @Override
-    public void setDamageLifeBar(int damage) {
+    public void setDamageLifeBar() {
 
 	final int value = (life * SIZELIFEBAR) / STARTLIFE;
 	this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));

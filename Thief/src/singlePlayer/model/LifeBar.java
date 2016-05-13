@@ -56,26 +56,22 @@ public class LifeBar extends Node {
 
     /** this method calculate remaining life before thief' attach */
     public void updateLifeBar(int damage) {
-	if (damage > this.life)
-	    // TODO
-	    ;
 
-	this.life -= damage;
+	if (damage >= life) {
+	    this.setVisibleLifeBar();
+	} else {
+	    this.life -= damage;
 
-	float xGreenBox = (life * greenBox.xExtent) / character.getStartLife();
-	greenBox.xExtent = xGreenBox;
-	if (life <= limitRedLife)
-	    geometryGreenBox.setMaterial(materialRedBox);
+	    float xGreenBox = (life * greenBox.xExtent) / character.getStartLife();
+	    greenBox.xExtent = xGreenBox;
+	    if (life <= limitRedLife)
+		geometryGreenBox.setMaterial(materialRedBox);
 
-	else
-	    geometryGreenBox.setMaterial(materialGreenBox);
-	greenBox.updateBound();
-	greenBox.updateGeometry();
-	geometryGreenBox.updateModelBound();
-
-	if (life <= 0) {
-	    greenBox.xExtent = 0;
-	    greenBox.yExtent = 0;
+	    else
+		geometryGreenBox.setMaterial(materialGreenBox);
+	    greenBox.updateBound();
+	    greenBox.updateGeometry();
+	    geometryGreenBox.updateModelBound();
 	    greenBox.zExtent = 0;
 	}
 

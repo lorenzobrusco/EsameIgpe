@@ -39,7 +39,6 @@ public class NodeEnemy extends NodeCharacter {
 	super(model, dimensionControll, intersection, 50, 10);
 	this.artificialIntelligence = new AI(this);
 	this.lifeBar = new LifeBar(this);
-
 	this.setBoundingBox();
 	this.isRun = false;
 	this.hasFound = false;
