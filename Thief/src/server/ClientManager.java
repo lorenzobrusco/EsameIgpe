@@ -203,8 +203,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	try {
 
-	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",this.nameClient, 0);
 	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
+	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",this.nameClient, 0);
 	    this.OUTPUT.writeBytes(line + "\n");
 
 	} catch (IOException e) {
@@ -311,10 +311,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.startConnection();
 	    this.currentTime = (int) System.currentTimeMillis();
+	    this.syncWithServer();
 	    while (this.establishedConnection) {
-//		if ((int) System.currentTimeMillis() - this.currentTime >= 10000) {
-//		    this.syncWithServer();
-//		}
+		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
+		    this.syncWithServer();
+		}
 		final String message = this.INPUT.readLine();
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
@@ -322,8 +323,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.endConnection();
 		if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
-		// if (message.equals(SENDPOSITION))
-		// this.syncWithServer();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();

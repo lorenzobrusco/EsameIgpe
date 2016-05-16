@@ -78,7 +78,7 @@ public class MultiPlayer implements ScreenController {
 
     /** this method is called for each update */
     public void simpleUpdate(Float tpf) {
-	//this.render.rayRendering();
+	this.render.rayRendering();
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
 	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {

@@ -194,7 +194,8 @@ public class GameManager {
 
     public boolean isWalkable(float x, float z) {
 	if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]
-		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2 && this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10 ) {
+		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2
+			&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10) {
 	    return false;
 	}
 	return true;
@@ -285,6 +286,11 @@ public class GameManager {
 			((ArrayList<NodeCharacter>) this.scorePlayers).set(i, character);
 		    }
 		}
+	    }
+	    for (int i = 0; i < this.scorePlayers.size() - 1; i++) {
+		String name = this.players.get(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getKeyCharacter())
+			.getName();
+		System.out.println(name + " " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore());
 	    }
 	}
     }
@@ -411,7 +417,7 @@ public class GameManager {
 	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
     }
 
-    public Collection<NotifyStateModel> getNotyStateModels() {
+    public synchronized Collection<NotifyStateModel> getNotyStateModels() {
 	return this.notifyStateModels;
     }
 
@@ -423,7 +429,7 @@ public class GameManager {
 	return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
     }
 
-    public Collection<NotifyBoxAttack> getBoxsAttack() {
+    public synchronized Collection<NotifyBoxAttack> getBoxsAttack() {
 	return this.boxsAttack;
     }
 
@@ -505,13 +511,11 @@ public class GameManager {
     }
 
     public float getWorldXExtent() {
-        return worldXExtent;
+	return worldXExtent;
     }
 
     public float getWorldZExtent() {
-        return worldZExtent;
+	return worldZExtent;
     }
 
-    
-    
 }

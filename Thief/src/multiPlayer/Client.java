@@ -25,6 +25,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import multiPlayer.format.FormatStringChat;
+import multiPlayer.format.FormatVector;
 import multiPlayer.format.StringBuilder;
 import multiPlayer.notify.NotifyStateModel;
 import multiPlayer.protocols.CommunicationProtocol;
@@ -221,6 +222,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    String line = this.INPUT.readLine();
 
+	    System.out.println(line);
 	    if (!new StringBuilder().checkString(line))
 		return;
 
@@ -236,9 +238,16 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
+	    System.out.println(viewdirection);
+	    System.out.println(walkdirection);
+	    
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
-		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
+		if (!new FormatVector().equal(viewdirection, new Vector3f(0, 0, 0))) {
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
+		}
+		if (!new FormatVector().equal(walkdirection, new Vector3f(0, 0, 0))) {
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
+		}
 		if (life < GameManager.getIstance().getPlayers().get(key).getLife()) {
 		    GameManager.getIstance().getPlayers().get(key).setLife(life);
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getLifeBar().updateLifeBar(0);
@@ -246,6 +255,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		if (score > ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getScore()) {
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setScore(score);
 		    GameManager.getIstance().sortScorePlyer();
+		    System.out.println("sorto");
 		}
 		if (attack)
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).startAttack();
@@ -255,20 +265,19 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel statePlayer");
-	} catch (NumberFormatException ex) {
-	    System.out.println("eccezioni formato float statePlayer");
 	}
     }
 
     public void syncPlayers() {
 	try {
 	    final String line = this.INPUT.readLine();
+	    if (!new StringBuilder().checkString(line))
+		return;
 	    final String player = new StringBuilder().builderKeyPlayer(line);
 	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
-	    System.out.println("player : " + player);
-	    System.out.println(GameManager.getIstance().getPlayers().get(player));
 	    if (GameManager.getIstance().getPlayers().get(player) != null)
-		GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
+		if (new FormatVector().equal(localPlayer, new Vector3f(0, 0, 0)))
+		    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
 	    // TODO catch
@@ -353,9 +362,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	    z = (float) ((Math.random() * GameManager.getIstance().getWorldZExtent()) * 0.25);
 
 	}
-	spatial.setLocalTranslation(
-		new Vector3f(x, GameManager.getIstance().getTerrainQuad().getHeight(new Vector2f(x, z)), z));
-	GameManager.getIstance().setNodeThief(new NodeThief(spatial, true));
+	Vector3f position = new Vector3f(x, GameManager.getIstance().getTerrainQuad().getHeight(new Vector2f(x, z)), z);
+	spatial.setLocalTranslation(position);
+	GameManager.getIstance().setNodeThief(new NodeThief(spatial, position, true));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(this.cam);
