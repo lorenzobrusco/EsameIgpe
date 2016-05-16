@@ -312,9 +312,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    this.currentTime = (int) System.currentTimeMillis();
 	    while (this.establishedConnection) {
-		if ((int) System.currentTimeMillis() - this.currentTime >= 10000) {
-		    this.syncWithServer();
-		}
+//		if ((int) System.currentTimeMillis() - this.currentTime >= 10000) {
+//		    this.syncWithServer();
+//		}
 		final String message = this.INPUT.readLine();
 		if (message.equals(SENDSTATE))
 		    this.communicationState();

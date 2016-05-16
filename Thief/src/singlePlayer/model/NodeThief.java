@@ -84,7 +84,6 @@ public class NodeThief extends NodeCharacter implements Collition {
     private Sound enemyWin;
     private Sound enemyView;
     /***/
-
     // TODO davide
     /** timer to speech */
     private int currentTime;

@@ -18,6 +18,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
@@ -136,7 +137,8 @@ public class Client extends Thread implements CommunicationProtocol {
 
 		final String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
 			GameManager.getIstance().getNodeThief().getLocalTranslation(),
-			GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,this.namePlayer, 0);
+			GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,
+			this.namePlayer, 0);
 		this.OUTPUT.writeBytes(line + "\n");
 	    }
 	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
@@ -152,7 +154,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		}
 	    } else if (this.INPUT.readLine().equals(TRYAGAIN))
 		this.startConnection();
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nello start");
 	}
     }
@@ -166,7 +168,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(IAM + nameModel + "\n");
 	    this.establishedConnection = false;
 
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel end");
 	}
     }
@@ -179,11 +181,11 @@ public class Client extends Thread implements CommunicationProtocol {
 	    ModelState stateModel = this.states.poll();
 	    String line = new StringBuilder().builderString(stateModel.getWalk(), stateModel.getView(),
 		    stateModel.getLocation(), stateModel.getLife(), stateModel.isAttack(), this.IAM, this.nameModel,
-		    this.namePlayer,stateModel.getScore());
+		    this.namePlayer, stateModel.getScore());
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.next = true;
 
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationState");
 	}
 
@@ -197,7 +199,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.states.add(new ModelState(walk, view, life, attack, location, score));
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	    }
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
     }
@@ -207,7 +209,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    String player = INPUT.readLine();
 	    this.removeModel(player);
-	} catch (IOException e) {//TODO cathc
+	} catch (IOException e) {// TODO cathc
 	    System.out.println("eccezioni nel communicateExitPlayer");
 	    // TODO da gestire
 	}
@@ -218,10 +220,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 
 	    String line = this.INPUT.readLine();
-	  
-	    if(!new StringBuilder().checkString(line))
+
+	    if (!new StringBuilder().checkString(line))
 		return;
-	    
+
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
@@ -233,15 +235,15 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final boolean attack = new StringBuilder().builderAttack(line);
 
 	    final int score = new StringBuilder().builderScore(line);
-	    	    
+
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
-		if(life < GameManager.getIstance().getPlayers().get(key).getLife()){
+		if (life < GameManager.getIstance().getPlayers().get(key).getLife()) {
 		    GameManager.getIstance().getPlayers().get(key).setLife(life);
-		    ((NodeEnemyPlayers)GameManager.getIstance().getPlayers().get(key)).getLifeBar().updateLifeBar(0);
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getLifeBar().updateLifeBar(0);
 		}
-		if(score > ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getScore()){
+		if (score > ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getScore()) {
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setScore(score);
 		    GameManager.getIstance().sortScorePlyer();
 		}
@@ -251,7 +253,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
 
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel statePlayer");
 	} catch (NumberFormatException ex) {
 	    System.out.println("eccezioni formato float statePlayer");
@@ -265,8 +267,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
 	    System.out.println("player : " + player);
 	    System.out.println(GameManager.getIstance().getPlayers().get(player));
-	    if(GameManager.getIstance().getPlayers().get(player) != null)
-	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
+	    if (GameManager.getIstance().getPlayers().get(player) != null)
+		GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
 	    // TODO catch
@@ -283,9 +285,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	    url = new URL("http://checkip.amazonaws.com/");
 	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 	    return br.readLine();
-	} catch (MalformedURLException e) { //TODO catch
+	} catch (MalformedURLException e) { // TODO catch
 	    System.out.println("eccezioni nel ipAddress");
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel ipAddress");
 	}
 
@@ -299,7 +301,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    String line = this.INPUT.readLine();
 	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
 		    new StringBuilder().builderPosition(line));
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationNewPlayer");
 	}
     }
@@ -343,7 +345,16 @@ public class Client extends Thread implements CommunicationProtocol {
      */
     public void bornPosition(Node scene) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
-	spatial.setLocalTranslation(new Vector3f(30, 0, 30));
+	float x = (float) ((Math.random() * GameManager.getIstance().getWorldXExtent()) * 0.25);
+	float z = (float) ((Math.random() * GameManager.getIstance().getWorldZExtent()) * 0.25);
+
+	while (!GameManager.getIstance().isWalkable(x, z)) {
+	    x = (float) ((Math.random() * GameManager.getIstance().getWorldXExtent()) * 0.25);
+	    z = (float) ((Math.random() * GameManager.getIstance().getWorldZExtent()) * 0.25);
+
+	}
+	spatial.setLocalTranslation(
+		new Vector3f(x, GameManager.getIstance().getTerrainQuad().getHeight(new Vector2f(x, z)), z));
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial, true));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
@@ -461,7 +472,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
-	} catch (IOException e) {//TODO catch
+	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel run");
 	}
     }
