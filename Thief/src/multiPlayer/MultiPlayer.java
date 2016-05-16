@@ -19,6 +19,8 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
+import multiPlayer.notify.NotifyBoxAttack;
+import multiPlayer.notify.NotifyStateModel;
 import singlePlayer.Sound;
 
 /**
@@ -86,6 +88,13 @@ public class MultiPlayer implements ScreenController {
 	    } else {
 		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
 	    }
+	}
+	if(!GameManager.getIstance().getBoxsAttack().isEmpty()){
+	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
+	    if(box.isAttach())
+		GameManager.getIstance().getTerrain().attachChild(box.getModel());
+	    else 
+		GameManager.getIstance().getTerrain().detachChild(box.getModel());
 	}
     }
 

@@ -58,7 +58,7 @@
 			<panel id="panelUp" childLayout="absolute" height="85%" />
 
 			<panel id="panelMessage" childLayout="vertical" height="40%">
-				<image id="MessageForPlayerImage" filename="Interface/Image/PressBonfire.png"
+				<image id="MessageForPlayerImage" filename="Interface/Image/Text/PressBonfire.png"
 					width="25%" height="15%" valign="top" align="center" />
 			</panel>
 
@@ -67,11 +67,11 @@
 
 	<screen id="pauseScreen" controller="singlePlayer.SinglePlayer">
 		<layer id="pauseBackground" childLayout="center">
-			<image id="pausebackground" filename="Interface/opacityBackgroundPause.png" />
+			<image id="pausebackground" filename="Interface/Image/Graphics/opacityBackgroundPause.png" />
 		</layer>
 		<layer id="pauseLayerForeground" childLayout="center">
 			<panel id="menuPanel" childLayout="center">
-				<image id="pauseSinglePlayer" filename="Interface/pauseBackground.png"
+				<image id="pauseSinglePlayer" filename="Interface/Image/Graphics/pauseBackground.png"
 					width="70%" height="70%" />
 				<panel id="exitPanel" childLayout="vertical" width="70%"
 					height="70%">

@@ -52,21 +52,21 @@ public class NodeThief extends NodeCharacter implements Collition {
     // TODO
     private boolean chatboxIsEnable;
     /** distace to rendering */
-    //TODO 
+    // TODO
     private static final int RENDER = 25;
     /** speed main character */
     private static final float SPEED = 15;
     /** minimum distace to active bonfire */
     private static final float BONFIREDISTANCE = 10f;
+    /** minimum distace to active portal */
+    private static final float PORTALDISTANCE = 10f;
     /** length lifebar */
     private static final int SIZELIFEBAR = 17;
-    /**score for multiplayer*/
-    private int score;
     /** view direction */
     private Vector3f viewDirection = new Vector3f(0, 0, 1);
     /** minimum threshold for change color to lifebar */
     private int lifebarThreshold;
-    /**thief's Lifebar*/
+    /** thief's Lifebar */
     private Element lifeBarThief;
     private Element borderLifeBarThief;
     /***/
@@ -93,7 +93,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** builder */
     public NodeThief(Spatial model, boolean multiplayer) {
-	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 10, 10);
+	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 50, 10);
 	this.lifebarThreshold = (this.life * 40) / 100;
 	this.score = 0;
 	this.isRun = false;
@@ -154,6 +154,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
     }
 
+    /** this method is called when main character is near portal */
+    public void endGame() {
+	if (this.getLocalTranslation()
+		.distance(GameManager.getIstance().getPortal().getLocalTranslation()) < PORTALDISTANCE) {
+	    // TODO avviare fine gioco
+	}
+    }
+
     /** this method reset current time */
     public void resetCurrentTime() {
 	this.currentTime = (int) System.currentTimeMillis();
@@ -163,15 +171,28 @@ public class NodeThief extends NodeCharacter implements Collition {
     public void notifyUpdate(boolean attack) {
 	if (this.multiplayer)
 	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
-		    characterControl.getViewDirection(), getLife(), attack, this.getLocalTranslation(), this.score);
+		    characterControl.getViewDirection(), super.life, attack, this.getLocalTranslation(), this.score);
 
     }
 
-    /**this method is called when thief kill someone*/
-    public void killSomeOne(){
-	this.score += 10; 
+    /** this method is called when thief kill someone */
+    public void killSomeOne() {
+	super.score += 10;
     }
-    
+
+    /** this method is called when main character is death */
+    public void startAgain() {
+	this.resetAll();
+	this.resetProgressBar();
+	this.resetCurrentTime();
+	final Vector3f spawnPoint = GameManager.getIstance().getBonfire().getLocalTranslation();
+	spawnPoint.x += 2f;
+	this.characterControl.warp(spawnPoint);
+	this.addPhysicsSpace();
+	GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
+	this.notifyUpdate(false);
+    }
+
     /** this method reset lifebar */
     public void resetProgressBar() {
 	if (this.lifeBarThief != null)
@@ -181,7 +202,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		filename("Interface/Image/LifeBar/innerLife.png");
 		x("12%");
 		y("87%");
-		width(NodeThief.this.SIZELIFEBAR + "%");
+		width(SIZELIFEBAR + "%");
 		height("2%");
 		imageMode("resize:7,2,7,7,7,2,7,2,7,2,7,7");
 	    }
@@ -342,8 +363,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 			    .findElementByName("chatMultiPlayer");
 		    el.setVisible(!el.isVisible());
-		   GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-				    .findElementByName("#chat-text-input").setFocus();
+		    GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
+			    .setFocus();
 		    GameManager.getIstance().pauseGame();
 		    chatboxIsEnable = !chatboxIsEnable;
 		} else {
@@ -355,11 +376,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 		}
 
 	    }
-	    //TODO TASTO ENTER PER CHATBOX
-//	    else if ((name.equals("sendMessage") && !isSinglePlayer && chatboxIsEnable ) && !pressed) {
-//	    	GameManager.getIstance().getMultiplayer().sendMessage();
-//	    	
-//	    }
+	    // TODO TASTO ENTER PER CHATBOX
+	    // else if ((name.equals("sendMessage") && !isSinglePlayer &&
+	    // chatboxIsEnable ) && !pressed) {
+	    // GameManager.getIstance().getMultiplayer().sendMessage();
+	    //
+	    // }
 	}
     };
 
@@ -384,6 +406,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 		enemy.resetAll();
 	    }
 	}
+	if (arg2.equals(death)) {
+	    arg1.setAnim(idle);
+	    NodeThief.this.waitAnimation = false;
+	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+		enemy.resetAll();
+	    }
+	    NodeThief.this.startAgain();
+	}
     }
 
     /** this methos is called when main character is death */
@@ -392,7 +422,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (this.alive) {
 	    super.death();
 	    this.resetCurrentTime();
-	    this.lifeBarThief.setVisible(false);
+	    // this.lifeBarThief.setVisible(false);
 	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 	    // this.walkingOnGrassSound.stopSound(); // TODO test
 	}
@@ -408,18 +438,22 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    final CollisionResult closest = collisionResult.getClosestCollision();
 	    if (closest != null) {
 		enemy.isStricken(this.getDAMAGE());
-		if (enemy instanceof NodeEnemy)
+		if (enemy instanceof NodeEnemy) {
 		    ((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
-		else if (enemy instanceof NodeEnemyPlayers)
+		    if (enemy.isDead()) {
+			// this.enemyWin.playSound();//TODO test
+			((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
+			((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
+		    }
+		} else if (enemy instanceof NodeEnemyPlayers) {
 		    ((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
-		// if (enemy.isDead()) {
-		// // this.enemyWin.playSound();//TODO test
-		// ((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
-		// ((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
-		// if (enemy instanceof NodeEnemyPlayers) {
-		// // TODO take point
-		// }
-		// }
+		    if (enemy.isDead()) {
+			// this.enemyWin.playSound();//TODO test
+			this.killSomeOne();
+			((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);
+			((NodeEnemyPlayers) enemy).getLifeBar().setVisibleLifeBar();
+		    }
+		}
 	    }
 	}
     }
@@ -430,8 +464,18 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
+
 	// this.playScream();//TODO test
 
+    }
+    
+    @Override
+    public void isStricken(int DAMAGE) {
+        // TODO Auto-generated method stub
+        super.isStricken(DAMAGE);
+        this.setDamageLifeBar();
+        this.notifyUpdate(false);
+	System.out.println(life);
     }
 
     /** this method is called if lifebar isn't create */
@@ -449,7 +493,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method set lifebar's dimension */
     @Override
-    public void setDamageLifeBar(int damage) {
+    public void setDamageLifeBar() {
 
 	final int value = (life * SIZELIFEBAR) / STARTLIFE;
 	this.lifeBarThief.setConstraintWidth(new SizeValue(value + "%"));
@@ -536,10 +580,4 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.isSinglePlayer = isSinglePlayer;
     }
 
-    /**this method get score*/
-    public int getScore() {
-        return score;
-    }
-    
-    
 }

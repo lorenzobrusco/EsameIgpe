@@ -36,10 +36,9 @@ public class NodeEnemy extends NodeCharacter {
     private LifeBar lifeBar;
 
     public NodeEnemy(Spatial model, Vector3f dimensionControll, Vector3f intersection) {
-	super(model, dimensionControll, intersection, 50, 1);
+	super(model, dimensionControll, intersection, 50, 10);
 	this.artificialIntelligence = new AI(this);
 	this.lifeBar = new LifeBar(this);
-
 	this.setBoundingBox();
 	this.isRun = false;
 	this.hasFound = false;

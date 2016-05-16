@@ -14,6 +14,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import control.GameManager;
 import de.lessvoid.nifty.elements.Element;
+import multiPlayer.notify.NotifyBoxAttack;
 import singlePlayer.Sound;
 
 /**
@@ -52,6 +53,8 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected final Node node = new Node("attackBox");
     /** check if it's alive */
     protected boolean alive;
+    /**score*/
+    protected int score;
     /** start position */
     private Vector3f startPosition;
     // TODO
@@ -76,6 +79,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.viewed = false;
 	this.setupAudio();
@@ -91,6 +95,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.setupAudio();
     }
@@ -105,6 +110,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.startPosition = intersection;
 	this.setupAudio();
@@ -121,6 +127,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.startPosition = intersection;
 	this.setupAudio();
@@ -156,14 +163,13 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
     /** this method stop attack */
     public void endAttack() {
-	GameManager.getIstance().getTerrain().detachChild(node);
+	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(false, this.node));
     }
 
     /** this method check if there is a collition */
     public void isStricken(final int DAMAGE) {
 	if (this.alive) {
 	    this.life -= DAMAGE;
-	    this.setDamageLifeBar(DAMAGE);
 	    if (this.isDead()) {
 		// this.deathSound.playSound(); //TODO
 		this.alive = false;
@@ -212,8 +218,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.node.attachChild(boxAttach);
 	this.node.setLocalRotation(this.getLocalRotation());
 	boundingBox.setCenter(boxAttach.getLocalTranslation());
-
-	GameManager.getIstance().getTerrain().attachChild(node);
+	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(true, this.node));
     }
 
     /** this method get isDead */
@@ -223,11 +228,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
     /**this method is called when character is death*/
     public void death() {
-	if (this.alive)
-	    this.deathSound.playSound();
+	//if (this.alive)
+	    ///this.deathSound.playSound();
 	this.alive = false;
 	this.channel.setAnim(death, 0.50f);
-
 	this.channel.setLoopMode(LoopMode.DontLoop);
     }    
 
@@ -293,6 +297,16 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	return DAMAGE;
     }
 
+    /**this method get score*/
+    public int getScore(){
+	return this.score;
+    }
+    
+    /**this method set score*/
+    public void setScore(int score){
+	this.score = score;
+    }
+    
     /** override this method*/
     public void checkCollition() {
     }
@@ -302,7 +316,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     }
 
     /** override this method*/
-    public void setDamageLifeBar(int damage){
+    public void setDamageLifeBar(){
 	
     }
 

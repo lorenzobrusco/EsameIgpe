@@ -2,9 +2,13 @@ package multiPlayer;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-
+import control.GameManager;
 import singlePlayer.model.LifeBar;
 import singlePlayer.model.NodeCharacter;
 
@@ -24,13 +28,11 @@ public class NodeEnemyPlayers extends NodeCharacter {
     private final String keyModel;
     /** enemy's lifebar */
     private final LifeBar lifeBar;
-    /** score */
-    private int score;
 
     /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
-	this.score = 0;
+	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -40,7 +42,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** builder */
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
-	this.score = 0;
+	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -51,7 +53,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
 	super(model, dimensionControll, intersect, life, DAMAGE);
-	this.score = 0;
+	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -62,7 +64,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
 	super(model, dimensionControll, intersect, life, DAMAGE);
-	this.score = 0;
+	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -99,6 +101,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     @Override
     public void startAttack() {
 	super.startAttack();
+	this.checkCollition();
 	this.waitAnimation = true;
 	if (!switchAttack)
 	    this.channel.setAnim(attack1);
@@ -110,7 +113,13 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** this method check if enemy strikes main character */
     @Override
     public void checkCollition() {
-	super.checkCollition();
+	CollisionResults collisionResult = new CollisionResults();
+	BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
+	GameManager.getIstance().getNodeThief().collideWith(box, collisionResult);
+	CollisionResult closest = collisionResult.getClosestCollision();
+	if (closest != null) {
+	    GameManager.getIstance().getNodeThief().isStricken(this.getDAMAGE());
+	}
     }
 
     /** jmonkey's method */

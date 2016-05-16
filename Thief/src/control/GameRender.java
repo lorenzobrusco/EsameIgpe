@@ -15,93 +15,93 @@ import singlePlayer.model.NodeThief;
  */
 public class GameRender {
 
-	/** The main land */
-	private TerrainQuad terrain;
-	/** main character */
-	private NodeThief thief;
-	/** minimum distace to render */
-	private final float VIEWDISTANCE = 160;
-	/** minimum distace to listen a static object's noises */
-	private final float AMBIENTSOUDNDISTANCE = 80;
-	/** minimum distance to listen a enemie's noises */
-	private final float ENEMYSOUNDDISTANCE = 50;
+    /** The main land */
+    private TerrainQuad terrain;
+    /** main character */
+    private NodeThief thief;
+    /** minimum distace to render */
+    private final float VIEWDISTANCE = 160;
+    /** minimum distace to listen a static object's noises */
+    private final float AMBIENTSOUDNDISTANCE = 80;
+    /** minimum distance to listen a enemie's noises */
+    private final float ENEMYSOUNDDISTANCE = 50;
+    /** minimum distance to see message for bonfire */
+    private final float MESSAGEDISTANCE = 10;
+    /** check if message is visible */
+    private boolean messageIsVisible;
 
-	private final float MESSAGEDISTANCE = 10;
+    public GameRender(TerrainQuad terrain) {
+	/** set terrain and take thief from GameManager */
+	this.terrain = terrain;
+	this.thief = GameManager.getIstance().getNodeThief();
+	this.messageIsVisible = false;
+    }
 
-	private boolean messageIsVisible;
+    private float distance(NodeModel model) {
+	/** Return distace from thief to each every models */
+	return thief.getWorldTranslation().distance(model.getWorldTranslation());
+    }
 
-	public GameRender(TerrainQuad terrain) {
-		/** set terrain and take thief from GameManager */
-		this.terrain = terrain;
-		this.thief = GameManager.getIstance().getNodeThief();
-		this.messageIsVisible = false;
-	}
+    public synchronized void rayRendering() {
+	/**
+	 * this methos attach and detach every models according to the distace
+	 * from thief, expet castle
+	 */
+	for (NodeModel model : GameManager.getIstance().getModels()) {
+	    if (!(model.getName().contains("Castle"))) {
+		if (distance(model) < this.VIEWDISTANCE) {
+		    if (GameManager.getIstance().addModelRender(model)) {
+			if (model instanceof NodeEnemy)
+			    GameManager.getIstance().addModelEnemy((NodeEnemy) model);
 
-	private float distance(NodeModel model) {
-		/** Return distace from thief to each every models */
-		return thief.getWorldTranslation().distance(model.getWorldTranslation());
-	}
+			terrain.attachChild(model);
+			GameManager.getIstance().getBullet().getPhysicsSpace().add(model);
+		    }
 
-	public synchronized void rayRendering() {
-		/**
-		 * this methos attach and detach every models according to the distace
-		 * from thief, expet castle
-		 */
-		for (NodeModel model : GameManager.getIstance().getModels()) {
-			if (!(model.getName().contains("Castle"))) {
-				if (distance(model) < this.VIEWDISTANCE) {
-					if (GameManager.getIstance().addModelRender(model)) {
-						if (model instanceof NodeEnemy)
-							GameManager.getIstance().addModelEnemy((NodeEnemy) model);
+		    if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Chapel")) {
+			model.playChapelSound();
+		    } else {
+			model.stopChapelSound();
+		    }
+		    if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Bonfire")) {
+			model.playBonfireSound();
 
-						terrain.attachChild(model);
-						GameManager.getIstance().getBullet().getPhysicsSpace().add(model);
-					}
+		    } else {
+			model.stopBonfireSound();
 
-					if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Chapel")) {
-						model.playChapelSound();
-					} else {
-						model.stopChapelSound();
-					}
-					if (distance(model) < this.AMBIENTSOUDNDISTANCE && model.getName().equals("Bonfire")) {
-						model.playBonfireSound();
-
-					} else {
-						model.stopBonfireSound();
-
-					}
-					// TODO MESSAGGIO
-					if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
-						if (!messageIsVisible) {
-							GameManager.getIstance().getSinglePlayer().showMessageBonfire();
-							messageIsVisible = !messageIsVisible;
-						}
-
-					} else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
-
-						if (messageIsVisible) {
-							GameManager.getIstance().getSinglePlayer().hideMessageBonfire();
-							messageIsVisible = !messageIsVisible;
-						}
-					}
-					if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE
-							&& !((NodeCharacter) model).isViewed()) {
-						((NodeCharacter) model).setViewed(true);
-						thief.playEnemyView();
-					}
-
-				} else {
-					GameManager.getIstance().detachModelRender(model);
-					terrain.detachChild(model);
-					GameManager.getIstance().getBullet().getPhysicsSpace().remove(model);
-				}
-			} else {
-				if (GameManager.getIstance().addModelRender(model)) {
-					terrain.attachChild(model);
-					GameManager.getIstance().getBullet().getPhysicsSpace().add(model);
-				}
+		    }
+		    // TODO MESSAGGIO
+		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
+			if (!messageIsVisible) {
+			    GameManager.getIstance().getSinglePlayer().showMessageBonfire();
+			    messageIsVisible = !messageIsVisible;
 			}
+
+		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
+
+			if (messageIsVisible) {
+			    GameManager.getIstance().getSinglePlayer().hideMessageBonfire();
+			    messageIsVisible = !messageIsVisible;
+			}
+		    }
+		    if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE
+			    && !((NodeCharacter) model).isViewed()) {
+			((NodeCharacter) model).setViewed(true);
+			thief.playEnemyView();
+		    }
+
+		} else {
+		    GameManager.getIstance().detachModelRender(model);
+		    terrain.detachChild(model);
+		    GameManager.getIstance().getBullet().getPhysicsSpace().remove(model);
 		}
+	    } else {
+		if (GameManager.getIstance().addModelRender(model)) {
+		    terrain.attachChild(model);
+		    GameManager.getIstance().getBullet().getPhysicsSpace().add(model);
+		}
+	    }
 	}
+    }
 
 }
