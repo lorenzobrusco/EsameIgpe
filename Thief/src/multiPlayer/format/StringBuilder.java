@@ -6,7 +6,7 @@ public class StringBuilder {
 
     private static final String DELIMITER = "&";
     private static final String SEPARATOR = "#";
-    private static final int MAXLENGTH = 14;
+    private static final int MAXLENGTH = 15;
 
     public String builderString(Vector3f walk, Vector3f view, Vector3f location, int life, boolean attack, String ip,
 	    String model, String name, int score) {
