@@ -66,8 +66,12 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private Sound menuSound;
     /** index */
     private int indexCharacter;
+    
+    private int indexHelp;
     /** characters list */
     private Collection<String> characters;
+    
+    private Collection<String> help;
     /** player's address */
     private String ipAddress;
     /** player's name */
@@ -214,6 +218,33 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    e.printStackTrace();
 	}
     }
+    
+    public void loadHelpScreen()
+    {
+    	loadHelp();
+    	nifty.gotoScreen("helpScreen");    	
+    }    
+    
+    public void loadHelp()
+    {
+    	try {
+    	    Files.walk(Paths.get("assets/Interface/Image/Graphics/Help")).forEach(filePath -> {
+    		if (Files.isRegularFile(filePath)) {  
+    			String[] split = filePath.getFileName().toString().split("\\.");
+    		    help.add(split[0]);
+    		}
+    	    });
+    	    NiftyImage image = nifty.getRenderEngine().createImage(null,
+    			    "Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(0) + ".png", false);
+    	    Element niftyElement = nifty.getScreen("helpScreen").findElementByName("backgroundHelpImage");
+    	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+    	    
+    	} catch (IOException e) {
+    	    // TODO gestire
+    	    e.printStackTrace();
+    	}
+    	
+    }
 
     /** this method change panel 2d and open server's panel */
     public void openServerScreen() {
@@ -276,6 +307,32 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
     }
+    
+    public void nextHelpImage() {
+    	if (indexHelp == help.size() - 1)
+    	    indexHelp = 0;
+    	else
+    	    indexHelp++;
+    	NiftyImage image = nifty.getRenderEngine().createImage(null,
+    		"Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(indexHelp) + ".png",
+    		false);
+    	Element niftyElement = nifty.getCurrentScreen().findElementByName("backgroundHelpImage");
+    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+        }
+    
+    public void redoHelpImage() {
+    	if (this.indexHelp == 0)
+    	    this.indexHelp = help.size() - 1;
+    	else
+    	    this.indexHelp--;
+    	final NiftyImage image = nifty.getRenderEngine().createImage(null,
+    			"Interface/Image/Graphics/Help/"  + ((ArrayList<String>) help).get(indexHelp) + ".png",
+    		false);
+    	final Element niftyElement = nifty.getCurrentScreen().findElementByName("backgroundHelpImage");
+    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+        }
 
     /** previus character */
     public void redoCharacter() {
@@ -315,11 +372,13 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method setup variables */
     public void setup() {
 	this.characters = new ArrayList<String>();
+	this.help = new ArrayList<String>();
 	this.debug = false;
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
 	this.indexCharacter = 0;
+	this.indexHelp = 0;
 	this.ipAddress = "";
 	this.namePlayer = "";
     }

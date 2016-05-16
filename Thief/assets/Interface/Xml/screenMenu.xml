@@ -85,15 +85,15 @@
 				</panel>
 
 				<panel id="settingsPanel" height="10%" childLayout="center">
-					<image filename="Interface/Image/Button/settingsButton.png" id="settingsButton"
+					<image filename="Interface/Image/Button/guideButton.png" id="guideButton"
 						width="60%" height="90%" visibleToMouse="true">
 
 						<effect>
-							<onStartHover name="nop" onStartEffect="startGrow(settingsButton)" />
-							<onEndHover name="nop" onStartEffect="endGrow(settingsButton)" />
+							<onStartHover name="nop" onStartEffect="startGrow(guideButton)" />
+							<onEndHover name="nop" onStartEffect="endGrow(guideButton)" />
 
 						</effect>
-						<interact onClick="loadScreen(settingsScreen)" />
+						<interact onClick="loadHelpScreen()" />
 					</image>
 				</panel>
 				<panel id="exitPanel" height="10%" childLayout="center">
@@ -111,76 +111,56 @@
 	</screen>
 
 
-	<screen id="settingsScreen" controller="game.StartGame">
-		<layer id="background_settings" childLayout="center">
-			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
+	<screen id="helpScreen" controller="game.StartGame">
+		<layer  childLayout="center" backgroundImage="Interface/Image/Graphics/background.jpg">
+		    <image id="backgroundHelpImage" filename="Interface/Image/Graphics/Help/0.png" width="100%" height="100%" />
+			<panel childLayout = "vertical" >
+					<panel childLayout = "vertical" height="80%"/>
+					<panel childLayout = "horizontal"  height = "15%" >
+						<panel width="8%" childLayout="center" />						
+						<panel childLayout = "center" width = "20%" >
+							<image filename="Interface/Image/Button/returnButton.png" id="returnButton"
+												width="60%" height="50%"  visibleToMouse="true">
+					
+												<effect>
+													<onStartHover name="nop" onStartEffect="startGrow(returnButton)" />
+													<onEndHover name="nop" onStartEffect="endGrow(returnButton)" />
+					
+												</effect>
+												<interact onClick="loadScreen(start)" />
+								</image>
+						</panel>
+						<panel  width="13%" childLayout="center" />
+						<image id="arrowLeft" filename="Interface/Image/Button/arrowLeft.png"
+										width="3%" height="18%" valign="center">
+										<effect>
+											<onStartHover name="nop" onStartEffect="startGrow(arrowLeft)" />
+											<onEndHover name="nop" onStartEffect="endGrow(arrowLeft)" />
+				
+										</effect>
+										<interact onClick="redoHelpImage()" />
+				
+						</image>
+							<panel  width="15%" childLayout="center" />
+									<image id="arrowRight" filename="Interface/Image/Button/arrowRight.png"
+										width="3%" height="18%" valign="center">
+										<effect>
+											<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
+											<onEndHover name="nop" onStartEffect="endGrow(arrowRight)" />
+				
+										</effect>
+										<interact onClick="nextHelpImage()" />
+				
+									</image>
+					</panel>		
+			    </panel>
 		</layer>
-
-		<layer id="foreground_start" childLayout="horizontal">
-			<panel id="space2" width="10%" childLayout="center" />
-			<panel id="panelOptions" width="28%" childLayout="vertical">
-				<panel id="titlePanel" height="20%" childLayout="center">
-					<image filename="Interface/Image/Text/titleSettings.png" width="60%"
-						height="90%" />
-				</panel>
-
-				<panel id="optionsPanel" height="60%" childLayout="horizontal">
-
-					<panel id="optionsPanelLeft" width="50%" childLayout="vertical">
-
-						<panel id="soundPanel" height="20%" childLayout="center">
-							<image filename="Interface/Image/Text/soundText.png" id="soundText"
-								width="150%" height="100%" />
-
-						</panel>
-
-						<panel id="shadowsPanel" height="20%" childLayout="center">
-							<image filename="Interface/Image/Text/shadowsText.png" id="shadowsText"
-								width="140%" height="100%" />
-						</panel>
-
-					</panel>
-
-					<panel id="optionsPanelRight" width="50%" childLayout="vertical">
-
-						<panel id="space3" height="8%" childLayout="center" />
-						<panel id="soundCheckboxOptionsSettings" childLayout="center"
-							align="center">
-							<control id="checkboxSound" name="checkbox" checked="true">
-							</control>
-						</panel>
-						<panel id="space4" height="15%" childLayout="center" />
-						<panel id="checkboxShadowsOptionsSettings" childLayout="center"
-							align="center">
-							<control id="checkboxShadows" name="checkbox" checked="true">
-							</control>
-						</panel>
-
-					</panel>
-
-
-				</panel>
-				<panel id="exitPanel" height="10%" childLayout="center">
-					<image filename="Interface/Image/Button/returnButton.png" id="returnButton"
-						width="60%" height="90%" visibleToMouse="true">
-
-						<effect>
-							<onStartHover name="nop" onStartEffect="startGrow(returnButton)" />
-							<onEndHover name="nop" onStartEffect="endGrow(returnButton)" />
-
-						</effect>
-						<interact onClick="loadScreen(start)" />
-					</image>
-				</panel>
-			</panel>
-
-		</layer>
+		
 	</screen>
 
 	<screen id="multiPlayerScreen" controller="game.StartGame">
-		<layer id="background_MultiPlayer" childLayout="center">
-			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
-			<image filename="Interface/Image/Graphics/opacityBackgroundPause.png" width="100%"
+		<layer id="background_MultiPlayer" childLayout="center" backgroundImage="Interface/Image/Graphics/background.jpg">
+			<image filename="Interface/Image/Graphics/backgroundOpacityMultiPlayer.png" width="100%"
 				height="100%" />
 		</layer>
 
