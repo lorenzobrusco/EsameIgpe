@@ -25,23 +25,36 @@ public class StringBuilder {
 
     public Vector3f builderWalk(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
-	Vector3f walk = new Vector3f(Float.parseFloat(split[0]), Float.parseFloat(split[1]),
-		Float.parseFloat(split[2]));
-	return walk;
+	try {
+	    Vector3f walk = new Vector3f(Float.parseFloat(split[0]), Float.parseFloat(split[1]),
+		    Float.parseFloat(split[2]));
+	    return walk;
+	} catch (NumberFormatException e) {
+	    return new Vector3f(0, 0, 0);
+	}
     }
 
     public Vector3f builderView(String line) {
-	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
-	Vector3f view = new Vector3f(Float.parseFloat(split[3]), Float.parseFloat(split[4]),
-		Float.parseFloat(split[5]));
-	return view;
+	try {
+	    String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
+	    Vector3f view = new Vector3f(Float.parseFloat(split[3]), Float.parseFloat(split[4]),
+		    Float.parseFloat(split[5]));
+	    return view;
+
+	} catch (NumberFormatException e) {
+	    return new Vector3f(0, 0, 0);
+	}
     }
 
     public Vector3f builderPosition(String line) {
-	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
-	Vector3f position = new Vector3f(Float.parseFloat(split[6]), Float.parseFloat(split[7]),
-		Float.parseFloat(split[8]));
-	return position;
+	try {
+	    String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
+	    Vector3f position = new Vector3f(Float.parseFloat(split[6]), Float.parseFloat(split[7]),
+		    Float.parseFloat(split[8]));
+	    return position;
+	} catch (NumberFormatException e) {
+	    return new Vector3f(0, 0, 0);
+	}
     }
 
     public int builderLife(String line) {
@@ -51,9 +64,14 @@ public class StringBuilder {
     }
 
     public boolean builderAttack(String line) {
+	try{
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	boolean attack = Boolean.parseBoolean(split[10]);
 	return attack;
+	}
+	catch(NumberFormatException e){
+	    return false;
+	}
     }
 
     public String builderKeyPlayer(String line) {
@@ -61,7 +79,6 @@ public class StringBuilder {
 	String key = split[11] + split[12];
 	return key;
     }
-
 
     public String builderModel(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
@@ -80,10 +97,14 @@ public class StringBuilder {
 	String address = split[13];
 	return address;
     }
-    
+
     public int builderScore(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
-	int score = Integer.parseInt(split[14]);
-	return score;
+	try {
+	    int score = Integer.parseInt(split[14]);
+	    return score;
+	} catch (NumberFormatException e) {
+	    return 0;
+	}
     }
 }

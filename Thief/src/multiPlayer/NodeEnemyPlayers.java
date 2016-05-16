@@ -97,6 +97,13 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
     }
 
+    /** this method is called when enemy death */
+    @Override
+    public void death() {
+	super.death();
+	this.waitAnimation = true;
+    }
+
     /** this method is invoked when attach enemy */
     @Override
     public void startAttack() {
@@ -134,6 +141,10 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	if (arg2.equals(attack4)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
 	    arg1.setAnim(idle);
+	    NodeEnemyPlayers.this.endAttack();
+	}
+	if (arg2.equals(death)) {
+	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.endAttack();
 	}
     }

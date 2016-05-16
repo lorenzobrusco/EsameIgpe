@@ -64,6 +64,8 @@ public class NodeThief extends NodeCharacter implements Collition {
     private static final int SIZELIFEBAR = 17;
     /** view direction */
     private Vector3f viewDirection = new Vector3f(0, 0, 1);
+    /** start position */
+    private Vector3f startPosition = new Vector3f();
     /** minimum threshold for change color to lifebar */
     private int lifebarThreshold;
     /** thief's Lifebar */
@@ -91,9 +93,10 @@ public class NodeThief extends NodeCharacter implements Collition {
     private int talkFrequence;
 
     /** builder */
-    public NodeThief(Spatial model, boolean multiplayer) {
+    public NodeThief(Spatial model, Vector3f startPositon, boolean multiplayer) {
 	super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 50, 10);
 	this.lifebarThreshold = (this.life * 40) / 100;
+	this.startPosition = startPositon;
 	this.score = 0;
 	this.isRun = false;
 	this.waitAnimation = false;
@@ -181,11 +184,17 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method is called when main character is death */
     public void startAgain() {
+	this.stop();
 	this.resetAll();
 	this.resetProgressBar();
 	this.resetCurrentTime();
-	final Vector3f spawnPoint = GameManager.getIstance().getBonfire().getLocalTranslation();
-	spawnPoint.x += 2f;
+	Vector3f spawnPoint;
+	if (multiplayer)
+	    spawnPoint = this.startPosition;
+	else {
+	    spawnPoint = GameManager.getIstance().getBonfire().getLocalTranslation();
+	    spawnPoint.x += 2f;
+	}
 	this.characterControl.warp(spawnPoint);
 	this.addPhysicsSpace();
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
@@ -402,14 +411,16 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    arg1.setAnim(idle);
 	    NodeThief.this.waitAnimation = false;
 	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
-		enemy.resetAll();
+		if (enemy instanceof NodeEnemy)
+		    enemy.resetAll();
 	    }
 	}
 	if (arg2.equals(death)) {
 	    arg1.setAnim(idle);
 	    NodeThief.this.waitAnimation = false;
 	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
-		enemy.resetAll();
+		if (enemy instanceof NodeEnemy)
+		    enemy.resetAll();
 	    }
 	    NodeThief.this.startAgain();
 	}
@@ -467,13 +478,13 @@ public class NodeThief extends NodeCharacter implements Collition {
 	// this.playScream();//TODO test
 
     }
-    
+
     @Override
     public void isStricken(int DAMAGE) {
-        // TODO Auto-generated method stub
-        super.isStricken(DAMAGE);
-        this.setDamageLifeBar();
-        this.notifyUpdate(false);
+	// TODO Auto-generated method stub
+	super.isStricken(DAMAGE);
+	this.setDamageLifeBar();
+	this.notifyUpdate(false);
 	System.out.println(life);
     }
 
