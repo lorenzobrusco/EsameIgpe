@@ -11,7 +11,6 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -91,6 +90,8 @@ public class EditorTerrain implements ScreenController {
     private NodeThief thiefModel;
     /** spawn point */
     private NodeModel bonFireModel;
+    /** portal */
+    private NodeModel nodePortal;
     /** last added node */
     private Node currentSpatial;
     /** stack containing models */
@@ -139,7 +140,7 @@ public class EditorTerrain implements ScreenController {
 	this.editorSound.playSound();
 
 	// TODO elimina thief e bon fire gia presenti
-	// this.terrain.detachChild(this.thiefModel.getModel());
+	//this.terrain.detachChild(this.thiefModel.getModel());
 	// this.terrain.detachChild(this.bonFireModel.getModel());
     }
 
@@ -256,7 +257,8 @@ public class EditorTerrain implements ScreenController {
     public void delete() {
 	if (!this.spatials.isEmpty()) {
 	    this.currentSpatial = ((Stack<Node>) this.spatials).pop();
-	    if (!this.currentSpatial.getName().contains("Yasuo") || !this.currentSpatial.getName().contains("bonfire"))
+	    if (!this.currentSpatial.getName().contains("Yasuo") || !this.currentSpatial.getName().contains("bonfire")
+		    || !this.currentSpatial.getName().contains("Ponfire"))
 		this.terrain.detachChild(this.currentSpatial);
 	    this.setName();
 	}
@@ -303,6 +305,7 @@ public class EditorTerrain implements ScreenController {
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
 	this.bonFireModel = GameManager.getIstance().getBonfire();
 	this.thiefModel = GameManager.getIstance().getNodeThief();
+	this.nodePortal = GameManager.getIstance().getPortal();
     }
 
     /** this method add a marker */
@@ -612,14 +615,12 @@ public class EditorTerrain implements ScreenController {
 
     /** this method add a portal */
     private void makePortal(Vector3f intersect) {
-	NodeModel portal = new NodeModel("Specials/Portal/Portal.mesh.xml", new Vector3f(7.3f, 15f, 1000f));
-	intersect.y+=2.9f;
-	portal.getModel().setLocalTranslation(intersect);
-	
-	portal.getModel().rotate(-90*FastMath.DEG_TO_RAD,0,0);
-	this.terrain.attachChild(portal.getModel());
-	portal.moveModel(portal.getModel().getLocalTranslation());
-	this.spatials.add((Node) portal.getModel());
+	intersect.y += 2.9f;
+	this.nodePortal.getModel().setLocalTranslation(intersect);
+
+	// this.terrain.attachChild(portal.getModel());
+	this.nodePortal.moveModel(this.nodePortal.getModel().getLocalTranslation());
+	this.spatials.add((Node) this.nodePortal.getModel());
 	this.setName();
 	GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 		.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -630,9 +631,8 @@ public class EditorTerrain implements ScreenController {
     private void makeThief(Vector3f intersect) {// TODO togliete commenti per
 	// creare un nuovo yasuo
 	// this.thiefModel = new
-	// NodeThief(GameManager.getIstance().getApplication().getAssetManager()
-	// .loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"));
-	this.thiefModel.getModel().setLocalTranslation(intersect);
+	// NodeThief(GameManager.getIstance().getApplication().getAssetManager().loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"),intersect,false);
+	// this.thiefModel.getModel().setLocalTranslation(intersect);
 	this.thiefModel.moveModel(intersect);
 	this.terrain.attachChild(thiefModel.getModel());
 	this.spatials.add((Node) this.thiefModel.getModel());

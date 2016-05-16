@@ -84,6 +84,24 @@ public class LoadTerrain {
 	}
     }
 
+    
+    /**
+     * this methods, if it's called from editor add spatial while if it isn't
+     * called from editor add spawn point
+     */
+    private void createNodeModelPortal(TerrainQuad terrain, Spatial spatial, Vector3f dimension, boolean editor) {
+
+	NodeModel nodeModel = new NodeModel(spatial, dimension, spatial.getLocalTranslation());
+	GameManager.getIstance().setPortal(nodeModel);
+	GameManager.getIstance().addModel(nodeModel);
+	if (editor) {
+	    nodeModel.moveModel(spatial.getWorldTranslation());
+	    terrain.detachChild(spatial);
+	    terrain.attachChild(nodeModel.getModel());
+	} else {
+	    terrain.detachChild(spatial);
+	}
+    }
     /**
      * this methods, if it's called from editor add spatial while if it isn't
      * called from editor add main character
@@ -126,7 +144,7 @@ public class LoadTerrain {
 		this.createNodeModel(terrain, spatial, new Vector3f(1.57f, 10f, 1000f), editor);
 	    } else if (spatial.getName().contains("Portal")) {
 		spatial.setName("Portal");
-		this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), editor);
+		this.createNodeModelPortal(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), editor);
 	    } else if (spatial.getName().contains("Bonfire")) {
 		spatial.setName("Bonfire");
 		GameManager.getIstance().addPointShadow(spatial.getLocalTranslation());

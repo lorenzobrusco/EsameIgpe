@@ -335,11 +335,17 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.isRun = false;
 		NodeThief.this.waitAnimation = true;
 		if (!NodeThief.this.changeAttack) {
+		    
 		    NodeThief.this.channel.setAnim(attack1);
-		    NodeThief.this.channel.setSpeed(3f);
+		    if (NodeThief.this.spatial.getName().contains("Yasuo")) {
+			NodeThief.this.channel.setSpeed(3f);			
+		    }
 		} else {
-		    NodeThief.this.channel.setAnim(attack4);
-		    NodeThief.this.channel.setSpeed(2f);
+		    if (NodeThief.this.spatial.getName().contains("Yasuo")) {
+			NodeThief.this.channel.setAnim(attack4);
+			NodeThief.this.channel.setSpeed(2f);
+		    }
+		    NodeThief.this.channel.setAnim(attack2);
 		}
 		NodeThief.this.startAttack();
 		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
