@@ -1,6 +1,8 @@
 package game;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -8,12 +10,17 @@ import java.util.Collection;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.Camera;
 import com.jme3.system.AppSettings;
+import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
+import com.jme3.util.BufferUtils;
+
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.TextField;
@@ -71,9 +78,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.setup();
     }
 
+    
     /** set parameters */
     public void simpleInitApp() {
-
+	super.restart();
 	this.bulletAppState = new BulletAppState();
 	this.stateManager.attach(bulletAppState);
 	this.assetManager.registerLocator("assets/", FileLocator.class);
@@ -125,7 +133,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start single player */
     public void singlePlayer() {
-
+	
 	this.singleplayer = true;
 	this.multiplayer = false;
 	this.editor = false;
@@ -211,7 +219,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void openServerScreen() {
 
 	if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
-	    final NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Graphics/serverIsClose.png", false);
+	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
+		    "Interface/Image/Graphics/serverIsClose.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
@@ -220,7 +229,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		    .setVisible(true);
 	} else if (GameManager.getIstance().getServer().isStart()) {
 
-	    final NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Graphics/serverIsOpen.png", false);
+	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
+		    "Interface/Image/Graphics/serverIsOpen.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
@@ -287,8 +297,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		new KeyTrigger(KeyInput.KEY_TAB));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
-//	GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-//		new KeyTrigger(KeyInput.KEY_9));
+	// GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
+	// new KeyTrigger(KeyInput.KEY_9));
 	this.inputManager.addListener(actionListener, "debug", "exit", "mouse");
     }
 
@@ -302,8 +312,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	System.exit(0);
     }
 
-    /**this method setup variables*/
-    public void setup(){
+    /** this method setup variables */
+    public void setup() {
 	this.characters = new ArrayList<String>();
 	this.debug = false;
 	this.singleplayer = false;
@@ -313,7 +323,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.ipAddress = "";
 	this.namePlayer = "";
     }
-    
+
     /** this method disable flycam and set visible cursor */
     private void mouse() {
 	this.inputManager.setCursorVisible(!this.inputManager.isCursorVisible());
@@ -344,7 +354,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is called when cursor move up a button */
     public void startGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + "OnHover.png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null,
+		"Interface/Image/Button/" + nameButton + "OnHover.png", false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -352,7 +363,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is called when cursor outside a button */
     public void endGrow(String nameButton) {
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + ".png", false);
+	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + ".png",
+		false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
@@ -398,23 +410,23 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-//	AppSettings gameSettings = new AppSettings(false);
-//	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-//		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-//	
-//
-//	gameSettings.setFullscreen(true);
-//	gameSettings.setVSync(true);
-//	gameSettings.setTitle("Thief");
-//	gameSettings.setUseInput(true);
-//	gameSettings.setFrameRate(500);
-//	gameSettings.setSamples(0);
-//	gameSettings.setRenderer("LWJGL-OpenGL2");
-//
-//	app.setSettings(gameSettings);
-//	app.setShowSettings(false);
-//	app.setDisplayFps(false);
-//	app.setDisplayStatView(false);
+	// AppSettings gameSettings = new AppSettings(false);
+	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+	//
+	//
+	// gameSettings.setFullscreen(true);
+	// gameSettings.setVSync(true);
+	// gameSettings.setTitle("Thief");
+	// gameSettings.setUseInput(true);
+	// gameSettings.setFrameRate(500);
+	// gameSettings.setSamples(0);
+	// gameSettings.setRenderer("LWJGL-OpenGL2");
+	//
+	// app.setSettings(gameSettings);
+	// app.setShowSettings(false);
+	// app.setDisplayFps(false);
+	// app.setDisplayStatView(false);
 
 	app.start();
 

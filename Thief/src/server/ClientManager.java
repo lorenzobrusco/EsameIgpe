@@ -90,8 +90,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
 		    for (ClientManager manager : this.server.getPlayers()) {
 
-			this.communicationNewPlayer(manager.address, manager.nameModel, manager.startPosition);
-			manager.communicationNewPlayer(this.address, this.nameModel, this.startPosition);
+			this.communicationNewPlayer(manager.address, manager.nameModel,manager.nameClient, manager.startPosition);
+			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient, this.startPosition);
 		    }
 
 		}
@@ -180,7 +180,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
 	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
-		    score);
+		    this.nameClient,score);
 
 	    this.OUTPUT.writeBytes(line + "\n");
 	} catch (IOException e) {
@@ -203,7 +203,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	try {
 
-	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "", 0);
+	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",this.nameClient, 0);
 	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
 	    this.OUTPUT.writeBytes(line + "\n");
 
@@ -231,11 +231,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     }
 
     // TODO
-    public void communicationNewPlayer(String name, String model, Vector3f location) {
+    public void communicationNewPlayer(String name, String model, String nameClient, Vector3f location) {
 	try {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), location, 0, false, name,
-		    model, 0);
+		    model,nameClient,0);
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.newPlayer = false;
 	} catch (IOException e) {
@@ -274,7 +274,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void notifyAllNewPlayer() {
 	for (ClientManager manager : this.server.getPlayers()) {
 	    manager.setNewPlayer(true);
-	    manager.communicationNewPlayer(this.player, this.nameModel, this.startPosition);
+	    manager.communicationNewPlayer(this.player, this.nameModel, this.nameClient, this.startPosition);
 	}
     }
 

@@ -62,8 +62,6 @@ public class NodeThief extends NodeCharacter implements Collition {
     private static final float PORTALDISTANCE = 10f;
     /** length lifebar */
     private static final int SIZELIFEBAR = 17;
-    /** score for multiplayer */
-    private int score;
     /** view direction */
     private Vector3f viewDirection = new Vector3f(0, 0, 1);
     /** minimum threshold for change color to lifebar */
@@ -179,7 +177,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method is called when thief kill someone */
     public void killSomeOne() {
-	this.score += 10;
+	super.score += 10;
     }
 
     /** this method is called when main character is death */
@@ -580,11 +578,6 @@ public class NodeThief extends NodeCharacter implements Collition {
     /** this method set singlePlayer */
     public void setSinglePlayer(boolean isSinglePlayer) {
 	this.isSinglePlayer = isSinglePlayer;
-    }
-
-    /** this method get score */
-    public int getScore() {
-	return score;
     }
 
 }

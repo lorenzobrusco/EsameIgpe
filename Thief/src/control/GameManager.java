@@ -12,9 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.vecmath.GMatrix;
-
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioRenderer;
@@ -58,6 +56,7 @@ public class GameManager {
     private Collection<PointLight> lights;
     private Collection<NotifyStateModel> notifyStateModels;
     private Collection<NotifyBoxAttack> boxsAttack;
+    private Collection<NodeCharacter> scorePlayers;
     private AbstractMap<String, NodeCharacter> players;
     private AbstractMap<Integer, Element> enemiesLifeBar;
     private SimpleApplication application;
@@ -80,13 +79,13 @@ public class GameManager {
     private boolean paused;
     private Server server;
 
-    
     private GameManager() {
 
 	this.spatial = new Stack<>();
 	this.nodeRender = new ArrayList<>();
 	this.enemies = new ArrayList<>();
 	this.lights = new ArrayList<>();
+	this.scorePlayers = new ArrayList<>();
 	this.players = new HashMap<>();
 	this.notifyStateModels = new ConcurrentLinkedQueue<>();
 	this.boxsAttack = new ConcurrentLinkedQueue<>();
@@ -107,10 +106,6 @@ public class GameManager {
 	this.application = application;
     }
 
-    public void setBullet(BulletAppState appState) {
-	this.bulletAppState = appState;
-    }
-    
     public void setTerrain(Node terrain) {
 	this.terrain = terrain;
 	this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
@@ -118,7 +113,6 @@ public class GameManager {
 	this.secondLayer = new boolean[(((int) (worldXExtent * 2)) + 1)][(((int) (worldZExtent * 2)) + 1)];
     }
 
-    
     public void addPointShadow(Vector3f localTranslation) {
 
 	PointLight light = new PointLight();
@@ -210,8 +204,8 @@ public class GameManager {
 	// ((NodeEnemy) enemy).pauseIntelligence();
 
     }
-    
-    public void quitGame(){
+
+    public void quitGame() {
 	this.spatial.clear();
 	this.nodeRender.clear();
 	this.enemies.clear();
@@ -221,7 +215,6 @@ public class GameManager {
 	this.enemiesLifeBar.clear();
 	this.terrain.detachAllChildren();
     }
-    
 
     public void resumeGame() {
 	this.paused = false;
@@ -232,8 +225,39 @@ public class GameManager {
 	// ((NodeEnemy) enemy).resumeIntelligence();
 	//
     }
-    
-    
+
+    public void startServer(String path) {
+	try {
+	    this.server = new Server("mountain");
+	    this.server.start();
+	} catch (UnknownHostException e) {
+
+	    e.printStackTrace();
+	} catch (IOException e) {
+
+	    e.printStackTrace();
+	}
+    }
+
+    public void sortScorePlyer() {
+	if (this.scorePlayers.size() > 1) {
+	    for (int i = 0; i < this.scorePlayers.size() - 1; i++) {
+		for (int j = i + 1; j < this.scorePlayers.size(); j++) {
+		    if (((ArrayList<NodeCharacter>) this.scorePlayers).get(j)
+			    .getScore() > ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore()) {
+			NodeCharacter character = ((ArrayList<NodeCharacter>) this.scorePlayers).get(i);
+			((ArrayList<NodeCharacter>) this.scorePlayers).set(i,
+				((ArrayList<NodeCharacter>) this.scorePlayers).get(j));
+			((ArrayList<NodeCharacter>) this.scorePlayers).set(i, character);
+		    }
+		}
+	    }
+	}
+    }
+
+    public void setBullet(BulletAppState appState) {
+	this.bulletAppState = appState;
+    }
 
     public void setClient(final Client client) {
 	this.client = client;
@@ -352,11 +376,11 @@ public class GameManager {
     public synchronized NotifyStateModel getNotifyStateModel() {
 	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
     }
-    
+
     public Collection<NotifyStateModel> getNotyStateModels() {
-  	return this.notifyStateModels;
-      }
-    
+	return this.notifyStateModels;
+    }
+
     public synchronized void addBoxAttack(NotifyBoxAttack boxAttack) {
 	this.boxsAttack.add(boxAttack);
     }
@@ -366,8 +390,21 @@ public class GameManager {
     }
 
     public Collection<NotifyBoxAttack> getBoxsAttack() {
-   	return this.boxsAttack;
-       }
+	return this.boxsAttack;
+    }
+
+    public void addScorePlayer(NodeCharacter character) {
+	this.scorePlayers.add(character);
+	this.sortScorePlyer();
+    }
+
+    public void removeScorePlayer(NodeCharacter character) {
+	this.scorePlayers.remove(character);
+    }
+
+    public ArrayList<NodeCharacter> getScorePlayer() {
+	return (ArrayList<NodeCharacter>) this.scorePlayers;
+    }
 
     public boolean[][] getSecondLayer() {
 	return this.secondLayer;
@@ -391,29 +428,14 @@ public class GameManager {
 
     public boolean isPaused() {
 	return this.paused;
-
     }
 
     public void setPaused(boolean value) {
 	this.paused = value;
-
     }
 
     public Server getServer() {
 	return server;
-    }
-
-    public void startServer(String path) {
-	try {
-	    this.server = new Server("mountain");
-	    this.server.start();
-	} catch (UnknownHostException e) {
-
-	    e.printStackTrace();
-	} catch (IOException e) {
-
-	    e.printStackTrace();
-	}
     }
 
     public SinglePlayer getSinglePlayer() {

@@ -53,6 +53,8 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected final Node node = new Node("attackBox");
     /** check if it's alive */
     protected boolean alive;
+    /**score*/
+    protected int score;
     /** start position */
     private Vector3f startPosition;
     // TODO
@@ -77,6 +79,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.viewed = false;
 	this.setupAudio();
@@ -92,6 +95,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.setupAudio();
     }
@@ -106,6 +110,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.startPosition = intersection;
 	this.setupAudio();
@@ -122,6 +127,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setAnim(idle);
 	this.STARTLIFE = life;
 	this.life = life;
+	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.startPosition = intersection;
 	this.setupAudio();
@@ -291,6 +297,16 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	return DAMAGE;
     }
 
+    /**this method get score*/
+    public int getScore(){
+	return this.score;
+    }
+    
+    /**this method set score*/
+    public void setScore(int score){
+	this.score = score;
+    }
+    
     /** override this method*/
     public void checkCollition() {
     }
