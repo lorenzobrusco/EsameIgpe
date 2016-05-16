@@ -23,6 +23,7 @@ import com.jme3.util.BufferUtils;
 
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.ListBox;
 import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
@@ -36,459 +37,474 @@ import singlePlayer.Sound;
 
 public class StartGame extends SimpleApplication implements ActionListener, ScreenController {
 
-    /** Path for panel 2d */
-    private static final String pathSinglePlayer = "singlePlayer.SinglePlayer";
-    /** Path for panel 2d */
-    private static final String pathEditor = "editor.EditorTerrain";
-    /** Path for panel 2d */
-    private static final String pathMultiPlayer = "multiPlayer.MultiPlayer";
-    /** editor */
-    private EditorTerrain editorTerrain;
-    /** single player */
-    private SinglePlayer player;
-    /** multi player */
-    private MultiPlayer multiPlayer;
-    /** check if player running single player */
-    private boolean singleplayer;
-    /** check if player running multiplayer */
-    private boolean multiplayer;
-    /** check if player running editor */
-    private boolean editor;
-    /** jmonkey's object to add physic */
-    private BulletAppState bulletAppState;
-    // TODO to delite
-    private boolean debug;
-    /** nifty's manager */
-    private NiftyJmeDisplay niftyDisplay;
-    /** panel 2d */
-    private Nifty nifty;
-    /** sound */
-    private Sound menuSound;
-    /** index */
-    private int indexCharacter;
-    
-    private int indexHelp;
-    /** characters list */
-    private Collection<String> characters;
-    
-    private Collection<String> help;
-    /** player's address */
-    private String ipAddress;
-    /** player's name */
-    private String namePlayer;
+	/** Path for panel 2d */
+	private static final String pathSinglePlayer = "singlePlayer.SinglePlayer";
+	/** Path for panel 2d */
+	private static final String pathEditor = "editor.EditorTerrain";
+	/** Path for panel 2d */
+	private static final String pathMultiPlayer = "multiPlayer.MultiPlayer";
+	/** editor */
+	private EditorTerrain editorTerrain;
+	/** single player */
+	private SinglePlayer player;
+	/** multi player */
+	private MultiPlayer multiPlayer;
+	/** check if player running single player */
+	private boolean singleplayer;
+	/** check if player running multiplayer */
+	private boolean multiplayer;
+	/** check if player running editor */
+	private boolean editor;
+	/** jmonkey's object to add physic */
+	private BulletAppState bulletAppState;
+	// TODO to delite
+	private boolean debug;
+	/** nifty's manager */
+	private NiftyJmeDisplay niftyDisplay;
+	/** panel 2d */
+	private Nifty nifty;
+	/** sound */
+	private Sound menuSound;
+	/** index */
+	private int indexCharacter;
 
-    /** builder */
-    public StartGame() {
-	this.setup();
-    }
+	private int indexHelp;
+	/** characters list */
+	private Collection<String> characters;
 
-    
-    /** set parameters */
-    public void simpleInitApp() {
-	super.restart();
-	this.bulletAppState = new BulletAppState();
-	this.stateManager.attach(bulletAppState);
-	this.assetManager.registerLocator("assets/", FileLocator.class);
-	GameManager.getIstance().setParams(this);
-	GameManager.getIstance().setBullet(bulletAppState);
-	this.setupSound();
-	this.flyCam.setMoveSpeed(100f);
-	this.flyCam.setEnabled(false);
-	this.mouseInput.setCursorVisible(true);
-	this.niftyDisplay = new NiftyJmeDisplay(GameManager.getIstance().getApplication().getAssetManager(),
-		GameManager.getIstance().getApplication().getInputManager(),
-		GameManager.getIstance().getApplication().getAudioRenderer(),
-		GameManager.getIstance().getApplication().getGuiViewPort());
-	this.nifty = niftyDisplay.getNifty();
-	this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
-	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
-	GameManager.getIstance().setNifty(nifty);
-	// this.menuSound.playSound(); //TODO
-    }
+	private Collection<String> help;
+	/** player's address */
+	private String ipAddress;
+	/** player's name */
+	private String namePlayer;
 
-    /** choosed according to the game type */
-    @Override
-    public void simpleUpdate(float tpf) {
-	if (this.singleplayer)
-	    this.player.simpleUpdate(tpf);
-	else if (this.editor)
-	    this.editorTerrain.simpleUpdate(tpf);
-	else if (this.multiplayer)
-	    this.multiPlayer.simpleUpdate(tpf);
-    }
-
-    /** check which button is pressed */
-    public ActionListener actionListener = new ActionListener() {
-	public void onAction(String name, boolean pressed, float value) {
-	    // TODO to delete
-	    if (name.equals("debug")) {
-		debug = !debug;
-		bulletAppState.setDebugEnabled(debug);
-	    }
-	    //
-	    if (name.equals("exit")) {
-		StartGame.this.closeGame();
-	    } else if (name.equals("mouse") && !singleplayer) {
-		StartGame.this.mouse();
-	    }
-
+	/** builder */
+	public StartGame() {
+		this.setup();
 	}
-    };
 
-    /** start single player */
-    public void singlePlayer() {
-	
-	this.singleplayer = true;
-	this.multiplayer = false;
-	this.editor = false;
-	GameManager.getIstance().setEditor(false);
-	this.flyCam.setEnabled(false);
-	GameManager.getIstance().getNifty().exit();
-	GameManager.getIstance().setModelGame(pathSinglePlayer);
-	this.player = new SinglePlayer(viewPort, rootNode, cam, "test", true, true, true);
-	this.initKeys();
-	this.menuSound.stopSound();
+	/** set parameters */
+	public void simpleInitApp() {
+		super.restart();
+		this.bulletAppState = new BulletAppState();
+		this.stateManager.attach(bulletAppState);
+		this.assetManager.registerLocator("assets/", FileLocator.class);
+		GameManager.getIstance().setParams(this);
+		GameManager.getIstance().setBullet(bulletAppState);
+		this.setupSound();
+		this.flyCam.setMoveSpeed(100f);
+		this.flyCam.setEnabled(false);
+		this.mouseInput.setCursorVisible(true);
+		this.niftyDisplay = new NiftyJmeDisplay(GameManager.getIstance().getApplication().getAssetManager(),
+				GameManager.getIstance().getApplication().getInputManager(),
+				GameManager.getIstance().getApplication().getAudioRenderer(),
+				GameManager.getIstance().getApplication().getGuiViewPort());
+		this.nifty = niftyDisplay.getNifty();
+		this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
+		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
+		GameManager.getIstance().setNifty(nifty);
+		// this.menuSound.playSound(); //TODO
+	}
 
-    }
+	/** choosed according to the game type */
+	@Override
+	public void simpleUpdate(float tpf) {
+		if (this.singleplayer)
+			this.player.simpleUpdate(tpf);
+		else if (this.editor)
+			this.editorTerrain.simpleUpdate(tpf);
+		else if (this.multiplayer)
+			this.multiPlayer.simpleUpdate(tpf);
+	}
 
-    /** start multiplayer */
-    public void multiPlayer() {
-
-	this.multiplayer = true;
-	this.singleplayer = false;
-	this.editor = false;
-	this.flyCam.setEnabled(false);
-	GameManager.getIstance().getNifty().exit();
-	this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
-	this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
-	GameManager.getIstance().setEditor(false);
-	GameManager.getIstance().setModelGame(pathMultiPlayer);
-	this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, ipAddress, namePlayer,
-		((ArrayList<String>) characters).get(indexCharacter));
-	this.initKeys();
-	this.menuSound.stopSound();
-    }
-
-    /** start editor */
-    public void editor() {
-
-	this.editor = true;
-	this.singleplayer = false;
-	this.multiplayer = false;
-	this.flyCam.setEnabled(true);
-	GameManager.getIstance().getNifty().exit();
-	GameManager.getIstance().setEditor(true);
-	GameManager.getIstance().setModelGame(pathEditor);
-	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
-	this.mouseInput.setCursorVisible(false);
-	this.initKeys();
-	this.menuSound.stopSound();
-
-    }
-
-    /** thie method setup sound */
-    public void setupSound() {
-	this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
-    }
-
-    /** this method load next panel 2d */
-    public void loadScreen(String nextScreen) {
-	nifty.gotoScreen(nextScreen);
-
-    }
-
-    /** this method load characters list */
-    public void loadCharacter() {
-	try {
-	    Files.walk(Paths.get("assets/Interface/MultiPlayer/PlayerImage")).forEach(filePath -> {
-		if (Files.isRegularFile(filePath)) {
-		    String[] split = filePath.getFileName().toString().split("\\.");
-		    characters.add(split[0]);
+	/** check which button is pressed */
+	public ActionListener actionListener = new ActionListener() {
+		public void onAction(String name, boolean pressed, float value) {
+			// TODO to delete
+			if (name.equals("debug")) {
+				debug = !debug;
+				bulletAppState.setDebugEnabled(debug);
+			}
+			//
+			if (name.equals("exit")) {
+				StartGame.this.closeGame();
+			} else if (name.equals("mouse") && !singleplayer) {
+				StartGame.this.mouse();
+			}
 
 		}
-	    });
-	    NiftyImage image = nifty.getRenderEngine().createImage(null,
-		    "Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(0) + ".png", false);
-	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
-	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
-	}
-    }
-    
-    public void loadHelpScreen()
-    {
-    	loadHelp();
-    	nifty.gotoScreen("helpScreen");    	
-    }    
-    
-    public void loadHelp()
-    {
-    	try {
-    	    Files.walk(Paths.get("assets/Interface/Image/Graphics/Help")).forEach(filePath -> {
-    		if (Files.isRegularFile(filePath)) {  
-    			String[] split = filePath.getFileName().toString().split("\\.");
-    		    help.add(split[0]);
-    		}
-    	    });
-    	    NiftyImage image = nifty.getRenderEngine().createImage(null,
-    			    "Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(0) + ".png", false);
-    	    Element niftyElement = nifty.getScreen("helpScreen").findElementByName("backgroundHelpImage");
-    	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-    	    
-    	} catch (IOException e) {
-    	    // TODO gestire
-    	    e.printStackTrace();
-    	}
-    	
-    }
+	};
 
-    /** this method change panel 2d and open server's panel */
-    public void openServerScreen() {
+	/** start single player */
+	public void singlePlayer() {
+		this.singleplayer = true;
+		this.multiplayer = false;
+		this.editor = false;
+		GameManager.getIstance().setEditor(false);
+		this.flyCam.setEnabled(false);
+		GameManager.getIstance().getNifty().exit();
+		GameManager.getIstance().setModelGame(pathSinglePlayer);
+		String[] level = GameManager.getIstance().getNifty().getCurrentScreen()
+				.findNiftyControl("landscapeListBox", ListBox.class).getFocusItem().toString().split("\\.");
+		this.player = new SinglePlayer(viewPort, rootNode, cam, level[0], true, true, true);
+		this.initKeys();
+		this.menuSound.stopSound();
 
-	if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
-	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
-		    "Interface/Image/Graphics/serverIsClose.png", false);
-	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
-	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
-		    .setVisible(false);
-	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
-		    .setVisible(true);
-	} else if (GameManager.getIstance().getServer().isStart()) {
-
-	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
-		    "Interface/Image/Graphics/serverIsOpen.png", false);
-	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
-	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
-		    .setVisible(true);
-	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
-		    .setVisible(false);
-	}
-	this.loadScreen("serverScreen");
-
-    }
-
-    /** this method is invoked when user press on textfield */
-    public void resetParamsTextfield(String nameTextField) {
-
-	if (nameTextField.equals("myTextFieldName"))
-	    if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-		    .getDisplayedText().equals("Your Name"))
-		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-			.setText("");
-
-	if (nameTextField.equals("myTextFieldIP"))
-	    if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-		    .getDisplayedText().equals("IP-address")
-		    || (GameManager.getIstance().getNifty().getCurrentScreen()
-			    .findNiftyControl(nameTextField, TextField.class).getDisplayedText().equals(getIPAddress())
-			    && GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-				    .findElementByName("myTextFieldIP").isFocusable()))
-		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-			.setText("");
-
-    }
-
-    /** next character */
-    public void nextCharacter() {
-	if (indexCharacter == characters.size() - 1)
-	    indexCharacter = 0;
-	else
-	    indexCharacter++;
-	NiftyImage image = nifty.getRenderEngine().createImage(null,
-		"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(indexCharacter) + ".png",
-		false);
-	Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-
-    }
-    
-    public void nextHelpImage() {
-    	if (indexHelp == help.size() - 1)
-    	    indexHelp = 0;
-    	else
-    	    indexHelp++;
-    	NiftyImage image = nifty.getRenderEngine().createImage(null,
-    		"Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(indexHelp) + ".png",
-    		false);
-    	Element niftyElement = nifty.getCurrentScreen().findElementByName("backgroundHelpImage");
-    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-
-        }
-    
-    public void redoHelpImage() {
-    	if (this.indexHelp == 0)
-    	    this.indexHelp = help.size() - 1;
-    	else
-    	    this.indexHelp--;
-    	final NiftyImage image = nifty.getRenderEngine().createImage(null,
-    			"Interface/Image/Graphics/Help/"  + ((ArrayList<String>) help).get(indexHelp) + ".png",
-    		false);
-    	final Element niftyElement = nifty.getCurrentScreen().findElementByName("backgroundHelpImage");
-    	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-
-        }
-
-    /** previus character */
-    public void redoCharacter() {
-	if (this.indexCharacter == 0)
-	    this.indexCharacter = characters.size() - 1;
-	else
-	    this.indexCharacter--;
-	final NiftyImage image = nifty.getRenderEngine().createImage(null,
-		"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(indexCharacter) + ".png",
-		false);
-	final Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-
-    }
-
-    /** this method set keys */
-    private void initKeys() {
-	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-		new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
-		new KeyTrigger(KeyInput.KEY_ESCAPE));
-	// GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-	// new KeyTrigger(KeyInput.KEY_9));
-	this.inputManager.addListener(actionListener, "debug", "exit", "mouse");
-    }
-
-    /**
-     * this method, close connection if user playing in multiplayer and then
-     * close game
-     */
-    public void closeGame() {
-	if (this.multiplayer)
-	    this.multiPlayer.exit();
-	System.exit(0);
-    }
-
-    /** this method setup variables */
-    public void setup() {
-	this.characters = new ArrayList<String>();
-	this.help = new ArrayList<String>();
-	this.debug = false;
-	this.singleplayer = false;
-	this.multiplayer = false;
-	this.editor = false;
-	this.indexCharacter = 0;
-	this.indexHelp = 0;
-	this.ipAddress = "";
-	this.namePlayer = "";
-    }
-
-    /** this method disable flycam and set visible cursor */
-    private void mouse() {
-	this.inputManager.setCursorVisible(!this.inputManager.isCursorVisible());
-	this.flyCam.setEnabled(!this.flyCam.isEnabled());
-    }
-
-    /** this method is called when user choose multiplayer */
-    public void openMultiPlayerScreen() {
-
-	if (this.characters.isEmpty()) {
-	    this.loadCharacter();
 	}
 
-	if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-		    .findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-		    .setFocusable(false);
-	} else {
+	/** start multiplayer */
+	public void multiPlayer() {
 
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-		    .setFocusable(true);
+		this.multiplayer = true;
+		this.singleplayer = false;
+		this.editor = false;
+		this.flyCam.setEnabled(false);
+		GameManager.getIstance().getNifty().exit();
+		this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
+				.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
+		this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
+				.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
+		GameManager.getIstance().setEditor(false);
+		GameManager.getIstance().setModelGame(pathMultiPlayer);
+		this.multiPlayer = new MultiPlayer(viewPort, rootNode, cam, ipAddress, namePlayer,
+				((ArrayList<String>) characters).get(indexCharacter));
+		this.initKeys();
+		this.menuSound.stopSound();
 	}
-	loadScreen("multiPlayerScreen");
 
-    }
+	/** start editor */
+	public void editor() {
 
-    /** this method is called when cursor move up a button */
-    public void startGrow(String nameButton) {
+		this.editor = true;
+		this.singleplayer = false;
+		this.multiplayer = false;
+		this.flyCam.setEnabled(true);
+		GameManager.getIstance().getNifty().exit();
+		GameManager.getIstance().setEditor(true);
+		GameManager.getIstance().setModelGame(pathEditor);
+		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
+		this.mouseInput.setCursorVisible(false);
+		this.initKeys();
+		this.menuSound.stopSound();
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null,
-		"Interface/Image/Button/" + nameButton + "OnHover.png", false);
-	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-    }
+	}
 
-    /** this method is called when cursor outside a button */
-    public void endGrow(String nameButton) {
+	/** thie method setup sound */
+	public void setupSound() {
+		this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
+	}
 
-	NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + ".png",
-		false);
-	Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-    }
+	/** this method load next panel 2d */
+	public void loadScreen(String nextScreen) {
+		nifty.gotoScreen(nextScreen);
 
-    /** this method return ip */
-    public String getIPAddress() {
-	return GameManager.getIstance().ipAddress();
+	}
 
-    }
+	/** this method load characters list */
+	public void loadCharacter() {
+		try {
+			Files.walk(Paths.get("assets/Interface/MultiPlayer/PlayerImage")).forEach(filePath -> {
+				if (Files.isRegularFile(filePath)) {
+					String[] split = filePath.getFileName().toString().split("\\.");
+					characters.add(split[0]);
 
-    /** this methos start server */
-    public void startServer() {
-	GameManager.getIstance().startServer("");
-	openServerScreen();
-    }
+				}
+			});
+			NiftyImage image = nifty.getRenderEngine().createImage(null,
+					"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(0) + ".png", false);
+			Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
+			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+		} catch (IOException e) {
+			// TODO gestire
+			e.printStackTrace();
+		}
+	}
 
-    /** this method close server */
-    public void closeServer() {
+	public void loadHelpScreen() {
+		loadHelp();
+		nifty.gotoScreen("helpScreen");
+	}
 
-	GameManager.getIstance().getServer().stopServer();
-	openServerScreen();
-    }
+	public void loadHelp() {
+		try {
+			Files.walk(Paths.get("assets/Interface/Image/Graphics/Help")).forEach(filePath -> {
+				if (Files.isRegularFile(filePath)) {
+					String[] split = filePath.getFileName().toString().split("\\.");
+					help.add(split[0]);
+				}
+			});
+			NiftyImage image = nifty.getRenderEngine().createImage(null,
+					"Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(0) + ".png", false);
+			Element niftyElement = nifty.getScreen("helpScreen").findElementByName("backgroundHelpImage");
+			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
-    /** jmonkey's method */
-    @Override
-    public void onAction(String arg0, boolean arg1, float arg2) {
-    }
+		} catch (IOException e) {
+			// TODO gestire
+			e.printStackTrace();
+		}
 
-    /** jmonkey's method */
-    @Override
-    public void bind(Nifty arg0, Screen arg1) {
-    }
+	}
 
-    /** jmonkey's method */
-    @Override
-    public void onEndScreen() {
-    }
+	/** this method change panel 2d and open server's panel */
+	public void openServerScreen() {
 
-    /** jmonkey's method */
-    @Override
-    public void onStartScreen() {
-    }
+		if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
+			final NiftyImage image = nifty.getRenderEngine().createImage(null,
+					"Interface/Image/Graphics/serverIsClose.png", false);
+			final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
+			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
+					.setVisible(false);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
+					.setVisible(true);
+		} else if (GameManager.getIstance().getServer().isStart()) {
 
-    public static void main(String[] args) {
-	StartGame app = new StartGame();
-	// AppSettings gameSettings = new AppSettings(false);
-	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-	//
-	//
-	// gameSettings.setFullscreen(true);
-	// gameSettings.setVSync(true);
-	// gameSettings.setTitle("Thief");
-	// gameSettings.setUseInput(true);
-	// gameSettings.setFrameRate(500);
-	// gameSettings.setSamples(0);
-	// gameSettings.setRenderer("LWJGL-OpenGL2");
-	//
-	// app.setSettings(gameSettings);
-	// app.setShowSettings(false);
-	// app.setDisplayFps(false);
-	// app.setDisplayStatView(false);
+			final NiftyImage image = nifty.getRenderEngine().createImage(null,
+					"Interface/Image/Graphics/serverIsOpen.png", false);
+			final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
+			niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("closeServerButton")
+					.setVisible(true);
+			GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
+					.setVisible(false);
+		}
+		this.loadScreen("serverScreen");
 
-	app.start();
+	}
 
-    }
+	/** this method is invoked when user press on textfield */
+	public void resetParamsTextfield(String nameTextField) {
+
+		if (nameTextField.equals("myTextFieldName"))
+			if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
+					.getDisplayedText().equals("Your Name"))
+				GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
+						.setText("");
+
+		if (nameTextField.equals("myTextFieldIP"))
+			if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
+					.getDisplayedText().equals("IP-address")
+					|| (GameManager.getIstance().getNifty().getCurrentScreen()
+							.findNiftyControl(nameTextField, TextField.class).getDisplayedText().equals(getIPAddress())
+							&& GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+									.findElementByName("myTextFieldIP").isFocusable()))
+				GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
+						.setText("");
+
+	}
+
+	/** next character */
+	public void nextCharacter() {
+		if (indexCharacter == characters.size() - 1)
+			indexCharacter = 0;
+		else
+			indexCharacter++;
+		NiftyImage image = nifty.getRenderEngine().createImage(null,
+				"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(indexCharacter) + ".png",
+				false);
+		Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+	}
+
+	public void nextHelpImage() {
+		if (indexHelp == help.size() - 1)
+			indexHelp = 0;
+		else
+			indexHelp++;
+		NiftyImage image = nifty.getRenderEngine().createImage(null,
+				"Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(indexHelp) + ".png", false);
+		Element niftyElement = nifty.getCurrentScreen().findElementByName("backgroundHelpImage");
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+	}
+
+	public void redoHelpImage() {
+		if (this.indexHelp == 0)
+			this.indexHelp = help.size() - 1;
+		else
+			this.indexHelp--;
+		final NiftyImage image = nifty.getRenderEngine().createImage(null,
+				"Interface/Image/Graphics/Help/" + ((ArrayList<String>) help).get(indexHelp) + ".png", false);
+		final Element niftyElement = nifty.getCurrentScreen().findElementByName("backgroundHelpImage");
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+	}
+
+	/** previus character */
+	public void redoCharacter() {
+		if (this.indexCharacter == 0)
+			this.indexCharacter = characters.size() - 1;
+		else
+			this.indexCharacter--;
+		final NiftyImage image = nifty.getRenderEngine().createImage(null,
+				"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(indexCharacter) + ".png",
+				false);
+		final Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+	}
+
+	/** this method set keys */
+	private void initKeys() {
+		GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
+				new KeyTrigger(KeyInput.KEY_TAB));
+		GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
+				new KeyTrigger(KeyInput.KEY_ESCAPE));
+		// GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
+		// new KeyTrigger(KeyInput.KEY_9));
+		this.inputManager.addListener(actionListener, "debug", "exit", "mouse");
+	}
+
+	/**
+	 * this method, close connection if user playing in multiplayer and then
+	 * close game
+	 */
+	public void closeGame() {
+		if (this.multiplayer)
+			this.multiPlayer.exit();
+		System.exit(0);
+	}
+
+	/** this method setup variables */
+	public void setup() {
+		this.characters = new ArrayList<String>();
+		this.help = new ArrayList<String>();
+		this.debug = false;
+		this.singleplayer = false;
+		this.multiplayer = false;
+		this.editor = false;
+		this.indexCharacter = 0;
+		this.indexHelp = 0;
+		this.ipAddress = "";
+		this.namePlayer = "";
+	}
+
+	/** this method disable flycam and set visible cursor */
+	private void mouse() {
+		this.inputManager.setCursorVisible(!this.inputManager.isCursorVisible());
+		this.flyCam.setEnabled(!this.flyCam.isEnabled());
+	}
+
+	/** this method is called when user choose multiplayer */
+	public void openMultiPlayerScreen() {
+
+		if (this.characters.isEmpty()) {
+			this.loadCharacter();
+		}
+
+		if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+					.findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+					.setFocusable(false);
+		} else {
+
+			GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+					.setFocusable(true);
+		}
+		loadScreen("multiPlayerScreen");
+
+	}
+
+	public void openSinglePlayerScreen() {
+
+		@SuppressWarnings("unchecked")
+		ListBox<String> listBox = GameManager.getIstance().getNifty().getScreen("singlePlayerScreen")
+				.findNiftyControl("landscapeListBox", ListBox.class);
+		listBox.clear();
+		try {
+			Files.walk(Paths.get("assets/Scenes")).forEach(filePath -> {
+				if (Files.isRegularFile(filePath)) {
+					listBox.addItem(filePath.getFileName().toString());
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		listBox.selectItemByIndex(0);
+		loadScreen("singlePlayerScreen");
+	}
+
+	/** this method is called when cursor move up a button */
+	public void startGrow(String nameButton) {
+
+		NiftyImage image = nifty.getRenderEngine().createImage(null,
+				"Interface/Image/Button/" + nameButton + "OnHover.png", false);
+		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+
+	/** this method is called when cursor outside a button */
+	public void endGrow(String nameButton) {
+
+		NiftyImage image = nifty.getRenderEngine().createImage(null, "Interface/Image/Button/" + nameButton + ".png",
+				false);
+		Element niftyElement = nifty.getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
+
+	/** this method return ip */
+	public String getIPAddress() {
+		return GameManager.getIstance().ipAddress();
+
+	}
+
+	/** this methos start server */
+	public void startServer() {
+		GameManager.getIstance().startServer("");
+		openServerScreen();
+	}
+
+	/** this method close server */
+	public void closeServer() {
+
+		GameManager.getIstance().getServer().stopServer();
+		openServerScreen();
+	}
+
+	/** jmonkey's method */
+	@Override
+	public void onAction(String arg0, boolean arg1, float arg2) {
+	}
+
+	/** jmonkey's method */
+	@Override
+	public void bind(Nifty arg0, Screen arg1) {
+	}
+
+	/** jmonkey's method */
+	@Override
+	public void onEndScreen() {
+	}
+
+	/** jmonkey's method */
+	@Override
+	public void onStartScreen() {
+	}
+
+	public static void main(String[] args) {
+		StartGame app = new StartGame();
+		// AppSettings gameSettings = new AppSettings(false);
+		// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+		// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+		//
+		//
+		// gameSettings.setFullscreen(true);
+		// gameSettings.setVSync(true);
+		// gameSettings.setTitle("Thief");
+		// gameSettings.setUseInput(true);
+		// gameSettings.setFrameRate(500);
+		// gameSettings.setSamples(0);
+		// gameSettings.setRenderer("LWJGL-OpenGL2");
+		//
+		// app.setSettings(gameSettings);
+		// app.setShowSettings(false);
+		// app.setDisplayFps(false);
+		// app.setDisplayStatView(false);
+
+		app.start();
+
+	}
 
 }
