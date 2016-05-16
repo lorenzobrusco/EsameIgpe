@@ -247,11 +247,19 @@ public class LoadTerrain {
 	return terrain;
     }
 
-    /*** this method make and add light */
+    /*** this method make ambient light */
     public Light makeAmbientLight() {
 	AmbientLight ambLight = new AmbientLight();
 	ambLight.setColor(new ColorRGBA(1f, 1f, 1f, 0.2f));
 	return ambLight;
+    }
+
+    /** this method make direction light */
+    public Light makeDirectionLight() {
+	DirectionalLight sun = new DirectionalLight();
+	sun.setDirection(new Vector3f(-5f, -5f, -5f).negate());
+	sun.setColor(new ColorRGBA(1f, 1f, 1f, 0.2f));
+	return sun;
     }
 
     /** this ethod make and add light to bonfire */

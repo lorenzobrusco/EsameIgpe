@@ -130,8 +130,6 @@ public class EditorTerrain implements ScreenController {
 	this.createMarker();
 	/** set keys */
 	this.setKey();
-	/** add landscapeto to main node */
-	this.rootNode.addLight(loadTerrain.makeAmbientLight());
 	/** add panel 2d */
 	this.loadNifty();
 	/** set sound */
@@ -299,6 +297,9 @@ public class EditorTerrain implements ScreenController {
 	this.terrain = this.loadTerrain.loadTerrain(path, true);
 	this.rootNode.attachChild(this.terrain);
 	this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
+	this.terrain.addLight(loadTerrain.makeAmbientLight());
+	this.rootNode.addLight(loadTerrain.makeAmbientLight());
+	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
 	this.bonFireModel = GameManager.getIstance().getBonfire();
 	this.thiefModel = GameManager.getIstance().getNodeThief();
@@ -419,7 +420,7 @@ public class EditorTerrain implements ScreenController {
 
     /** this method add a tree */
     private void makeTree(Vector3f intersect) {
-	NodeModel tree = new NodeModel("Tree/Tree.mesh.j3o", new Vector3f(1.57f, 10f, 1000f));
+	NodeModel tree = new NodeModel("Tree/Tree.mesh.xml", new Vector3f(1.57f, 10f, 1000f));
 	tree.getModel().scale(5f);
 	tree.getModel().setLocalTranslation(intersect);
 	this.terrain.attachChild(tree.getModel());
