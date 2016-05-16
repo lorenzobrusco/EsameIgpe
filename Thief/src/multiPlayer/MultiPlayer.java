@@ -78,7 +78,7 @@ public class MultiPlayer implements ScreenController {
 
     /** this method is called for each update */
     public void simpleUpdate(Float tpf) {
-	this.render.rayRendering();
+	//this.render.rayRendering();
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
 	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {
@@ -109,17 +109,19 @@ public class MultiPlayer implements ScreenController {
 	    this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	    this.nodeScene.addControl(rigidBodyControl);
 	    this.client = new Client(namePlayer, nameModel, address, cam);
-	    this.client.bornPosition(nodeScene);
-	    this.client.start();
-	    this.rootNode.attachChild(nodeScene);
 	    GameManager.getIstance().setTerrain(nodeScene);
+	    GameManager.getIstance().makeSecondLayer();
+	    this.client.bornPosition(nodeScene);
+	    this.rootNode.attachChild(nodeScene);
 	    GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
 	    GameManager.getIstance().addPhysics();
 	    GameManager.getIstance().addPointLightToScene();
+	    this.client.start();
 	    GameManager.getIstance().setClient(client);
 	    this.render = new GameRender(terrainQuad);
 	    this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
 	} catch (IOException e) {
+	    //TODO catch
 	    e.printStackTrace();
 	}
     }

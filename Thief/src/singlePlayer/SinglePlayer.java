@@ -65,7 +65,6 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getNodeThief().setCam(this.camera);
 	this.setKey();
 	this.loadNifty();
-	GameManager.getIstance().printSecondLayer();
 	this.setupAmbientSound();
     }
 

@@ -190,7 +190,7 @@ public class LoadTerrain {
 		this.createNodeThief(terrain, spatial, editor);
 	    }
 	}
-
+	GameManager.getIstance().setTerrainQuad(terrain);
 	return terrain;
     }
 
@@ -243,7 +243,7 @@ public class LoadTerrain {
 		this.createNodeModel(terrain, spatial, new Vector3f(7.3f, 15f, 1000f), false);
 	    }
 	}
-
+	GameManager.getIstance().setTerrainQuad(terrain);
 	return terrain;
     }
 

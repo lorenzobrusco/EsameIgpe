@@ -24,11 +24,14 @@ import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
+import com.jme3.terrain.geomipmap.TerrainQuad;
+
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ControlBuilder;
 import de.lessvoid.nifty.builder.ControlDefinitionBuilder;
@@ -66,6 +69,7 @@ public class GameManager {
     private NodeModel bonfire;
     private NodeModel portal;
     private Node terrain;
+    private TerrainQuad terrainQuad;
     private SinglePlayer singlePlayer;
     private MultiPlayer multiplayer;
     private AudioRenderer audioRenderer;
@@ -110,7 +114,10 @@ public class GameManager {
 	this.terrain = terrain;
 	this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
 	this.worldZExtent = ((BoundingBox) this.terrain.getWorldBound()).getZExtent();
+	System.out.println(worldXExtent);
+	System.out.println(worldZExtent);
 	this.secondLayer = new boolean[(((int) (worldXExtent * 2)) + 1)][(((int) (worldZExtent * 2)) + 1)];
+	System.out.println(secondLayer[0][0]);
     }
 
     public void addPointShadow(Vector3f localTranslation) {
@@ -185,13 +192,40 @@ public class GameManager {
 
     }
 
-    // TODO davide
-    public void printSecondLayer() {
-	for (int x = 0; x < this.secondLayer.length; x++) {
-	    for (int z = 0; z < this.secondLayer[x].length; z++) {
-		if (this.secondLayer[x][z])
-		    ;// System.out.println("obstacle on " + (x -
-		     // this.worldXExtent) + " " + (z - this.worldZExtent));
+    public boolean isWalkable(float x, float z) {
+	if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]
+		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2 && this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10 ) {
+	    return false;
+	}
+	return true;
+    }
+
+    public void makeSecondLayer() {
+	for (Spatial model : this.getModels()) {
+	    if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
+		this.makeModelArea(model);
+		this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
+			+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
+				+ (int) this.worldZExtent)] = true;
+	    }
+	}
+    }
+
+    private void makeModelArea(Spatial model) {
+
+	int xModelStart = (int) (model.getLocalTranslation().getX()
+		- (((BoundingBox) model.getWorldBound()).getXExtent() / 2) - 10);
+	int zModelStart = (int) (model.getLocalTranslation().getZ()
+		- (((BoundingBox) model.getWorldBound()).getZExtent() / 2) - 10);
+
+	int xModelEnd = (int) (model.getLocalTranslation().getX()
+		+ (((BoundingBox) model.getWorldBound()).getXExtent() / 2) + 10);
+	int zModelEnd = (int) (model.getLocalTranslation().getZ()
+		+ (((BoundingBox) model.getWorldBound()).getZExtent() / 2) + 10);
+
+	for (int x = xModelStart; x < xModelEnd; x++) {
+	    for (int z = zModelStart; z < zModelEnd; z++) {
+		this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)] = true;
 	    }
 	}
     }
@@ -234,7 +268,7 @@ public class GameManager {
 
 	    e.printStackTrace();
 	} catch (IOException e) {
-
+	    // TODO catch
 	    e.printStackTrace();
 	}
     }
@@ -438,6 +472,14 @@ public class GameManager {
 	return server;
     }
 
+    public TerrainQuad getTerrainQuad() {
+	return this.terrainQuad;
+    }
+
+    public void setTerrainQuad(final TerrainQuad quad) {
+	this.terrainQuad = quad;
+    }
+
     public SinglePlayer getSinglePlayer() {
 	return singlePlayer;
     }
@@ -462,4 +504,14 @@ public class GameManager {
 	this.portal = portal;
     }
 
+    public float getWorldXExtent() {
+        return worldXExtent;
+    }
+
+    public float getWorldZExtent() {
+        return worldZExtent;
+    }
+
+    
+    
 }
