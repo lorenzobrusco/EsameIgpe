@@ -75,7 +75,7 @@ public class Client extends Thread implements CommunicationProtocol {
     /** Life Number Player */
     private final static int LIFENUMBER = 50;
     /** damage inflicted on the enemy */
-    private final static int DAMAGE = 5;
+    private final static int DAMAGE = 10;
     /** Player IP Address */
     private final String IAM;
     /** Player Name */
@@ -233,7 +233,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final boolean attack = new StringBuilder().builderAttack(line);
 
 	    final int score = new StringBuilder().builderScore(line);
-
+	    	    
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
@@ -263,6 +263,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final String line = this.INPUT.readLine();
 	    final String player = new StringBuilder().builderKeyPlayer(line);
 	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
+	    System.out.println("player : " + player);
+	    System.out.println(GameManager.getIstance().getPlayers().get(player));
+	    if(GameManager.getIstance().getPlayers().get(player) != null)
 	    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {
