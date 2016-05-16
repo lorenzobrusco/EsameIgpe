@@ -11,6 +11,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -297,7 +298,6 @@ public class EditorTerrain implements ScreenController {
 	this.terrain = this.loadTerrain.loadTerrain(path, true);
 	this.rootNode.attachChild(this.terrain);
 	this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-	this.terrain.addLight(loadTerrain.makeAmbientLight());
 	this.rootNode.addLight(loadTerrain.makeAmbientLight());
 	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
@@ -613,7 +613,10 @@ public class EditorTerrain implements ScreenController {
     /** this method add a portal */
     private void makePortal(Vector3f intersect) {
 	NodeModel portal = new NodeModel("Specials/Portal/Portal.mesh.xml", new Vector3f(7.3f, 15f, 1000f));
+	intersect.y+=2.9f;
 	portal.getModel().setLocalTranslation(intersect);
+	
+	portal.getModel().rotate(-90*FastMath.DEG_TO_RAD,0,0);
 	this.terrain.attachChild(portal.getModel());
 	portal.moveModel(portal.getModel().getLocalTranslation());
 	this.spatials.add((Node) portal.getModel());
