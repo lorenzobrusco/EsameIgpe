@@ -71,7 +71,6 @@ public class SinglePlayer implements ScreenController {
     public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
 	TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
 	this.nodeScene.attachChild(terrainQuad);
-	this.rootNode.addLight(loadTerrain.makeAmbientLight());
 	this.rootNode.addLight(loadTerrain.makeDirectionLight());
 	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);

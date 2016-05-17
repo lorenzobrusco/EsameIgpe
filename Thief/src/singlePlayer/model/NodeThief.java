@@ -335,10 +335,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.isRun = false;
 		NodeThief.this.waitAnimation = true;
 		if (!NodeThief.this.changeAttack) {
-		    
+
 		    NodeThief.this.channel.setAnim(attack1);
 		    if (NodeThief.this.spatial.getName().contains("Yasuo")) {
-			NodeThief.this.channel.setSpeed(3f);			
+			NodeThief.this.channel.setSpeed(3f);
 		    }
 		} else {
 		    if (NodeThief.this.spatial.getName().contains("Yasuo")) {
@@ -413,10 +413,15 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    arg1.setAnim(idle);
 	    NodeThief.this.endAttack();
 	}
+	if (arg2.equals(attack2)) {
+	    NodeThief.this.waitAnimation = false;
+	    arg1.setAnim(idle);
+	    NodeThief.this.endAttack();
+	}
 	if (arg2.equals(bonfire)) {
 	    arg1.setAnim(idle);
 	    NodeThief.this.waitAnimation = false;
-	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+	    for (NodeCharacter enemy : GameManager.getIstance().getEnemies()) {
 		if (enemy instanceof NodeEnemy)
 		    enemy.resetAll();
 	    }
@@ -424,7 +429,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (arg2.equals(death)) {
 	    arg1.setAnim(idle);
 	    NodeThief.this.waitAnimation = false;
-	    for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+	    for (NodeCharacter enemy : GameManager.getIstance().getEnemies()) {
 		if (enemy instanceof NodeEnemy)
 		    enemy.resetAll();
 	    }
@@ -447,7 +452,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     /** this method check if there is a collition with enemies */
     @Override
     public void checkCollition() {
-	for (NodeCharacter enemy : GameManager.getIstance().getEnemys()) {
+	for (NodeCharacter enemy : GameManager.getIstance().getEnemies()) {
 	    final CollisionResults collisionResult = new CollisionResults();
 	    final BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
 	    enemy.collideWith(box, collisionResult);

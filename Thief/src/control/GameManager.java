@@ -31,7 +31,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ControlBuilder;
 import de.lessvoid.nifty.builder.ControlDefinitionBuilder;
@@ -393,7 +392,7 @@ public class GameManager {
 	return this.nodeRender;
     }
 
-    public Collection<NodeCharacter> getEnemys() {
+    public Collection<NodeCharacter> getEnemies() {
 	return this.enemies;
     }
 

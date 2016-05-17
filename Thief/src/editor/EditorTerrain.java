@@ -136,8 +136,12 @@ public class EditorTerrain implements ScreenController {
 	this.loadNifty();
 	/** set sound */
 	this.setupSound();
+	
+	this.rootNode.addLight(this.loadTerrain.makeAmbientLight());
+	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
+	
 	/** start sound */
-	this.editorSound.playSound();
+//	this.editorSound.playSound();
 
 	// TODO elimina thief e bon fire gia presenti
 	//this.terrain.detachChild(this.thiefModel.getModel());
@@ -258,7 +262,7 @@ public class EditorTerrain implements ScreenController {
 	if (!this.spatials.isEmpty()) {
 	    this.currentSpatial = ((Stack<Node>) this.spatials).pop();
 	    if (!this.currentSpatial.getName().contains("Yasuo") || !this.currentSpatial.getName().contains("bonfire")
-		    || !this.currentSpatial.getName().contains("Ponfire"))
+		    || !this.currentSpatial.getName().contains("Portal"))
 		this.terrain.detachChild(this.currentSpatial);
 	    this.setName();
 	}
@@ -300,8 +304,6 @@ public class EditorTerrain implements ScreenController {
 	this.terrain = this.loadTerrain.loadTerrain(path, true);
 	this.rootNode.attachChild(this.terrain);
 	this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-	this.rootNode.addLight(loadTerrain.makeAmbientLight());
-	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
 	this.bonFireModel = GameManager.getIstance().getBonfire();
 	this.thiefModel = GameManager.getIstance().getNodeThief();
@@ -606,7 +608,7 @@ public class EditorTerrain implements ScreenController {
 	this.bonFireModel.setName(this.bonFireModel.getName());
 	this.bonFireModel.getModel().setLocalTranslation(intersect);
 	this.bonFireModel.moveModel(this.bonFireModel.getModel().getLocalTranslation());
-	this.spatials.add((Node) this.bonFireModel.getModel());
+	//this.spatials.add((Node) this.bonFireModel.getModel());
 	this.setName();
 	GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 		.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -620,7 +622,7 @@ public class EditorTerrain implements ScreenController {
 
 	// this.terrain.attachChild(portal.getModel());
 	this.nodePortal.moveModel(this.nodePortal.getModel().getLocalTranslation());
-	this.spatials.add((Node) this.nodePortal.getModel());
+	//this.spatials.add((Node) this.nodePortal.getModel());
 	this.setName();
 	GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 		.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -635,7 +637,7 @@ public class EditorTerrain implements ScreenController {
 	// this.thiefModel.getModel().setLocalTranslation(intersect);
 	this.thiefModel.moveModel(intersect);
 	this.terrain.attachChild(thiefModel.getModel());
-	this.spatials.add((Node) this.thiefModel.getModel());
+	//this.spatials.add((Node) this.thiefModel.getModel());
 	this.setName();
 	GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 		.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
