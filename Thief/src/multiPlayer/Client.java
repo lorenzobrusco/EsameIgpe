@@ -111,7 +111,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
-	this.IAM = this.ipAddress();
+	this.IAM = GameManager.getIstance().ipAddress();
     }
 
     /** Client connect with Server */
@@ -222,7 +222,7 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    String line = this.INPUT.readLine();
 
-	    System.out.println(line);
+	    
 	    if (!new StringBuilder().checkString(line))
 		return;
 
@@ -238,8 +238,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    System.out.println(viewdirection);
-	    System.out.println(walkdirection);
 	    
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		if (!new FormatVector().equal(viewdirection, new Vector3f(0, 0, 0))) {
@@ -276,7 +274,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final String player = new StringBuilder().builderKeyPlayer(line);
 	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
 	    if (GameManager.getIstance().getPlayers().get(player) != null)
-		if (new FormatVector().equal(localPlayer, new Vector3f(0, 0, 0)))
+		if (!new FormatVector().equal(localPlayer, new Vector3f(0, 0, 0)))
 		    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
 
 	} catch (IOException e) {

@@ -74,12 +74,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    }
 	    if (this.INPUT.readLine().equals(KNOCK))
 		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
-
 	    String line = this.INPUT.readLine();
-	    System.out.println(line);
 	    this.address = new StringBuilder().builderAddress(line);
 	    this.player = new StringBuilder().builderKeyPlayer(line);
-	    System.out.println("name player " + player);
 	    this.nameModel = new StringBuilder().builderModel(line);
 	    this.startPosition = new StringBuilder().builderPosition(line);
 	    this.currentPosition = this.startPosition;
@@ -90,8 +87,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
 		    for (ClientManager manager : this.server.getPlayers()) {
 
-			this.communicationNewPlayer(manager.address, manager.nameModel,manager.nameClient, manager.startPosition);
-			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient, this.startPosition);
+			this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
+				manager.startPosition);
+			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
+				this.startPosition);
 		    }
 
 		}
@@ -126,6 +125,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	    String line = this.INPUT.readLine();
+
+	    System.out.println(line);
+	    
+	    if (!new StringBuilder().checkString(line))
+		return;
 
 	    final String key = new StringBuilder().builderKeyPlayer(line);
 
@@ -180,7 +184,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
 	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
-		    this.nameClient,score);
+		    this.nameClient, score);
 
 	    this.OUTPUT.writeBytes(line + "\n");
 	} catch (IOException e) {
@@ -191,11 +195,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     // TODO inizio sincronizzazione col server
 
     public void syncWithServer() {
-
+	System.out.println("sincro");
 	for (ClientManager manager : this.server.getPlayers()) {
 	    if (manager != this)
 		manager.syncPlayers(player, currentPosition);
 	}
+	this.currentTime = (int) System.currentTimeMillis();
 
     }
 
@@ -204,7 +209,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 
 	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
-	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",this.nameClient, 0);
+	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",
+		    this.nameClient, 0);
 	    this.OUTPUT.writeBytes(line + "\n");
 
 	} catch (IOException e) {
@@ -235,7 +241,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), location, 0, false, name,
-		    model,nameClient,0);
+		    model, nameClient, 0);
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.newPlayer = false;
 	} catch (IOException e) {

@@ -266,7 +266,7 @@
 				<panel id="spaceForServerMP1" height="18%" childLayout="center" />
 				<panel id="PanelIP" childLayout="vertical">
 					<text id="myIP" font="Interface/Fonts/Morpheus-20.fnt" color="#f4e75a"
-						text="Your  IP-ADDRESS:   ${CALL.getIPAddress()} " />
+						text="Your  IP-ADDRESS:" />
 					<panel id="spaceForServerMP2" height="7%" childLayout="center" />
 					<panel id="spaceForServerMP3" childLayout="horizontal">
 						<text id="stateServer" font="Interface/Fonts/Morpheus-20.fnt"

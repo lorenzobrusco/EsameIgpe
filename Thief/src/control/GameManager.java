@@ -177,19 +177,19 @@ public class GameManager {
     }
 
     public String ipAddress() {
-	try {
-	    final URL url = new URL("http://checkip.amazonaws.com/");
-	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-	    return br.readLine();
-	} catch (MalformedURLException e) {
-	    // TODO cath
-	    System.out.println("eccezzioni nel ipAddress");
-	} catch (IOException e) {
-	    System.out.println("eccezzioni nel ipAddress");
-	}
-
-	return null;
-
+//	try {
+//	    final URL url = new URL("http://checkip.amazonaws.com/");
+//	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+//	    return br.readLine();
+//	} catch (MalformedURLException e) {
+//	    // TODO cath
+//	    System.out.println("eccezzioni nel ipAddress");
+//	} catch (IOException e) {
+//	    System.out.println("eccezzioni nel ipAddress");
+//	}
+//
+//	return null;
+	return "192.168.1.2";
     }
 
     public boolean isWalkable(float x, float z) {
