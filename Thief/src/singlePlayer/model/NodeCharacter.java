@@ -34,8 +34,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected final String idle = "Idle";
     protected final String attack1 = "Attack1";
     protected final String attack2 = "Attack2";
-    protected final String attack3 = "Attack3";
-    protected final String attack4 = "Attack4";
     protected final String death = "Death";
     protected final String run = "Run";
     protected final String rotateLeft = "rotateLeft";

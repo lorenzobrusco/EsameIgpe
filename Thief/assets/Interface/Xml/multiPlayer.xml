@@ -46,9 +46,9 @@
 	 <panel childLayout="vertical" backgroundImage="Interface/Image/Graphics/blackBarHorizontal.png" width ="20%" height = "17%">
 	 <panel height="4%"/>
 	    <image 	filename="Interface/Image/Text/ScoreText.png" width="60%" height="30%" align="center"/>
-	     <text id="firstPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#2ef12a" text="First Player" align="center"/>	     
-	       <text id="secondPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="Second Player" align="center" />	       
-	         <text id="thirdPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="Third Player" align="center"/>
+	     <text id="firstPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#2ef12a" text="" align="center"/>	     
+	       <text id="secondPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="" align="center" />	       
+	         <text id="thirdPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="" align="center"/>
 
 	</panel>
 	</controlDefinition>

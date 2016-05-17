@@ -51,7 +51,6 @@ public class LifeBar extends Node {
 	this.geometryGreenBox.setLocalTranslation(0f, 5f, 0f);
 
 	this.character.attachChild(geometryGreenBox);
-
     }
 
     /** this method calculate remaining life before thief' attach */

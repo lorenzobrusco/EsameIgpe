@@ -113,7 +113,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	if (!switchAttack)
 	    this.channel.setAnim(attack1);
 	else
-	    this.channel.setAnim(attack4);
+	    this.channel.setAnim(attack2);
 	this.switchAttack = !this.switchAttack;
     }
 
@@ -138,7 +138,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.endAttack();
 	}
-	if (arg2.equals(attack4)) {
+	if (arg2.equals(attack2)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
 	    arg1.setAnim(idle);
 	    NodeEnemyPlayers.this.endAttack();

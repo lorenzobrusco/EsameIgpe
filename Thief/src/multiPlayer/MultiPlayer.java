@@ -1,6 +1,9 @@
 package multiPlayer;
 
 import java.io.IOException;
+
+import javax.vecmath.GMatrix;
+
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -43,9 +46,9 @@ public class MultiPlayer implements ScreenController {
     private Client client = null;
     /** player's name */
     private String nameModel;
-    /** player's lifebar*/
+    /** player's lifebar */
     private Element progressLifeBarThief;
-    /** character's image*/
+    /** character's image */
     private Element borderLifeBarThief;
     /** jmonkey's object */
     private RigidBodyControl rigidBodyControl;
@@ -70,10 +73,6 @@ public class MultiPlayer implements ScreenController {
 	this.loadNifty();
 	this.setupAmbientSound();
 	GameManager.getIstance().setMultiplayer(this);
-	
-	//TODO classifica
-	Element e = GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("firstPlayerText");
-	e.getRenderer(TextRenderer.class).setText("Ciao sono Antonio");
     }
 
     /** this method is called for each update */
@@ -89,11 +88,11 @@ public class MultiPlayer implements ScreenController {
 		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
 	    }
 	}
-	if(!GameManager.getIstance().getBoxsAttack().isEmpty()){
+	if (!GameManager.getIstance().getBoxsAttack().isEmpty()) {
 	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-	    if(box.isAttach())
+	    if (box.isAttach())
 		GameManager.getIstance().getTerrain().attachChild(box.getModel());
-	    else 
+	    else
 		GameManager.getIstance().getTerrain().detachChild(box.getModel());
 	}
     }
@@ -121,7 +120,7 @@ public class MultiPlayer implements ScreenController {
 	    this.render = new GameRender(terrainQuad);
 	    this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
 	} catch (IOException e) {
-	    //TODO catch
+	    // TODO catch
 	    e.printStackTrace();
 	}
     }
@@ -137,7 +136,7 @@ public class MultiPlayer implements ScreenController {
 	this.ambient.playSound();
     }
 
-    /** send message when player press send button*/
+    /** send message when player press send button */
     public void sendMessage() {
 
 	TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",
@@ -158,6 +157,31 @@ public class MultiPlayer implements ScreenController {
 
     }
 
+    /** this method sort player */
+    public void setPlayerInScoreLists(String name, int number) {
+
+	Element element;
+	switch (number) {
+	case 0:
+	    element = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		    .findElementByName("firstPlayerText");
+	    element.getRenderer(TextRenderer.class).setText(name);
+	    break;
+	case 1:
+	    element = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		    .findElementByName("secondPlayerText");
+	    element.getRenderer(TextRenderer.class).setText(name);
+	    break;
+	case 2:
+	    element = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		    .findElementByName("thirdPlayerText");
+	    element.getRenderer(TextRenderer.class).setText(name);
+	    break;
+	default:
+	    break;
+	}
+    }
+
     /** this method is called when cursor move up a button */
     public void startGrow(String nameButton) {
 
@@ -175,12 +199,11 @@ public class MultiPlayer implements ScreenController {
 	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
-    
-    public void UpdateScore()
-    {
-    	
-    	
+
+    public void UpdateScore() {
+
     }
+
     /** jmonkey's methods */
     @Override
     public void bind(Nifty arg0, Screen arg1) {

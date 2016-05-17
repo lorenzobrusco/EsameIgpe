@@ -366,6 +366,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	spatial.setLocalTranslation(position);
 	GameManager.getIstance().setNodeThief(new NodeThief(spatial, position, true));
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
+	GameManager.getIstance().addScorePlayer(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(this.cam);
 	scene.attachChild(GameManager.getIstance().getNodeThief());
@@ -476,7 +477,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.syncPlayers();
 		else if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
-
+//		GameManager.getIstance().sortScorePlyer();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();

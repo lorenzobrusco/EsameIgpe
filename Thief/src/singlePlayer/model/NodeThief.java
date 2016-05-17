@@ -335,17 +335,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.isRun = false;
 		NodeThief.this.waitAnimation = true;
 		if (!NodeThief.this.changeAttack) {
-
 		    NodeThief.this.channel.setAnim(attack1);
-		    if (NodeThief.this.spatial.getName().contains("Yasuo")) {
-			NodeThief.this.channel.setSpeed(3f);
-		    }
+		    NodeThief.this.channel.setSpeed(3f);
 		} else {
-		    if (NodeThief.this.spatial.getName().contains("Yasuo")) {
-			NodeThief.this.channel.setAnim(attack4);
-			NodeThief.this.channel.setSpeed(2f);
-		    }
 		    NodeThief.this.channel.setAnim(attack2);
+		    NodeThief.this.channel.setSpeed(2f);
 		}
 		NodeThief.this.startAttack();
 		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
@@ -408,11 +402,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    NodeThief.this.waitAnimation = false;
 	    NodeThief.this.endAttack();
 	}
-	if (arg2.equals(attack4)) {
-	    NodeThief.this.waitAnimation = false;
-	    arg1.setAnim(idle);
-	    NodeThief.this.endAttack();
-	}
+	
 	if (arg2.equals(attack2)) {
 	    NodeThief.this.waitAnimation = false;
 	    arg1.setAnim(idle);

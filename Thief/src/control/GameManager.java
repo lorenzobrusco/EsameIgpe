@@ -36,6 +36,7 @@ import de.lessvoid.nifty.builder.ControlBuilder;
 import de.lessvoid.nifty.builder.ControlDefinitionBuilder;
 import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import editor.LoadTerrain;
 import multiPlayer.Client;
@@ -286,12 +287,20 @@ public class GameManager {
 		    }
 		}
 	    }
-	    for (int i = 0; i < this.scorePlayers.size() - 1; i++) {
-		String name = this.players.get(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getKeyCharacter())
-			.getName();
-		System.out.println(name + " " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore());
+	    for (int i = 0; i < this.scorePlayers.size(); i++) {
+		// String name = this.players.get(((ArrayList<NodeCharacter>)
+		// this.scorePlayers).get(i).getKeyCharacter())
+		// .getName();
+		this.multiplayer.setPlayerInScoreLists(
+			((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+		System.out.println(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore());
 	    }
+	} else {
+	    this.multiplayer
+		    .setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(0).getScore() + "", 0);
+	    System.out.println(((ArrayList<NodeCharacter>) this.scorePlayers).get(0).getScore());
 	}
+
     }
 
     public void setBullet(BulletAppState appState) {
@@ -434,7 +443,7 @@ public class GameManager {
 
     public void addScorePlayer(NodeCharacter character) {
 	this.scorePlayers.add(character);
-	this.sortScorePlyer();
+//	this.sortScorePlyer();
     }
 
     public void removeScorePlayer(NodeCharacter character) {
