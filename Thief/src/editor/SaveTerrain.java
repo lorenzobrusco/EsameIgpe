@@ -23,12 +23,7 @@ public class SaveTerrain {
     /** this method save file */
     public void saveModel(String name) {
 
-	String nameTmp = name;
-	File file = new File("assets" + File.separator + "Scenes" + File.separator + nameTmp + ".j3o");
-	if (file.exists()) {
-	    file.delete();
-	}
-	file = new File("assets" + File.separator + "Scenes" + File.separator + nameTmp + ".j3o");
+	File file = new File("assets" + File.separator + "Scenes" + File.separator + name + ".j3o");
 	BinaryExporter exporter = new BinaryExporter();
 	try {
 	    exporter.save(modelToSave, file);
