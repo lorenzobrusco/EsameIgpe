@@ -207,9 +207,9 @@ public class GameManager {
 
     /** this method get ip address */
     public String ipAddress() {
-	if (this.multiplayer != null)
+	//if (this.multiplayer != null)
 	    return this.client.ipAddress();
-	return "127.0.0.1";
+	//return "127.0.0.1";
     }
 
     /** this method check if point x,z is free */

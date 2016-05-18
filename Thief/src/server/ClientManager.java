@@ -145,6 +145,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
+	    System.out.println("server: " + attack);
+	    
 	    // TODO
 	    // System.out.println("stato: " + address + " --- " + walkdirection
 	    // + " ------ " + viewdirection);

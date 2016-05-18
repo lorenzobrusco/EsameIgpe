@@ -1,8 +1,6 @@
 package game;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,17 +8,11 @@ import java.util.Collection;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.renderer.Camera;
 import com.jme3.system.AppSettings;
-import com.jme3.texture.Image;
-import com.jme3.texture.Texture;
-import com.jme3.util.BufferUtils;
-
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.ListBox;
@@ -393,21 +385,21 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    this.loadCharacter();
 	}
 
-	if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-		    .findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-		    .setFocusable(false);
-	} else {
+//	if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
+//	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+//		    .findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
+//	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+//		    .setFocusable(false);
+//	} else {
 
 	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
 		    .setFocusable(true);
-	}
+//	}
 	loadScreen("multiPlayerScreen");
 
     }
 
-    /**this method lists landscapes*/
+    /** this method lists landscapes */
     public void openSinglePlayerScreen() {
 
 	@SuppressWarnings("unchecked")
@@ -417,8 +409,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	try {
 	    Files.walk(Paths.get("assets/Scenes")).forEach(filePath -> {
 		if (Files.isRegularFile(filePath)) {
-		    if(!filePath.getFileName().toString().equals("mountain.j3o"))
-		    listBox.addItem(filePath.getFileName().toString());
+		    if (!filePath.getFileName().toString().equals("mountain.j3o"))
+			listBox.addItem(filePath.getFileName().toString());
 		}
 	    });
 	} catch (IOException e) {
@@ -487,24 +479,23 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-	app.setPauseOnLostFocus(false);
-	// AppSettings gameSettings = new AppSettings(false);
-	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-	//
-	//
-	// gameSettings.setFullscreen(true);
-	// gameSettings.setVSync(true);
-	// gameSettings.setTitle("Thief");
-	// gameSettings.setUseInput(true);
-	// gameSettings.setFrameRate(500);
-	// gameSettings.setSamples(0);
-	// gameSettings.setRenderer("LWJGL-OpenGL2");
-	//
-	// app.setSettings(gameSettings);
-	// app.setShowSettings(false);
-	// app.setDisplayFps(false);
-	// app.setDisplayStatView(false);
+
+//	AppSettings gameSettings = new AppSettings(false);
+//	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+//		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+//
+//	gameSettings.setFullscreen(true);
+//	gameSettings.setVSync(true);
+//	gameSettings.setTitle("Thief");
+//	gameSettings.setUseInput(true);
+//	gameSettings.setFrameRate(500);
+//	gameSettings.setSamples(0);
+//	gameSettings.setRenderer("LWJGL-OpenGL2");
+//
+//	app.setSettings(gameSettings);
+//	app.setShowSettings(false);
+//	app.setDisplayFps(false);
+//	app.setDisplayStatView(false);
 
 	app.start();
 

@@ -101,20 +101,20 @@ public class Client extends Thread implements CommunicationProtocol {
     /** change state */
     private Collection<ModelState> states;
     /** new state */
-    private boolean next;
+    private String lineToSend;
 
     public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
 	    throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
-	this.next = true;
+	this.lineToSend = "";
 	this.namePlayer = namePlayer;
 	this.cam = cam;
 	this.states = new ConcurrentLinkedQueue<>();
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
-	this.IAM = GameManager.getIstance().ipAddress();
+	this.IAM = this.ipAddress();
     }
 
     /** Client connect with Server */
@@ -183,16 +183,12 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicationState() {
 	try {
 	    // TODO
-	    ModelState stateModel = ((ConcurrentLinkedQueue<ModelState>) this.states).poll();
-	    String line = new StringBuilder().builderString(stateModel.getWalk(), stateModel.getView(),
-		    stateModel.getLocation(), stateModel.getLife(), stateModel.isAttack(), this.IAM, this.nameModel,
-		    this.namePlayer, stateModel.getScore());
-	    this.OUTPUT.writeBytes(line + "\n");
+	  
+	    this.OUTPUT.writeBytes(this.lineToSend + "\n");
 
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationState");
 	}
-
     }
 
     /** This Method communicates an Player Updates */
@@ -200,6 +196,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    this.states.add(new ModelState(walk, view, life, attack, location, score));
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+		    this.nameModel, this.namePlayer, score);
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
@@ -225,8 +223,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    if (!new StringBuilder().checkString(line))
 		return;
 
-	    System.out.println(line);
-	    
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
@@ -368,6 +364,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addScorePlayer(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(this.cam);
+	GameManager.getIstance().getMultiplayer().loadNifty();
 	scene.attachChild(GameManager.getIstance().getNodeThief());
 	this.setKey();
     }

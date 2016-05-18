@@ -69,10 +69,9 @@ public class MultiPlayer implements ScreenController {
 	this.nameModel = nameModel;
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
-	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
-	this.loadNifty();
-	this.setupAmbientSound();
 	GameManager.getIstance().setMultiplayer(this);
+	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
+//	this.setupAmbientSound();
     }
 
     /** this method is called for each update */
@@ -147,7 +146,7 @@ public class MultiPlayer implements ScreenController {
     }
 
     /** this method load panel 2d */
-    private void loadNifty() {
+    public void loadNifty() {
 
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/multiPlayer.xml", "lifeBarScreen", this);
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")

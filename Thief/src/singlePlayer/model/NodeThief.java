@@ -129,7 +129,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	}
 	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 2) {
 	    this.resetCurrentTime();
-	   // this.notifyUpdate(false);
+	    this.notifyUpdate(false);
 	}
     }
 
@@ -179,7 +179,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (this.multiplayer)
 	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
 		    characterControl.getViewDirection(), super.life, attack, this.getLocalTranslation(), this.score);
-
     }
 
     /** this method is called when thief kill someone */
@@ -332,6 +331,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.stop();
 		NodeThief.this.isRun = false;
 		NodeThief.this.channel.setAnim(idle);
+		NodeThief.this.notifyUpdate(false);
 	    } else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
 		    && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.notifyUpdate(true);
@@ -359,14 +359,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
 		    GameManager.getIstance().pauseGame();
 		}
-
 		else {
 		    GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
 		    GameManager.getIstance().resumeGame();
 		    Element element = GameManager.getIstance().getNifty().getCurrentScreen()
 			    .findElementByName("sureExitControl");
 		    element.setVisible(false);
-
 		}
 	    } else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
 		if (!chatboxIsEnable) {
@@ -470,7 +468,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
-	this.notifyUpdate(true);
 	// this.playScream();//TODO test
 
     }

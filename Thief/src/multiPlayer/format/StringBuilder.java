@@ -58,25 +58,19 @@ public class StringBuilder {
     }
 
     public int builderLife(String line) {
-	try{
-	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
-	int life = Integer.parseInt(split[9]);
-	return life;
-	}
-	catch(NumberFormatException e){
+	try {
+	    String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
+	    int life = Integer.parseInt(split[9]);
+	    return life;
+	} catch (NumberFormatException e) {
 	    return Integer.MAX_VALUE;
 	}
     }
 
     public boolean builderAttack(String line) {
-	try{
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
-	boolean attack = Boolean.parseBoolean(split[10]);
+	boolean attack = split[10].equals("true");
 	return attack;
-	}
-	catch(NumberFormatException e){
-	    return false;
-	}
     }
 
     public String builderKeyPlayer(String line) {
