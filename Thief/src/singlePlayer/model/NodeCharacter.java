@@ -1,11 +1,14 @@
 package singlePlayer.model;
 
+import org.w3c.dom.css.RGBColor;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -80,6 +83,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.viewed = false;
+	this.createBox();
 	this.setupAudio();
     }
 
@@ -95,6 +99,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.life = life;
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
+	this.createBox();
 	this.setupAudio();
     }
 
@@ -111,6 +116,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.startPosition = intersection;
+	this.createBox();
 	this.setupAudio();
 
     }
@@ -128,6 +134,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
 	this.startPosition = intersection;
+	this.createBox();
 	this.setupAudio();
     }
 
@@ -192,7 +199,12 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	GameManager.getIstance().getNodeThief().resetCurrentTime();
 	this.playScream();
 	this.node.setLocalTranslation(this.getLocalTranslation());
+	this.node.setLocalRotation(this.getLocalRotation());
+	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(true, this.node));
+    }
 
+    /**this method create a box */
+    private void createBox(){
 	final BoundingBox boundingBox = new BoundingBox();
 	boundingBox.setXExtent(1.5f);
 	boundingBox.setYExtent(0.5f);
@@ -208,17 +220,17 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		"Common/MatDefs/Misc/Unshaded.j3md");
 	boxAttach.setMaterial(material);
 
-	material.getAdditionalRenderState().setDepthWrite(false);
-	material.getAdditionalRenderState().setColorWrite(false);
+	material.setColor("Color", ColorRGBA.Red);
+	
+//	material.getAdditionalRenderState().setDepthWrite(false);
+//	material.getAdditionalRenderState().setColorWrite(false);
+//
+//	boxAttach.setQueueBucket(Bucket.Transparent);
 
-	boxAttach.setQueueBucket(Bucket.Transparent);
-
-	this.node.attachChild(boxAttach);
-	this.node.setLocalRotation(this.getLocalRotation());
 	boundingBox.setCenter(boxAttach.getLocalTranslation());
-	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(true, this.node));
+	this.node.attachChild(boxAttach);
     }
-
+    
     /** this method get isDead */
     public boolean isDead() {
 	return this.life <= 0;

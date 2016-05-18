@@ -18,7 +18,6 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
@@ -39,8 +38,6 @@ import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
-import de.lessvoid.nifty.builder.PopupBuilder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,7 +47,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
 
-import javax.vecmath.GMatrix;
 
 /**
  * 
