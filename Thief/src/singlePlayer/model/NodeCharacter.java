@@ -51,7 +51,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected final Node node = new Node("attackBox");
     /** check if it's alive */
     protected boolean alive;
-    /**score*/
+    /** score */
     protected int score;
     /** start position */
     private Vector3f startPosition;
@@ -64,8 +64,8 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected Sound scream2;
     protected Sound scream3;
     protected Sound scream4;
+
     /***/
-   
 
     /** builder */
     public NodeCharacter(Spatial model, Vector3f dimensionControll, int life, final int DAMAGE) {
@@ -131,29 +131,29 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.setupAudio();
     }
 
-    /**this method start scream*/
+    /** this method start scream */
     protected void playScream() {
-	// if (!GameManager.getIstance().isEditor()) {
-	// int rand = (int) (Math.random() * 4) + 1;
-	// switch (rand) {
-	// case 1:
-	// this.scream1.playSoundIstance();
-	// break;
-	// case 2:
-	// this.scream2.playSoundIstance();
-	// break;
-	// case 3:
-	// this.scream3.playSoundIstance();
-	// break;
-	// case 4:
-	// this.scream4.playSoundIstance();
-	// break;
-	// default:
-	// break;
-	// }
-	// }
+//	if (!GameManager.getIstance().isEditor()) {
+//	    int rand = (int) (Math.random() * 4) + 1;
+//	    switch (rand) {
+//	    case 1:
+//		this.scream1.playSoundIstance();
+//		break;
+//	    case 2:
+//		this.scream2.playSoundIstance();
+//		break;
+//	    case 3:
+//		this.scream3.playSoundIstance();
+//		break;
+//	    case 4:
+//		this.scream4.playSoundIstance();
+//		break;
+//	    default:
+//		break;
+//	    }
+//	}
     }
-    
+
     /** this method add physic */
     public void addPhysicsSpace() {
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(characterControl);
@@ -224,20 +224,20 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	return this.life <= 0;
     }
 
-    /**this method is called when character is death*/
+    /** this method is called when character is death */
     public void death() {
-	//if (this.alive)
-	    ///this.deathSound.playSound();
+	// if (this.alive)
+	/// this.deathSound.playSound();
 	this.alive = false;
 	this.channel.setAnim(death, 0.50f);
 	this.channel.setLoopMode(LoopMode.DontLoop);
-    }    
+    }
 
-    /**this method make a key*/
+    /** this method make a key */
     public int getKeyCharacter() {
 	return (this.getName() + this.startPosition).hashCode();
     }
-    
+
     @Override
     public void onAnimChange(AnimControl arg0, AnimChannel arg1, String arg2) {
 
@@ -247,7 +247,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
     }
 
-    /**this method setup sounds*/
+    /** this method setup sounds */
     @Override
     protected void setupAudio() {
 	// if (!GameManager.getIstance().isEditor()) {
@@ -264,61 +264,61 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	// }
     }
 
-    /**this method set viewed*/
+    /** this method set viewed */
     public void setViewed(boolean viewed) {
 	this.viewed = viewed;
     }
 
-    /**this method get viewed*/
+    /** this method get viewed */
     public boolean isViewed() {
 	return this.viewed;
 
     }
 
-    /**this method get life*/
+    /** this method get life */
     public int getLife() {
 	return life;
     }
 
-    /**this method set life*/
+    /** this method set life */
     public void setLife(int life) {
 	this.life = life;
     }
 
-    /**this method get startLife*/
+    /** this method get startLife */
     public int getStartLife() {
 	return this.STARTLIFE;
     }
 
-    /**this method get damage*/
+    /** this method get damage */
     public int getDAMAGE() {
 	return DAMAGE;
     }
 
-    /**this method get score*/
-    public int getScore(){
+    /** this method get score */
+    public int getScore() {
 	return this.score;
     }
-    
-    /**this method set score*/
-    public void setScore(int score){
+
+    /** this method set score */
+    public void setScore(int score) {
 	this.score = score;
     }
-    
-    /** override this method*/
+
+    /** override this method */
     public void checkCollition() {
     }
 
-    /** override this method*/
+    /** override this method */
     public void setLifeBar(Element lifeBar, Element Border, String nameModel) {
     }
 
-    /** override this method*/
-    public void setDamageLifeBar(){
-	
+    /** override this method */
+    public void setDamageLifeBar() {
+
     }
 
-    /** override this method*/
+    /** override this method */
     public void setVisibleLifeBar() {
     }
 

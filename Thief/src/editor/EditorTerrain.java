@@ -39,6 +39,8 @@ import singlePlayer.model.NodeModel;
 import singlePlayer.model.NodeThief;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.builder.PopupBuilder;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Stack;
+
+import javax.vecmath.GMatrix;
 
 /**
  * 
@@ -109,6 +113,10 @@ public class EditorTerrain implements ScreenController {
     private final AppSettings settings;
     /** sound */
     private Sound editorSound;
+    /** file to delete */
+    private File currentFile;
+    /** id popup */
+    private String idPopUp;
 
     public EditorTerrain(Node rootNode, Camera cam, BitmapFont guiFont, Node guiNode, ViewPort port,
 	    AppSettings settings, String path) {
@@ -145,8 +153,8 @@ public class EditorTerrain implements ScreenController {
 	this.editorSound.playSound();
 
 	// TODO elimina thief e bon fire gia presenti
-//	this.terrain.detachChild(this.thiefModel.getModel());
-//	this.terrain.detachChild(this.nodePortal.getModel());
+	// this.terrain.detachChild(this.thiefModel.getModel());
+	// this.terrain.detachChild(this.nodePortal.getModel());
     }
 
     /**
@@ -241,6 +249,31 @@ public class EditorTerrain implements ScreenController {
 	}
     };
 
+    /*** this method create a popup */
+    public void openPopUpSave() {
+
+	final Element popup = GameManager.getIstance().getNifty().createPopup("popupSave");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
+	this.mouse = false;
+
+    }
+
+    /** this method delete map */
+    public void overWriteMap() {
+	if (this.currentFile != null) {
+	    this.currentFile.delete();
+	    this.closePopup();
+	    this.save();
+	}
+    }
+
+    /** this method close popup */
+    public void closePopup() {
+	GameManager.getIstance().getNifty().closePopup(this.idPopUp);
+    }
+
     /**
      * this method save the landscape in a file .j3o and if file exists override
      * it
@@ -250,6 +283,15 @@ public class EditorTerrain implements ScreenController {
 		.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText().equals("")) {
 	    new SaveTerrain(this.rootNode).saveModel("default");
 	} else {
+	    String fileName = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText();
+	    File file = new File("assets" + File.separator + "Scenes" + File.separator + fileName + ".j3o");
+	    this.currentFile = file;	    
+	    if (file.exists()) {
+		this.openPopUpSave();
+		return;
+	    }
+	    file = new File("assets" + File.separator + "Scenes" + File.separator + fileName + ".j3o");
 	    new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
 		    .findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
 	    GameManager.getIstance().getNifty().getCurrentScreen()
@@ -257,7 +299,7 @@ public class EditorTerrain implements ScreenController {
 	}
 	this.readScenes();
     }
-
+    
     /** this method delete current model expetc thief and bonfire */
     public void delete() {
 	if (!this.spatials.isEmpty()) {
@@ -290,14 +332,23 @@ public class EditorTerrain implements ScreenController {
 			.findNiftyControl("sliderRotate", Slider.class).getMin());
     }
 
+    /**this method create a popup to delete map*/
+    public void createPopupDelete(){
+	final Element popup = GameManager.getIstance().getNifty().createPopup("popupDelete");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
+	this.mouse = false;
+    }
+    
     /** this method delete file from list box */
     public void deleteScene() {
 	File file = new File("assets" + File.separator + "Scenes" + File.separator + GameManager.getIstance().getNifty()
 		.getCurrentScreen().findNiftyControl("listBox", ListBox.class).getFocusItem().toString());
-	System.out.println(file.toString());
 	if (file.exists() && !(file.toString().contains("mountain")))
 	    file.delete();
 	this.readScenes();
+	this.closePopup();
     }
 
     /** this method set landspace, main character adn spawn point */
@@ -631,8 +682,10 @@ public class EditorTerrain implements ScreenController {
     /** this method move thief */
     private void makeThief(Vector3f intersect) {// TODO togliete commenti per
 	// creare un nuovo yasuo
-//	this.thiefModel = new NodeThief(GameManager.getIstance().getApplication().getAssetManager()
-//		.loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"), intersect, false);
+	// this.thiefModel = new
+	// NodeThief(GameManager.getIstance().getApplication().getAssetManager()
+	// .loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"), intersect,
+	// false);
 	this.thiefModel.getModel().setLocalTranslation(intersect);
 	this.thiefModel.moveModel(intersect);
 	this.terrain.attachChild(thiefModel.getModel());

@@ -10,9 +10,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -71,7 +74,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String run = "Run";
     private final static String rotateClockwise = "rotateClockwise";
     private final static String rotateCounterClockwise = "rotateCounterClockwise";
-
     /** Max file Size */
     public final static int FILE_SIZE = 7134962;
     /** Life Number Player */
@@ -96,9 +98,10 @@ public class Client extends Thread implements CommunicationProtocol {
     private final DataOutputStream OUTPUT;
     /** connection stabilished with server */
     private boolean establishedConnection;
-    // TODO NEXT
+    /** change state */
+    private Collection<ModelState> states;
+    /** new state */
     private boolean next;
-    private Queue<ModelState> states;
 
     public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
 	    throws UnknownHostException, IOException {
@@ -107,7 +110,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.next = true;
 	this.namePlayer = namePlayer;
 	this.cam = cam;
-	this.states = new LinkedBlockingQueue<>();
+	this.states = new ConcurrentLinkedQueue<>();
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -135,25 +138,26 @@ public class Client extends Thread implements CommunicationProtocol {
 	    }
 	    this.OUTPUT.writeBytes(KNOCK + "\n");
 	    if (this.INPUT.readLine().equals(WHOAREYOU)) {
-
 		final String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
 			GameManager.getIstance().getNodeThief().getLocalTranslation(),
 			GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,
 			this.namePlayer, 0);
 		this.OUTPUT.writeBytes(line + "\n");
 	    }
-	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
+	    String line = this.INPUT.readLine();
+	    if (line.equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
 		this.OUTPUT.writeBytes(WHOISTHERE + "\n");
 		int size = Integer.parseInt(this.INPUT.readLine());
 		for (int i = 0; i < size; i++) {
 		    if (this.INPUT.readLine().equals(NEWPLAYER)) {
-			String line = this.INPUT.readLine();
-			this.addNewPlayers(new StringBuilder().builderKeyPlayer(line),
-				new StringBuilder().builderModel(line), new StringBuilder().builderPosition(line));
+			String message = this.INPUT.readLine();
+			this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
+				new StringBuilder().builderModel(message),
+				new StringBuilder().builderPosition(message));
 		    }
 		}
-	    } else if (this.INPUT.readLine().equals(TRYAGAIN))
+	    } else if (line.equals(TRYAGAIN))
 		this.startConnection();
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nello start");
@@ -179,12 +183,11 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicationState() {
 	try {
 	    // TODO
-	    ModelState stateModel = this.states.poll();
+	    ModelState stateModel = ((ConcurrentLinkedQueue<ModelState>) this.states).poll();
 	    String line = new StringBuilder().builderString(stateModel.getWalk(), stateModel.getView(),
 		    stateModel.getLocation(), stateModel.getLife(), stateModel.isAttack(), this.IAM, this.nameModel,
 		    this.namePlayer, stateModel.getScore());
 	    this.OUTPUT.writeBytes(line + "\n");
-	    this.next = true;
 
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationState");
@@ -195,11 +198,8 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method communicates an Player Updates */
     public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
-	    if (next) {
-		this.next = false;
-		this.states.add(new ModelState(walk, view, life, attack, location, score));
-		this.OUTPUT.writeBytes(SENDSTATE + "\n");
-	    }
+	    this.states.add(new ModelState(walk, view, life, attack, location, score));
+	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
@@ -222,10 +222,11 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    String line = this.INPUT.readLine();
 
-	    
 	    if (!new StringBuilder().checkString(line))
 		return;
 
+	    System.out.println(line);
+	    
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
@@ -238,7 +239,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		if (!new FormatVector().equal(viewdirection, new Vector3f(0, 0, 0))) {
 		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
@@ -262,6 +262,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    // corrisponda con quella che il server consosce
 
 	} catch (IOException e) {// TODO catch
+	    e.printStackTrace();
 	    System.out.println("eccezioni nel statePlayer");
 	}
     }
@@ -475,7 +476,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.syncPlayers();
 		else if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
-//		GameManager.getIstance().sortScorePlyer();
+		// GameManager.getIstance().sortScorePlyer();
 	    }
 	    this.socket.close();
 	    this.INPUT.close();

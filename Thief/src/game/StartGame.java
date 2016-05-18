@@ -487,6 +487,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
+	app.setPauseOnLostFocus(false);
 	// AppSettings gameSettings = new AppSettings(false);
 	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);

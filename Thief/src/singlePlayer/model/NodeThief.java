@@ -3,6 +3,7 @@ package singlePlayer.model;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.audio.AudioSource.Status;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.collision.CollisionResult;
@@ -125,6 +126,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 	// this.walkingOnGrassSound.stopSound(); // TODO
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
+	}
+	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 2) {
+	    System.out.println("gfds");
+	    this.resetCurrentTime();
+	   // this.notifyUpdate(false);
 	}
     }
 
@@ -319,19 +325,17 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public void onAction(String name, boolean pressed, float value) {
 	    if ((name.equals(run) && pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
-		NodeThief.this.notifyUpdate(false);
 		NodeThief.this.isRun = true;
 		NodeThief.this.channel.setAnim(run);
+		NodeThief.this.notifyUpdate(false);
 	    } else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
-		NodeThief.this.notifyUpdate(false);
 		NodeThief.this.stop();
 		NodeThief.this.isRun = false;
 		NodeThief.this.channel.setAnim(idle);
 	    } else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
 		    && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.notifyUpdate(true);
-		NodeThief.this.stop();
 		NodeThief.this.isRun = false;
 		NodeThief.this.waitAnimation = true;
 		if (!NodeThief.this.changeAttack) {
@@ -353,7 +357,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    } else if ((name.equals(pause) && !pressed)) {
 
 		if (!GameManager.getIstance().isPaused()) {
-
 		    GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
 		    GameManager.getIstance().pauseGame();
 		}
@@ -382,14 +385,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    GameManager.getIstance().resumeGame();
 		    chatboxIsEnable = !chatboxIsEnable;
 		}
-
 	    }
-	    // TODO TASTO ENTER PER CHATBOX
-	    // else if ((name.equals("sendMessage") && !isSinglePlayer &&
-	    // chatboxIsEnable ) && !pressed) {
-	    // GameManager.getIstance().getMultiplayer().sendMessage();
-	    //
-	    // }
 	}
     };
 
@@ -402,7 +398,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    NodeThief.this.waitAnimation = false;
 	    NodeThief.this.endAttack();
 	}
-	
+
 	if (arg2.equals(attack2)) {
 	    NodeThief.this.waitAnimation = false;
 	    arg1.setAnim(idle);
@@ -475,7 +471,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
-
+	this.notifyUpdate(true);
 	// this.playScream();//TODO test
 
     }
@@ -521,44 +517,44 @@ public class NodeThief extends NodeCharacter implements Collition {
     /** this method setip sounds */
     @Override
     protected void setupAudio() {
-	if (!GameManager.getIstance().isEditor()) {
-	    // this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass",
-	    // false, false, false, 0.09f, false);
-	    // this.swordSound = new Sound(this, "Sword", false, false, false,
-	    // 0.1f, false);
-	    // this.deathSound = new Sound(this, "Death", false, false, false,
-	    // 1.0f, false);
-	    // this.bonfireSound = new Sound(this, "Bonfire", false, false,
-	    // false, 1.0f, false);
-	    // this.scream1 = new Sound(this, "Scream1", false, false, false,
-	    // 0.5f, false);
-	    // this.scream2 = new Sound(this, "Scream2", false, false, false,
-	    // 0.5f, false);
-	    // this.scream3 = new Sound(this, "Scream3", false, false, false,
-	    // 0.5f, false);
-	    // this.scream4 = new Sound(this, "Scream4", false, false, false,
-	    // 0.5f, false);
-	    // this.voice1 = new Sound(this, "Voice1", false, false, false,
-	    // 1.0f, false);
-	    // this.voice2 = new Sound(this, "Voice2", false, false, false,
-	    // 1.0f, false);
-	    // this.voice3 = new Sound(this, "Voice3", false, false, false,
-	    // 1.0f, false);
-	    // this.voice4 = new Sound(this, "Voice4", false, false, false,
-	    // 1.0f, false);
-	    // this.voice5 = new Sound(this, "Voice5", false, false, false,
-	    // 1.0f, false);
-	    // this.voice6 = new Sound(this, "Voice6", false, false, false,
-	    // 1.0f, false);
-	    // this.voice7 = new Sound(this, "Voice7", false, false, false,
-	    // 1.0f, false);
-	    // this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
-	    // 1.0f, false);
-	    // this.enemyView = new Sound(this, "EnemyView", false, false,
-	    // false, 1.0f, false);
-	    // TODO tenere commentati fin quando non saranno presi tutti i file
-	    // audio per ogni personaggio
-	}
+	// if (!GameManager.getIstance().isEditor()) {
+	// this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false,
+	// false, false, 0.09f, false);
+	// this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f,
+	// false);
+	// this.deathSound = new Sound(this, "Death", false, false, false, 1.0f,
+	// false);
+	// this.bonfireSound = new Sound(this, "Bonfire", false, false, false,
+	// 1.0f, false);
+	// this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f,
+	// false);
+	// this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f,
+	// false);
+	// this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f,
+	// false);
+	// this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f,
+	// false);
+	// this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f,
+	// false);
+	// this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f,
+	// false);
+	// this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f,
+	// false);
+	// this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f,
+	// false);
+	// this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f,
+	// false);
+	// this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f,
+	// false);
+	// this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f,
+	// false);
+	// this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
+	// 1.0f, false);
+	// this.enemyView = new Sound(this, "EnemyView", false, false, false,
+	// 1.0f, false);
+	// // TODO tenere commentati fin quando non saranno presi tutti i file
+	// // audio per ogni personaggio
+	// }
     }
 
     /** this method get chase camera */

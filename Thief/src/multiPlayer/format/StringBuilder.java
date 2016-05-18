@@ -58,9 +58,14 @@ public class StringBuilder {
     }
 
     public int builderLife(String line) {
+	try{
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	int life = Integer.parseInt(split[9]);
 	return life;
+	}
+	catch(NumberFormatException e){
+	    return Integer.MAX_VALUE;
+	}
     }
 
     public boolean builderAttack(String line) {

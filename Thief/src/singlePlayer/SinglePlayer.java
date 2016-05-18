@@ -90,7 +90,7 @@ public class SinglePlayer implements ScreenController {
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
 	GameManager.getIstance().startEnemiesIntelligence();
-	if(!GameManager.getIstance().getBoxsAttack().isEmpty()){
+	if(!GameManager.getIstance().getBoxsAttackIsEmpty()){
 	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
 	    if(box.isAttach())
 		GameManager.getIstance().getTerrain().attachChild(box.getModel());

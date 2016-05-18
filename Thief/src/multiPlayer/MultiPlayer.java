@@ -80,7 +80,7 @@ public class MultiPlayer implements ScreenController {
 	this.render.rayRendering();
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
-	if (!GameManager.getIstance().getNotyStateModels().isEmpty()) {
+	if (!GameManager.getIstance().getNotyStateModelsIsEmpty()) {
 	    NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
 	    if (stateModel.isAttach()) {
 		GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
@@ -88,7 +88,7 @@ public class MultiPlayer implements ScreenController {
 		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
 	    }
 	}
-	if (!GameManager.getIstance().getBoxsAttack().isEmpty()) {
+	if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
 	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
 	    if (box.isAttach())
 		GameManager.getIstance().getTerrain().attachChild(box.getModel());

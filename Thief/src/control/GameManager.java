@@ -177,19 +177,19 @@ public class GameManager {
     }
 
     public String ipAddress() {
-//	try {
-//	    final URL url = new URL("http://checkip.amazonaws.com/");
-//	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-//	    return br.readLine();
-//	} catch (MalformedURLException e) {
-//	    // TODO cath
-//	    System.out.println("eccezzioni nel ipAddress");
-//	} catch (IOException e) {
-//	    System.out.println("eccezzioni nel ipAddress");
-//	}
-//
-//	return null;
-	return "192.168.1.2";
+	try {
+	    final URL url = new URL("http://checkip.amazonaws.com/");
+	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+	    return br.readLine();
+	} catch (MalformedURLException e) {
+	    // TODO cath
+	    System.out.println("eccezzioni nel ipAddress");
+	} catch (IOException e) {
+	    System.out.println("eccezzioni nel ipAddress");
+	}
+
+	return null;
+	//return "192.168.1.115";
     }
 
     public boolean isWalkable(float x, float z) {
@@ -425,8 +425,8 @@ public class GameManager {
 	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
     }
 
-    public synchronized Collection<NotifyStateModel> getNotyStateModels() {
-	return this.notifyStateModels;
+    public synchronized boolean getNotyStateModelsIsEmpty() {
+	return this.notifyStateModels.isEmpty();
     }
 
     public synchronized void addBoxAttack(NotifyBoxAttack boxAttack) {
@@ -437,8 +437,8 @@ public class GameManager {
 	return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
     }
 
-    public synchronized Collection<NotifyBoxAttack> getBoxsAttack() {
-	return this.boxsAttack;
+    public synchronized boolean getBoxsAttackIsEmpty() {
+	return this.boxsAttack.isEmpty();
     }
 
     public void addScorePlayer(NodeCharacter character) {

@@ -73,27 +73,30 @@ public class NodeEnemyPlayers extends NodeCharacter {
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f direction) {
-	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
-	    this.characterControl.setWalkDirection(direction);
-	    this.channel.setAnim(idle);
-	} else {
-	    this.characterControl.setWalkDirection(direction);
-	    if (!this.channel.getAnimationName().equals(run))
-		this.channel.setAnim(run);
-	    if (this.getWorldTranslation().y < -9f) {
-		this.death();
+	if (!this.waitAnimation) {
+	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
+		this.characterControl.setWalkDirection(direction);
+		this.channel.setAnim(idle);
+	    } else {
+		this.characterControl.setWalkDirection(direction);
+		if (!this.channel.getAnimationName().equals(run))
+		    this.channel.setAnim(run);
+		if (this.getWorldTranslation().y < -9f) {
+		    this.death();
+		}
 	    }
 	}
-
     }
 
     /** this method is invoked when character must stop */
     public void stop() {
-	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	this.channel.setAnim(idle);
-	// this.walkingOnGrassSound.stopSound(); //TODO test
-	if (this.getWorldTranslation().y < -9f) {
-	    this.death();
+	if (!this.waitAnimation) {
+	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+	    this.channel.setAnim(idle);
+	    // this.walkingOnGrassSound.stopSound(); //TODO test
+	    if (this.getWorldTranslation().y < -9f) {
+		this.death();
+	    }
 	}
     }
 

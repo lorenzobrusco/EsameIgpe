@@ -11,9 +11,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-
 import com.jme3.math.Vector3f;
-
 import multiPlayer.format.FormatIP;
 import multiPlayer.format.StringBuilder;
 import multiPlayer.protocols.CommunicationProtocol;
@@ -75,6 +73,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    if (this.INPUT.readLine().equals(KNOCK))
 		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
 	    String line = this.INPUT.readLine();
+	    if (!new StringBuilder().checkString(line)) {
+		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
+		return;
+	    }
 	    this.address = new StringBuilder().builderAddress(line);
 	    this.player = new StringBuilder().builderKeyPlayer(line);
 	    this.nameModel = new StringBuilder().builderModel(line);
@@ -126,8 +128,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    String line = this.INPUT.readLine();
 
-	    System.out.println(line);
-	    
 	    if (!new StringBuilder().checkString(line))
 		return;
 
@@ -146,11 +146,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    final int score = new StringBuilder().builderScore(line);
 
 	    // TODO
-	    // System.out.println("CMS: " + address + " --- " + walkdirection +
-	    // " ------ " + viewdirection);
+	    // System.out.println("stato: " + address + " --- " + walkdirection
+	    // + " ------ " + viewdirection);
 
 	    for (ClientManager manager : this.server.getPlayers()) {
-		manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
+		    manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
 	    }
 
 	    ;// TODO metodo che comunica a tutti lo spostamento
@@ -181,7 +181,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     public void statePlayer(String address, Vector3f walk, Vector3f view, int life, boolean attack, int score) {
 	try {
-
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
 	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
 		    this.nameClient, score);
@@ -195,7 +194,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     // TODO inizio sincronizzazione col server
 
     public void syncWithServer() {
-	System.out.println("sincro");
 	for (ClientManager manager : this.server.getPlayers()) {
 	    if (manager != this)
 		manager.syncPlayers(player, currentPosition);
@@ -317,7 +315,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.startConnection();
 	    this.currentTime = (int) System.currentTimeMillis();
-	    this.syncWithServer();
 	    while (this.establishedConnection) {
 		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
 		    this.syncWithServer();
