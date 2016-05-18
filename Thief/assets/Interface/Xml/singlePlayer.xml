@@ -54,7 +54,7 @@
 
 		</layer>
 
-		<layer id="MessageForPlayer" childLayout="vertical">
+		<layer id="MessageForPlayer" childLayout="vertical" visible="false">
 			<panel id="panelUp" childLayout="absolute" height="85%" />
 
 			<panel id="panelMessage" childLayout="vertical" height="40%">
@@ -63,6 +63,17 @@
 			</panel>
 
 		</layer>
+		
+		<layer id="MessageForPlayerPortal" childLayout="vertical" visible="false">
+			<panel id="panelUp" childLayout="absolute" height="85%" />
+
+			<panel id="panelMessage" childLayout="vertical" height="40%">
+				<image id="MessageForPlayerImage" filename="Interface/Image/Text/PressBonfire.png"
+					width="25%" height="15%" valign="top" align="center" />
+			</panel>
+
+		</layer>
+		
 	</screen>
 
 	<screen id="pauseScreen" controller="singlePlayer.SinglePlayer">

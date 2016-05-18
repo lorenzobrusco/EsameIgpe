@@ -90,11 +90,11 @@ public class SinglePlayer implements ScreenController {
 	if (!GameManager.getIstance().getNodeThief().isRun())
 	    GameManager.getIstance().getNodeThief().stop();
 	GameManager.getIstance().startEnemiesIntelligence();
-	if(!GameManager.getIstance().getBoxsAttackIsEmpty()){
+	if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
 	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-	    if(box.isAttach())
+	    if (box.isAttach())
 		GameManager.getIstance().getTerrain().attachChild(box.getModel());
-	    else 
+	    else
 		GameManager.getIstance().getTerrain().detachChild(box.getModel());
 	}
 
@@ -177,32 +177,30 @@ public class SinglePlayer implements ScreenController {
 
     }
 
-    /**jmonkey's method*/
+    /** jmonkey's method */
     @Override
     public void bind(Nifty d, Screen arg1) {
     }
 
-    /**jmonkey's method*/
+    /** jmonkey's method */
     @Override
     public void onEndScreen() {
     }
-    
-    /**jmonkey's method*/
+
+    /** jmonkey's method */
     @Override
     public void onStartScreen() {
 
     }
-    
-    public void showMessageBonfire()
-    {
-   
-    	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("MessageForPlayerImage").setVisible(true);
-    	
+
+    public void showMessageBonfire(String id) {
+
+	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id)
+		.setVisible(true);
     }
-    
-    public void hideMessageBonfire()
-    {
-    	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("MessageForPlayerImage").setVisible(false);
-    	
+
+    public void hideMessageBonfire(String id) {
+	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id)
+		.setVisible(false);
     }
 }

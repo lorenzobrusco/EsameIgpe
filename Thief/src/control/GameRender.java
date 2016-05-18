@@ -27,14 +27,11 @@ public class GameRender {
     private final float ENEMYSOUNDDISTANCE = 50;
     /** minimum distance to see message for bonfire */
     private final float MESSAGEDISTANCE = 10;
-    /** check if message is visible */
-    private boolean messageIsVisible;
 
     public GameRender(TerrainQuad terrain) {
 	/** set terrain and take thief from GameManager */
 	this.terrain = terrain;
 	this.thief = GameManager.getIstance().getNodeThief();
-	this.messageIsVisible = false;
     }
 
     private float distance(NodeModel model) {
@@ -70,20 +67,19 @@ public class GameRender {
 			model.stopBonfireSound();
 
 		    }
-		    // TODO MESSAGGIO
 		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
-			if (!messageIsVisible) {
-			    GameManager.getIstance().getSinglePlayer().showMessageBonfire();
-			    messageIsVisible = !messageIsVisible;
-			}
+			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayer");
 
 		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
-
-			if (messageIsVisible) {
-			    GameManager.getIstance().getSinglePlayer().hideMessageBonfire();
-			    messageIsVisible = !messageIsVisible;
-			}
+			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayer");
 		    }
+
+		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal")) {
+			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerPortal");
+		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal")) {
+			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerPortal");
+		    }
+
 		    if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE
 			    && !((NodeCharacter) model).isViewed()) {
 			((NodeCharacter) model).setViewed(true);
