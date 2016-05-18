@@ -1,14 +1,11 @@
 package singlePlayer.model;
 
-import org.w3c.dom.css.RGBColor;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.animation.LoopMode;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
@@ -220,12 +217,10 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		"Common/MatDefs/Misc/Unshaded.j3md");
 	boxAttach.setMaterial(material);
 
-	material.setColor("Color", ColorRGBA.Red);
-	
-//	material.getAdditionalRenderState().setDepthWrite(false);
-//	material.getAdditionalRenderState().setColorWrite(false);
-//
-//	boxAttach.setQueueBucket(Bucket.Transparent);
+	material.getAdditionalRenderState().setDepthWrite(false);
+	material.getAdditionalRenderState().setColorWrite(false);
+
+	boxAttach.setQueueBucket(Bucket.Transparent);
 
 	boundingBox.setCenter(boxAttach.getLocalTranslation());
 	this.node.attachChild(boxAttach);

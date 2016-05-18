@@ -128,7 +128,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    this.death();
 	}
 	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 2) {
-	    System.out.println("gfds");
 	    this.resetCurrentTime();
 	   // this.notifyUpdate(false);
 	}
@@ -482,7 +481,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	super.isStricken(DAMAGE);
 	this.setDamageLifeBar();
 	this.notifyUpdate(false);
-	System.out.println(life);
     }
 
     /** this method is called if lifebar isn't create */
