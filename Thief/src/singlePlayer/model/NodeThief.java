@@ -127,10 +127,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
-	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 2) {
-	    this.resetCurrentTime();
+	
 	    this.notifyUpdate(false);
-	}
+	    
     }
 
     /** this method is invoked to run main character */
@@ -176,9 +175,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method, if is multiplayer, notify update */
     public void notifyUpdate(boolean attack) {
-	if (this.multiplayer)
+	if (this.multiplayer) {	    
 	    GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
 		    characterControl.getViewDirection(), super.life, attack, this.getLocalTranslation(), this.score);
+	}
     }
 
     /** this method is called when thief kill someone */
@@ -299,7 +299,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public void onAnalog(String name, float value, float tpf) {
 	    if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
-		run();
+		NodeThief.this.run();
 	    }
 	    if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
@@ -326,6 +326,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.isRun = true;
 		NodeThief.this.channel.setAnim(run);
 		NodeThief.this.notifyUpdate(false);
+
 	    } else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.stop();
@@ -358,8 +359,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (!GameManager.getIstance().isPaused()) {
 		    GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
 		    GameManager.getIstance().pauseGame();
-		}
-		else {
+		} else {
 		    GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
 		    GameManager.getIstance().resumeGame();
 		    Element element = GameManager.getIstance().getNifty().getCurrentScreen()

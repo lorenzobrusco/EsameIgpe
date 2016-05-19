@@ -31,6 +31,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private boolean establishedConnection;
     private boolean newPlayer;
     private int currentTime;
+    private String currentState;
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
@@ -54,6 +55,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	this.establishedConnection = false;
 	this.newPlayer = false;
 	this.address = new String();
+	this.currentState = "";
 	this.socket = socket;
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -113,7 +115,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    System.out.println("player to exit: " + client);
 	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
-
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -127,10 +128,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	    String line = this.INPUT.readLine();
-
-	    if (!new StringBuilder().checkString(line))
+	    
+	    if (!new StringBuilder().checkString(line) || this.currentState.equals(line))
 		return;
 
+	    this.currentState = line;
+	    
 	    final String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
@@ -145,13 +148,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    System.out.println("server: " + attack);
-	    
 	    // TODO
 	    // System.out.println("stato: " + address + " --- " + walkdirection
 	    // + " ------ " + viewdirection);
 
 	    for (ClientManager manager : this.server.getPlayers()) {
+		if (manager != this)
 		    manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
 	    }
 
