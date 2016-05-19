@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="39.3701" minOgreVersion="1.9" ogreMaxVersion="2.6.4" author="OgreMax Scene Exporter (www.ogremax.com)" application="3DS Max">
+    <environment>
+        <colourAmbient r="0.333333" g="0.333333" b="0.333333"/>
+        <colourBackground r="0" g="0" b="0"/>
+        <clipping near="0" far="100000"/>
+    </environment>
+    <nodes>
+        <node name="Buffbone_Glb_Channel_Loc">
+            <position x="-0.980279" y="19.2033" z="-13.5307"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="-0.00805644" qy="0.971996" qz="0.234834" qw="0.00328399"/>
+        </node>
+        <node name="Buffbone_Glb_Ground_Loc">
+            <position x="5.56087e-016" y="-2.44558e-023" z="-5.59484e-016"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.707107" qy="4.32978e-017" qz="-4.32978e-017" qw="0.707107"/>
+        </node>
+        <node name="C_Buffbone_Glb_Center_Loc">
+            <position x="6.1035e-015" y="-4.44488" z="0.295276"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="3.09086e-008" qy="-0.707107" qz="0.707107" qw="3.09086e-008"/>
+        </node>
+        <node name="C_Buffbone_Glb_Layout_Loc">
+            <position x="5.56087e-016" y="-2.44558e-023" z="-5.59484e-016"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.707107" qy="4.32978e-017" qz="-4.32978e-017" qw="0.707107"/>
+        </node>
+        <node name="C_Buffbone_Glb_Overhead_Loc">
+            <position x="-9.93283e-007" y="107.761" z="11.2281"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="3.09086e-008" qy="-0.707107" qz="0.707107" qw="3.09086e-008"/>
+        </node>
+        <node name="Model">
+            <position x="0" y="0" z="0"/>
+            <scale x="0.393701" y="0.393701" z="0.393701"/>
+            <rotation qx="0.707107" qy="0" qz="0" qw="0.707107"/>
+            <entity name="Model" castShadows="true" receiveShadows="true" meshFile="Model.mesh">
+                <subentities>
+                    <subentity index="0" materialName="Material#25"/>
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

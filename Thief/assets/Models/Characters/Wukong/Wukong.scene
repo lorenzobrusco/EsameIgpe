@@ -1,0 +1,44 @@
+<scene formatVersion="1.0" upAxis="z" unitsPerMeter="100" unitType="centimeters" minOgreVersion="1.7" ogreMaxVersion="2.4.3" author="OgreMax Scene Exporter (www.ogremax.com)" application="Maya">
+    <environment>
+        <colourAmbient r="0.329412" g="0.329412" b="0.329412" />
+        <colourBackground r="0" g="0" b="0" />
+        <clipping near="0" far="100000" />
+    </environment>
+    <nodes>
+        <node name="BUFFBONE_GLB_CHANNEL_LOC">
+            <position x="0" y="-50" z="100" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="4.32978e-017" qy="0.707107" qz="-0.707107" qw="4.32978e-017" />
+        </node>
+        <node name="BUFFBONE_GLB_GROUND_LOC">
+            <position x="1.44725e-014" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="-2.67655e-024" qy="-4.37114e-008" qz="1" qw="6.12323e-017" />
+        </node>
+        <node name="C_BUFFBONE_GLB_CENTER_LOC">
+            <position x="1.44725e-014" y="-4.80825e-006" z="110" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="-2.67655e-024" qy="-4.37114e-008" qz="1" qw="6.12323e-017" />
+        </node>
+        <node name="C_BUFFBONE_GLB_LAYOUT_LOC">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="-2.67655e-024" qy="-4.37114e-008" qz="1" qw="6.12323e-017" />
+        </node>
+        <node name="C_BUFFBONE_GLB_OVERHEAD_LOC">
+            <position x="-0.000295047" y="-7.24227" z="231.622" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="-2.67655e-024" qy="-4.37114e-008" qz="1" qw="6.12323e-017" />
+        </node>
+        <node name="transformMonkeyKing_fire">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <entity name="transformMonkeyKing_fire" castShadows="true" receiveShadows="true" meshFile="transformMonkeyKing_fire.mesh">
+                <subentities>
+                    <subentity index="0" materialName="MAT_monkeyking_fire" />
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

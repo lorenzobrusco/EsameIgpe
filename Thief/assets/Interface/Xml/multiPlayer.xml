@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<nifty>
+	<useStyles filename="nifty-default-styles.xml" />
+
+	<useStyles filename="Interface/Styles/textFieldStyleChat.xml" />
+	<useStyles filename="Interface/Styles/listboxStyleChat.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+	<controlDefinition name="myChat" style="nifty-chat-control"
+		controller="de.lessvoid.nifty.controls.chatcontrol.ChatControl" lines="10"
+		chatLineIconWidth="25px" chatLineIconHeight="25px" chatLineHeight="25px">
+		<panel style="#mainPanel">
+			<panel style="#chatPanel">
+				<panel style="#chatArea" width="100%" height="100%"
+					childLayout="vertical">
+					<control id="#chatBox" name="listBox" style="nifty-chat-control"
+						vertical="optional" horizontal="off" selection="Disabled"
+						displayItems="$lines"
+						viewConverterClass="de.lessvoid.nifty.controls.chatcontrol.ChatBoxViewConverter">
+						<control name="nifty-chat-line" chatLineIconWidth="$chatLineIconWidth"
+							chatLineIconHeight="$chatLineIconHeight" chatLineHeight="$chatLineHeight" />
+					</control>
+				</panel>
+			</panel>
+			<panel style="#spacer" />
+			<panel style="#chatTextArea" childLayout="horizontal" width="100%">
+				<control id="#chat-text-input" name="textfield" style="my-textfield"
+					height="15%" width="85%" />
+				<panel width="3%" childLayout="center" />
+				<image id="arrowRight" filename="Interface/Image/Button/arrowRight.png"
+					width="10%" height="10%" align="center" visibleToMouse="true">
+					<effect>
+						<onStartHover name="nop" onStartEffect="startGrow(arrowRight)" />
+						<onEndHover name="nop" onStartEffect="endGrow(arrowRight)" />
+
+					</effect>
+					<interact onClick="sendMessage()" />
+				</image>
+			</panel>
+		</panel>
+	</controlDefinition>
+
+
+	<controlDefinition name="Scores">
+	 <panel childLayout="vertical" backgroundImage="Interface/Image/Graphics/blackBarHorizontal.png" width ="20%" height = "17%">
+	 <panel height="4%"/>
+	    <image 	filename="Interface/Image/Text/ScoreText.png" width="60%" height="30%" align="center"/>
+	     <text id="firstPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#2ef12a" text="" align="center"/>	     
+	       <text id="secondPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="" align="center" />	       
+	         <text id="thirdPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="" align="center"/>
+
+	</panel>
+	</controlDefinition>
+
+	<screen id="lifeBarScreen" controller="multiPlayer.MultiPlayer">
+
+		<layer id="layerProgressBar" childLayout="vertical" >
+			<panel id="panelProgressBar" childLayout="absolute">
+
+			</panel>
+
+
+		</layer>
+		
+		<layer id="LayerScore" childLayout="horizontal">
+		<panel childLayout="center" width="1%"/>
+		      <control name="Scores" y="1%"/>
+		</layer>
+
+		<layer id="layerBorder" childLayout="vertical">
+			<panel id="panelBorderLifeBar" childLayout="absolute">
+				<image id="borderLifeBarThief"
+					filename="Interface/MultiPlayer/borderLifeCharacters/borderLife.png"
+					width="28%" height="15%" x="2%" y="82%" />
+			</panel>
+
+		</layer>
+
+
+		<layer id="layerProgressBar" childLayout="horizontal">
+			<panel  childLayout="horizontal" width="62%" />
+			<panel  childLayout="vertical">
+				<panel height="3%" />
+				<control id="chatMultiPlayer" name="myChat" width="100%"
+					visible="false" />
+			</panel>
+
+		</layer>
+
+	</screen>
+
+</nifty>

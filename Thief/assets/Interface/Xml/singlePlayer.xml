@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<nifty>
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+	<controlDefinition name="sureExit">
+		<panel id="PanelButton" childLayout="vertical" height="70%">
+			<panel id="space1" childLayout="center" height="30%" />
+			<image filename="Interface/Image/Text/AreyousureText.png" id="areSureExit"
+				width="90%" height="15%" align="center" valign="center" />
+			<panel id="space2" childLayout="center" height="20%" />
+			<panel id="buttonPanel" childLayout="horizontal" height="30%"
+				width="100%">
+				<panel id="buttonSpace" childLayout="center" width="5%" />
+				<image filename="Interface/Image/Button/yesButton.png" id="yesButton"
+					width="40%" height="40%" visibleToMouse="true">
+					<effect>
+						<onStartHover name="nop" onStartEffect="startGrow(yesButton)" />
+						<onEndHover name="nop" onStartEffect="endGrow(yesButton)" />
+					</effect>
+					<interact onClick="quitGame()" />
+
+
+				</image>
+				<panel id="buttonSpace1" childLayout="center" width="10%" />
+				<image filename="Interface/Image/Button/noButton.png" id="noButton"
+					width="40%" height="40%" visibleToMouse="true">
+					<effect>
+						<onStartHover name="nop" onStartEffect="startGrow(noButton)" />
+						<onEndHover name="nop" onStartEffect="endGrow(noButton)" />
+					</effect>
+					<interact onClick="openCloseSureExitButton()" />
+				</image>
+			</panel>
+
+		</panel>
+	</controlDefinition>
+
+
+	<screen id="lifeBarScreen" controller="singlePlayer.SinglePlayer">
+
+		<layer id="layerProgressBar" childLayout="vertical">
+			<panel id="panelProgressBar" childLayout="absolute" />
+		</layer>
+
+		<layer id="layerBorder" childLayout="vertical">
+			<panel id="panelBorderLifeBar" childLayout="absolute">
+				<image id="borderLifeBarThief"
+					filename="Interface/MultiPlayer/borderLifeCharacters/borderLife.png"
+					width="28%" height="15%" x="2%" y="82%" />
+			</panel>
+
+
+		</layer>
+
+		<layer id="MessageForPlayer" childLayout="vertical" visible="false">
+			<panel id="panelUp" childLayout="absolute" height="85%" />
+
+			<panel id="panelMessage" childLayout="vertical" height="40%">
+				<image id="MessageForPlayerImage" filename="Interface/Image/Text/PressBonfire.png"
+					width="25%" height="15%" valign="top" align="center" />
+			</panel>
+
+		</layer>
+		
+		<layer id="MessageForPlayerPortal" childLayout="vertical" visible="false">
+			<panel id="panelUp" childLayout="absolute" height="85%" />
+
+			<panel id="panelMessage" childLayout="vertical" height="40%">
+				<image id="MessageForPlayerImage" filename="Interface/Image/Text/PressBonfire.png"
+					width="25%" height="15%" valign="top" align="center" />
+			</panel>
+
+		</layer>
+		
+	</screen>
+
+	<screen id="pauseScreen" controller="singlePlayer.SinglePlayer">
+		<layer id="pauseBackground" childLayout="center">
+			<image id="pausebackground" filename="Interface/Image/Graphics/opacityBackgroundPause.png" />
+		</layer>
+		<layer id="pauseLayerForeground" childLayout="center">
+			<panel id="menuPanel" childLayout="center">
+				<image id="pauseSinglePlayer" filename="Interface/Image/Graphics/pauseBackground.png"
+					width="70%" height="70%" />
+				<panel id="exitPanel" childLayout="vertical" width="70%"
+					height="70%">
+					<control name="sureExit" id="sureExitControl" visible="false" />
+					<panel id="buttonPanel1" childLayout="horizontal" height="30%">
+						<panel id="buttonSpace2" childLayout="center" width="5%" />
+						<image filename="Interface/Image/Button/startMenuButton.png"
+							id="startMenuButton" width="40%" height="40%" visibleToMouse="true">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(startMenuButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(startMenuButton)" />
+							</effect>
+							<interact onClick="openCloseSureExitButton()" />
+						</image>
+
+						<panel id="buttonSpace3" childLayout="center" width="10%" />
+
+						<image filename="Interface/Image/Button/resumeButton.png"
+							id="resumeButton" width="40%" height="40%" visibleToMouse="true">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(resumeButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(resumeButton)" />
+							</effect>
+							<interact onClick="resumeGame()" />
+
+						</image>
+					</panel>
+
+				</panel>
+			</panel>
+		</layer>
+	</screen>
+
+
+
+</nifty>

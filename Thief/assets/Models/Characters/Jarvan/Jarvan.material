@@ -1,0 +1,21 @@
+material JarvanMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.588 0.588 0.588 1
+			
+			texture_unit
+			{
+				texture Jarvan.dds
+			}
+
+			texture_unit
+			{
+			}
+		}
+
+	}
+
+}

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<nifty>
+	<useStyles filename="nifty-default-styles.xml" />
+	<useControls filename="nifty-default-controls.xml" />
+
+	<popup id="popupSave" childLayout="center" backgroundColor="#000a">
+		<panel height="15%" width="40%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label" text="this name exists, do yo want overwrite?" font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+			</panel>
+			<panel height="30%" width="100%" childLayout="horizontal"
+				paddingLeft="68px">
+				<control name="button" label="Yes" id="Button" align="left"
+					valign="center" visibleToMouse="true" width="30%">
+					<interact onClick="overWriteMap()"></interact>
+				</control>
+				<panel height="100%" width="10%"></panel>
+				<control name="button" label="No" id="Button" align="right"
+					valign="center" visibleToMouse="true" width="30%">
+					<interact onClick="closePopup()"></interact>
+				</control>
+			</panel>
+		</panel>
+	</popup>
+	
+	<popup id="popupDelete" childLayout="center" backgroundColor="#000a">
+		<panel height="15%" width="40%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label" text="Do yo want delete map?" font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+			</panel>
+			<panel height="30%" width="100%" childLayout="horizontal"
+				paddingLeft="68px">
+				<control name="button" label="Yes" id="Button" align="left"
+					valign="center" visibleToMouse="true" width="30%">
+					<interact onClick="deleteScene()"></interact>
+				</control>
+				<panel height="100%" width="10%"></panel>
+				<control name="button" label="No" id="Button" align="right"
+					valign="center" visibleToMouse="true" width="30%">
+					<interact onClick="closePopup()"></interact>
+				</control>
+			</panel>
+		</panel>
+	</popup>
+	
+
+	<screen id="start" controller="editor.EditorTerrain">
+		<layer childLayout="center" id="layer">
+			<panel id="centralPanel" childLayout="horizontal">
+				<panel id="leftPanel" width="20%" height="98%" childLayout="vertical"
+					x="1%" backgroundImage="Interface/Image/Graphics/blackBar.png">
+					<panel id="currentModel" width="100%" height="30%"
+						childLayout="vertical">
+						<panel id="spaceCurrentModel" height="2%" />
+						<control font="Interface/Fonts/Morpheus.fnt" color="#ee1f"
+							id="NameModel" name="label" text="Model: nobody" valign="center" />
+						<control font="Interface/Fonts/Morpheus.fnt" color="#ee1f"
+							id="rotate" name="label" text="rotate:" />
+						<control id="sliderRotate" name="horizontalSlider" width="80%" />
+						<panel id="buttonCurrentModel" width="100%" childLayout="horizontal">
+							<image filename="Interface/Image/Button/deleteButton.png"
+								id="deleteButton" width="50%" height="40%" x="2%"
+								visibleToMouse="true">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(deleteButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(deleteButton)" />
+								</effect>
+								<interact onClick="delete()" />
+							</image>
+							<image filename="Interface/Image/Button/resetButton.png"
+								id="resetButton" width="50%" height="40%" visibleToMouse="true">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(resetButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(resetButton)" />
+								</effect>
+								<interact onClick="reset()" />
+							</image>
+						</panel>
+					</panel>
+					<panel id="loadTerrain" width="100%" height="30%"
+						childLayout="vertical">
+						<control font="Interface/Fonts/Morpheus.fnt" id="terrainFileToLoad"
+							name="label" text="Terrain to load: " color="#ee1f" />
+						<control id="listBox" name="listBox" width="90%" height="80%"
+							align="center" />
+						<panel id="buttonloadTerrain" width="100%" childLayout="horizontal">
+							<image filename="Interface/Image/Button/loadButton.png" id="loadButton"
+								width="50%" height="40%" x="2%" visibleToMouse="true">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(loadButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(loadButton)" />
+								</effect>
+								<interact onClick="load()" />
+							</image>
+							<image filename="Interface/Image/Button/deleteButton.png"
+								id="deleteSceneButton" width="50%" height="40%" visibleToMouse="true">
+								<effect>
+									<onStartHover name="nop" onStartEffect="startGrow(deleteSceneButton)" />
+									<onEndHover name="nop" onStartEffect="endGrow(deleteSceneButton)" />
+								</effect>
+								<interact onClick="createPopupDelete()" />
+							</image>
+						</panel>
+					</panel>
+					<panel id="saveTerrain" width="100%" height="20%"
+						childLayout="vertical">
+						<control font="Interface/Fonts/Morpheus.fnt" id="terrainFileToSave"
+							name="label" text="Tearrain to save: " color="#ee1f" />
+						<control id="textfieldSaveTerrain" name="textfield" width="80%"
+							align="center" />
+						<image filename="Interface/Image/Button/saveButton.png" id="saveButton"
+							width="50%" height="40%" visibleToMouse="true" align="center">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(saveButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(saveButton)" />
+							</effect>
+							<interact onClick="save()" />
+						</image>
+					</panel>
+					<panel id="return" width="100%" height="20%" childLayout="vertical">
+						<image filename="Interface/Image/Button/returnButton.png"
+							id="returnButton" width="50%" height="40%" visibleToMouse="true"
+							align="center">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(returnButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(returnButton)" />
+							</effect>
+							<interact onClick="closeEditor()" />
+						</image>
+					</panel>
+				</panel>
+				<panel id="upPanel" height="15%"
+					backgroundImage="Interface/Image/Graphics/blackBar.png"
+					childLayout="horizontal">
+					<panel id="items" width="100%" height="100%" padding="12%,1%,2%,2%"
+						childLayout="horizontal">
+						<panel id="up" width="10%" height="100%" childLayout="vertical">
+							<image filename="Interface/Image/Editor/mountain.png"
+								align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="upText"
+								name="label" text="Mountain " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="upNumber"
+								name="label" text="press: left" color="#ee1f" />
+						</panel>
+						<panel id="downValleyDown" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/valley.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downText"
+								name="label" text="Valley " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="downNumber"
+								name="label" text="press: rigth" color="#ee1f" />
+						</panel>
+
+						<panel id="downValleyUp" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/tree.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="treeText"
+								name="label" text="Tree " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="treeNumber"
+								name="label" text="press: 1" color="#ee1f" />
+						</panel>
+						<panel id="downBonfire" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/bonfire.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="bonFireText"
+								name="label" text="Bonfire " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="bonFireNumber"
+								name="label" text="press: 2" color="#ee1f" />
+						</panel>
+						<panel id="downPlayer" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/jasuo.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="playerText"
+								name="label" text="Player " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="playerNumber"
+								name="label" text="press: 3" color="#ee1f" />
+						</panel>
+						<panel id="downEnemies" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/enemy.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="enemiesText"
+								name="label" text="Enemies " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="enemiesNumber"
+								name="label" text="press: 4" color="#ee1f" />
+						</panel>
+						<panel id="downPortal" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/portal.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="portalText"
+								name="label" text="Portal " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="portalNumber"
+								name="label" text="press: 5" color="#ee1f" />
+						</panel>
+						<panel id="downBuildings" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/buildings.png"
+								align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="builderText"
+								name="label" text="Buildings " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="builderNumber"
+								name="label" text="press: 6" color="#ee1f" />
+						</panel>
+						<panel id="downChurch" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/church.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="churchText"
+								name="label" text="Church " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="churchNumber"
+								name="label" text="press: 7" color="#ee1f" />
+						</panel>
+						<panel id="downCastle" width="10%" height="100%"
+							childLayout="vertical">
+							<image filename="Interface/Image/Editor/castle.png" align="center" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="castleText"
+								name="label" text="Castle " color="#ee1f" />
+							<control font="Interface/Fonts/Morpheus.fnt" id="castleNumber"
+								name="label" text="press: 8" color="#ee1f" />
+						</panel>
+
+					</panel>
+				</panel>
+			</panel>
+		</layer>
+	</screen>
+</nifty>

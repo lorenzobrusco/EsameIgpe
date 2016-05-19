@@ -1,0 +1,17 @@
+material WukongMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.5 0.5 0.5 1
+
+			texture_unit
+			{
+				texture wukong.dds
+			}
+		}
+
+	}
+
+}
