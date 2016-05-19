@@ -1,8 +1,5 @@
 package multiPlayer;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bounding.BoundingBox;
@@ -30,8 +27,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
     private boolean switchAttack;
     /** make a hash code from name's model */
     private final String keyModel;
-    /** states */
-    private Collection<ModelState> states;
     /** enemy's lifebar */
     private final LifeBar lifeBar;
 
@@ -42,7 +37,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
-	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
     }
 
@@ -53,7 +47,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
-	this.states = new ConcurrentLinkedQueue<>();
+
 	this.keyModel = key;
     }
 
@@ -65,7 +59,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
-	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
     }
 
@@ -77,62 +70,37 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
-	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
     }
 
     /** this method change enemy's state */
-    public void changeState() {
-	if (this.states != null && !(this.states.isEmpty())) {
-	    ModelState state = ((ConcurrentLinkedQueue<ModelState>) this.states).poll();
-	    this.setWalkDirection(state.getWalk());
-	    this.setViewDirection(state.getView());
-	    this.life = state.getLife();
-	    this.score = state.getScore();
-	    if (state.isAttack())
-		this.startAttack();
-	}
-    }
-
-    /** this method create a new state */
-    public void addState(String line) {
-	final Vector3f walkdirection = new StringBuilder().builderWalk(line);
-	final Vector3f viewdirection = new StringBuilder().builderView(line);
-	final Vector3f location = new StringBuilder().builderPosition(line);
-	final int life = new StringBuilder().builderLife(line);
-	final boolean attack = new StringBuilder().builderAttack(line);
-	final int score = new StringBuilder().builderScore(line);
-	this.states.add(new ModelState(walkdirection, viewdirection, life, attack, location, score));
+    public void changeState(String line) {
+	final StringBuilder builder = new StringBuilder();
+	if (!builder.checkString(line))
+	    return;
+	final Vector3f view = builder.builderView(line);
+	final Vector3f direction = builder.builderWalk(line);
+	final Vector3f location = builder.builderPosition(line);
+	final int life = builder.builderLife(line);
+	final boolean attack = builder.builderAttack(line);
+	final int score = builder.builderScore(line);
+	this.setViewDirection(view);
+	this.setWalkDirection(location, direction);
+	this.life = life;
+	this.score = score;
+	if (attack)
+	    this.startAttack();
     }
 
     /** this method set enemy's walk direction */
-    public void setWalkDirection(Vector3f direction) {
-	if (!this.waitAnimation) {
-
-	    if (direction.x == 0.0f && direction.y == -1.0f && direction.z == 0.0f) {
-		this.characterControl.setWalkDirection(direction);
-		this.channel.setAnim(idle);
-	    } else {
-		this.characterControl.setWalkDirection(direction);
-		if (!this.channel.getAnimationName().equals(run))
-		    this.channel.setAnim(run);
-		if (this.getWorldTranslation().y < -9f) {
-		    this.death();
-		}
-	    }
-	}
-    }
-
-    /** this method is invoked when character must stop */
-    public void stop() {
-	if (!this.waitAnimation) {
-	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+    public void setWalkDirection(Vector3f location, Vector3f direction) {
+	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
 	    this.channel.setAnim(idle);
-	    // this.walkingOnGrassSound.stopSound(); //TODO test
-	    if (this.getWorldTranslation().y < -9f) {
-		this.death();
-	    }
+	} else {
+	    if (!this.channel.getAnimationName().equals(run))
+		this.channel.setAnim(run);
 	}
+	this.characterControl.warp(location);
     }
 
     /** this method is called when enemy death */
@@ -177,13 +145,16 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    NodeEnemyPlayers.this.endAttack();
 	}
 	if (arg2.equals(attack2)) {
-	    NodeEnemyPlayers.this.waitAnimation = false;
 	    arg1.setAnim(idle);
+	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.endAttack();
 	}
 	if (arg2.equals(death)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.endAttack();
+	}
+	if (arg2.equals(run)) {
+	    arg1.setAnim(idle);
 	}
     }
 

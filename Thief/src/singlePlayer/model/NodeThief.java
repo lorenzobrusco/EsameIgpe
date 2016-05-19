@@ -119,15 +119,15 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method stop main character */
     public void stop() {
-	this.characterControl.setWalkDirection(new Vector3f(0, -1f, 0));
+	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 	// this.walkingOnGrassSound.stopSound(); // TODO
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
-	if (((int) System.currentTimeMillis() - this.currentTime) / 100 >= 5) {
-	    this.resetCurrentTime();
-	    this.notifyUpdate(false);
-	}
+//	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 5) {
+//	    this.resetCurrentTime();
+//	    this.notifyUpdate(false);
+//	}
     }
 
     /** this method is invoked to run main character */
@@ -137,7 +137,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 	vector3f.y = -2f;
 	this.characterControl.setWalkDirection(vector3f);
-	this.notifyUpdate(false);
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
@@ -323,12 +322,13 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.isRun = true;
 		NodeThief.this.channel.setAnim(run);
-
+		NodeThief.this.notifyUpdate(false);
 	    } else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.stop();
 		NodeThief.this.isRun = false;
 		NodeThief.this.channel.setAnim(idle);
+		NodeThief.this.notifyUpdate(false);
 	    } else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
 		    && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.isRun = false;
@@ -343,6 +343,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.startAttack();
 		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
 		NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
+		NodeThief.this.notifyUpdate(true);
 	    } else if ((name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
 		    && !NodeThief.this.waitAnimation && !NodeThief.this.isRun)
 		    && !GameManager.getIstance().isPaused()) {
@@ -464,7 +465,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
-	this.notifyUpdate(true);
 	// this.playScream();//TODO test
 
     }

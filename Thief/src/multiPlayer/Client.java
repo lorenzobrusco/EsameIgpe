@@ -107,7 +107,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
-	this.IAM = this.ipAddress();
+	this.IAM = "192.168.1.4";
     }
 
     /** Client connect with Server */
@@ -184,13 +184,10 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method communicates an Player Updates */
     public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
-	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-//	    if (!this.lineToSend.equals(line)) {
-
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
-		this.lineToSend = line;
-//	    }
+
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
@@ -219,7 +216,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-		((NodeEnemyPlayers)GameManager.getIstance().getPlayers().get(key)).addState(line);
+		
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState(line);
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce

@@ -136,7 +136,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final Vector3f viewdirection = new StringBuilder().builderView(line);
 
-	    this.currentPosition = new StringBuilder().builderPosition(line);
+	    final Vector3f position = new StringBuilder().builderPosition(line);
 
 	    final int life = new StringBuilder().builderLife(line);
 
@@ -144,14 +144,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	     System.out.println("server: " + line);
-
-	    // TODO
-	    // System.out.println("stato: " + address + " --- " + walkdirection
-	    // + " ------ " + viewdirection);
-
 	    for (ClientManager manager : this.server.getPlayers()) {
-		    manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
+		if(manager != this)
+		manager.statePlayer(key, walkdirection, viewdirection, position, life, attack, score);
 	    }
 
 	    ;// TODO metodo che comunica a tutti lo spostamento
@@ -180,12 +175,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void statePlayer(String address, Vector3f walk, Vector3f view, int life, boolean attack, int score) {
+    public void statePlayer(String address, Vector3f walk, Vector3f view, Vector3f position, int life, boolean attack,
+	    int score) {
 	try {
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
-	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
+	    String line = new StringBuilder().builderString(walk, view, position, life, attack, address, "",
 		    this.nameClient, score);
-
 	    this.OUTPUT.writeBytes(line + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -196,7 +191,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
     public void syncWithServer() {
 	for (ClientManager manager : this.server.getPlayers()) {
-	    manager.syncPlayers(player, currentPosition);
+	    if (manager != this)
+		manager.syncPlayers(player, currentPosition);
 	}
 	this.currentTime = (int) System.currentTimeMillis();
 
@@ -205,7 +201,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void syncPlayers(String player, Vector3f local) {
 
 	try {
-
 	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",
 		    this.nameClient, 0);
@@ -316,9 +311,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    this.currentTime = (int) System.currentTimeMillis();
 	    while (this.establishedConnection) {
-		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
-		    this.syncWithServer();
-		}
 		final String message = this.INPUT.readLine();
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
