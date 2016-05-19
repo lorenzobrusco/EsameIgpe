@@ -136,23 +136,21 @@ public class Client extends Thread implements CommunicationProtocol {
 			this.namePlayer, 0);
 		this.OUTPUT.writeBytes(line + "\n");
 	    }
-	    String line = this.INPUT.readLine();
-	    if (line.equals(YOUAREWELCOME)) {
+	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
 		this.OUTPUT.writeBytes(WHOISTHERE + "\n");
 		int size = Integer.parseInt(this.INPUT.readLine());
 		for (int i = 0; i < size; i++) {
 		    if (this.INPUT.readLine().equals(NEWPLAYER)) {
-			String message = this.INPUT.readLine();
-			this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
-				new StringBuilder().builderModel(message),
-				new StringBuilder().builderPosition(message));
+			String line = this.INPUT.readLine();
+			this.addNewPlayers(new StringBuilder().builderKeyPlayer(line),
+				new StringBuilder().builderModel(line), new StringBuilder().builderPosition(line));
 		    }
 		}
-	    } else if (line.equals(TRYAGAIN))
+	    } else if (this.INPUT.readLine().equals(TRYAGAIN))
 		this.startConnection();
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nello start");
+	} catch (IOException e) {
+	    System.out.println("eccezzioni nello start");
 	}
     }
 
@@ -186,10 +184,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-	    if (!this.lineToSend.equals(line)) {
-		this.OUTPUT.writeBytes(SENDSTATE + "\n");
-		this.lineToSend = line;
-	    }
+	    // if (!this.lineToSend.equals(line)) {
+	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    this.lineToSend = line;
+	    // }
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
@@ -270,7 +268,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
-    // TODO fine sincronizzazione col server
     /** This Method return Player IP address */
     @Override
     public String ipAddress() {

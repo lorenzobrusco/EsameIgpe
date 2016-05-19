@@ -31,7 +31,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private boolean establishedConnection;
     private boolean newPlayer;
     private int currentTime;
-    private String currentState;
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
@@ -55,7 +54,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	this.establishedConnection = false;
 	this.newPlayer = false;
 	this.address = new String();
-	this.currentState = "";
 	this.socket = socket;
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -64,7 +62,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void startConnection() {
 	try {
-
 	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
 	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
@@ -74,13 +71,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    }
 	    if (this.INPUT.readLine().equals(KNOCK))
 		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
+
 	    String line = this.INPUT.readLine();
-	    if (!new StringBuilder().checkString(line)) {
-		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
-		return;
-	    }
+	    System.out.println(line);
 	    this.address = new StringBuilder().builderAddress(line);
 	    this.player = new StringBuilder().builderKeyPlayer(line);
+	    System.out.println("name player " + player);
 	    this.nameModel = new StringBuilder().builderModel(line);
 	    this.startPosition = new StringBuilder().builderPosition(line);
 	    this.currentPosition = this.startPosition;
@@ -128,12 +124,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	    String line = this.INPUT.readLine();
-	    
+
 	    if (!new StringBuilder().checkString(line))
 		return;
 
-	    this.currentState = line;
-	    
 	    final String key = new StringBuilder().builderKeyPlayer(line);
 
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
