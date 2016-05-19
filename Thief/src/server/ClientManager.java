@@ -129,7 +129,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    String line = this.INPUT.readLine();
 	    
-	    if (!new StringBuilder().checkString(line) || this.currentState.equals(line))
+	    if (!new StringBuilder().checkString(line))
 		return;
 
 	    this.currentState = line;
