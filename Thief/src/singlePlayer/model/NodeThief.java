@@ -137,6 +137,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 	vector3f.y = -2f;
 	this.characterControl.setWalkDirection(vector3f);
+	this.notifyUpdate(false);
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
@@ -296,7 +297,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public void onAnalog(String name, float value, float tpf) {
 	    if ((name.equals(run) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
-		run();
+		NodeThief.this.run();
 	    }
 	    if ((name.equals(rotateClockwise) && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
@@ -322,16 +323,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.isRun = true;
 		NodeThief.this.channel.setAnim(run);
-		NodeThief.this.notifyUpdate(false);
+
 	    } else if ((name.equals(run) && !pressed && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.stop();
 		NodeThief.this.isRun = false;
 		NodeThief.this.channel.setAnim(idle);
-		NodeThief.this.notifyUpdate(false);
 	    } else if ((name.equals(attack1) && pressed && NodeThief.this.alive && NodeThief.this.alive
 		    && !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
-		NodeThief.this.notifyUpdate(true);
 		NodeThief.this.isRun = false;
 		NodeThief.this.waitAnimation = true;
 		if (!NodeThief.this.changeAttack) {
@@ -465,6 +464,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
+	this.notifyUpdate(true);
 	// this.playScream();//TODO test
 
     }

@@ -144,14 +144,14 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    // System.out.println("server: " + attack);
+	     System.out.println("server: " + line);
 
 	    // TODO
 	    // System.out.println("stato: " + address + " --- " + walkdirection
 	    // + " ------ " + viewdirection);
 
 	    for (ClientManager manager : this.server.getPlayers()) {
-		manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
+		    manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
 	    }
 
 	    ;// TODO metodo che comunica a tutti lo spostamento

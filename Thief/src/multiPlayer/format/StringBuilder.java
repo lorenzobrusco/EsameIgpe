@@ -15,7 +15,7 @@ public class StringBuilder {
 	    String model, String name, int score) {
 
 	String line = walk.x + DELIMITER + walk.y + DELIMITER + walk.z + SEPARATOR + view.x + DELIMITER + view.y
-		+ DELIMITER + view.z + SEPARATOR + location.x + DELIMITER + GameManager.getIstance().getTerrainQuad().getHeight(new Vector2f(location.x, location.z)) + DELIMITER + location.z
+		+ DELIMITER + view.z + SEPARATOR + Math.round(location.x) + DELIMITER + Math.round(location.y) + DELIMITER + Math.round(location.z)
 		+ SEPARATOR + life + SEPARATOR + attack + SEPARATOR + ip + SEPARATOR + model + SEPARATOR + name
 		+ SEPARATOR + score;
 	return line;
