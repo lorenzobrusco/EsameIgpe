@@ -205,13 +205,6 @@ public class GameManager {
 	}
     }
 
-    /** this method get ip address */
-    public String ipAddress() {
-	//if (this.multiplayer != null)
-	    return this.client.ipAddress();
-	//return "127.0.0.1";
-    }
-
     /** this method check if point x,z is free */
     public boolean isWalkable(float x, float z) {
 	if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]

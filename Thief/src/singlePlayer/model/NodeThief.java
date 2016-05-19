@@ -3,7 +3,6 @@ package singlePlayer.model;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.audio.AudioSource.Status;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.collision.CollisionResult;
@@ -52,9 +51,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean waitAnimation;
     // TODO
     private boolean chatboxIsEnable;
-    /** distace to rendering */
-    // TODO
-    private static final int RENDER = 25;
+ 
     /** speed main character */
     private static final float SPEED = 15;
     /** minimum distace to active bonfire */
@@ -127,7 +124,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
-	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 2) {
+	if (((int) System.currentTimeMillis() - this.currentTime) / 100 >= 5) {
 	    this.resetCurrentTime();
 	    this.notifyUpdate(false);
 	}

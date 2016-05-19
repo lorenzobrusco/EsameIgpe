@@ -10,13 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -98,8 +93,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final DataOutputStream OUTPUT;
     /** connection stabilished with server */
     private boolean establishedConnection;
-    /** change state */
-    private Collection<ModelState> states;
+
     /** new state */
     private String lineToSend;
 
@@ -110,7 +104,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.lineToSend = "";
 	this.namePlayer = namePlayer;
 	this.cam = cam;
-	this.states = new ConcurrentLinkedQueue<>();
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -182,10 +175,7 @@ public class Client extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
-	    // TODO
-	  
 	    this.OUTPUT.writeBytes(this.lineToSend + "\n");
-
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationState");
 	}
@@ -194,10 +184,12 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method communicates an Player Updates */
     public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
-	    this.states.add(new ModelState(walk, view, life, attack, location, score));
-	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
-	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
+	    if (!this.lineToSend.equals(line)) {
+		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+		this.lineToSend = line;
+	    }
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
