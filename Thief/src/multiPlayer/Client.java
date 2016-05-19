@@ -186,11 +186,11 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-	    if (!this.lineToSend.equals(line)) {
+//	    if (!this.lineToSend.equals(line)) {
 
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 		this.lineToSend = line;
-	    }
+//	    }
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
@@ -218,34 +218,8 @@ public class Client extends Thread implements CommunicationProtocol {
 
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
-	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
-
-	    final Vector3f viewdirection = new StringBuilder().builderView(line);
-
-	    final int life = new StringBuilder().builderLife(line);
-
-	    final boolean attack = new StringBuilder().builderAttack(line);
-
-	    final int score = new StringBuilder().builderScore(line);
-
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-		if (!new FormatVector().equal(viewdirection, new Vector3f(0, 0, 0))) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
-		}
-		if (!new FormatVector().equal(walkdirection, new Vector3f(0, 0, 0))) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
-		}
-		if (life < GameManager.getIstance().getPlayers().get(key).getLife()) {
-		    GameManager.getIstance().getPlayers().get(key).setLife(life);
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getLifeBar().updateLifeBar(0);
-		}
-		if (score > ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getScore()) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setScore(score);
-		    GameManager.getIstance().sortScorePlyer();
-		    System.out.println("sorto");
-		}
-		if (attack)
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).startAttack();
+		((NodeEnemyPlayers)GameManager.getIstance().getPlayers().get(key)).addState(line);
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce

@@ -71,7 +71,7 @@ public class MultiPlayer implements ScreenController {
 	this.nodeScene = new Node("Scene");
 	GameManager.getIstance().setMultiplayer(this);
 	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
-//	this.setupAmbientSound();
+	// this.setupAmbientSound();
     }
 
     /** this method is called for each update */
@@ -93,6 +93,10 @@ public class MultiPlayer implements ScreenController {
 		GameManager.getIstance().getTerrain().attachChild(box.getModel());
 	    else
 		GameManager.getIstance().getTerrain().detachChild(box.getModel());
+	}
+	for (String key : GameManager.getIstance().getPlayers().keySet()) {
+	    if (((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)) != null)
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState();
 	}
     }
 

@@ -1,5 +1,8 @@
 package multiPlayer;
 
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bounding.BoundingBox;
@@ -9,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import multiPlayer.format.StringBuilder;
 import singlePlayer.model.LifeBar;
 import singlePlayer.model.NodeCharacter;
 
@@ -26,6 +30,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
     private boolean switchAttack;
     /** make a hash code from name's model */
     private final String keyModel;
+    /** states */
+    private Collection<ModelState> states;
     /** enemy's lifebar */
     private final LifeBar lifeBar;
 
@@ -36,6 +42,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
+	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
     }
 
@@ -46,6 +53,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
+	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
     }
 
@@ -57,6 +65,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
+	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
     }
 
@@ -68,13 +77,39 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
+	this.states = new ConcurrentLinkedQueue<>();
 	this.keyModel = key;
+    }
+
+    /** this method change enemy's state */
+    public void changeState() {
+	if (this.states != null && !(this.states.isEmpty())) {
+	    ModelState state = ((ConcurrentLinkedQueue<ModelState>) this.states).poll();
+	    this.setWalkDirection(state.getWalk());
+	    this.setViewDirection(state.getView());
+	    this.life = state.getLife();
+	    this.score = state.getScore();
+	    if (state.isAttack())
+		this.startAttack();
+	}
+    }
+
+    /** this method create a new state */
+    public void addState(String line) {
+	final Vector3f walkdirection = new StringBuilder().builderWalk(line);
+	final Vector3f viewdirection = new StringBuilder().builderView(line);
+	final Vector3f location = new StringBuilder().builderPosition(line);
+	final int life = new StringBuilder().builderLife(line);
+	final boolean attack = new StringBuilder().builderAttack(line);
+	final int score = new StringBuilder().builderScore(line);
+	this.states.add(new ModelState(walkdirection, viewdirection, life, attack, location, score));
     }
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f direction) {
 	if (!this.waitAnimation) {
-	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
+
+	    if (direction.x == 0.0f && direction.y == -1.0f && direction.z == 0.0f) {
 		this.characterControl.setWalkDirection(direction);
 		this.channel.setAnim(idle);
 	    } else {

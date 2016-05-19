@@ -119,7 +119,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method stop main character */
     public void stop() {
-	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+	this.characterControl.setWalkDirection(new Vector3f(0, -1f, 0));
 	// this.walkingOnGrassSound.stopSound(); // TODO
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
