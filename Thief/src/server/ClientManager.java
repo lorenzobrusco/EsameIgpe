@@ -62,7 +62,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void startConnection() {
 	try {
-
+System.out.println("r");
 	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
 	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
