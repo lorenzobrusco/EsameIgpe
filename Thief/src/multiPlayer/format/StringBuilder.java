@@ -1,6 +1,9 @@
 package multiPlayer.format;
 
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+
+import control.GameManager;
 
 public class StringBuilder {
 
@@ -12,7 +15,7 @@ public class StringBuilder {
 	    String model, String name, int score) {
 
 	String line = walk.x + DELIMITER + walk.y + DELIMITER + walk.z + SEPARATOR + view.x + DELIMITER + view.y
-		+ DELIMITER + view.z + SEPARATOR + location.x + DELIMITER + location.y + DELIMITER + location.z
+		+ DELIMITER + view.z + SEPARATOR + location.x + DELIMITER + GameManager.getIstance().getTerrainQuad().getHeight(new Vector2f(location.x, location.z)) + DELIMITER + location.z
 		+ SEPARATOR + life + SEPARATOR + attack + SEPARATOR + ip + SEPARATOR + model + SEPARATOR + name
 		+ SEPARATOR + score;
 	return line;

@@ -187,6 +187,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
 	    if (!this.lineToSend.equals(line)) {
+		System.out.println("linea: "+ line);
+		System.out.println("vecchia: "+ lineToSend);
 		this.OUTPUT.writeBytes(SENDSTATE + "\n");
 		this.lineToSend = line;
 	    }
