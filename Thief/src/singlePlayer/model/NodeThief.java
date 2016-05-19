@@ -3,7 +3,6 @@ package singlePlayer.model;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-import com.jme3.audio.AudioSource.Status;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.collision.CollisionResult;

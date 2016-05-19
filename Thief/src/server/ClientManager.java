@@ -62,41 +62,43 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void startConnection() {
 	try {
-	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
-	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
-	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
-		this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
-		this.fileTransfer(socket);
-		this.OUTPUT.writeBytes(ENDSENDMETERRAIN + "\n");
-	    }
-	    if (this.INPUT.readLine().equals(KNOCK))
-		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
-
-	    String line = this.INPUT.readLine();
-	    System.out.println(line);
-	    this.address = new StringBuilder().builderAddress(line);
-	    this.player = new StringBuilder().builderKeyPlayer(line);
-	    System.out.println("name player " + player);
-	    this.nameModel = new StringBuilder().builderModel(line);
-	    this.startPosition = new StringBuilder().builderPosition(line);
-	    this.currentPosition = this.startPosition;
-	    if (new FormatIP(this.address).itIsCorrectFormat()) {
-		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
-		this.establishedConnection = true;
-		if (this.INPUT.readLine().equals(WHOISTHERE)) {
-		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
-		    for (ClientManager manager : this.server.getPlayers()) {
-
-			this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
-				manager.startPosition);
-			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
-				this.startPosition);
-		    }
-
+	    while (!this.establishedConnection) {
+		this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
+		this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
+		if (!this.INPUT.readLine().equals(YESIHAVE)) {
+		    this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
+		    this.fileTransfer(socket);
+		    this.OUTPUT.writeBytes(ENDSENDMETERRAIN + "\n");
 		}
-		this.server.addPlayer(this);
-	    } else
-		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
+		if (this.INPUT.readLine().equals(KNOCK))
+		    this.OUTPUT.writeBytes(WHOAREYOU + "\n");
+		String line = this.INPUT.readLine();
+		if (new StringBuilder().checkString(line)) {
+		    this.address = new StringBuilder().builderAddress(line);
+		    this.player = new StringBuilder().builderKeyPlayer(line);
+		    this.nameModel = new StringBuilder().builderModel(line);
+		    this.startPosition = new StringBuilder().builderPosition(line);
+		    this.currentPosition = this.startPosition;
+		    if (new FormatIP(this.address).itIsCorrectFormat()) {
+			this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
+			this.establishedConnection = true;
+			if (this.INPUT.readLine().equals(WHOISTHERE)) {
+			    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
+			    for (ClientManager manager : this.server.getPlayers()) {
+
+				this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
+					manager.startPosition);
+				manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
+					this.startPosition);
+			    }
+
+			}
+			this.server.addPlayer(this);
+		    }
+		} else
+		    this.OUTPUT.writeBytes(TRYAGAIN + "\n");
+	    }
+	    System.out.println("non entro");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
