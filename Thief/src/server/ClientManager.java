@@ -145,7 +145,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    final int score = new StringBuilder().builderScore(line);
 
 	    for (ClientManager manager : this.server.getPlayers()) {
-		if(manager != this)
+		//if(manager != this)
 		manager.statePlayer(key, walkdirection, viewdirection, position, life, attack, score);
 	    }
 

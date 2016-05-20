@@ -3,6 +3,7 @@ package singlePlayer.model;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
+import com.jme3.audio.AudioSource.Status;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.collision.CollisionResult;
@@ -51,7 +52,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean waitAnimation;
     // TODO
     private boolean chatboxIsEnable;
- 
+
     /** speed main character */
     private static final float SPEED = 15;
     /** minimum distace to active bonfire */
@@ -120,20 +121,22 @@ public class NodeThief extends NodeCharacter implements Collition {
     /** this method stop main character */
     public void stop() {
 	this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	// this.walkingOnGrassSound.stopSound(); // TODO
+	this.walkingOnGrassSound.stopSound(); // TODO
 	if (this.getWorldTranslation().y < -9f) {
 	    this.death();
 	}
-//	if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >= 5) {
-//	    this.resetCurrentTime();
-//	    this.notifyUpdate(false);
-//	}
+	//this.saySomething();
+	// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >=
+	// 5) {
+	// this.resetCurrentTime();
+	// this.notifyUpdate(false);
+	// }
     }
 
     /** this method is invoked to run main character */
     public void run() {
 	this.resetCurrentTime();
-	// this.walkingOnGrassSound.playSound();// TODO test
+	this.walkingOnGrassSound.playSound();// TODO test
 	Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 	vector3f.y = -2f;
 	this.characterControl.setWalkDirection(vector3f);
@@ -150,11 +153,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 		&& this.isSinglePlayer) {
 	    this.resetAll();
 	    this.resetProgressBar();
-	    // this.bonfireSound.playSound(); //TODO
 	    this.channel.setAnim("BonFire");
 	    this.channel.setLoopMode(LoopMode.DontLoop);
 	    this.channel.setSpeed(0.7f);
 	    this.waitAnimation = true;
+	    if (!this.multiplayer)
+		this.bonfireSound.playSound(); // TODO
 	}
     }
 
@@ -226,67 +230,65 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     // TODO sound
     private void saySomething() {
-	// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 ==
-	// this.talkFrequence
-	// &&
-	// this.bonfireSound.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.deathSound.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.enemyView.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.enemyWin.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.scream1.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.scream2.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.scream3.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.scream4.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.swordSound.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice1.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice2.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice3.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice4.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice5.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice6.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.voice7.getAudioNode().getStatus().equals(Status.Stopped)
-	// &&
-	// this.walkingOnGrassSound.getAudioNode().getStatus().equals(Status.Stopped)
-	// && this.alive) {
-	// this.resetCurrentTime();
-	// int rand = ((int) (Math.random() * 7)) + 1;
-	//
-	// switch (rand) {
-	// case 1:
-	// this.voice1.playSound();
-	// break;
-	// case 2:
-	// this.voice2.playSound();
-	// break;
-	// case 3:
-	// this.voice3.playSound();
-	// break;
-	// case 4:
-	// this.voice4.playSound();
-	// break;
-	// case 5:
-	// this.voice5.playSound();
-	// break;
-	// case 6:
-	// this.voice6.playSound();
-	// break;
-	// case 7:
-	// this.voice7.playSound();
-	// break;
-	// default:
-	// break;
-	// }
-	// }
-	// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >
-	// this.talkFrequence) {
-	// this.currentTime = (int) System.currentTimeMillis();
-	// }
+	if (!this.multiplayer) {
+	    if (((int) System.currentTimeMillis() - this.currentTime) / 1000 == this.talkFrequence
+		    && this.bonfireSound.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.deathSound.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.enemyView.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.enemyWin.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.scream1.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.scream2.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.scream3.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.scream4.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.swordSound.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice1.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice2.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice3.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice4.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice5.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice6.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.voice7.getAudioNode().getStatus().equals(Status.Stopped)
+		    && this.walkingOnGrassSound.getAudioNode().getStatus().equals(Status.Stopped) && this.alive) {
+		this.resetCurrentTime();
+		int rand = ((int) (Math.random() * 7)) + 1;
+
+		switch (rand) {
+		case 1:
+		    this.voice1.playSound();
+		    break;
+		case 2:
+		    this.voice2.playSound();
+		    break;
+		case 3:
+		    this.voice3.playSound();
+		    break;
+		case 4:
+		    this.voice4.playSound();
+		    break;
+		case 5:
+		    this.voice5.playSound();
+		    break;
+		case 6:
+		    this.voice6.playSound();
+		    break;
+		case 7:
+		    this.voice7.playSound();
+		    break;
+		default:
+		    break;
+		}
+	    }
+	    if (((int) System.currentTimeMillis() - this.currentTime) / 1000 > this.talkFrequence) {
+		this.currentTime = (int) System.currentTimeMillis();
+	    }
+	}
 	// TODO tenere commentati fin quando non saranno presi tutti i file
 	// audio per ogni personaggio
     }
 
     public void playEnemyView() {
-	// this.enemyView.playSound();
+	if (!this.multiplayer)
+	    this.enemyView.playSound();
 	// TODO tenere commentati fin quando non saranno presi tutti i file
 	// audio per ogni personaggio
     }
@@ -355,8 +357,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (!GameManager.getIstance().isPaused()) {
 		    GameManager.getIstance().getNifty().gotoScreen("pauseScreen");
 		    GameManager.getIstance().pauseGame();
-		}
-		else {
+		} else {
 		    GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
 		    GameManager.getIstance().resumeGame();
 		    Element element = GameManager.getIstance().getNifty().getCurrentScreen()
@@ -425,7 +426,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    this.resetCurrentTime();
 	    // this.lifeBarThief.setVisible(false);
 	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	    // this.walkingOnGrassSound.stopSound(); // TODO test
+	    this.walkingOnGrassSound.stopSound(); // TODO test
 	}
     }
 
@@ -442,14 +443,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 		if (enemy instanceof NodeEnemy) {
 		    ((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
 		    if (enemy.isDead()) {
-			// this.enemyWin.playSound();//TODO test
+			this.enemyWin.playSound();// TODO test
 			((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
 			((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 		    }
 		} else if (enemy instanceof NodeEnemyPlayers) {
 		    ((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
 		    if (enemy.isDead()) {
-			// this.enemyWin.playSound();//TODO test
+			this.enemyWin.playSound();// TODO test
 			this.killSomeOne();
 			((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);
 			((NodeEnemyPlayers) enemy).getLifeBar().setVisibleLifeBar();
@@ -465,7 +466,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.resetCurrentTime();
 	super.startAttack();
 	this.checkCollition();
-	// this.playScream();//TODO test
+	this.playScream();// TODO test
 
     }
 
@@ -509,44 +510,29 @@ public class NodeThief extends NodeCharacter implements Collition {
     /** this method setip sounds */
     @Override
     protected void setupAudio() {
-	// if (!GameManager.getIstance().isEditor()) {
-	// this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false,
-	// false, false, 0.09f, false);
-	// this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f,
-	// false);
-	// this.deathSound = new Sound(this, "Death", false, false, false, 1.0f,
-	// false);
-	// this.bonfireSound = new Sound(this, "Bonfire", false, false, false,
-	// 1.0f, false);
-	// this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f,
-	// false);
-	// this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f,
-	// false);
-	// this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f,
-	// false);
-	// this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f,
-	// false);
-	// this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f,
-	// false);
-	// this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f,
-	// false);
-	// this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f,
-	// false);
-	// this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f,
-	// false);
-	// this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f,
-	// false);
-	// this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f,
-	// false);
-	// this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f,
-	// false);
-	// this.enemyWin = new Sound(this, "EnemyWin", false, false, false,
-	// 1.0f, false);
-	// this.enemyView = new Sound(this, "EnemyView", false, false, false,
-	// 1.0f, false);
-	// // TODO tenere commentati fin quando non saranno presi tutti i file
-	// // audio per ogni personaggio
-	// }
+	if (!GameManager.getIstance().isEditor()) {
+	    this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false, false, false, 0.09f, false);
+	    this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f, false);
+	    this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f, false);
+	    this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f, false);
+	    this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f, false);
+	    if (!this.multiplayer) {
+		this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
+		this.bonfireSound = new Sound(this, "Bonfire", false, false, false, 1.0f, false);
+		this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f, false);
+		this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f, false);
+		this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f, false);
+		this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f, false);
+		this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f, false);
+		this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f, false);
+		this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f, false);
+		this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
+		this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
+		this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
+	    }
+	    // TODO tenere commentati fin quando non saranno presi tutti i file
+	    // audio per ogni personaggio
+	}
     }
 
     /** this method get chase camera */

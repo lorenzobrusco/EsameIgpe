@@ -8,7 +8,7 @@ import singlePlayer.model.NodeModel;
 
 public class Sound {
 
-    //TODO Davide
+    // TODO Davide
     private AudioNode sound;
     private boolean played;
 
@@ -21,8 +21,14 @@ public class Sound {
 	    // TODO aggiorna contatote di thief -> non sparare cazzate se ti
 	    // stanno attaccando
 	    if (node instanceof NodeCharacter) {
-		this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-			"Models/Characters/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+		if (node.getName().contains("ogremesh")) {
+		    String[] name = node.getName().split("-");
+		    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+			    "Models/Characters/" + name[0] + "/Sounds/" + soundName + ".ogg");
+		} else {
+		    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+			    "Models/Characters/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+		}
 	    }
 	    if (node instanceof NodeModel) {
 		String name = node.getName();
