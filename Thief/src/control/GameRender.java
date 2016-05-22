@@ -65,20 +65,19 @@ public class GameRender {
 
 		    } else {
 			model.stopBonfireSound();
-
 		    }
-		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayer");
+//		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
+//			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayer");
+//
+//		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
+//			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayer");
+//		    }
 
-		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayer");
-		    }
-
-		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal")) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerPortal");
-		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal")) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerPortal");
-		    }
+//		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal")) {
+//			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerPortal");
+//		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal")) {
+//			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerPortal");
+//		    }
 
 		    if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE
 			    && !((NodeCharacter) model).isViewed()) {

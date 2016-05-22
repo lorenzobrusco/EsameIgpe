@@ -1,7 +1,5 @@
 package singlePlayer;
 
-import javax.vecmath.GMatrix;
-
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -167,13 +165,17 @@ public class SinglePlayer implements ScreenController {
 
     public void quitGame() {
 	openCloseSureExitButton();
-	GameManager.getIstance().setPaused(false);
-	GameManager.getIstance().getApplication().getInputManager().clearMappings();
+	GameManager.getIstance().quitGame();
+	GameManager.getIstance().getApplication().restart();
+	//GameManager.getIstance().setPaused(false);
+	//GameManager.getIstance().getApplication().getInputManager().clearMappings();
 	GameManager.getIstance().getNifty().exit();
-	this.rootNode.detachChild(nodeScene);
-	this.viewPort.clearProcessors();
+	this.rootNode.detachAllChildren();
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
-	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	//GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	GameManager.getIstance().getNodeThief().stopBonfireSound();
+	GameManager.getIstance().getNodeThief().stopChapelSound();
+	this.ambient.stopSound();
 
     }
 
@@ -194,7 +196,6 @@ public class SinglePlayer implements ScreenController {
     }
 
     public void showMessageBonfire(String id) {
-
 	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id)
 		.setVisible(true);
     }
