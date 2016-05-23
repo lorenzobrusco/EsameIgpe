@@ -251,8 +251,8 @@ public class GameManager {
 	public void pauseGame() {
 		this.paused = true;
 		this.application.getInputManager().setCursorVisible(true);
-		this.thief.stop();
 		this.thief.getCamera().setEnabled(false);
+		this.thief.stop();
 		for (NodeCharacter enemy : enemies)
 			((NodeEnemy) enemy).pauseIntelligence();
 

@@ -119,17 +119,18 @@ public class NodeThief extends NodeCharacter implements Collition {
 	/** this method stop main character */
 	public void stop() {
 		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+		if (GameManager.getIstance().isPaused()) {
+			this.setIdle();
+		}
 		this.walkingOnGrassSound.stopSound();
-		this.channel.setAnim(idle);
 		if (this.getWorldTranslation().y < -9f) {
 			this.death();
 		}
-		// this.saySomething();
-		// if (((int) System.currentTimeMillis() - this.currentTime) / 1000 >=
-		// 5) {
-		// this.resetCurrentTime();
-		// this.notifyUpdate(false);
-		// }
+	}
+
+	/** if in pause set Thief animation to idle */
+	private void setIdle() {
+		this.channel.setAnim(idle);
 	}
 
 	/** this method is invoked to run main character */
