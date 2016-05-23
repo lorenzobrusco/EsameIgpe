@@ -77,7 +77,6 @@ public class NodeEnemy extends NodeCharacter {
 	}
 
 	public void runIntelligence() {
-		// TODO avvia intelligenza
 		if (!waitAnimation && this.alive) {
 			this.artificialIntelligence.run();
 		}

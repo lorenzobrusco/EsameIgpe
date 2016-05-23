@@ -215,7 +215,7 @@ public class GameManager {
 		return true;
 	}
 
-	/***/// TODO davide
+	/** build a boolean matrix to know if point(x,z) is walkable */
 	public void makeSecondLayer() {
 		for (Spatial model : this.getModels()) {
 			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
@@ -227,7 +227,7 @@ public class GameManager {
 		}
 	}
 
-	/***/ // TODO davide
+	/** set to true or false secondLayer matrix cells, if it is true that point is walkable else not*/
 	private void makeModelArea(Spatial model) {
 
 		int xModelStart = (int) (model.getLocalTranslation().getX()

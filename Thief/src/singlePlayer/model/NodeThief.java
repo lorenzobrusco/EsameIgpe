@@ -84,8 +84,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private Sound voice7;
 	private Sound enemyWin;
 	private Sound enemyView;
-	/***/
-	// TODO davide
 	/** timer to speech */
 	private int currentTime;
 	/** minimum time to speech */
@@ -121,7 +119,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	/** this method stop main character */
 	public void stop() {
 		this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-		this.walkingOnGrassSound.stopSound(); // TODO
+		this.walkingOnGrassSound.stopSound();
 		this.channel.setAnim(idle);
 		if (this.getWorldTranslation().y < -9f) {
 			this.death();
@@ -137,7 +135,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	/** this method is invoked to run main character */
 	public void run() {
 		this.resetCurrentTime();
-		this.walkingOnGrassSound.playSound();// TODO test
+		this.walkingOnGrassSound.playSound();
 		Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 		vector3f.y = -2f;
 		this.characterControl.setWalkDirection(vector3f);
@@ -159,7 +157,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			this.channel.setSpeed(0.7f);
 			this.waitAnimation = true;
 			if (!this.multiplayer)
-				this.bonfireSound.playSound(); // TODO
+				this.bonfireSound.playSound();
 		}
 	}
 
@@ -229,7 +227,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	}
 
-	// TODO sound
+	/** only in single player Thief says something when is not moveing */
 	public void saySomething() {
 		if (!this.multiplayer) {
 			if (((int) System.currentTimeMillis() - this.currentTime) / 1000 == this.talkFrequence
@@ -283,15 +281,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 				this.currentTime = (int) System.currentTimeMillis();
 			}
 		}
-		// TODO tenere commentati fin quando non saranno presi tutti i file
-		// audio per ogni personaggio
 	}
 
 	public void playEnemyView() {
 		if (!this.multiplayer)
 			this.enemyView.playSound();
-		// TODO tenere commentati fin quando non saranno presi tutti i file
-		// audio per ogni personaggio
 	}
 
 	/** check which button is pressed */
@@ -427,7 +421,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			this.resetCurrentTime();
 			// this.lifeBarThief.setVisible(false);
 			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-			this.walkingOnGrassSound.stopSound(); // TODO test
+			this.walkingOnGrassSound.stopSound();
 		}
 	}
 
@@ -444,14 +438,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 				if (enemy instanceof NodeEnemy) {
 					((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
 					if (enemy.isDead()) {
-						this.enemyWin.playSound();// TODO test
+						this.enemyWin.playSound();
 						((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
 						((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 					}
 				} else if (enemy instanceof NodeEnemyPlayers) {
 					((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
 					if (enemy.isDead()) {
-						this.enemyWin.playSound();// TODO test
+						this.enemyWin.playSound();
 						this.killSomeOne();
 						((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);
 						((NodeEnemyPlayers) enemy).getLifeBar().setVisibleLifeBar();
@@ -467,7 +461,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.resetCurrentTime();
 		super.startAttack();
 		this.checkCollition();
-		this.playScream();// TODO test
+		this.playScream();
 
 	}
 
@@ -531,8 +525,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 				this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
 				this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
 			}
-			// TODO tenere commentati fin quando non saranno presi tutti i file
-			// audio per ogni personaggio
 		}
 	}
 
