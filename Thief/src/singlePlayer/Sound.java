@@ -20,37 +20,46 @@ public class Sound {
 	/** constructor */
 	public Sound(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
 			boolean played) {
-
-		/** setup audio file for special models */
-		if (!(node instanceof NodeModel)) {
-			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-					"Sounds/" + soundName + ".ogg");
-		} else {
-			/** setup audio file for characters */
-			if (node instanceof NodeCharacter) {
-				if (node.getName().contains("ogremesh")) {
-					String[] name = node.getName().split("-");
-					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-							"Models/Characters/" + name[0] + "/Sounds/" + soundName + ".ogg");
-				} else {
-					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-							"Models/Characters/" + node.getName() + "/Sounds/" + soundName + ".ogg");
-				}
-			}
-			/** setup aduio file for buildings */
-			if (node instanceof NodeModel) {
-				String name = node.getName();
-				if (name.equals("Chapel")) {
-					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-							"Models/Buildings/" + node.getName() + "/Sounds/" + soundName + ".ogg");
-				}
-				if (name.equals("Bonfire") || name.equals("Portal")) {
-					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-							"Models/Specials/" + node.getName() + "/Sounds/" + soundName + ".ogg");
-				}
-			}
-		}
-		this.setup(node, soundName, reverb, positional, loop, volume, played);
+		//
+		// /** setup audio file for special models */
+		// if (!(node instanceof NodeModel)) {
+		// this.sound = new
+		// AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+		// "Sounds/" + soundName + ".ogg");
+		// } else {
+		// /** setup audio file for characters */
+		// if (node instanceof NodeCharacter) {
+		// if (node.getName().contains("ogremesh")) {
+		// String[] name = node.getName().split("-");
+		// this.sound = new
+		// AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+		// "Models/Characters/" + name[0] + "/Sounds/" + soundName + ".ogg");
+		// } else {
+		// this.sound = new
+		// AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+		// "Models/Characters/" + node.getName() + "/Sounds/" + soundName +
+		// ".ogg");
+		// }
+		// }
+		// /** setup aduio file for buildings */
+		// if (node instanceof NodeModel) {
+		// String name = node.getName();
+		// if (name.equals("Chapel")) {
+		// this.sound = new
+		// AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+		// "Models/Buildings/" + node.getName() + "/Sounds/" + soundName +
+		// ".ogg");
+		// }
+		// if (name.equals("Bonfire") || name.equals("Portal")) {
+		// this.sound = new
+		// AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+		// "Models/Specials/" + node.getName() + "/Sounds/" + soundName +
+		// ".ogg");
+		// }
+		// }
+		// }
+		// this.setup(node, soundName, reverb, positional, loop, volume,
+		// played);
 	}
 
 	/** real audio file instantiation instantiation */
@@ -71,31 +80,33 @@ public class Sound {
 
 	/** play this sound */
 	public void playSound() {
-		this.sound.play();
+		// this.sound.play();
 	}
 
 	/** play only once this sound */
 	public void playSoundIstance() {
-		this.sound.playInstance();
+		// this.sound.playInstance();
 	}
 
 	/** stop playing this sound */
 	public void stopSound() {
-		this.sound.stop();
+		// this.sound.stop();
 	}
 
 	/** return this audio file */
 	public AudioNode getAudioNode() {
-		return this.sound;
+		// return this.sound;
+		return new AudioNode();
 	}
 
 	/** set this audio file as played or not */
 	public void setPlayed(boolean played) {
-		this.played = played;
+		// this.played = played;
 	}
 
 	/** return if this audio file has been played or not */
 	public boolean isPlayed() {
-		return this.played;
+		// return this.played;
+		return true;
 	}
 }

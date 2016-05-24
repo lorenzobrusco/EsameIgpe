@@ -62,7 +62,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	private boolean viewed;
 	/** sounds */
 	protected Sound deathSound;
-	protected Sound ambientSound;
+	// protected Sound ambientSound;
 	protected Sound scream1;
 	protected Sound scream2;
 	protected Sound scream3;
@@ -262,10 +262,15 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	protected void setupAudio() {
 		if (!GameManager.getIstance().isEditor()) {
 			this.deathSound = new Sound(this, "Death", false, true, false, 1.2f, false);
+			this.allSounds.add(this.deathSound);
 			this.scream1 = new Sound(this, "Scream1", false, true, false, 1.2f, false);
+			this.allSounds.add(this.scream1);
 			this.scream2 = new Sound(this, "Scream2", false, true, false, 1.2f, false);
+			this.allSounds.add(this.scream2);
 			this.scream3 = new Sound(this, "Scream3", false, true, false, 1.2f, false);
+			this.allSounds.add(this.scream3);
 			this.scream4 = new Sound(this, "Scream4", false, true, false, 1.2f, false);
+			this.allSounds.add(this.scream4);
 		}
 	}
 

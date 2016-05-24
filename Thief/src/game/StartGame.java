@@ -77,9 +77,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	/** set parameters */
 	public void simpleInitApp() {
-		super.restart();
+		// super.restart();
 		this.bulletAppState = new BulletAppState();
 		this.stateManager.attach(bulletAppState);
+		System.out.println(this.assetManager);
 		this.assetManager.registerLocator("assets/", FileLocator.class);
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);

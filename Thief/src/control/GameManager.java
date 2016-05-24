@@ -20,18 +20,21 @@ import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
+import game.StartGame;
 import multiPlayer.Client;
 import multiPlayer.MultiPlayer;
 import multiPlayer.notify.NotifyBoxAttack;
 import multiPlayer.notify.NotifyStateModel;
 import server.Server;
 import singlePlayer.SinglePlayer;
+import singlePlayer.Sound;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -227,7 +230,10 @@ public class GameManager {
 		}
 	}
 
-	/** set to true or false secondLayer matrix cells, if it is true that point is walkable else not*/
+	/**
+	 * set to true or false secondLayer matrix cells, if it is true that point
+	 * is walkable else not
+	 */
 	private void makeModelArea(Spatial model) {
 
 		int xModelStart = (int) (model.getLocalTranslation().getX()
@@ -260,14 +266,28 @@ public class GameManager {
 
 	/** this method is called when user come back to menu */
 	public void quitGame() {
-		this.spatial.clear();
-		this.nodeRender.clear();
-		this.enemies.clear();
-		this.lights.clear();
-		this.notifyStateModels.clear();
-		this.players.clear();
-		this.enemiesLifeBar.clear();
-		this.terrain.detachAllChildren();
+		for (NodeModel model : this.getModels()) {
+			for (Sound sound : model.getAllSound()) {
+				sound.stopSound();
+			}
+		}
+
+
+		// this.application.getInputManager().reset();
+		// this.application.getAudioRenderer().cleanup();
+		// this.application.getGuiViewPort().clearProcessors();
+		// this.spatial.clear();
+		// this.nodeRender.clear();
+		// this.enemies.clear();
+		// this.lights.clear();
+		// this.notifyStateModels.clear();
+		// this.players.clear();
+		// this.enemiesLifeBar.clear();
+		// this.terrain.detachAllChildren();
+		//
+		// this.application.getInputManager().clearRawInputListeners();
+
+		System.out.println(this.thief);
 	}
 
 	/** this method is called to resume game */
