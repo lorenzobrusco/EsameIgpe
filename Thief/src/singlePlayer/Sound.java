@@ -8,79 +8,94 @@ import singlePlayer.model.NodeModel;
 
 public class Sound {
 
-    // TODO Davide
-    private AudioNode sound;
-    private boolean played;
+	/**
+	 * This class is used to manage audio files
+	 */
 
-    public Sound(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
-	    boolean played) {
-	if (!(node instanceof NodeModel)) {
-	    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-		    "Sounds/" + soundName + ".ogg");
-	} else {
-	    // TODO aggiorna contatote di thief -> non sparare cazzate se ti
-	    // stanno attaccando
-	    if (node instanceof NodeCharacter) {
-		if (node.getName().contains("ogremesh")) {
-		    String[] name = node.getName().split("-");
-		    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-			    "Models/Characters/" + name[0] + "/Sounds/" + soundName + ".ogg");
+	/** AudioNode where audio file is stored */
+	private AudioNode sound;
+	/** control value to know if this audio file has been already played */
+	private boolean played;
+
+	/** constructor */
+	public Sound(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
+			boolean played) {
+
+		/** setup audio file for special models */
+		if (!(node instanceof NodeModel)) {
+			this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+					"Sounds/" + soundName + ".ogg");
 		} else {
-		    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-			    "Models/Characters/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+			/** setup audio file for characters */
+			if (node instanceof NodeCharacter) {
+				if (node.getName().contains("ogremesh")) {
+					String[] name = node.getName().split("-");
+					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+							"Models/Characters/" + name[0] + "/Sounds/" + soundName + ".ogg");
+				} else {
+					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+							"Models/Characters/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+				}
+			}
+			/** setup aduio file for buildings */
+			if (node instanceof NodeModel) {
+				String name = node.getName();
+				if (name.equals("Chapel")) {
+					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+							"Models/Buildings/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+				}
+				if (name.equals("Bonfire") || name.equals("Portal")) {
+					this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
+							"Models/Specials/" + node.getName() + "/Sounds/" + soundName + ".ogg");
+				}
+			}
 		}
-	    }
-	    if (node instanceof NodeModel) {
-		String name = node.getName();
-		if (name.equals("Chapel")) {
-		    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-			    "Models/Buildings/" + node.getName() + "/Sounds/" + soundName + ".ogg");
-		}
-		if (name.equals("Bonfire") || name.equals("Portal")) {
-		    this.sound = new AudioNode(GameManager.getIstance().getApplication().getAssetManager(),
-			    "Models/Specials/" + node.getName() + "/Sounds/" + soundName + ".ogg");
-		}
-	    }
+		this.setup(node, soundName, reverb, positional, loop, volume, played);
 	}
-	this.setup(node, soundName, reverb, positional, loop, volume, played);
-    }
 
-    private void setup(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
-	    boolean played) {
-	this.played = played;
-	this.sound.setVolume(volume);
-	this.sound.setLocalTranslation(node.getLocalTranslation());
-	this.sound.setLocalRotation(node.getLocalRotation().inverse());
-	this.sound.setReverbEnabled(reverb);
-	this.sound.setPitch(1.0f);
-	this.sound.setPositional(positional);
-	this.sound.setDirectional(positional);
-	this.sound.setLooping(loop);
-	this.sound.setRefDistance(10.0f);
-	this.sound.setMaxDistance(20.0f);
-    }
+	/** real audio file instantiation instantiation */
+	private void setup(Node node, String soundName, boolean reverb, boolean positional, boolean loop, float volume,
+			boolean played) {
+		this.played = played;
+		this.sound.setVolume(volume);
+		this.sound.setLocalTranslation(node.getLocalTranslation());
+		this.sound.setLocalRotation(node.getLocalRotation().inverse());
+		this.sound.setReverbEnabled(reverb);
+		this.sound.setPitch(1.0f);
+		this.sound.setPositional(positional);
+		this.sound.setDirectional(positional);
+		this.sound.setLooping(loop);
+		this.sound.setRefDistance(10.0f);
+		this.sound.setMaxDistance(20.0f);
+	}
 
-    public void playSound() {
-	this.sound.play();
-    }
+	/** play this sound */
+	public void playSound() {
+		this.sound.play();
+	}
 
-    public void playSoundIstance() {
-	this.sound.playInstance();
-    }
+	/** play only once this sound */
+	public void playSoundIstance() {
+		this.sound.playInstance();
+	}
 
-    public void stopSound() {
-	this.sound.stop();
-    }
+	/** stop playing this sound */
+	public void stopSound() {
+		this.sound.stop();
+	}
 
-    public AudioNode getAudioNode() {
-	return this.sound;
-    }
+	/** return this audio file */
+	public AudioNode getAudioNode() {
+		return this.sound;
+	}
 
-    public void setPlayed(boolean played) {
-	this.played = played;
-    }
+	/** set this audio file as played or not */
+	public void setPlayed(boolean played) {
+		this.played = played;
+	}
 
-    public boolean isPlayed() {
-	return this.played;
-    }
+	/** return if this audio file has been played or not */
+	public boolean isPlayed() {
+		return this.played;
+	}
 }
