@@ -23,214 +23,213 @@ import singlePlayer.artificialIntelligence.AI;
 
 public class NodeEnemy extends NodeCharacter {
 
-    /** artificial intelligence */
-    private final AI artificialIntelligence;
+	/** artificial intelligence */
+	private final AI artificialIntelligence;
 
-    private boolean isRun;
-    private boolean isStanding;
-    private boolean hasFound;
-    private boolean switchAttack;
-    private boolean waitAnimation;
-    private final float DISTANCE;
-    private Geometry box;
-    private LifeBar lifeBar;
+	private boolean isRun;
+	private boolean isStanding;
+	private boolean hasFound;
+	private boolean switchAttack;
+	private boolean waitAnimation;
+	private final float DISTANCE;
+	private Geometry box;
+	private LifeBar lifeBar;
 
-    public NodeEnemy(Spatial model, Vector3f dimensionControll, Vector3f intersection) {
-	super(model, dimensionControll, intersection, 50, 10);
-	this.artificialIntelligence = new AI(this);
-	this.lifeBar = new LifeBar(this);
-	this.setBoundingBox();
-	this.isRun = false;
-	this.hasFound = false;
-	this.switchAttack = false;
-	this.waitAnimation = false;
-	this.DISTANCE = 5;
-	this.isStanding = !isRun;
+	public NodeEnemy(Spatial model, Vector3f dimensionControll, Vector3f intersection) {
+		super(model, dimensionControll, intersection, 50, 10);
+		this.artificialIntelligence = new AI(this);
+		this.lifeBar = new LifeBar(this);
+		this.setBoundingBox();
+		this.isRun = false;
+		this.hasFound = false;
+		this.switchAttack = false;
+		this.waitAnimation = false;
+		this.DISTANCE = 5;
+		this.isStanding = !isRun;
 
-    }
-
-    private void setBoundingBox() {
-	BoundingBox boundingBox = new BoundingBox();
-	boundingBox.setXExtent(1.5f);
-	boundingBox.setYExtent(2.3f);
-	boundingBox.setZExtent(1.5f);
-
-	final WireBox wireBox2 = new WireBox();
-	wireBox2.fromBoundingBox(boundingBox);
-	wireBox2.setLineWidth(0f);
-	this.box = new Geometry("boxAttach", wireBox2);
-	this.box.setLocalTranslation(0, 2.4f, 0f);
-
-	final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
-		"Common/MatDefs/Misc/Unshaded.j3md");
-	this.box.setMaterial(material);
-	material.getAdditionalRenderState().setDepthWrite(true);
-	material.getAdditionalRenderState().setColorWrite(true);
-	box.setQueueBucket(Bucket.Transparent);
-	box.setShadowMode(ShadowMode.Off);
-	material.getAdditionalRenderState().setDepthWrite(false);
-	material.getAdditionalRenderState().setColorWrite(false);
-	boundingBox.setCenter(box.getLocalTranslation());
-
-	this.attachChild(box);
-
-    }
-
-    public void runIntelligence() {
-	// TODO avvia intelligenza
-	if (!waitAnimation && this.alive) {
-	    this.artificialIntelligence.run();
 	}
-    }
 
-    public void attack() {
-	if (!GameManager.getIstance().getNodeThief().isDead()) {
-	    if (this.hasFound && !this.waitAnimation) {
-		this.waitAnimation = true;
-		this.startAttack();
-		this.checkCollition();
-		if (this.waitAnimation) {
-		    this.channel.setAnim(this.attack1);
-		    if (this.name.equals("Wukong")) {
-			this.channel.setSpeed(2.0f);
-		    }
-		    this.switchAttack = !this.switchAttack;
-		} else {
-		    this.channel.setAnim(this.attack2);
-		    if (this.name.equals("Wukong")) {
-			this.channel.setSpeed(2.0f);
-		    }
-		    this.switchAttack = !this.switchAttack;
+	private void setBoundingBox() {
+		BoundingBox boundingBox = new BoundingBox();
+		boundingBox.setXExtent(1.5f);
+		boundingBox.setYExtent(2.3f);
+		boundingBox.setZExtent(1.5f);
+
+		final WireBox wireBox2 = new WireBox();
+		wireBox2.fromBoundingBox(boundingBox);
+		wireBox2.setLineWidth(0f);
+		this.box = new Geometry("boxAttach", wireBox2);
+		this.box.setLocalTranslation(0, 2.4f, 0f);
+
+		final Material material = new Material(GameManager.getIstance().getApplication().getAssetManager(),
+				"Common/MatDefs/Misc/Unshaded.j3md");
+		this.box.setMaterial(material);
+		material.getAdditionalRenderState().setDepthWrite(true);
+		material.getAdditionalRenderState().setColorWrite(true);
+		box.setQueueBucket(Bucket.Transparent);
+		box.setShadowMode(ShadowMode.Off);
+		material.getAdditionalRenderState().setDepthWrite(false);
+		material.getAdditionalRenderState().setColorWrite(false);
+		boundingBox.setCenter(box.getLocalTranslation());
+
+		this.attachChild(box);
+
+	}
+
+	public void runIntelligence() {
+		if (!waitAnimation && this.alive) {
+			this.artificialIntelligence.run();
 		}
-	    }
-	}
-    }
-
-    public void stopAnimation() {
-	if (this.getWorldTranslation().y > -9f) {
-	    if (!isStanding) {
-		this.channel.setAnim(this.idle);
-		this.isRun = false;
-		this.isStanding = !this.isRun;
-	    }
-	} else {
-	    this.death();
 	}
 
-    }
-
-    public void runAnimation() {
-	if (!isRun && this.alive) {
-	    this.channel.setAnim(this.run);
-	    this.isRun = true;
-	    this.isStanding = !this.isRun;
-	    if (this.getWorldTranslation().y < -9f) {
-		this.isRun = false;
-		this.isStanding = !this.isRun;
-		this.death();
-	    }
+	public void attack() {
+		if (!GameManager.getIstance().getNodeThief().isDead() && !GameManager.getIstance().isPaused()) {
+			if (this.hasFound && !this.waitAnimation) {
+				this.waitAnimation = true;
+				this.startAttack();
+				this.checkCollition();
+				if (this.waitAnimation) {
+					this.channel.setAnim(this.attack1);
+					if (this.name.equals("Wukong")) {
+						this.channel.setSpeed(2.0f);
+					}
+					this.switchAttack = !this.switchAttack;
+				} else {
+					this.channel.setAnim(this.attack2);
+					if (this.name.equals("Wukong")) {
+						this.channel.setSpeed(2.0f);
+					}
+					this.switchAttack = !this.switchAttack;
+				}
+			}
+		}
 	}
-    }
 
-    public void attack1Animation() {
-	if (this.alive) {
-	    this.channel.setAnim(this.attack1);
-	    this.stopAnimation();
+	public void stopAnimation() {
+		if (this.getWorldTranslation().y > -9f) {
+			if (!isStanding) {
+				this.channel.setAnim(this.idle);
+				this.isRun = false;
+				this.isStanding = !this.isRun;
+			}
+		} else {
+			this.death();
+		}
+
 	}
-    }
 
-    public void attack2Animation() {
-	if (this.alive) {
-	    this.channel.setAnim(this.attack2);
-	    this.stopAnimation();
+	public void runAnimation() {
+		if (!isRun && this.alive) {
+			this.channel.setAnim(this.run);
+			this.isRun = true;
+			this.isStanding = !this.isRun;
+			if (this.getWorldTranslation().y < -9f) {
+				this.isRun = false;
+				this.isStanding = !this.isRun;
+				this.death();
+			}
+		}
 	}
-    }
 
-    public boolean hasFound() {
-	return hasFound;
-    }
-
-    public void setHasFound(boolean hasFound) {
-	this.hasFound = hasFound;
-    }
-
-    public float getDISTANCE() {
-	return DISTANCE;
-    }
-
-    public boolean isSwitchAttack() {
-	return switchAttack;
-    }
-
-    @Override
-    public void resetAll() {
-	super.resetAll();
-	this.waitAnimation = false;
-	this.runIntelligence();
-	this.lifeBar = new LifeBar(this);
-	GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
-    }
-
-    @Override
-    public void checkCollition() {
-	CollisionResults collisionResult = new CollisionResults();
-	BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
-	GameManager.getIstance().getNodeThief().collideWith(box, collisionResult);
-	CollisionResult closest = collisionResult.getClosestCollision();
-	if (closest != null) {
-	    GameManager.getIstance().getNodeThief().isStricken(this.getDAMAGE());
+	public void attack1Animation() {
+		if (this.alive) {
+			this.channel.setAnim(this.attack1);
+			this.stopAnimation();
+		}
 	}
-    }
 
-    @Override
-    public void death() {
-	if (this.alive) {
-	    super.death();
-	    this.artificialIntelligence.stop();
-	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
-	} else {
-	    super.death();
+	public void attack2Animation() {
+		if (this.alive) {
+			this.channel.setAnim(this.attack2);
+			this.stopAnimation();
+		}
 	}
-    }
 
-    @Override
-    public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
-	if (arg2.equals(attack1)) {
-	    arg1.setAnim(this.idle);
-	    this.endAttack();
-	    this.waitAnimation = false;
+	public boolean hasFound() {
+		return hasFound;
 	}
-	if (arg2.equals(attack2)) {
 
-	    arg1.setAnim(this.idle);
-	    this.endAttack();
-	    this.waitAnimation = false;
+	public void setHasFound(boolean hasFound) {
+		this.hasFound = hasFound;
 	}
-    }
 
-    public Geometry getBox() {
-	return box;
-    }
+	public float getDISTANCE() {
+		return DISTANCE;
+	}
 
-    public void setBox(Geometry box) {
-	this.box = box;
-    }
+	public boolean isSwitchAttack() {
+		return switchAttack;
+	}
 
-    public LifeBar getLifeBar() {
-	return lifeBar;
-    }
+	@Override
+	public void resetAll() {
+		super.resetAll();
+		this.waitAnimation = false;
+		this.runIntelligence();
+		this.lifeBar = new LifeBar(this);
+		GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
+	}
 
-    public void setLifeBar(LifeBar lifeBar) {
-	this.lifeBar = lifeBar;
-    }
+	@Override
+	public void checkCollition() {
+		CollisionResults collisionResult = new CollisionResults();
+		BoundingBox box = (BoundingBox) this.node.getChild(0).getWorldBound();
+		GameManager.getIstance().getNodeThief().collideWith(box, collisionResult);
+		CollisionResult closest = collisionResult.getClosestCollision();
+		if (closest != null) {
+			GameManager.getIstance().getNodeThief().isStricken(this.getDAMAGE());
+		}
+	}
 
-    public void pauseIntelligence() {
+	@Override
+	public void death() {
+		if (this.alive) {
+			super.death();
+			this.artificialIntelligence.stop();
+			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+		} else {
+			super.death();
+		}
+	}
 
-	artificialIntelligence.pause();
-    }
+	@Override
+	public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
+		if (arg2.equals(attack1)) {
+			arg1.setAnim(this.idle);
+			this.endAttack();
+			this.waitAnimation = false;
+		}
+		if (arg2.equals(attack2)) {
 
-    public void resumeIntelligence() {
+			arg1.setAnim(this.idle);
+			this.endAttack();
+			this.waitAnimation = false;
+		}
+	}
 
-	artificialIntelligence.resume();
-    }
+	public Geometry getBox() {
+		return box;
+	}
+
+	public void setBox(Geometry box) {
+		this.box = box;
+	}
+
+	public LifeBar getLifeBar() {
+		return lifeBar;
+	}
+
+	public void setLifeBar(LifeBar lifeBar) {
+		this.lifeBar = lifeBar;
+	}
+
+	public void pauseIntelligence() {
+
+		artificialIntelligence.pause();
+	}
+
+	public void resumeIntelligence() {
+
+		artificialIntelligence.resume();
+	}
 }
