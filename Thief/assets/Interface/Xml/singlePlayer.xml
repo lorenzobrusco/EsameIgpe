@@ -39,7 +39,6 @@
 
 
 	<screen id="lifeBarScreen" controller="singlePlayer.SinglePlayer">
-
 		<layer id="layerProgressBar" childLayout="vertical">
 			<panel id="panelProgressBar" childLayout="absolute" />
 		</layer>
