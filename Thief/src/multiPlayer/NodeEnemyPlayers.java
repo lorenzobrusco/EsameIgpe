@@ -9,6 +9,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import multiPlayer.format.StringBuilder;
 import singlePlayer.model.LifeBar;
 import singlePlayer.model.NodeCharacter;
 
@@ -46,6 +47,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
+
 	this.keyModel = key;
     }
 
@@ -71,33 +73,34 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
-    /** this method set enemy's walk direction */
-    public void setWalkDirection(Vector3f direction) {
-	if (!this.waitAnimation) {
-	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
-		this.characterControl.setWalkDirection(direction);
-		this.channel.setAnim(idle);
-	    } else {
-		this.characterControl.setWalkDirection(direction);
-		if (!this.channel.getAnimationName().equals(run))
-		    this.channel.setAnim(run);
-		if (this.getWorldTranslation().y < -9f) {
-		    this.death();
-		}
-	    }
-	}
+    /** this method change enemy's state */
+    public void changeState(String line) {
+	final StringBuilder builder = new StringBuilder();
+	if (!builder.checkString(line))
+	    return;
+	final Vector3f view = builder.builderView(line);
+	final Vector3f direction = builder.builderWalk(line);
+	final Vector3f location = builder.builderPosition(line);
+	final int life = builder.builderLife(line);
+	final boolean attack = builder.builderAttack(line);
+	final int score = builder.builderScore(line);
+	this.setViewDirection(view);
+	this.setWalkDirection(location, direction);
+	this.life = life;
+	this.score = score;
+	if (attack)
+	    this.startAttack();
     }
 
-    /** this method is invoked when character must stop */
-    public void stop() {
-	if (!this.waitAnimation) {
-	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
+    /** this method set enemy's walk direction */
+    public void setWalkDirection(Vector3f location, Vector3f direction) {
+	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
 	    this.channel.setAnim(idle);
-	    // this.walkingOnGrassSound.stopSound(); //TODO test
-	    if (this.getWorldTranslation().y < -9f) {
-		this.death();
-	    }
+	} else {
+	    if (!this.channel.getAnimationName().equals(run))
+		this.channel.setAnim(run);
 	}
+	this.characterControl.warp(location);
     }
 
     /** this method is called when enemy death */
@@ -142,13 +145,16 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    NodeEnemyPlayers.this.endAttack();
 	}
 	if (arg2.equals(attack2)) {
-	    NodeEnemyPlayers.this.waitAnimation = false;
 	    arg1.setAnim(idle);
+	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.endAttack();
 	}
 	if (arg2.equals(death)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.endAttack();
+	}
+	if (arg2.equals(run)) {
+	    arg1.setAnim(idle);
 	}
     }
 

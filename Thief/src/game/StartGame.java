@@ -267,22 +267,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** this method is invoked when user press on textfield */
     public void resetParamsTextfield(String nameTextField) {
 
-	if (nameTextField.equals("myTextFieldName"))
-	    if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-		    .getDisplayedText().equals("Your Name"))
-		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-			.setText("");
-
-	if (nameTextField.equals("myTextFieldIP"))
-	    if (GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-		    .getDisplayedText().equals("IP-address")
-		    || (GameManager.getIstance().getNifty().getCurrentScreen()
-			    .findNiftyControl(nameTextField, TextField.class).getDisplayedText().equals(getIPAddress())
-			    && GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-				    .findElementByName("myTextFieldIP").isFocusable()))
-		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
-			.setText("");
-
+	GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl(nameTextField, TextField.class)
+		.setText("");
     }
 
     /** next character */
@@ -385,16 +371,18 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    this.loadCharacter();
 	}
 
-//	if (GameManager.getIstance().getServer() != null && GameManager.getIstance().getServer().isStart()) {
-//	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-//		    .findNiftyControl("myTextFieldIP", TextField.class).setText(getIPAddress());
-//	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-//		    .setFocusable(false);
-//	} else {
+	// if (GameManager.getIstance().getServer() != null &&
+	// GameManager.getIstance().getServer().isStart()) {
+	// GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
+	// .findNiftyControl("myTextFieldIP",
+	// TextField.class).setText(getIPAddress());
+	// GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+	// .setFocusable(false);
+	// } else {
 
-	    GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-		    .setFocusable(true);
-//	}
+	GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
+		.setFocusable(true);
+	// }
 	loadScreen("multiPlayerScreen");
 
     }
@@ -438,12 +426,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
 
-    /** this method return ip */
-    public String getIPAddress() {
-	return GameManager.getIstance().ipAddress();
-
-    }
-
     /** this methos start server */
     public void startServer() {
 	GameManager.getIstance().startServer("");
@@ -479,23 +461,23 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-app.setPauseOnLostFocus(false);
-//	AppSettings gameSettings = new AppSettings(false);
-//	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-//		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
-//
-//	gameSettings.setFullscreen(true);
-//	gameSettings.setVSync(true);
-//	gameSettings.setTitle("Thief");
-//	gameSettings.setUseInput(true);
-//	gameSettings.setFrameRate(500);
-//	gameSettings.setSamples(0);
-//	gameSettings.setRenderer("LWJGL-OpenGL2");
-//
-//	app.setSettings(gameSettings);
-//	app.setShowSettings(false);
-//	app.setDisplayFps(false);
-//	app.setDisplayStatView(false);
+	app.setPauseOnLostFocus(false);
+	// AppSettings gameSettings = new AppSettings(false);
+	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+	//
+	// gameSettings.setFullscreen(true);
+	// gameSettings.setVSync(true);
+	// gameSettings.setTitle("Thief");
+	// gameSettings.setUseInput(true);
+	// gameSettings.setFrameRate(500);
+	// gameSettings.setSamples(0);
+	// gameSettings.setRenderer("LWJGL-OpenGL2");
+	//
+	// app.setSettings(gameSettings);
+	// app.setShowSettings(false);
+	// app.setDisplayFps(false);
+	// app.setDisplayStatView(false);
 
 	app.start();
 
