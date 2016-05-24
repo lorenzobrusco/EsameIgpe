@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+
+import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -85,6 +87,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private String nameTerrain;
     /** Camera Player */
     private final Camera cam;
+    /**input manager*/
+    private final InputManager inputManager;
     /** Socket of communication with Server */
     private final Socket socket;
     /** Reader from Server */
@@ -97,17 +101,18 @@ public class Client extends Thread implements CommunicationProtocol {
     /** new state */
     private String lineToSend;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
+    public Client(final String namePlayer, final String nameModel, final String address, final InputManager inputManager, final Camera cam)
 	    throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.lineToSend = "";
 	this.namePlayer = namePlayer;
 	this.cam = cam;
+	this.inputManager = inputManager;
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
-	this.IAM = "192.168.1.4";
+	this.IAM = this.ipAddress();
     }
 
     /** Client connect with Server */
@@ -328,7 +333,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().addScorePlayer(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
-	GameManager.getIstance().getNodeThief().setCam(this.cam);
+	GameManager.getIstance().getNodeThief().setCam(this.cam, this.inputManager);
 	GameManager.getIstance().getMultiplayer().loadNifty();
 	scene.attachChild(GameManager.getIstance().getNodeThief());
 	this.setKey();

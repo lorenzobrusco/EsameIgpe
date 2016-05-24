@@ -142,8 +142,8 @@ public class EditorTerrain implements ScreenController {
 	/** set sound */
 	this.setupSound();
 
-	this.rootNode.addLight(this.loadTerrain.makeAmbientLight());
-	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
+//	this.rootNode.addLight(this.loadTerrain.makeAmbientLight());
+//	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
 
 	/** start sound */
 	this.editorSound.playSound();
@@ -350,12 +350,14 @@ public class EditorTerrain implements ScreenController {
     /** this method set landspace, main character adn spawn point */
     private void makeScene(String path) {
 	this.terrain = this.loadTerrain.loadTerrain(path, true);
+	this.rootNode.addLight(loadTerrain.makeDirectionLight());
 	this.rootNode.attachChild(this.terrain);
 	this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
 	this.bonFireModel = GameManager.getIstance().getBonfire();
 	this.thiefModel = GameManager.getIstance().getNodeThief();
 	this.nodePortal = GameManager.getIstance().getPortal();
+	GameManager.getIstance().setTerrain(this.rootNode);
     }
 
     /** this method add a marker */
@@ -771,11 +773,10 @@ public class EditorTerrain implements ScreenController {
     /** this method is called when editor is close */
     public void closeEditor() {
 
-	GameManager.getIstance().getApplication().getInputManager().clearMappings();
-	GameManager.getIstance().getNifty().exit();
-	this.rootNode.detachAllChildren();
-	this.viewPort.clearProcessors();
 	this.guiNode.detachAllChildren();
+	GameManager.getIstance().quitGame();
+	GameManager.getIstance().getApplication().getInputManager().clearMappings();
+	GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
     }
@@ -783,11 +784,25 @@ public class EditorTerrain implements ScreenController {
     /** this method add panel 2d */
     @Override
     public void onStartScreen() {
-	this.readScenes();
+//	this.readScenes();
     }
 
     @Override
     public void bind(Nifty arg0, Screen arg1) {
+	@SuppressWarnings("unchecked")
+	ListBox<String> listBox = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("listBox",
+		ListBox.class);
+	listBox.clear();
+	try {
+	    Files.walk(Paths.get("assets/Scenes")).forEach(filePath -> {
+		if (Files.isRegularFile(filePath)) {
+		    listBox.addItem(filePath.getFileName().toString());
+		}
+	    });
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+	listBox.selectItemByIndex(0);
     }
 
     @Override
