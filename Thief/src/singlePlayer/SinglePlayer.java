@@ -56,17 +56,17 @@ public class SinglePlayer implements ScreenController {
 	this.camera = cam;
 	this.camera.setFrustumFar(200);
 	this.camera.onFrameChange();
+	this.loadNifty();
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	this.loadLevel(level, shadows, fog, water);
 	GameManager.getIstance().getNodeThief().setSinglePlayer(true);
 	GameManager.getIstance().getNodeThief().setCam(this.camera);
 	this.setKey();
-	this.loadNifty();
 	this.setupAmbientSound();
     }
 
-    public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
+    public synchronized void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
 	TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
 	this.nodeScene.attachChild(terrainQuad);
 	this.rootNode.addLight(loadTerrain.makeDirectionLight());
@@ -123,11 +123,8 @@ public class SinglePlayer implements ScreenController {
 
     private void loadNifty() {
 
-	GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen", this);
-	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-		.findElementByName("borderLifeBarThief");
-	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, "Yasuo");
-
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen",
+		SinglePlayer.this);
     }
 
     private void setupAmbientSound() {
@@ -167,12 +164,12 @@ public class SinglePlayer implements ScreenController {
 	openCloseSureExitButton();
 	GameManager.getIstance().quitGame();
 	GameManager.getIstance().getApplication().restart();
-	//GameManager.getIstance().setPaused(false);
-	//GameManager.getIstance().getApplication().getInputManager().clearMappings();
+	// GameManager.getIstance().setPaused(false);
+	// GameManager.getIstance().getApplication().getInputManager().clearMappings();
 	GameManager.getIstance().getNifty().exit();
 	this.rootNode.detachAllChildren();
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
-	//GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	// GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 	GameManager.getIstance().getNodeThief().stopBonfireSound();
 	GameManager.getIstance().getNodeThief().stopChapelSound();
 	this.ambient.stopSound();
@@ -182,6 +179,9 @@ public class SinglePlayer implements ScreenController {
     /** jmonkey's method */
     @Override
     public void bind(Nifty d, Screen arg1) {
+	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		.findElementByName("borderLifeBarThief");
+	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, "Yasuo");
     }
 
     /** jmonkey's method */
@@ -196,12 +196,10 @@ public class SinglePlayer implements ScreenController {
     }
 
     public void showMessageBonfire(String id) {
-	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id)
-		.setVisible(true);
+	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
     }
 
     public void hideMessageBonfire(String id) {
-	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id)
-		.setVisible(false);
+	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
     }
 }

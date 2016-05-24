@@ -32,6 +32,11 @@
 
 	</controlDefinition>
 
+	<screen id="loading" controller="game.StartGame">
+	<layer id="tmp" childLayout="vertical" backgroundImage="Interface/Image/Graphics/background.jpg">		
+	</layer>
+	</screen>
+
 
 	<screen id="start" controller="game.StartGame">
 		<layer id="background_start" childLayout="center">

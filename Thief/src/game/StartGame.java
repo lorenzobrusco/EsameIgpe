@@ -134,7 +134,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.editor = false;
 	GameManager.getIstance().setEditor(false);
 	this.flyCam.setEnabled(false);
-	GameManager.getIstance().getNifty().exit();
+	//GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setModelGame(pathSinglePlayer);
 	String[] level = GameManager.getIstance().getNifty().getCurrentScreen()
 		.findNiftyControl("landscapeListBox", ListBox.class).getFocusItem().toString().split("\\.");
@@ -199,7 +199,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		if (Files.isRegularFile(filePath)) {
 		    String[] split = filePath.getFileName().toString().split("\\.");
 		    characters.add(split[0]);
-
 		}
 	    });
 	    NiftyImage image = nifty.getRenderEngine().createImage(null,
