@@ -328,7 +328,7 @@ public class GameManager {
     /** this method sort score lists */
     public void sortScorePlyer() {// TODO score
 
-	Collections.sort(this.scorePlayers, new Comparator<NodeCharacter>() {
+	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
 	    @Override
 	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
 		if (arg0.getScore() > arg1.getScore())
@@ -342,8 +342,6 @@ public class GameManager {
 	for (int i = 0; i < this.scorePlayers.size(); i++) {
 	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
 		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
-	    System.out.println(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName() + ": "
-		    + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "");
 	}
     }
 
