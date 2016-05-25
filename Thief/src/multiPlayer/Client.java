@@ -216,8 +216,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    String key = new StringBuilder().builderKeyPlayer(line);
 	    
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-		if(new StringBuilder().builderAttack(line))
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).addAttack(line);
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState(line);
 	    }
 
