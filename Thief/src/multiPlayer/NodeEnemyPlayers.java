@@ -72,8 +72,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
-    /** this method change enemy's state */
-    public synchronized void changeState(String line) {
+    /** this method set enemy's state */
+    public void setState(String line) {
 	final StringBuilder builder = new StringBuilder();
 	if (!builder.checkString(line))
 	    return;
@@ -83,20 +83,24 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int life = builder.builderLife(line);
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
-	this.setViewDirection(view);
-	this.setWalkDirection(location, direction);
-	if (this.life > life) {
-	    this.lifeBar.updateLifeBar(this.life - life);
-	    this.life = life;
-	}
-	this.score = score;
+	GameManager.getIstance().addState(this, new ModelState(direction, view, life, attack, location, score));
+    }
+
+    /** this method change enemy's state */
+    public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
+	this.lifeBar.updateLifeBar(this.life - life);
+	this.life = life;
+	this.score = score;
+	this.setViewDirection(view);
+	this.setWalkDirection(location, direction);
+
     }
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f location, Vector3f direction) {
-	if (this.alive) {
+	if (!this.waitAnimation) {
 	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
 		this.channel.setAnim(idle);
 	    } else {

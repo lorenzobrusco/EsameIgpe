@@ -194,7 +194,6 @@ public class NodeThief extends NodeCharacter implements Collition {
     /** this method is called when thief kill someone */
     public void killSomeOne() {
 	this.score += 10;
-	GameManager.getIstance().sortScorePlyer();
     }
 
     /** this method is called when main character is death */
@@ -455,8 +454,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    enemy.collideWith(box, collisionResult);
 	    final CollisionResult closest = collisionResult.getClosestCollision();
 	    if (closest != null) {
-		enemy.isStricken(this.getDAMAGE());
 		if (enemy instanceof NodeEnemy) {
+		    enemy.isStricken(this.getDAMAGE());
 		    ((NodeEnemy) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
 		    if (enemy.isDead()) {
 			this.enemyWin.playSound();
@@ -464,9 +463,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 		    }
 		} else if (enemy instanceof NodeEnemyPlayers) {
-		    ((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(this.getDAMAGE());
 		    if (enemy.isDead()) {
-			this.enemyWin.playSound();
 			this.killSomeOne();
 			GameManager.getIstance().sortScorePlyer();
 			((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);

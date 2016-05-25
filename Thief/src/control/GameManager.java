@@ -30,7 +30,9 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
 import multiPlayer.Client;
+import multiPlayer.ModelState;
 import multiPlayer.MultiPlayer;
+import multiPlayer.Pair;
 import multiPlayer.notify.NotifyBoxAttack;
 import multiPlayer.notify.NotifyStateModel;
 import server.Server;
@@ -63,6 +65,8 @@ public class GameManager {
     private Collection<NotifyStateModel> notifyStateModels;
     /** box attack */
     private Collection<NotifyBoxAttack> boxsAttack;
+    /** player's states */
+    private Collection<Pair<NodeCharacter, ModelState>> states;
     /** score multiplayer */
     private List<NodeCharacter> scorePlayers;
     /** players multiplayer */
@@ -121,6 +125,7 @@ public class GameManager {
 	this.players = new HashMap<>();
 	this.notifyStateModels = new ConcurrentLinkedQueue<>();
 	this.boxsAttack = new ConcurrentLinkedQueue<>();
+	this.states = new ConcurrentLinkedQueue<>();
 	this.enemiesLifeBar = new HashMap<>();
 	this.editor = false;
 	this.paused = false;
@@ -496,6 +501,21 @@ public class GameManager {
     /** this method check if collection is empty */
     public synchronized boolean getNotyStateModelsIsEmpty() {
 	return this.notifyStateModels.isEmpty();
+    }
+
+    /** this method add state */
+    public synchronized void addState(NodeCharacter character, ModelState modelState) {
+	this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
+    }
+
+    /** this method return state */
+    public synchronized Pair<NodeCharacter, ModelState> getState() {
+	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
+    }
+
+    /**this method return true if states is empty*/
+    public synchronized boolean stateIsEmpty() {
+	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
     }
 
     /** this method add box attack */

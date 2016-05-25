@@ -454,9 +454,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	 gameSettings.setRenderer("LWJGL-OpenGL2");
 	//
 	 app.setSettings(gameSettings);
-	// app.setShowSettings(false);
+//	 app.setShowSettings(false);
 	 app.setDisplayFps(false);
-	// app.setDisplayStatView(false);
+	 app.setDisplayStatView(false);
 
 	app.start();
 

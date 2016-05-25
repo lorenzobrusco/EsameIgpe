@@ -1,6 +1,8 @@
 package multiPlayer;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -23,6 +25,7 @@ import editor.LoadTerrain;
 import multiPlayer.notify.NotifyBoxAttack;
 import multiPlayer.notify.NotifyStateModel;
 import singlePlayer.Sound;
+import singlePlayer.model.NodeCharacter;
 
 /**
  * 
@@ -85,6 +88,16 @@ public class MultiPlayer implements ScreenController {
 		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
 	    }
 	}
+	if(!GameManager.getIstance().stateIsEmpty()){
+	    Pair<NodeCharacter, ModelState >  pair = GameManager.getIstance().getState();
+	    for(String key : GameManager.getIstance().getPlayers().keySet()){
+		if(GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())){
+		    final ModelState state = pair.getArg1();
+		    ((NodeEnemyPlayers)pair.getArg0()).changeState(state.getLife(), state.getScore(), state.isAttack(), state.getView(), state.getLocation(), state.getLocation());
+		}
+	    }
+	}
+	
 	if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
 	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
 	    if (box.isAttach())
@@ -92,6 +105,8 @@ public class MultiPlayer implements ScreenController {
 	    else
 		GameManager.getIstance().getTerrain().detachChild(box.getModel());
 	}
+	
+	
     }
 
     /** this method load landscape */
