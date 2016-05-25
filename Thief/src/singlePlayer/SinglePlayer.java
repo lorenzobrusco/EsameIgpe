@@ -194,13 +194,13 @@ public class SinglePlayer implements ScreenController {
 	}
 
 	/** this method show message when thief is near something */
-	public void showMessageBonfire(String id) {
+	public void showMessageForPlayer(String id) {
 		if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
 			GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
 	}
 
 	/** this method hide message when thief is near something */
-	public void hideMessageBonfire(String id) {
+	public void hideMessageForPlayer(String id) {
 		if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
 			GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
 	}

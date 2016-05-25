@@ -67,16 +67,16 @@ public class GameRender {
 			model.stopBonfireSound();
 		    }
 		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerBonFire");
+			GameManager.getIstance().getSinglePlayer().showMessageForPlayer("MessageForPlayerBonFire");
 
 		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerBonFire");
+			GameManager.getIstance().getSinglePlayer().hideMessageForPlayer("MessageForPlayerBonFire");
 		    }
 
 		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerPortal");
+			GameManager.getIstance().getSinglePlayer().showMessageForPlayer("MessageForPlayerPortal");
 		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerPortal");
+			GameManager.getIstance().getSinglePlayer().hideMessageForPlayer("MessageForPlayerPortal");
 		    }
 
 		    if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE
