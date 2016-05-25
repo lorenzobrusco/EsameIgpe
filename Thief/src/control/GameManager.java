@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
 import com.jme3.audio.AudioRenderer;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
@@ -25,6 +25,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
@@ -131,7 +132,6 @@ public class GameManager {
 		this.enemiesLifeBar = new HashMap<>();
 		this.editor = false;
 		this.paused = false;
-
 	}
 
 	/** getInstance singleton */
@@ -421,11 +421,6 @@ public class GameManager {
 	/** this method get lights */
 	public Collection<PointLight> getLights() {
 		return this.lights;
-	}
-
-	/** this method set sounds */
-	public void setAudioRender(AudioRenderer audioRenderer) {
-		this.audioRenderer = audioRenderer;
 	}
 
 	/** this method get sounds */

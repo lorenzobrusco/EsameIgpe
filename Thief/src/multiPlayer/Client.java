@@ -109,7 +109,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
-	this.IAM = this.ipAddress();
+//	this.IAM = this.ipAddress();
+	this.IAM = "192.168.1.1";
     }
 
     /** Client connect with Server */
