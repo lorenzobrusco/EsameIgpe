@@ -242,7 +242,7 @@ public class MultiPlayer implements ScreenController {
     }
 
     /** jmonkey's methods */
-    @Override
+    @Override 
     public void onEndScreen() {
     }
 

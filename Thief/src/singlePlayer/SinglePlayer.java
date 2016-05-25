@@ -31,180 +31,182 @@ import multiPlayer.notify.NotifyBoxAttack;
 
 public class SinglePlayer implements ScreenController {
 
-    private final String ATTACK1 = "Attack1";
-    private final String ATTACK2 = "Attack2";
-    private final String RUN = "Run";
-    private final String ROTATECLOCKWISE = "rotateClockwise";
-    private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
-    private final String BONFIRE = "BonFire";
-    private final String PAUSE = "Pause";
-    private final ViewPort viewPort;
-    private final Node rootNode;
-    private Node nodeScene;
-    private CollisionShape collisionShape;
-    private RigidBodyControl rigidBodyControl;
-    private final LoadTerrain loadTerrain;
-    private GameRender render;
-    private Sound ambient;
-    private Element progressLifeBarThief;
-    private Element borderLifeBarThief;
+	private final String ATTACK1 = "Attack1";
+	private final String ATTACK2 = "Attack2";
+	private final String RUN = "Run";
+	private final String ROTATECLOCKWISE = "rotateClockwise";
+	private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
+	private final String BONFIRE = "BonFire";
+	private final String PAUSE = "Pause";
+	private final ViewPort viewPort;
+	private final Node rootNode;
+	private Node nodeScene;
+	private CollisionShape collisionShape;
+	private RigidBodyControl rigidBodyControl;
+	private final LoadTerrain loadTerrain;
+	private GameRender render;
+	private Sound ambient;
+	private Element progressLifeBarThief;
+	private Element borderLifeBarThief;
 
-    public SinglePlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String level,
-	    boolean shadows, boolean fog, boolean water) {
-	this.viewPort = viewPort;
-	this.rootNode = rootNode;
-	cam.setFrustumFar(200);
-	cam.onFrameChange();
-	this.loadTerrain = new LoadTerrain();
-	this.nodeScene = new Node("Scene");
-	this.loadLevel(level, shadows, fog, water);
-	GameManager.getIstance().getNodeThief().setSinglePlayer(true);
-	GameManager.getIstance().getNodeThief().setCam(cam, inputManager);
-	GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen", this);
-	this.setKey();
-	this.setupAmbientSound();
-    }
-
-    public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
-	TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
-	this.nodeScene.attachChild(terrainQuad);
-	this.rootNode.addLight(loadTerrain.makeDirectionLight());
-	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
-	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
-	this.nodeScene.addControl(rigidBodyControl);
-	this.rootNode.attachChild(nodeScene);
-	GameManager.getIstance().setTerrain(nodeScene);
-	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
-	GameManager.getIstance().addPhysics();
-	GameManager.getIstance().addPointLightToScene();
-	GameManager.getIstance().setSinglePlayer(this);
-	this.render = new GameRender(terrainQuad);
-	this.viewPort.addProcessor(loadTerrain.makeFilter(shadows, fog, water));
-    }
-
-    public void simpleUpdate(Float tpf) {
-	this.render.rayRendering();
-	if (!GameManager.getIstance().getNodeThief().isRun())
-	    GameManager.getIstance().getNodeThief().stop();
-	GameManager.getIstance().getNodeThief().saySomething();
-	GameManager.getIstance().startEnemiesIntelligence();
-
-	if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
-	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-	    if (box.isAttach())
-		GameManager.getIstance().getTerrain().attachChild(box.getModel());
-	    else
-		GameManager.getIstance().getTerrain().detachChild(box.getModel());
+	public SinglePlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String level,
+			boolean shadows, boolean fog, boolean water) {
+		this.viewPort = viewPort;
+		this.rootNode = rootNode;
+		cam.setFrustumFar(200);
+		cam.onFrameChange();
+		this.loadTerrain = new LoadTerrain();
+		this.nodeScene = new Node("Scene");
+		this.loadLevel(level, shadows, fog, water);
+		GameManager.getIstance().getNodeThief().setSinglePlayer(true);
+		GameManager.getIstance().getNodeThief().setCam(cam, inputManager);
+		GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen", this);
+		this.setKey();
+		this.setupAmbientSound();
+		GameManager.getIstance().stopMenuSound();
 	}
 
-    }
+	public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
+		TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
+		this.nodeScene.attachChild(terrainQuad);
+		this.rootNode.addLight(loadTerrain.makeDirectionLight());
+		this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
+		this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
+		this.nodeScene.addControl(rigidBodyControl);
+		this.rootNode.attachChild(nodeScene);
+		GameManager.getIstance().setTerrain(nodeScene);
+		GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
+		GameManager.getIstance().addPhysics();
+		GameManager.getIstance().addPointLightToScene();
+		GameManager.getIstance().setSinglePlayer(this);
+		this.render = new GameRender(terrainQuad);
+		this.viewPort.addProcessor(loadTerrain.makeFilter(shadows, fog, water));
+	}
 
-    private void setKey() {
-	GameManager.getIstance().getApplication().getInputManager().addMapping(RUN, new KeyTrigger(KeyInput.KEY_W));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK1,
-		new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK2,
-		new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECLOCKWISE,
-		new KeyTrigger(KeyInput.KEY_A));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECOUNTERCLOCKWISE,
-		new KeyTrigger(KeyInput.KEY_D));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-		new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("win",
-		new KeyTrigger(KeyInput.KEY_SPACE));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(BONFIRE, new KeyTrigger(KeyInput.KEY_F));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
-		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE, new KeyTrigger(KeyInput.KEY_ESCAPE));
-	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, RUN, ATTACK1, ATTACK2, BONFIRE, "toggleRotate",
-		PAUSE, "win");
-	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().analogListener, RUN, ROTATECLOCKWISE, ROTATECOUNTERCLOCKWISE);
-    }
+	public void simpleUpdate(Float tpf) {
+		this.render.rayRendering();
+		if (!GameManager.getIstance().getNodeThief().isRun())
+			GameManager.getIstance().getNodeThief().stop();
+		GameManager.getIstance().getNodeThief().saySomething();
+		GameManager.getIstance().startEnemiesIntelligence();
 
-    private void setupAmbientSound() {
-	this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
-	this.ambient.playSound();
-    }
+		if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
+			NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
+			if (box.isAttach())
+				GameManager.getIstance().getTerrain().attachChild(box.getModel());
+			else
+				GameManager.getIstance().getTerrain().detachChild(box.getModel());
+		}
 
-    public void startGrow(String nameButton) {
+	}
 
-	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/Image/Button/" + nameButton + "OnHover.png", false);
-	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-    }
+	private void setKey() {
+		GameManager.getIstance().getApplication().getInputManager().addMapping(RUN, new KeyTrigger(KeyInput.KEY_W));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK1,
+				new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK2,
+				new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECLOCKWISE,
+				new KeyTrigger(KeyInput.KEY_A));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECOUNTERCLOCKWISE,
+				new KeyTrigger(KeyInput.KEY_D));
+		GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
+				new KeyTrigger(KeyInput.KEY_TAB));
+		GameManager.getIstance().getApplication().getInputManager().addMapping("win",
+				new KeyTrigger(KeyInput.KEY_SPACE));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(BONFIRE, new KeyTrigger(KeyInput.KEY_F));
+		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
+				new KeyTrigger(KeyInput.KEY_LCONTROL));
+		GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE,
+				new KeyTrigger(KeyInput.KEY_ESCAPE));
+		GameManager.getIstance().getApplication().getInputManager().addListener(
+				GameManager.getIstance().getNodeThief().actionListener, RUN, ATTACK1, ATTACK2, BONFIRE, "toggleRotate",
+				PAUSE, "win");
+		GameManager.getIstance().getApplication().getInputManager().addListener(
+				GameManager.getIstance().getNodeThief().analogListener, RUN, ROTATECLOCKWISE, ROTATECOUNTERCLOCKWISE);
+	}
 
-    public void endGrow(String nameButton) {
+	private void setupAmbientSound() {
+		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
+		this.ambient.playSound();
+	}
 
-	NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
-		"Interface/Image/Button/" + nameButton + ".png", false);
-	Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-    }
+	public void startGrow(String nameButton) {
 
-    public void openCloseSureExitButton() {
-	Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
-	element.setVisible(!element.isVisible());
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+				"Interface/Image/Button/" + nameButton + "OnHover.png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
 
-    }
+	public void endGrow(String nameButton) {
 
-    public void win() {
-	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("layerWinner").setVisible(true);
-    }
+		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
+				"Interface/Image/Button/" + nameButton + ".png", false);
+		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
+		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	}
 
-    public void resumeGame() {
-	GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
-	GameManager.getIstance().resumeGame();
+	public void openCloseSureExitButton() {
+		Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
+		element.setVisible(!element.isVisible());
 
-    }
+	}
 
-    public void quitGame() {
-	// this.openCloseSureExitButton();
-	GameManager.getIstance().quitGame();
-	GameManager.getIstance().setPaused(false);
-	GameManager.getIstance().getApplication().getInputManager().clearMappings();
-	GameManager.getIstance().getNifty().exit();
-	GameManager.getIstance().getApplication().getViewPort().clearProcessors();
-	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
-	GameManager.getIstance().getNodeThief().stopBonfireSound();
-	GameManager.getIstance().getNodeThief().stopChapelSound();
-	this.ambient.stopSound();
+	public void win() {
+		GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("layerWinner").setVisible(true);
+	}
 
-    }
+	public void resumeGame() {
+		GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
+		GameManager.getIstance().resumeGame();
 
-    /** this method show message when thief is near something */
-    public void showMessageBonfire(String id) {
-	if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
-	    GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
-    }
+	}
 
-    /** this method hide message when thief is near something */
-    public void hideMessageBonfire(String id) {
-	if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
-	    GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
-    }
+	public void quitGame() {
+		// this.openCloseSureExitButton();
+		GameManager.getIstance().quitGame();
+		GameManager.getIstance().setPaused(false);
+		GameManager.getIstance().getApplication().getInputManager().clearMappings();
+		GameManager.getIstance().getNifty().exit();
+		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
+		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
+		GameManager.getIstance().getNodeThief().stopBonfireSound();
+		GameManager.getIstance().getNodeThief().stopChapelSound();
+		this.ambient.stopSound();
 
-    /** jmonkey's method */
-    @Override
-    public void bind(Nifty d, Screen arg1) {
+	}
 
-	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-		.findElementByName("borderLifeBarThief");
-	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, "Yasuo");
-    }
+	/** this method show message when thief is near something */
+	public void showMessageBonfire(String id) {
+		if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
+			GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
+	}
 
-    /** jmonkey's method */
-    @Override
-    public void onEndScreen() {
-    }
+	/** this method hide message when thief is near something */
+	public void hideMessageBonfire(String id) {
+		if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
+			GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
+	}
 
-    /** jmonkey's method */
-    @Override
-    public void onStartScreen() {
+	/** jmonkey's method */
+	@Override
+	public void bind(Nifty d, Screen arg1) {
 
-    }
+		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+				.findElementByName("borderLifeBarThief");
+		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, "Yasuo");
+	}
+
+	/** jmonkey's method */
+	@Override
+	public void onEndScreen() {
+	}
+
+	/** jmonkey's method */
+	@Override
+	public void onStartScreen() {
+
+	}
 
 }
