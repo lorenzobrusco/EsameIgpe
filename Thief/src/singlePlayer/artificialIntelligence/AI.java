@@ -177,20 +177,6 @@ public class AI {
 		if (this.stopSearchThief) {
 			this.stopSearchThief = false;
 		}
-
-		// if (stopSearchThief) {
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// try {
-		// sleep(500);
-		// AI.this.stopSearchThief = false;
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// }.start();
-		// }
 	}
 
 	/** check if enemy is colliding with something in the scene */
@@ -231,11 +217,9 @@ public class AI {
 
 	public void pause() {
 		this.pause = true;
-
 	}
 
 	public void resume() {
 		this.pause = false;
-
 	}
 }
