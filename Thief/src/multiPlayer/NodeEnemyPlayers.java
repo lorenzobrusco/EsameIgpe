@@ -1,5 +1,8 @@
 package multiPlayer;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bounding.BoundingBox;
@@ -28,7 +31,9 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** make a hash code from name's model */
     private final String keyModel;
     /** enemy's lifebar */
-    private final LifeBar lifeBar;
+    private LifeBar lifeBar;
+    /** attack's queue */
+    private final Queue<String> attackqueue;
 
     /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
@@ -36,6 +41,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.attackqueue = new ConcurrentLinkedQueue<>();
 	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
@@ -46,8 +52,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.attackqueue = new ConcurrentLinkedQueue<>();
 	this.lifeBar = new LifeBar(this);
-
 	this.keyModel = key;
     }
 
@@ -58,6 +64,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.attackqueue = new ConcurrentLinkedQueue<>();
 	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
@@ -69,6 +76,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
+	this.attackqueue = new ConcurrentLinkedQueue<>();
 	this.lifeBar = new LifeBar(this);
 	this.keyModel = key;
     }
@@ -76,6 +84,9 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** this method change enemy's state */
     public void changeState(String line) {
 	final StringBuilder builder = new StringBuilder();
+	if (!this.attackqueue.isEmpty()) {
+	    line = this.attackqueue.poll();
+	}
 	if (!builder.checkString(line))
 	    return;
 	final Vector3f view = builder.builderView(line);
@@ -93,6 +104,11 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.score = score;
 	if (attack)
 	    this.startAttack();
+    }
+
+    /** this method add attack in a queue */
+    public synchronized void addAttack(String line) {
+	this.attackqueue.add(line);
     }
 
     /** this method set enemy's walk direction */
@@ -160,7 +176,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
 	if (arg2.equals(death)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
-	    NodeEnemyPlayers.this.endAttack();
+	    NodeEnemyPlayers.this.resetAll();
+	    NodeEnemyPlayers.this.lifeBar = new LifeBar(this);
 	}
 	if (arg2.equals(run)) {
 	    arg1.setAnim(idle);

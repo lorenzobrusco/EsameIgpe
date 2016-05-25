@@ -24,7 +24,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import multiPlayer.format.FormatStringChat;
-import multiPlayer.format.FormatVector;
 import multiPlayer.format.StringBuilder;
 import multiPlayer.notify.NotifyStateModel;
 import multiPlayer.protocols.CommunicationProtocol;
@@ -50,7 +49,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
-    private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
@@ -216,7 +214,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	    if (!new StringBuilder().checkString(line))
 		return;
 	    String key = new StringBuilder().builderKeyPlayer(line);
+	    
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
+		if(new StringBuilder().builderAttack(line))
+		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).addAttack(line);
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState(line);
 	    }
 
