@@ -331,21 +331,21 @@ public class GameManager {
 
 	/** this method sort score lists */
 	public void sortScorePlyer() {// TODO score
-		this.scorePlayers.sort(new Comparator<NodeCharacter>() {
-			@Override
-			public int compare(NodeCharacter arg0, NodeCharacter arg1) {
-				if (arg0.getScore() > arg1.getScore())
-					return 1;
-				else if (arg0.getScore() < arg1.getScore())
-					return 2;
-				else
-					return 0;
-			}
-		});
-		for (int i = 0; i < this.scorePlayers.size(); i++) {
-			this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
-					+ ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
-		}
+	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
+	    @Override
+	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
+		if (arg0.getScore() > arg1.getScore())
+		    return 1;
+		else if (arg0.getScore() < arg1.getScore())
+		    return 2;
+		else
+		    return 0;
+	    }
+	});
+	for (int i = 0; i < this.scorePlayers.size(); i++) {
+	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
+		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+		    }
 	}
 
 	/** this method set bullet */
@@ -513,6 +513,10 @@ public class GameManager {
 	public synchronized void addState(NodeCharacter character, ModelState modelState) {
 		this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
 	}
+    /** this method return true if states is empty */
+    public synchronized boolean stateIsEmpty() {
+	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
+    }
 
 	/** this method return true if states is empty */
 	public synchronized boolean stateIsEmpty() {
@@ -522,11 +526,6 @@ public class GameManager {
 	/** this method get box attack */
 	public synchronized NotifyBoxAttack getBoxAttack() {
 		return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
-	}
-
-	/** this method returns state */
-	public synchronized Pair<NodeCharacter, ModelState> getState() {
-		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
 	}
 
 	/** this method check if collection is empty */

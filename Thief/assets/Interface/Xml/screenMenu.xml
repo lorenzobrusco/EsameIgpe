@@ -33,8 +33,7 @@
 	</controlDefinition>
 
 	<screen id="loading" controller="game.StartGame">
-	<layer id="tmp" childLayout="vertical" backgroundImage="Interface/Image/Graphics/background.jpg">		
-	</layer>
+	
 	</screen>
 
 
@@ -389,6 +388,9 @@
 		    </panel>	
 		
 		</layer>
+		
+		<layer id="loadingBackground" childLayout="vertical" backgroundImage="Interface/Image/Graphics/loading.jpg" visible="false">		
+	   </layer>
 		
 		
 		</screen>
