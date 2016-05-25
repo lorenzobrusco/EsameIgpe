@@ -411,7 +411,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    }
 	   if (win && pressed) {
 		   win = false;
-	 		GameManager.getIstance().getSinglePlayer().quitGame();
+	 	    GameManager.getIstance().getSinglePlayer().quitGame();
 	 		}
 	   else if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 		    && !GameManager.getIstance().isPaused()) {

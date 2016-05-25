@@ -182,7 +182,7 @@ public class SinglePlayer implements ScreenController {
 		// this.openCloseSureExitButton();
 		GameManager.getIstance().quitGame();
 		GameManager.getIstance().setPaused(false);
-		// GameManager.getIstance().getApplication().getInputManager().clearMappings();
+		GameManager.getIstance().getApplication().getInputManager().clearMappings();
 		GameManager.getIstance().getNifty().exit();
 		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
