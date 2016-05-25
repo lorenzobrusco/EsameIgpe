@@ -202,8 +202,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.stop();
 	this.resetAll();
 	this.resetCurrentTime();
-	this.lifeBarThief.setVisible(true);
-	this.setDamageLifeBar();
+	this.resetProgressBar();
 	Vector3f spawnPoint;
 	if (multiplayer)
 	    spawnPoint = this.startPosition;
