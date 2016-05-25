@@ -317,6 +317,8 @@ public class GameManager {
 	for (int i = 0; i < this.scorePlayers.size(); i++) {
 	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
 		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+	    System.out.println(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName() + ": "
+		    + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "");
 	}
 
 	// if (this.scorePlayers.size() > 1) {
