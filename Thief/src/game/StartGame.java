@@ -13,6 +13,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.system.AppSettings;
 import com.jme3.ui.Picture;
 
 import control.GameManager;
@@ -440,8 +441,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-	app.setPauseOnLostFocus(false);
-	// AppSettings gameSettings = new AppSettings(false);
+	 AppSettings gameSettings = new AppSettings(false);
 	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 	//
@@ -451,11 +451,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	// gameSettings.setUseInput(true);
 	// gameSettings.setFrameRate(500);
 	// gameSettings.setSamples(0);
-	// gameSettings.setRenderer("LWJGL-OpenGL2");
+	 gameSettings.setRenderer("LWJGL-OpenGL2");
 	//
-	// app.setSettings(gameSettings);
+	 app.setSettings(gameSettings);
 	// app.setShowSettings(false);
-	// app.setDisplayFps(false);
+	 app.setDisplayFps(false);
 	// app.setDisplayStatView(false);
 
 	app.start();
