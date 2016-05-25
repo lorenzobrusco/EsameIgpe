@@ -28,6 +28,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
 import multiPlayer.Client;
@@ -316,9 +317,10 @@ public class GameManager {
 	}
 
 	/** this method start server */
-	public void startServer(String path) {
+	public void startServer(String path, int port) {
 		try {
-			this.server = new Server(path);
+	
+			this.server = new Server(path, port);
 			this.server.start();
 		} catch (UnknownHostException e) {
 
@@ -618,6 +620,10 @@ public class GameManager {
 	/** this method get portal */
 	public NodeModel getPortal() {
 		return portal;
+	}
+
+	public Collection<Pair<NodeCharacter, ModelState>> getStates() {
+		return states;
 	}
 
 	/** this method set portal */

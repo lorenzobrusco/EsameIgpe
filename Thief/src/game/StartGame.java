@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Callable;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
@@ -25,6 +27,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.EditorTerrain;
 import multiPlayer.MultiPlayer;
+import server.Server;
 import singlePlayer.SinglePlayer;
 import singlePlayer.Sound;
 
@@ -131,7 +134,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	/** start single player */
 	public void singlePlayer() {
-
+		this.inputManager.setCursorVisible(false);
+		StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackground").setVisible(true);
 		GameManager.getIstance().setEditor(false);
 		this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		GameManager.getIstance().setModelGame(pathSinglePlayer);
@@ -141,8 +145,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		this.initKeys();
 		this.menuSound.stopSound();
 		this.singleplayer = true;
-		this.multiplayer = false;
 		this.editor = false;
+		this.multiplayer = false;
 
 	}
 
@@ -156,7 +160,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		GameManager.getIstance().setModelGame(pathMultiPlayer);
 		this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
-				((ArrayList<String>) characters).get(indexCharacter));
+				((ArrayList<String>) characters).get(indexCharacter),
+				Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
+						.findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
 		this.initKeys();
 		this.menuSound.stopSound();
 		this.multiplayer = true;
@@ -306,7 +312,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	}
 
-	/** previous character */
+	/** previus character */
 	public void redoCharacter() {
 		if (this.indexCharacter == 0)
 			this.indexCharacter = characters.size() - 1;
@@ -334,7 +340,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	}
 
-	/** previous landscape */
+	/** previus landscape */
 	public void redoLandscape() {
 		if (this.indexLandscape == 0)
 			this.indexLandscape = landscape.size() - 1;
@@ -460,10 +466,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
-	/** this methos start server */
+	/** this methods start server */
 	public void startServer() {
 
-		GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape));
+		GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape), Integer.parseInt(nifty
+				.getCurrentScreen().findNiftyControl("myTextFieldPortServer", TextField.class).getDisplayedText()));
 		openServerScreen();
 	}
 
@@ -471,6 +478,30 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	public void closeServer() {
 		GameManager.getIstance().getServer().stopServer();
 		openServerScreen();
+	}
+
+	public boolean isSingleplayer() {
+		return singleplayer;
+	}
+
+	public void setSingleplayer(boolean singleplayer) {
+		this.singleplayer = singleplayer;
+	}
+
+	public boolean isMultiplayer() {
+		return multiplayer;
+	}
+
+	public void setMultiplayer(boolean multiplayer) {
+		this.multiplayer = multiplayer;
+	}
+
+	public boolean isEditor() {
+		return editor;
+	}
+
+	public void setEditor(boolean editor) {
+		this.editor = editor;
 	}
 
 	/** jmonkey's method */
@@ -507,12 +538,12 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		// gameSettings.setFrameRate(500);
 		// gameSettings.setSamples(0);
 		gameSettings.setRenderer("LWJGL-OpenGL2");
-		gameSettings.setAudioRenderer(AppSettings.LWJGL_OPENAL);
 		//
 		app.setSettings(gameSettings);
 		// app.setShowSettings(false);
 		app.setDisplayFps(false);
 		app.setDisplayStatView(false);
+
 		app.start();
 
 	}

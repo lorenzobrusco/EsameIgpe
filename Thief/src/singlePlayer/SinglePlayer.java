@@ -1,5 +1,7 @@
 package singlePlayer;
 
+import java.util.concurrent.Callable;
+
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -56,18 +58,30 @@ public class SinglePlayer implements ScreenController {
 		cam.setFrustumFar(200);
 		cam.onFrameChange();
 		this.loadTerrain = new LoadTerrain();
-		this.nodeScene = new Node("Scene");
-		this.loadLevel(level, shadows, fog, water);
-		GameManager.getIstance().getNodeThief().setSinglePlayer(true);
-		GameManager.getIstance().getNodeThief().setCam(cam, inputManager);
-		GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen", this);
-		this.setKey();
-		this.setupAmbientSound();
-		GameManager.getIstance().stopMenuSound();
+		new Thread() {
+			public void run() {
+				GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+					public Void call() {
+						SinglePlayer.this.loadLevel(level, shadows, fog, water);
+						GameManager.getIstance().getNodeThief().setSinglePlayer(true);
+						GameManager.getIstance().getNodeThief().setCam(cam, inputManager);
+						GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen",
+								SinglePlayer.this);
+						SinglePlayer.this.setKey();
+						SinglePlayer.this.setupAmbientSound();
+						GameManager.getIstance().stopMenuSound();
+
+						return null;
+					}
+				});
+			};
+		}.start();
+
 	}
 
 	public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
 		TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
+		this.nodeScene = new Node("Scene");
 		this.nodeScene.attachChild(terrainQuad);
 		this.rootNode.addLight(loadTerrain.makeDirectionLight());
 		this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
@@ -84,20 +98,21 @@ public class SinglePlayer implements ScreenController {
 	}
 
 	public void simpleUpdate(Float tpf) {
-		this.render.rayRendering();
-		if (!GameManager.getIstance().getNodeThief().isRun())
-			GameManager.getIstance().getNodeThief().stop();
-		GameManager.getIstance().getNodeThief().saySomething();
-		GameManager.getIstance().startEnemiesIntelligence();
+		if (this.nodeScene != null) {
+			this.render.rayRendering();
+			if (!GameManager.getIstance().getNodeThief().isRun())
+				GameManager.getIstance().getNodeThief().stop();
+			GameManager.getIstance().getNodeThief().saySomething();
+			GameManager.getIstance().startEnemiesIntelligence();
 
-		if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
-			NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-			if (box.isAttach())
-				GameManager.getIstance().getTerrain().attachChild(box.getModel());
-			else
-				GameManager.getIstance().getTerrain().detachChild(box.getModel());
+			if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
+				NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
+				if (box.isAttach())
+					GameManager.getIstance().getTerrain().attachChild(box.getModel());
+				else
+					GameManager.getIstance().getTerrain().detachChild(box.getModel());
+			}
 		}
-
 	}
 
 	private void setKey() {
@@ -173,18 +188,19 @@ public class SinglePlayer implements ScreenController {
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 		GameManager.getIstance().getNodeThief().stopBonfireSound();
 		GameManager.getIstance().getNodeThief().stopChapelSound();
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		this.ambient.stopSound();
 
 	}
 
 	/** this method show message when thief is near something */
-	public void showMessageBonfire(String id) {
+	public void showMessageForPlayer(String id) {
 		if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
 			GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
 	}
 
 	/** this method hide message when thief is near something */
-	public void hideMessageBonfire(String id) {
+	public void hideMessageForPlayer(String id) {
 		if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
 			GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
 	}
