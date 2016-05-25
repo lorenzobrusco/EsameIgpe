@@ -1,12 +1,12 @@
 package multiPlayer;
 
 import java.io.IOException;
-
-import javax.vecmath.GMatrix;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.input.InputManager;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -25,6 +25,7 @@ import editor.LoadTerrain;
 import multiPlayer.notify.NotifyBoxAttack;
 import multiPlayer.notify.NotifyStateModel;
 import singlePlayer.Sound;
+import singlePlayer.model.NodeCharacter;
 
 /**
  * 
@@ -59,7 +60,7 @@ public class MultiPlayer implements ScreenController {
     /** jmonkey's object */
     private final ViewPort viewPort;
 
-    public MultiPlayer(ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
+    public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address, String namePlayer,
 	    String nameModel) {
 	this.nameModel = nameModel;
 	this.viewPort = viewPort;
@@ -70,7 +71,7 @@ public class MultiPlayer implements ScreenController {
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	GameManager.getIstance().setMultiplayer(this);
-	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam);
+	this.loadLevel("castle", address, namePlayer, nameModel, rootNode, cam, inputManager);
 	this.setupAmbientSound();
     }
 
@@ -87,6 +88,16 @@ public class MultiPlayer implements ScreenController {
 		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
 	    }
 	}
+	if(!GameManager.getIstance().stateIsEmpty()){
+	    Pair<NodeCharacter, ModelState >  pair = GameManager.getIstance().getState();
+	    for(String key : GameManager.getIstance().getPlayers().keySet()){
+		if(GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())){
+		    final ModelState state = pair.getArg1();
+		    ((NodeEnemyPlayers)pair.getArg0()).changeState(state.getLife(), state.getScore(), state.isAttack(), state.getView(), state.getLocation(), state.getLocation());
+		}
+	    }
+	}
+	
 	if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
 	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
 	    if (box.isAttach())
@@ -94,11 +105,13 @@ public class MultiPlayer implements ScreenController {
 	    else
 		GameManager.getIstance().getTerrain().detachChild(box.getModel());
 	}
+	
+	
     }
 
     /** this method load landscape */
     public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode,
-	    Camera cam) {
+	    Camera cam, InputManager inputManager) {
 	try {
 	    final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
 	    this.nodeScene.attachChild(terrainQuad);
@@ -106,7 +119,7 @@ public class MultiPlayer implements ScreenController {
 	    this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	    this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	    this.nodeScene.addControl(rigidBodyControl);
-	    this.client = new Client(namePlayer, nameModel, address, cam);
+	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam);
 	    GameManager.getIstance().setTerrain(nodeScene);
 	    GameManager.getIstance().makeSecondLayer();
 	    this.client.bornPosition(nodeScene);
@@ -149,11 +162,10 @@ public class MultiPlayer implements ScreenController {
     public void loadNifty() {
 
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/multiPlayer.xml", "lifeBarScreen", this);
-	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-		.findElementByName("borderLifeBarThief");
-	System.out.println(nameModel);
-	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
-
+//	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+//		.findElementByName("borderLifeBarThief");
+//	System.out.println(nameModel);
+//	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
     }
 
     /** this method sort player */
@@ -206,6 +218,10 @@ public class MultiPlayer implements ScreenController {
     /** jmonkey's methods */
     @Override
     public void bind(Nifty arg0, Screen arg1) {
+	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+		.findElementByName("borderLifeBarThief");
+	System.out.println(nameModel);
+	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
     }
 
     /** jmonkey's methods */

@@ -56,6 +56,9 @@ public class LifeBar extends Node {
     /** this method calculate remaining life before thief' attach */
     public void updateLifeBar(int damage) {
 
+	if(damage == 0){
+	    return;
+	}
 	if (damage >= life) {
 	    this.setVisibleLifeBar();
 	} else {

@@ -28,7 +28,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** make a hash code from name's model */
     private final String keyModel;
     /** enemy's lifebar */
-    private final LifeBar lifeBar;
+    private LifeBar lifeBar;
 
     /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
@@ -47,7 +47,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
-
 	this.keyModel = key;
     }
 
@@ -73,8 +72,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.keyModel = key;
     }
 
-    /** this method change enemy's state */
-    public void changeState(String line) {
+    /** this method set enemy's state */
+    public void setState(String line) {
 	final StringBuilder builder = new StringBuilder();
 	if (!builder.checkString(line))
 	    return;
@@ -84,43 +83,58 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int life = builder.builderLife(line);
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
-	this.setViewDirection(view);
-	this.setWalkDirection(location, direction);
-	this.life = life;
-	this.score = score;
+	GameManager.getIstance().addState(this, new ModelState(direction, view, life, attack, location, score));
+    }
+
+    /** this method change enemy's state */
+    public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
+	this.lifeBar.updateLifeBar(this.life - life);
+	this.life = life;
+	this.score = score;
+	this.setViewDirection(view);
+	this.setWalkDirection(location, direction);
+
     }
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f location, Vector3f direction) {
-	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
-	    this.channel.setAnim(idle);
-	} else {
-	    if (!this.channel.getAnimationName().equals(run))
-		this.channel.setAnim(run);
+	if (!this.waitAnimation) {
+	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
+		this.channel.setAnim(idle);
+	    } else {
+		if (!this.channel.getAnimationName().equals(run))
+		    this.channel.setAnim(run);
+	    }
+	    this.characterControl.warp(location);
 	}
-	this.characterControl.warp(location);
     }
 
     /** this method is called when enemy death */
     @Override
     public void death() {
 	super.death();
+	GameManager.getIstance().sortScorePlyer();
 	this.waitAnimation = true;
     }
 
     /** this method is invoked when attach enemy */
     @Override
     public void startAttack() {
-	super.startAttack();
-	this.checkCollition();
-	this.waitAnimation = true;
-	if (!switchAttack)
-	    this.channel.setAnim(attack1);
-	else
-	    this.channel.setAnim(attack2);
-	this.switchAttack = !this.switchAttack;
+	if (!this.waitAnimation) {
+	    super.startAttack();
+	    this.checkCollition();
+	    this.waitAnimation = true;
+	    if (!switchAttack) {
+		this.channel.setAnim(attack1);
+		this.channel.setSpeed(3f);
+	    } else {
+		this.channel.setAnim(attack2);
+		this.channel.setSpeed(2f);
+	    }
+	    this.switchAttack = !this.switchAttack;
+	}
     }
 
     /** this method check if enemy strikes main character */
@@ -151,7 +165,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
 	if (arg2.equals(death)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
-	    NodeEnemyPlayers.this.endAttack();
+	    NodeEnemyPlayers.this.resetAll();
+	    NodeEnemyPlayers.this.lifeBar = new LifeBar(this);
 	}
 	if (arg2.equals(run)) {
 	    arg1.setAnim(idle);

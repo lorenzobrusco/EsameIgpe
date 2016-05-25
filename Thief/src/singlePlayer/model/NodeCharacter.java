@@ -176,7 +176,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		if (this.alive) {
 			this.life -= DAMAGE;
 			if (this.isDead()) {
-				this.deathSound.playSound();
+				// this.deathSound.playSound();
 				this.alive = false;
 				this.channel.setAnim(death);
 				this.channel.setLoopMode(LoopMode.DontLoop);
@@ -196,8 +196,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
 	/** this method attach a box for check collition */
 	public void startAttack() {
-		GameManager.getIstance().getNodeThief().resetCurrentTime();
-		this.playScream();
 		this.node.setLocalTranslation(this.getLocalTranslation());
 		this.node.setLocalRotation(this.getLocalRotation());
 		GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(true, this.node));
