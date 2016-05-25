@@ -68,7 +68,7 @@ public class MultiPlayer implements ScreenController {
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	GameManager.getIstance().setMultiplayer(this);
-	this.loadLevel("mountain", address, namePlayer, nameModel, rootNode, cam, inputManager);
+	this.loadLevel("castle", address, namePlayer, nameModel, rootNode, cam, inputManager);
 	this.setupAmbientSound();
     }
 

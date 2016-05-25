@@ -142,8 +142,8 @@ public class EditorTerrain implements ScreenController {
 	/** set sound */
 	this.setupSound();
 
-//	this.rootNode.addLight(this.loadTerrain.makeAmbientLight());
-//	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
+	this.rootNode.addLight(this.loadTerrain.makeAmbientLight());
+	this.rootNode.addLight(this.loadTerrain.makeDirectionLight());
 
 	/** start sound */
 	this.editorSound.playSound();
