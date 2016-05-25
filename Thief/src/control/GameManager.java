@@ -30,7 +30,9 @@ import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
 import multiPlayer.Client;
+import multiPlayer.ModelState;
 import multiPlayer.MultiPlayer;
+import multiPlayer.Pair;
 import multiPlayer.notify.NotifyBoxAttack;
 import multiPlayer.notify.NotifyStateModel;
 import server.Server;
@@ -111,6 +113,70 @@ public class GameManager {
 	private Server server;
 	/** sound */
 	private Sound menuSound;
+	/** singleton */
+	private static GameManager manager;
+	/** models */
+	private Collection<NodeModel> spatial;
+	/** models to rendering */
+	private Collection<NodeModel> nodeRender;
+	/** enemies */
+	private Collection<NodeCharacter> enemies;
+	/** light */
+	private Collection<PointLight> lights;
+	/** state models */
+	private Collection<NotifyStateModel> notifyStateModels;
+	/** box attack */
+	private Collection<NotifyBoxAttack> boxsAttack;
+	/** player's states */
+	private Collection<Pair<NodeCharacter, ModelState>> states;
+	/** score multiplayer */
+	private List<NodeCharacter> scorePlayers;
+	/** players multiplayer */
+	private AbstractMap<String, NodeCharacter> players;
+	/** enemy's lifebars */
+	private AbstractMap<Integer, Element> enemiesLifeBar;
+	/** application */
+	private SimpleApplication application;
+	/** jmonkey's object */
+	private BulletAppState bulletAppState;
+	/** load terrain */
+	private LoadTerrain loadTerrain;
+	/** main's character */
+	private NodeThief thief;
+	/** bonfire */
+	private NodeModel bonfire;
+	/** portal */
+	private NodeModel portal;
+	/** terrain */
+	private Node terrain;
+	/** terrainquand */
+	private TerrainQuad terrainQuad;
+	/** singleplayer */
+	private SinglePlayer singlePlayer;
+	/** multiplayer */
+	private MultiPlayer multiplayer;
+	/** sounds */
+	private AudioRenderer audioRenderer;
+	/** it's true if choose editor */
+	private boolean editor;
+	/** client */
+	private Client client;
+	/** extends x */
+	private float worldXExtent;
+	/** extends z */
+	private float worldZExtent;
+	/** matrix */
+	private boolean[][] secondLayer;
+	/** panel 2d */
+	private Nifty nifty;
+	/** game type */
+	private String modelGame;
+	/** it's true if is pause */
+	private boolean paused;
+	/** server */
+	private Server server;
+	/** sound */
+	private Sound menuSound;
 
 	/** builder */
 	private GameManager() {
@@ -123,6 +189,7 @@ public class GameManager {
 		this.players = new HashMap<>();
 		this.notifyStateModels = new ConcurrentLinkedQueue<>();
 		this.boxsAttack = new ConcurrentLinkedQueue<>();
+		this.states = new ConcurrentLinkedQueue<>();
 		this.enemiesLifeBar = new HashMap<>();
 		this.editor = false;
 		this.paused = false;
@@ -278,13 +345,17 @@ public class GameManager {
 	public void quitGame() {
 
 		for (NodeModel model : this.getModels()) {
+
 			for (Sound sound : model.getAllSound()) {
 				sound.stopSound();
 			}
+
 			if (model instanceof NodeEnemy)
 				((NodeEnemy) model).pauseIntelligence();
 		}
 
+		this.menuSound = new Sound(this.terrain, "Menu", false, false, true, 1.0f, false);
+		this.menuSound.playSound();
 		this.spatial.clear();
 		this.nodeRender.clear();
 		this.enemies.clear();
@@ -293,9 +364,6 @@ public class GameManager {
 		this.players.clear();
 		this.enemiesLifeBar.clear();
 		this.terrain.detachAllChildren();
-		this.menuSound = new Sound(this.terrain, "Menu", false, false, true, 1.0f, false);
-		this.menuSound.playSound();
-
 	}
 
 	/** this method is called to resume game */
@@ -326,23 +394,23 @@ public class GameManager {
 	/** this method sort score lists */
 	public void sortScorePlyer() {// TODO score
 
-		Collections.sort(this.scorePlayers, new Comparator<NodeCharacter>() {
-			@Override
-			public int compare(NodeCharacter arg0, NodeCharacter arg1) {
-				if (arg0.getScore() > arg1.getScore())
-					return 1;
-				else if (arg0.getScore() < arg1.getScore())
-					return 2;
-				else
-					return 0;
-			}
-		});
-		for (int i = 0; i < this.scorePlayers.size(); i++) {
-			this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
-					+ ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
-			System.out.println(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName() + ": "
-					+ ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "");
+		
 		}
+	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
+	    @Override
+	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
+		if (arg0.getScore() > arg1.getScore())
+		    return 1;
+		else if (arg0.getScore() < arg1.getScore())
+		    return 2;
+		else
+		    return 0;
+	    }
+	});
+	for (int i = 0; i < this.scorePlayers.size(); i++) {
+	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
+		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+		    }
 	}
 
 	/** this method set bullet */
@@ -504,6 +572,21 @@ public class GameManager {
 	/** this method add box attack */
 	public synchronized void addBoxAttack(NotifyBoxAttack boxAttack) {
 		this.boxsAttack.add(boxAttack);
+	}
+
+	/** this method add state */
+	public synchronized void addState(NodeCharacter character, ModelState modelState) {
+		this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
+	}
+
+	/** this method return state */
+	public synchronized Pair<NodeCharacter, ModelState> getState() {
+		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
+	}
+
+	/** this method return true if states is empty */
+	public synchronized boolean stateIsEmpty() {
+		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
 	}
 
 	/** this method get box attack */
