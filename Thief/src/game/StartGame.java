@@ -13,6 +13,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.ui.Picture;
 
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
@@ -60,11 +61,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private Sound menuSound;
     /** index */
     private int indexCharacter;
-    /**index*/
+    /** index */
     private int indexHelp;
     /** characters list */
     private Collection<String> characters;
-    /**help's images*/
+    /** help's images */
     private Collection<String> help;
     /** player's address */
     private String ipAddress;
@@ -95,7 +96,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.nifty.fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
+	GameManager.getIstance().getApplication().getInputManager().clearMappings();
 	this.menuSound.playSound();
+	this.initKeys();
     }
 
     /** choosed according to the game type */
@@ -116,10 +119,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    if (name.equals("debug")) {
 		debug = !debug;
 		bulletAppState.setDebugEnabled(debug);
-	    }
-	    //
-	    if (name.equals("exit")) {
-		StartGame.this.closeGame();
 	    } else if (name.equals("mouse") && !singleplayer) {
 		StartGame.this.mouse();
 	    }
@@ -129,26 +128,23 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start single player */
     public void singlePlayer() {
-	this.singleplayer = true;
-	this.multiplayer = false;
-	this.editor = false;
+	
 	GameManager.getIstance().setEditor(false);
-	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f)); 
+	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	GameManager.getIstance().setModelGame(pathSinglePlayer);
 	String[] level = GameManager.getIstance().getNifty().getCurrentScreen()
 		.findNiftyControl("landscapeListBox", ListBox.class).getFocusItem().toString().split("\\.");
 	this.player = new SinglePlayer(inputManager, viewPort, rootNode, cam, level[0], true, true, true);
 	this.initKeys();
 	this.menuSound.stopSound();
+	this.singleplayer = true;
+	this.multiplayer = false;
+	this.editor = false;
 
     }
 
     /** start multiplayer */
     public void multiPlayer() {
-	this.multiplayer = true;
-	this.singleplayer = false;
-	this.editor = false;
-	GameManager.getIstance().getNifty().exit();
 	this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
 		.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
 	this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
@@ -160,22 +156,26 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		((ArrayList<String>) characters).get(indexCharacter));
 	this.initKeys();
 	this.menuSound.stopSound();
+	this.multiplayer = true;
+	this.singleplayer = false;
+	this.editor = false;
     }
 
     /** start editor */
     public void editor() {
-	this.editor = true;
-	this.singleplayer = false;
-	this.multiplayer = false;
+	
 	this.flyCam.setEnabled(true);
 	GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
 	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-	this.editorTerrain = new EditorTerrain(rootNode,cam, guiFont, guiNode, viewPort, settings, "mountain");
+	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 	this.mouseInput.setCursorVisible(false);
 	this.initKeys();
 	this.menuSound.stopSound();
+	this.editor = true;
+	this.singleplayer = false;
+	this.multiplayer = false;
     }
 
     /** this method setup sound */
@@ -323,10 +323,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private void initKeys() {
 	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
 		new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
-		new KeyTrigger(KeyInput.KEY_ESCAPE));
-	this.inputManager.addListener(actionListener, "debug", "exit", "mouse");
-	
+	this.inputManager.addListener(actionListener, "debug", "mouse");
+
     }
 
     /**

@@ -213,18 +213,12 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 
 	    String line = this.INPUT.readLine();
-
 	    if (!new StringBuilder().checkString(line))
 		return;
-
 	    String key = new StringBuilder().builderKeyPlayer(line);
-
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState(line);
 	    }
-	    // TODO controllare ogni n secondi che la posizione dei nemici
-	    // corrisponda con quella che il server consosce
 
 	} catch (IOException e) {// TODO catch
 	    e.printStackTrace();
@@ -232,24 +226,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void syncPlayers() {
-	try {
-	    final String line = this.INPUT.readLine();
-	    if (!new StringBuilder().checkString(line))
-		return;
-	    final String player = new StringBuilder().builderKeyPlayer(line);
-	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
-	    if (GameManager.getIstance().getPlayers().get(player) != null)
-		if (!new FormatVector().equal(localPlayer, new Vector3f(0, 0, 0)))
-		    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
-
-	} catch (IOException e) {
-	    // TODO catch
-	    System.out.println("eccezioni nel syncPlayers");
-	}
-    }
-
-    // TODO fine sincronizzazione col server
     /** This Method return Player IP address */
     @Override
     public String ipAddress() {
@@ -344,9 +320,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void addNewPlayers(String name, String model, String player, Vector3f location) {
 
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
-
 	spatial.setLocalTranslation(location);
-
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
 		DAMAGE, name);
 	players.addCharacterControl();
@@ -441,8 +415,6 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.communicateExitPlayer();
 		else if (message.equals(CLOSE))
 		    this.endConnection();
-		else if (message.equals(SYNCPLAYERS))
-		    this.syncPlayers();
 		else if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
 		// GameManager.getIstance().sortScorePlyer();

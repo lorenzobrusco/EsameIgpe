@@ -46,7 +46,6 @@ public class SinglePlayer implements ScreenController {
     private final LoadTerrain loadTerrain;
     private GameRender render;
     private Sound ambient;
-
     private Element progressLifeBarThief;
     private Element borderLifeBarThief;
 
@@ -117,7 +116,7 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(BONFIRE, new KeyTrigger(KeyInput.KEY_F));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE, new KeyTrigger(KeyInput.KEY_P));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE, new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().actionListener, RUN, ATTACK1, ATTACK2, BONFIRE, "toggleRotate",
 		PAUSE, "win");
@@ -176,6 +175,18 @@ public class SinglePlayer implements ScreenController {
 
     }
 
+    /** this method show message when thief is near something */
+    public void showMessageBonfire(String id) {
+	if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
+	    GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
+    }
+
+    /** this method hide message when thief is near something */
+    public void hideMessageBonfire(String id) {
+	if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
+	    GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
+    }
+
     /** jmonkey's method */
     @Override
     public void bind(Nifty d, Screen arg1) {
@@ -196,13 +207,4 @@ public class SinglePlayer implements ScreenController {
 
     }
 
-    public void showMessageBonfire(String id) {
-	if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
-	    GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(true);
-    }
-
-    public void hideMessageBonfire(String id) {
-	if (GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id) != null)
-	    GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(id).setVisible(false);
-    }
 }
