@@ -429,7 +429,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.nearToPortal();
 		// GameManager.getIstance().pauseGame();
 	    } else if (win && pressed) {
-		System.out.println("pressed");
 		GameManager.getIstance().getSinglePlayer().quitGame();
 		}}};
 

@@ -27,6 +27,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.EditorTerrain;
 import multiPlayer.MultiPlayer;
+import server.Server;
 import singlePlayer.SinglePlayer;
 import singlePlayer.Sound;
 
@@ -159,7 +160,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 		GameManager.getIstance().setModelGame(pathMultiPlayer);
 		this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
-				((ArrayList<String>) characters).get(indexCharacter));
+				((ArrayList<String>) characters).get(indexCharacter),
+				Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
+						.findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
 		this.initKeys();
 		this.menuSound.stopSound();
 		this.multiplayer = true;
@@ -169,7 +172,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	/** start editor */
 	public void editor() {
-		
+
 		this.flyCam.setEnabled(true);
 		GameManager.getIstance().getNifty().exit();
 		GameManager.getIstance().setEditor(true);
@@ -463,10 +466,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
-	/** this methos start server */
+	/** this methods start server */
 	public void startServer() {
 
-		GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape));
+		GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape), Integer.parseInt(nifty
+				.getCurrentScreen().findNiftyControl("myTextFieldPortServer", TextField.class).getDisplayedText()));
 		openServerScreen();
 	}
 

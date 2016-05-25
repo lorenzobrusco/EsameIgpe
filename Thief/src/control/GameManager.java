@@ -27,6 +27,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
 import multiPlayer.Client;
@@ -316,9 +317,10 @@ public class GameManager {
 	}
 
 	/** this method start server */
-	public void startServer(String path) {
+	public void startServer(String path, int port) {
 		try {
-			this.server = new Server(path);
+	
+			this.server = new Server(path, port);
 			this.server.start();
 		} catch (UnknownHostException e) {
 
@@ -331,21 +333,21 @@ public class GameManager {
 
 	/** this method sort score lists */
 	public void sortScorePlyer() {// TODO score
-	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
-	    @Override
-	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
-		if (arg0.getScore() > arg1.getScore())
-		    return 1;
-		else if (arg0.getScore() < arg1.getScore())
-		    return 2;
-		else
-		    return 0;
-	    }
-	});
-	for (int i = 0; i < this.scorePlayers.size(); i++) {
-	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
-		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
-		    }
+		this.scorePlayers.sort(new Comparator<NodeCharacter>() {
+			@Override
+			public int compare(NodeCharacter arg0, NodeCharacter arg1) {
+				if (arg0.getScore() > arg1.getScore())
+					return 1;
+				else if (arg0.getScore() < arg1.getScore())
+					return 2;
+				else
+					return 0;
+			}
+		});
+		for (int i = 0; i < this.scorePlayers.size(); i++) {
+			this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
+					+ ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+		}
 	}
 
 	/** this method set bullet */
@@ -513,11 +515,13 @@ public class GameManager {
 	public synchronized void addState(NodeCharacter character, ModelState modelState) {
 		this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
 	}
-    /** this method return true if states is empty */
-    public synchronized boolean stateIsEmpty() {
-	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
-    }
-    /** this method get box attack */
+
+	/** this method return true if states is empty */
+	public synchronized boolean stateIsEmpty() {
+		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
+	}
+
+	/** this method get box attack */
 	public synchronized NotifyBoxAttack getBoxAttack() {
 		return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
 	}
@@ -617,8 +621,6 @@ public class GameManager {
 	public NodeModel getPortal() {
 		return portal;
 	}
-	
-	
 
 	public Collection<Pair<NodeCharacter, ModelState>> getStates() {
 		return states;
