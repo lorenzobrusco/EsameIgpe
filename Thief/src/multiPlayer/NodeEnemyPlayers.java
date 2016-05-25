@@ -101,20 +101,22 @@ public class NodeEnemyPlayers extends NodeCharacter {
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f location, Vector3f direction) {
-	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
-	    this.channel.setAnim(idle);
-	} else {
-	    if (!this.channel.getAnimationName().equals(run))
-		this.channel.setAnim(run);
+	if (!this.waitAnimation && this.alive) {
+	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
+		this.channel.setAnim(idle);
+	    } else {
+		if (!this.channel.getAnimationName().equals(run))
+		    this.channel.setAnim(run);
+	    }
+	    this.characterControl.warp(location);
 	}
-	this.characterControl.warp(location);
     }
 
     /** this method is called when enemy death */
     @Override
     public void death() {
-	super.death();
 	this.waitAnimation = true;
+	super.death();
     }
 
     /** this method is invoked when attach enemy */
