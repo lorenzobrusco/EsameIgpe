@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -23,7 +24,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import multiPlayer.format.FormatStringChat;
-import multiPlayer.format.FormatVector;
 import multiPlayer.format.StringBuilder;
 import multiPlayer.notify.NotifyStateModel;
 import multiPlayer.protocols.CommunicationProtocol;
@@ -49,7 +49,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
-    private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
@@ -85,6 +84,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private String nameTerrain;
     /** Camera Player */
     private final Camera cam;
+    /** input manager */
+    private final InputManager inputManager;
     /** Socket of communication with Server */
     private final Socket socket;
     /** Reader from Server */
@@ -93,16 +94,18 @@ public class Client extends Thread implements CommunicationProtocol {
     private final DataOutputStream OUTPUT;
     /** connection stabilished with server */
     private boolean establishedConnection;
+
     /** new state */
     private String lineToSend;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final Camera cam)
-	    throws UnknownHostException, IOException {
+    public Client(final String namePlayer, final String nameModel, final String address,
+	    final InputManager inputManager, final Camera cam) throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.lineToSend = "";
 	this.namePlayer = namePlayer;
 	this.cam = cam;
+	this.inputManager = inputManager;
 	this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 	this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 	this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
@@ -128,6 +131,10 @@ public class Client extends Thread implements CommunicationProtocol {
 		    }
 		}
 	    }
+	    GameManager.getIstance().getMultiplayer().setStart(true);
+	    // TODO tempo di caricamento
+	    sleep(20000);
+	    //s
 	    this.OUTPUT.writeBytes(KNOCK + "\n");
 	    if (this.INPUT.readLine().equals(WHOAREYOU)) {
 		final String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
@@ -136,21 +143,25 @@ public class Client extends Thread implements CommunicationProtocol {
 			this.namePlayer, 0);
 		this.OUTPUT.writeBytes(line + "\n");
 	    }
-	    if (this.INPUT.readLine().equals(YOUAREWELCOME)) {
+	    String line = this.INPUT.readLine();
+	    if (line.equals(YOUAREWELCOME)) {
 		this.establishedConnection = true;
 		this.OUTPUT.writeBytes(WHOISTHERE + "\n");
 		int size = Integer.parseInt(this.INPUT.readLine());
 		for (int i = 0; i < size; i++) {
 		    if (this.INPUT.readLine().equals(NEWPLAYER)) {
-			String line = this.INPUT.readLine();
-			this.addNewPlayers(new StringBuilder().builderKeyPlayer(line),
-				new StringBuilder().builderModel(line), new StringBuilder().builderPosition(line));
+			String message = this.INPUT.readLine();
+			this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
+				new StringBuilder().builderModel(message), new StringBuilder().builderName(message),
+				new StringBuilder().builderPosition(message));
 		    }
 		}
-	    } else if (this.INPUT.readLine().equals(TRYAGAIN))
+	    } else if (line.equals(TRYAGAIN))
 		this.startConnection();
-	} catch (IOException e) {
-	    System.out.println("eccezzioni nello start");
+	} catch (IOException e) {// TODO catch
+	    System.out.println("eccezioni nello start");
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
 	}
     }
 
@@ -173,7 +184,6 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicationState() {
 	try {
 	    this.OUTPUT.writeBytes(this.lineToSend + "\n");
-
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationState");
 	}
@@ -182,12 +192,10 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method communicates an Player Updates */
     public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
-	    String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-	    // if (!this.lineToSend.equals(line)) {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
-	    this.lineToSend = line;
-	    // }
+
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
 	}
@@ -209,62 +217,17 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 
 	    String line = this.INPUT.readLine();
-
 	    if (!new StringBuilder().checkString(line))
 		return;
-
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
-	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
-
-	    final Vector3f viewdirection = new StringBuilder().builderView(line);
-
-	    final int life = new StringBuilder().builderLife(line);
-
-	    final boolean attack = new StringBuilder().builderAttack(line);
-
-	    final int score = new StringBuilder().builderScore(line);
-
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-		if (!new FormatVector().equal(viewdirection, new Vector3f(0, 0, 0))) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setViewDirection(viewdirection);
-		}
-		if (!new FormatVector().equal(walkdirection, new Vector3f(0, 0, 0))) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setWalkDirection(walkdirection);
-		}
-		if ((life - GameManager.getIstance().getPlayers().get(key).getLife() != 0)) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getLifeBar()
-			    .updateLifeBar(life - GameManager.getIstance().getPlayers().get(key).getLife());
-		    GameManager.getIstance().getPlayers().get(key).setLife(life);
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getLifeBar().updateLifeBar(0);
-		}
-		if (score > ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).getScore()) {
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setScore(score);
-		    GameManager.getIstance().sortScorePlyer();
-		}
-		if (attack)
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).startAttack();
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setState(line);
 	    }
+
 	} catch (IOException e) {// TODO catch
 	    e.printStackTrace();
 	    System.out.println("eccezioni nel statePlayer");
-	}
-    }
-
-    public void syncPlayers() {
-	try {
-	    final String line = this.INPUT.readLine();
-	    if (!new StringBuilder().checkString(line))
-		return;
-	    final String player = new StringBuilder().builderKeyPlayer(line);
-	    final Vector3f localPlayer = new StringBuilder().builderPosition(line);
-	    if (GameManager.getIstance().getPlayers().get(player) != null)
-		if (!new FormatVector().equal(localPlayer, new Vector3f(0, 0, 0)))
-		    GameManager.getIstance().getPlayers().get(player).getCharacterControl().warp(localPlayer);
-
-	} catch (IOException e) {
-	    // TODO catch
-	    System.out.println("eccezioni nel syncPlayers");
 	}
     }
 
@@ -291,7 +254,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    String line = this.INPUT.readLine();
 	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
-		    new StringBuilder().builderPosition(line));
+		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line));
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationNewPlayer");
 	}
@@ -350,30 +313,31 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addModel(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().addScorePlayer(GameManager.getIstance().getNodeThief());
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
-	GameManager.getIstance().getNodeThief().setCam(this.cam);
+	GameManager.getIstance().getNodeThief().setCam(this.cam, this.inputManager);
 	GameManager.getIstance().getMultiplayer().loadNifty();
+	GameManager.getIstance().getNodeThief().setName(namePlayer);
+	GameManager.getIstance().sortScorePlyer();
 	scene.attachChild(GameManager.getIstance().getNodeThief());
 	this.setKey();
     }
 
     /** This Method add a Player and his Model in the Game's Terrain */
-    public void addNewPlayers(String name, String model, Vector3f location) {
+    public void addNewPlayers(String name, String model, String player, Vector3f location) {
 
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
-
 	spatial.setLocalTranslation(location);
-
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
 		DAMAGE, name);
 	players.addCharacterControl();
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
 	players.addPhysicsSpace();
-	players.setName(model);
+	players.setName(player);
 	GameManager.getIstance().addScorePlayer(players);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(players);
 	GameManager.getIstance().addPlayes(name, players);
 	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
+	GameManager.getIstance().sortScorePlyer();
     }
 
     /** This Method remove a Model in the Game's Terrain */
@@ -400,9 +364,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(debug, new KeyTrigger(KeyInput.KEY_TAB));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(mouse,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("sendMessage",
-		new KeyTrigger(KeyInput.KEY_RETURN));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox, new KeyTrigger(KeyInput.KEY_9));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox, new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,
 		"sendMessage");
@@ -456,15 +418,13 @@ public class Client extends Thread implements CommunicationProtocol {
 		    this.communicateExitPlayer();
 		else if (message.equals(CLOSE))
 		    this.endConnection();
-		else if (message.equals(SYNCPLAYERS))
-		    this.syncPlayers();
 		else if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
 		// GameManager.getIstance().sortScorePlyer();
 	    }
+	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
-	    this.socket.close();
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel run");
 	}

@@ -32,6 +32,11 @@
 
 	</controlDefinition>
 
+	<screen id="loading" controller="game.StartGame">
+	<layer id="tmp" childLayout="vertical" backgroundImage="Interface/Image/Graphics/background.jpg">		
+	</layer>
+	</screen>
+
 
 	<screen id="start" controller="game.StartGame">
 		<layer id="background_start" childLayout="center">
@@ -256,7 +261,7 @@
 	<screen id="serverScreen" controller="game.StartGame">
 		<layer id="background_Server" childLayout="center">
 			<image filename="Interface/Image/Graphics/background.jpg" width="100%" height="100%" />
-			<image filename="Interface/Image/Graphics/opacityBackgroundPause.png" width="100%"
+			<image filename="Interface/Image/Graphics/backgroundOpacitySinglePlayer.png" width="100%"
 				height="100%" />
 		</layer>
 
@@ -267,8 +272,8 @@
 				<panel id="PanelIP" childLayout="vertical">
 					<text id="myIP" font="Interface/Fonts/Morpheus-20.fnt" color="#f4e75a"
 						text="Your  IP-ADDRESS:" />
-					<panel id="spaceForServerMP2" height="7%" childLayout="center" />
-					<panel id="spaceForServerMP3" childLayout="horizontal">
+					<panel  height="7%" childLayout="center" />
+					<panel  childLayout="horizontal">
 						<text id="stateServer" font="Interface/Fonts/Morpheus-20.fnt"
 							color="#f4e75a" text="State: " valign="center" />
 						<image id="serverState" filename="Interface/Image/Graphics/serverIsOpen.png"
@@ -277,7 +282,7 @@
 
 				</panel>
 				<panel id="PanelImageMP" height="48%" childLayout="horizontal">
-					<panel id="spaceForServerImage" width="10%" childLayout="center" />
+					<panel  width="5%" childLayout="center" />
 					<image id="arrowLeft" filename="Interface/Image/Button/arrowLeft.png"
 						width="4%" height="15%" valign="center">
 						<effect>
@@ -285,12 +290,12 @@
 							<onEndHover name="nop" onStartEffect="endGrow(arrowLeft)" />
 
 						</effect>
-						<interact onClick="redoCharacter()" />
+						<interact onClick="redoLandscape()" />
 
 					</image>
-					<panel id="spaceForServerImage1" width="5%" childLayout="center" />
-					<image id="imagePlayer" filename="Interface/MultiPlayer/PlayerImage/Yasuo.png"
-						height="100%" width="50%" />
+					<panel  width="5%" childLayout="center" />
+					<image id="imageLandScape" filename="Interface/Image/Landscape/castle.png"
+						height="100%" width="70%" />
 					<panel id="spaceForServerImage2" width="5%" childLayout="center" />
 					<image id="arrowRight" filename="Interface/Image/Button/arrowRight.png"
 						width="5%" height="15%" valign="center">
@@ -299,7 +304,7 @@
 							<onEndHover name="nop" onStartEffect="endGrow(arrowRight)" />
 
 						</effect>
-						<interact onClick="nextCharacter()" />
+						<interact onClick="nextLandscape()" />
 
 					</image>
 

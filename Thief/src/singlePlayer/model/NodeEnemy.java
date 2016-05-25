@@ -77,17 +77,18 @@ public class NodeEnemy extends NodeCharacter {
     }
 
     public void runIntelligence() {
-	// TODO avvia intelligenza
 	if (!waitAnimation && this.alive) {
 	    this.artificialIntelligence.run();
 	}
     }
 
     public void attack() {
-	if (!GameManager.getIstance().getNodeThief().isDead()) {
+	if (!GameManager.getIstance().getNodeThief().isDead() && !GameManager.getIstance().isPaused()) {
 	    if (this.hasFound && !this.waitAnimation) {
 		this.waitAnimation = true;
 		this.startAttack();
+		GameManager.getIstance().getNodeThief().resetCurrentTime();
+		this.playScream();
 		this.checkCollition();
 		if (this.waitAnimation) {
 		    this.channel.setAnim(this.attack1);

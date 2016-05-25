@@ -30,7 +30,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final DataOutputStream OUTPUT;
     private boolean establishedConnection;
     private boolean newPlayer;
-    private int currentTime;
     private final static String STARTSENDMETERRAIN = "start send me terrain";
     private final static String ENDSENDMETERRAIN = "end send me terrain";
     private final static String KNOCK = "knock knock";
@@ -42,7 +41,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
     private final static String PLAYER = "the player: ";
-    private final static String SYNCPLAYERS = "send my position";
     private final static String HAVEYOUTHISTERRAIN = "have you this terrain?";
     private final static String YESIHAVE = "yes, I have";
     private final static String DELETE = "delete this player ";
@@ -62,43 +60,43 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void startConnection() {
 	try {
-	    while (!this.establishedConnection) {
-		this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
-		this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
-		if (!this.INPUT.readLine().equals(YESIHAVE)) {
-		    this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
-		    this.fileTransfer(socket);
-		    this.OUTPUT.writeBytes(ENDSENDMETERRAIN + "\n");
-		}
-		if (this.INPUT.readLine().equals(KNOCK))
-		    this.OUTPUT.writeBytes(WHOAREYOU + "\n");
-		String line = this.INPUT.readLine();
-		if (new StringBuilder().checkString(line)) {
-		    this.address = new StringBuilder().builderAddress(line);
-		    this.player = new StringBuilder().builderKeyPlayer(line);
-		    this.nameModel = new StringBuilder().builderModel(line);
-		    this.startPosition = new StringBuilder().builderPosition(line);
-		    this.currentPosition = this.startPosition;
-		    if (new FormatIP(this.address).itIsCorrectFormat()) {
-			this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
-			this.establishedConnection = true;
-			if (this.INPUT.readLine().equals(WHOISTHERE)) {
-			    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
-			    for (ClientManager manager : this.server.getPlayers()) {
-
-				this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
-					manager.startPosition);
-				manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
-					this.startPosition);
-			    }
-
-			}
-			this.server.addPlayer(this);
-		    }
-		} else
-		    this.OUTPUT.writeBytes(TRYAGAIN + "\n");
+	    this.OUTPUT.writeBytes(HAVEYOUTHISTERRAIN + "\n");
+	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
+	    if (!this.INPUT.readLine().equals(YESIHAVE)) {
+		this.OUTPUT.writeBytes(STARTSENDMETERRAIN + "\n");
+		this.fileTransfer(socket);
+		this.OUTPUT.writeBytes(ENDSENDMETERRAIN + "\n");
 	    }
-	    System.out.println("non entro");
+	    if (this.INPUT.readLine().equals(KNOCK))
+		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
+	    String line = this.INPUT.readLine();
+	    if (!new StringBuilder().checkString(line)) {
+		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
+		return;
+	    }
+	    this.address = new StringBuilder().builderAddress(line);
+	    this.player = new StringBuilder().builderKeyPlayer(line);
+	    this.nameModel = new StringBuilder().builderModel(line);
+	    this.startPosition = new StringBuilder().builderPosition(line);
+	    this.nameClient = new StringBuilder().builderName(line);
+	    this.currentPosition = this.startPosition;
+	    if (new FormatIP(this.address).itIsCorrectFormat()) {
+		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
+		this.establishedConnection = true;
+		if (this.INPUT.readLine().equals(WHOISTHERE)) {
+		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
+		    for (ClientManager manager : this.server.getPlayers()) {
+
+			this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
+				manager.startPosition);
+			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
+				this.startPosition);
+		    }
+
+		}
+		this.server.addPlayer(this);
+	    } else
+		this.OUTPUT.writeBytes(TRYAGAIN + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -113,6 +111,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    System.out.println("player to exit: " + client);
 	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -136,7 +135,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final Vector3f viewdirection = new StringBuilder().builderView(line);
 
-	    this.currentPosition = new StringBuilder().builderPosition(line);
+	    final Vector3f position = new StringBuilder().builderPosition(line);
 
 	    final int life = new StringBuilder().builderLife(line);
 
@@ -144,13 +143,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	    final int score = new StringBuilder().builderScore(line);
 
-	    // TODO
-	    // System.out.println("stato: " + address + " --- " + walkdirection
-	    // + " ------ " + viewdirection);
-
 	    for (ClientManager manager : this.server.getPlayers()) {
-		if (manager != this)
-		    manager.statePlayer(key, walkdirection, viewdirection, life, attack, score);
+		// if(manager != this)
+		manager.statePlayer(key, walkdirection, viewdirection, position, life, attack, score);
 	    }
 
 	    ;// TODO metodo che comunica a tutti lo spostamento
@@ -179,44 +174,17 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	}
     }
 
-    public void statePlayer(String address, Vector3f walk, Vector3f view, int life, boolean attack, int score) {
+    public void statePlayer(String address, Vector3f walk, Vector3f view, Vector3f position, int life, boolean attack,
+	    int score) {
 	try {
 	    this.OUTPUT.writeBytes(PLAYER + "\n");
-	    String line = new StringBuilder().builderString(walk, view, new Vector3f(), life, attack, address, "",
+	    String line = new StringBuilder().builderString(walk, view, position, life, attack, address, "",
 		    this.nameClient, score);
-
 	    this.OUTPUT.writeBytes(line + "\n");
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
     }
-
-    // TODO inizio sincronizzazione col server
-
-    public void syncWithServer() {
-	for (ClientManager manager : this.server.getPlayers()) {
-	    if (manager != this)
-		manager.syncPlayers(player, currentPosition);
-	}
-	this.currentTime = (int) System.currentTimeMillis();
-
-    }
-
-    public void syncPlayers(String player, Vector3f local) {
-
-	try {
-
-	    this.OUTPUT.writeBytes(SYNCPLAYERS + "\n");
-	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), local, 0, false, player, "",
-		    this.nameClient, 0);
-	    this.OUTPUT.writeBytes(line + "\n");
-
-	} catch (IOException e) {
-	    // TODO
-	}
-    }
-
-    // TODO fine sincronizzazione col server
 
     @Override
     public String ipAddress() {
@@ -314,11 +282,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void run() {
 	try {
 	    this.startConnection();
-	    this.currentTime = (int) System.currentTimeMillis();
 	    while (this.establishedConnection) {
-		if ((int) System.currentTimeMillis() - this.currentTime >= 5000) {
-		    this.syncWithServer();
-		}
 		final String message = this.INPUT.readLine();
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
