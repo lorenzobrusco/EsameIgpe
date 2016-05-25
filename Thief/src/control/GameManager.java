@@ -65,68 +65,6 @@ public class GameManager {
 	private Collection<NotifyStateModel> notifyStateModels;
 	/** box attack */
 	private Collection<NotifyBoxAttack> boxsAttack;
-	/** score multiplayer */
-	private List<NodeCharacter> scorePlayers;
-	/** players multiplayer */
-	private AbstractMap<String, NodeCharacter> players;
-	/** enemy's lifebars */
-	private AbstractMap<Integer, Element> enemiesLifeBar;
-	/** application */
-	private SimpleApplication application;
-	/** jmonkey's object */
-	private BulletAppState bulletAppState;
-	/** load terrain */
-	private LoadTerrain loadTerrain;
-	/** main's character */
-	private NodeThief thief;
-	/** bonfire */
-	private NodeModel bonfire;
-	/** portal */
-	private NodeModel portal;
-	/** terrain */
-	private Node terrain;
-	/** terrainquand */
-	private TerrainQuad terrainQuad;
-	/** singleplayer */
-	private SinglePlayer singlePlayer;
-	/** multiplayer */
-	private MultiPlayer multiplayer;
-	/** sounds */
-	private AudioRenderer audioRenderer;
-	/** it's true if choose editor */
-	private boolean editor;
-	/** client */
-	private Client client;
-	/** extends x */
-	private float worldXExtent;
-	/** extends z */
-	private float worldZExtent;
-	/** matrix */
-	private boolean[][] secondLayer;
-	/** panel 2d */
-	private Nifty nifty;
-	/** game type */
-	private String modelGame;
-	/** it's true if is pause */
-	private boolean paused;
-	/** server */
-	private Server server;
-	/** sound */
-	private Sound menuSound;
-	/** singleton */
-	private static GameManager manager;
-	/** models */
-	private Collection<NodeModel> spatial;
-	/** models to rendering */
-	private Collection<NodeModel> nodeRender;
-	/** enemies */
-	private Collection<NodeCharacter> enemies;
-	/** light */
-	private Collection<PointLight> lights;
-	/** state models */
-	private Collection<NotifyStateModel> notifyStateModels;
-	/** box attack */
-	private Collection<NotifyBoxAttack> boxsAttack;
 	/** player's states */
 	private Collection<Pair<NodeCharacter, ModelState>> states;
 	/** score multiplayer */
@@ -393,9 +331,6 @@ public class GameManager {
 
 	/** this method sort score lists */
 	public void sortScorePlyer() {// TODO score
-
-		
-		}
 	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
 	    @Override
 	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
