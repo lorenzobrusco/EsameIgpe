@@ -12,7 +12,6 @@ import control.GameManager;
 import multiPlayer.format.StringBuilder;
 import singlePlayer.model.LifeBar;
 import singlePlayer.model.NodeCharacter;
-import singlePlayer.model.NodeThief;
 
 /**
  * 
@@ -87,8 +86,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int score = builder.builderScore(line);
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);
-	if(this.life>life){
-	    this.lifeBar.updateLifeBar(this.life-life);
+	if (this.life > life) {
+	    this.lifeBar.updateLifeBar(this.life - life);
 	    this.life = life;
 	}
 	this.score = score;
@@ -98,13 +97,15 @@ public class NodeEnemyPlayers extends NodeCharacter {
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f location, Vector3f direction) {
-	if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
-	    this.channel.setAnim(idle);
-	} else {
-	    if (!this.channel.getAnimationName().equals(run))
-		this.channel.setAnim(run);
+	if (this.alive) {
+	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
+		this.channel.setAnim(idle);
+	    } else {
+		if (!this.channel.getAnimationName().equals(run))
+		    this.channel.setAnim(run);
+	    }
+	    this.characterControl.warp(location);
 	}
-	this.characterControl.warp(location);
     }
 
     /** this method is called when enemy death */
@@ -121,13 +122,12 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	super.startAttack();
 	this.checkCollition();
 	this.waitAnimation = true;
-	if (!switchAttack){
+	if (!switchAttack) {
 	    this.channel.setAnim(attack1);
-	    this.channel.setSpeed(3f);   
-	}
-	else{
+	    this.channel.setSpeed(3f);
+	} else {
 	    this.channel.setAnim(attack2);
-	    this.channel.setSpeed(2f);      
+	    this.channel.setSpeed(2f);
 	}
 	this.switchAttack = !this.switchAttack;
     }
