@@ -265,13 +265,10 @@ public class GameManager {
 	this.application.getInputManager().setCursorVisible(true);
 	this.thief.getCamera().setEnabled(false);
 	this.thief.stop();
-
 	for (NodeModel model : this.getModels()) {
-
 	    for (Sound sound : model.getAllSound()) {
 		sound.stopSound();
 	    }
-
 	    if (model instanceof NodeEnemy)
 		((NodeEnemy) model).pauseIntelligence();
 	}
@@ -281,7 +278,6 @@ public class GameManager {
     public void quitGame() {
 
 	for (NodeModel model : this.getModels()) {
-
 	    for (Sound sound : model.getAllSound()) {
 		sound.stopSound();
 	    }
@@ -511,7 +507,7 @@ public class GameManager {
 	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
     }
 
-    /**this method return true if states is empty*/
+    /** this method return true if states is empty */
     public synchronized boolean stateIsEmpty() {
 	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
     }
