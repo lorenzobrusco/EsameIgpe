@@ -302,7 +302,6 @@ public class GameManager {
 	this.thief.getCamera().setEnabled(true);
 	this.thief.getCamera().setDragToRotate(false);
 	this.application.getInputManager().setCursorVisible(false);
-
 	for (NodeCharacter enemy : enemies)
 	    ((NodeEnemy) enemy).resumeIntelligence();
     }
