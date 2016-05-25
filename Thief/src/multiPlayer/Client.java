@@ -358,12 +358,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(debug, new KeyTrigger(KeyInput.KEY_TAB));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(mouse,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("sendMessage",
-		new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox, new KeyTrigger(KeyInput.KEY_9));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,
-		"sendMessage");
+		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox);
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }
