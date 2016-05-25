@@ -84,6 +84,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
 	GameManager.getIstance().addState(this, new ModelState(direction, view, life, attack, location, score));
+	this.setViewDirection(view);
+	this.setWalkDirection(location, direction);
     }
 
     /** this method change enemy's state */
@@ -93,9 +95,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.lifeBar.updateLifeBar(this.life - life);
 	this.life = life;
 	this.score = score;
-	this.setViewDirection(view);
-	this.setWalkDirection(location, direction);
-
+	GameManager.getIstance().sortScorePlyer();
+	
     }
 
     /** this method set enemy's walk direction */
