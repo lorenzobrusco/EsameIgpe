@@ -59,6 +59,8 @@ public class MultiPlayer implements ScreenController {
     private final Node rootNode;
     /** jmonkey's object */
     private final ViewPort viewPort;
+    
+    private String landscape;
 
     public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
 	    String namePlayer, String nameModel) {
@@ -71,7 +73,7 @@ public class MultiPlayer implements ScreenController {
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	GameManager.getIstance().setMultiplayer(this);
-	this.loadLevel("castle", address, namePlayer, nameModel, rootNode, cam, inputManager);
+	this.loadLevel(landscape, address, namePlayer, nameModel, rootNode, cam, inputManager);
 	this.setupAmbientSound();
     }
 
@@ -216,8 +218,18 @@ public class MultiPlayer implements ScreenController {
     public void UpdateScore() {
 
     }
+    
+    
 
-    /** jmonkey's methods */
+    public String getLandscape() {
+		return landscape;
+	}
+
+	public void setLandscape(String landscape) {
+		this.landscape = landscape;
+	}
+
+	/** jmonkey's methods */
     @Override
     public void bind(Nifty arg0, Screen arg1) {
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
