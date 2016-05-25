@@ -67,10 +67,10 @@ public class GameRender {
 			model.stopBonfireSound();
 		    }
 		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayer");
+			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerBonFire");
 
 		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayer");
+			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerBonFire");
 		    }
 
 		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {

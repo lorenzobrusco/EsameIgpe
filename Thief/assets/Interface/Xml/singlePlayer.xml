@@ -55,11 +55,11 @@
 
 		</layer>
 
-		<layer id="MessageForPlayer" childLayout="vertical" visible="false">
-			<panel id="panelUp" childLayout="absolute" height="85%" />
+		<layer id="MessageForPlayerBonFire" childLayout="vertical" visible="false">
+			<panel  childLayout="absolute" height="85%" />
 
-			<panel id="panelMessage" childLayout="vertical" height="40%">
-				<image id="MessageForPlayerImage" filename="Interface/Image/Text/PressBonfire.png"
+			<panel  childLayout="vertical" height="40%">
+				<image id="MessageForPlayerImageBonFire" filename="Interface/Image/Text/PressBonfire.png"
 					width="25%" height="15%" valign="top" align="center" />
 			</panel>
 
@@ -67,10 +67,10 @@
 
 		<layer id="MessageForPlayerPortal" childLayout="vertical"
 			visible="false">
-			<panel id="panelUp" childLayout="absolute" height="85%" />
+			<panel childLayout="absolute" height="85%" />
 
-			<panel id="panelMessage" childLayout="vertical" height="40%">
-				<image id="MessageForPlayerImage" filename="Interface/Image/Text/pressPortal.png"
+			<panel  childLayout="vertical" height="40%">
+				<image id="MessageForPlayerImagePortal" filename="Interface/Image/Text/pressPortal.png"
 					width="25%" height="15%" valign="top" align="center" />
 			</panel>
 
