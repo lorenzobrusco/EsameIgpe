@@ -513,11 +513,10 @@ public class GameManager {
 	public synchronized void addState(NodeCharacter character, ModelState modelState) {
 		this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
 	}
-
-	/** this method return state */
-	public synchronized Pair<NodeCharacter, ModelState> getState() {
-		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
-	}
+    /** this method return true if states is empty */
+    public synchronized boolean stateIsEmpty() {
+	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
+    }
 
 	/** this method return true if states is empty */
 	public synchronized boolean stateIsEmpty() {

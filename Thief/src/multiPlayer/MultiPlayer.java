@@ -1,8 +1,7 @@
 package multiPlayer;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.net.UnknownHostException;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;

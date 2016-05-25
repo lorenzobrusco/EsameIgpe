@@ -78,7 +78,7 @@
 		</layer>
 
 
-		<layer id="layerProgressBar" childLayout="horizontal">
+		<layer childLayout="horizontal">
 			<panel  childLayout="horizontal" width="62%" />
 			<panel  childLayout="vertical">
 				<panel height="3%" />

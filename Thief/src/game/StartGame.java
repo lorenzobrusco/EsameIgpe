@@ -14,8 +14,6 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
-import com.jme3.ui.Picture;
-
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.ListBox;
@@ -64,10 +62,14 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private int indexCharacter;
     /** index */
     private int indexHelp;
+    /**index for landscape'array*/
+    private int indexLandscape;
     /** characters list */
     private Collection<String> characters;
     /** help's images */
     private Collection<String> help;
+    /**Landscape's Image*/
+    private Collection<String> landscape;
     /** player's address */
     private String ipAddress;
     /** player's name */
@@ -208,6 +210,26 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    e.printStackTrace();
 	}
     }
+    
+    public void loadLandScape()
+    {
+    	try {
+    	    Files.walk(Paths.get("assets/Interface/Image/Landscape")).forEach(filePath -> {
+    		if (Files.isRegularFile(filePath)) {
+    		    String[] split = filePath.getFileName().toString().split("\\.");
+    		  this.landscape.add(split[0]);
+    		}
+    	    });
+    	    NiftyImage image = nifty.getRenderEngine().createImage(null,
+    		    "Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(0) + ".png", false);
+    	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("imageLandScape");
+    	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+    	} catch (IOException e) {
+    	    // TODO gestire
+    	    e.printStackTrace();
+    	}
+    
+    }
 
     public void loadHelpScreen() {
 	loadHelp();
@@ -257,6 +279,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
 		    .setVisible(false);
 	}
+	if(landscape.isEmpty())
+	loadLandScape();
+	
 	this.loadScreen("serverScreen");
 
     }
@@ -281,6 +306,50 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
     }
+    
+    /** previus character */
+    public void redoCharacter() {
+	if (this.indexCharacter == 0)
+	    this.indexCharacter = characters.size() - 1;
+	else
+	    this.indexCharacter--;
+	final NiftyImage image = nifty.getRenderEngine().createImage(null,
+		"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(indexCharacter) + ".png",
+		false);
+	final Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
+	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+    }
+    
+    /** next landscape */
+    public void nextLandscape() {
+    	
+	if (indexLandscape == landscape.size() - 1)
+	    indexLandscape = 0;
+	else
+	    indexLandscape++;
+	NiftyImage image = nifty.getRenderEngine().createImage(null,
+		"Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(indexLandscape) + ".png",
+		false);
+	Element niftyElement = nifty.getCurrentScreen().findElementByName("imageLandScape");
+	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+    }
+    
+    /** previus landscape*/
+    public void redoLandscape() {
+	if (this.indexLandscape == 0)
+	    this.indexLandscape = landscape.size() - 1;
+	else
+	    this.indexLandscape--;
+	final NiftyImage image = nifty.getRenderEngine().createImage(null,
+		"Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(indexLandscape) + ".png",
+		false);
+	final Element niftyElement = nifty.getCurrentScreen().findElementByName("imageLandScape");
+	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+
+    }
+    
 
     public void nextHelpImage() {
 	if (indexHelp == help.size() - 1)
@@ -306,19 +375,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
-    /** previus character */
-    public void redoCharacter() {
-	if (this.indexCharacter == 0)
-	    this.indexCharacter = characters.size() - 1;
-	else
-	    this.indexCharacter--;
-	final NiftyImage image = nifty.getRenderEngine().createImage(null,
-		"Interface/MultiPlayer/PlayerImage/" + ((ArrayList<String>) characters).get(indexCharacter) + ".png",
-		false);
-	final Element niftyElement = nifty.getCurrentScreen().findElementByName("imagePlayer");
-	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-
-    }
+   
 
     /** this method set keys */
     private void initKeys() {
@@ -342,12 +399,14 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void setup() {
 	this.characters = new ArrayList<String>();
 	this.help = new ArrayList<String>();
+	this.landscape = new ArrayList<String>();
 	this.debug = false;
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
 	this.indexCharacter = 0;
 	this.indexHelp = 0;
+	this.indexLandscape = 0;
 	this.ipAddress = "";
 	this.namePlayer = "";
     }
@@ -409,7 +468,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this methos start server */
     public void startServer() {
-	GameManager.getIstance().startServer("castle");
+    	
+	GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape));
 	openServerScreen();
     }
 
@@ -441,7 +501,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     public static void main(String[] args) {
 	StartGame app = new StartGame();
-	 AppSettings gameSettings = new AppSettings(false);
+	app.setPauseOnLostFocus(false);
+	AppSettings gameSettings = new AppSettings(false);
 	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 	//
