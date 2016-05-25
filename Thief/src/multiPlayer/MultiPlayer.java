@@ -70,6 +70,7 @@ public class MultiPlayer implements ScreenController {
 	GameManager.getIstance().setMultiplayer(this);
 	this.loadLevel("castle", address, namePlayer, nameModel, rootNode, cam, inputManager);
 	this.setupAmbientSound();
+    //TODO STOP MENU SOUND
     }
 
     /** this method is called for each update */
@@ -219,4 +220,5 @@ public class MultiPlayer implements ScreenController {
     public void onStartScreen() {
     }
 
+    //TODO STOP MULTIPLAYER SOUND
 }

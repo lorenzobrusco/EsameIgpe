@@ -176,7 +176,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 		if (this.alive) {
 			this.life -= DAMAGE;
 			if (this.isDead()) {
-				// this.deathSound.playSound();
+				this.deathSound.playSound();
 				this.alive = false;
 				this.channel.setAnim(death);
 				this.channel.setLoopMode(LoopMode.DontLoop);
