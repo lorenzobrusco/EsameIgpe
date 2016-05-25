@@ -87,7 +87,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private String nameTerrain;
     /** Camera Player */
     private final Camera cam;
-    /**input manager*/
+    /** input manager */
     private final InputManager inputManager;
     /** Socket of communication with Server */
     private final Socket socket;
@@ -101,8 +101,8 @@ public class Client extends Thread implements CommunicationProtocol {
     /** new state */
     private String lineToSend;
 
-    public Client(final String namePlayer, final String nameModel, final String address, final InputManager inputManager, final Camera cam)
-	    throws UnknownHostException, IOException {
+    public Client(final String namePlayer, final String nameModel, final String address,
+	    final InputManager inputManager, final Camera cam) throws UnknownHostException, IOException {
 	this.socket = new Socket(address, PORT);
 	this.establishedConnection = true;
 	this.lineToSend = "";
@@ -151,7 +151,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		    if (this.INPUT.readLine().equals(NEWPLAYER)) {
 			String message = this.INPUT.readLine();
 			this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
-				new StringBuilder().builderModel(message),
+				new StringBuilder().builderModel(message), new StringBuilder().builderName(message),
 				new StringBuilder().builderPosition(message));
 		    }
 		}
@@ -191,7 +191,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel notifyUpdate");
@@ -221,8 +221,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    String key = new StringBuilder().builderKeyPlayer(line);
 
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
-		
-		    ((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState(line);
+
+		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).changeState(line);
 	    }
 	    // TODO controllare ogni n secondi che la posizione dei nemici
 	    // corrisponda con quella che il server consosce
@@ -274,7 +274,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    String line = this.INPUT.readLine();
 	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
-		    new StringBuilder().builderPosition(line));
+		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line));
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel communicationNewPlayer");
 	}
@@ -335,12 +335,14 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getNodeThief().setSinglePlayer(false);
 	GameManager.getIstance().getNodeThief().setCam(this.cam, this.inputManager);
 	GameManager.getIstance().getMultiplayer().loadNifty();
+	GameManager.getIstance().getNodeThief().setName(namePlayer);
+	GameManager.getIstance().sortScorePlyer();
 	scene.attachChild(GameManager.getIstance().getNodeThief());
 	this.setKey();
     }
 
     /** This Method add a Player and his Model in the Game's Terrain */
-    public void addNewPlayers(String name, String model, Vector3f location) {
+    public void addNewPlayers(String name, String model, String player, Vector3f location) {
 
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 
@@ -352,11 +354,12 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
 	players.addPhysicsSpace();
-	players.setName(model);
+	players.setName(player);
 	GameManager.getIstance().addScorePlayer(players);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(players);
 	GameManager.getIstance().addPlayes(name, players);
 	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
+	GameManager.getIstance().sortScorePlyer();
     }
 
     /** This Method remove a Model in the Game's Terrain */

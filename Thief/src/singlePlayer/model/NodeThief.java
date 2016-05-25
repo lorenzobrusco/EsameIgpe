@@ -188,7 +188,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** this method is called when thief kill someone */
     public void killSomeOne() {
-	super.score += 10;
+	this.score += 10;
     }
 
     /** this method is called when main character is death */
@@ -461,6 +461,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    if (enemy.isDead()) {
 			this.enemyWin.playSound();
 			this.killSomeOne();
+			GameManager.getIstance().sortScorePlyer();
 			((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);
 			((NodeEnemyPlayers) enemy).getLifeBar().setVisibleLifeBar();
 		    }

@@ -129,7 +129,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start single player */
     public void singlePlayer() {
-	this.setup();
 	this.singleplayer = true;
 	this.multiplayer = false;
 	this.editor = false;
@@ -146,7 +145,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start multiplayer */
     public void multiPlayer() {
-	this.setup();
 	this.multiplayer = true;
 	this.singleplayer = false;
 	this.editor = false;
@@ -166,7 +164,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start editor */
     public void editor() {
-	this.setup();
 	this.editor = true;
 	this.singleplayer = false;
 	this.multiplayer = false;
@@ -181,7 +178,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.menuSound.stopSound();
     }
 
-    /** thie method setup sound */
+    /** this method setup sound */
     public void setupSound() {
 	this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
     }
@@ -328,8 +325,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		new KeyTrigger(KeyInput.KEY_TAB));
 	GameManager.getIstance().getApplication().getInputManager().addMapping("exit",
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
-	// GameManager.getIstance().getApplication().getInputManager().addMapping("chatBox",
-	// new KeyTrigger(KeyInput.KEY_9));
 	this.inputManager.addListener(actionListener, "debug", "exit", "mouse");
 	
     }
@@ -370,20 +365,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	if (this.characters.isEmpty()) {
 	    this.loadCharacter();
 	}
-
-	// if (GameManager.getIstance().getServer() != null &&
-	// GameManager.getIstance().getServer().isStart()) {
-	// GameManager.getIstance().getNifty().getScreen("multiPlayerScreen")
-	// .findNiftyControl("myTextFieldIP",
-	// TextField.class).setText(getIPAddress());
-	// GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
-	// .setFocusable(false);
-	// } else {
-
 	GameManager.getIstance().getNifty().getScreen("multiPlayerScreen").findElementByName("myTextFieldIP")
 		.setFocusable(true);
-	// }
-	loadScreen("multiPlayerScreen");
+	this.loadScreen("multiPlayerScreen");
 
     }
 
@@ -428,7 +412,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this methos start server */
     public void startServer() {
-	GameManager.getIstance().startServer("");
+	GameManager.getIstance().startServer("castle");
 	openServerScreen();
     }
 

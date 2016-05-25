@@ -12,6 +12,7 @@ import control.GameManager;
 import multiPlayer.format.StringBuilder;
 import singlePlayer.model.LifeBar;
 import singlePlayer.model.NodeCharacter;
+import singlePlayer.model.NodeThief;
 
 /**
  * 
@@ -86,7 +87,10 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int score = builder.builderScore(line);
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);
-	this.life = life;
+	if(this.life>life){
+	    this.lifeBar.updateLifeBar(this.life-life);
+	    this.life = life;
+	}
 	this.score = score;
 	if (attack)
 	    this.startAttack();
@@ -107,6 +111,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     @Override
     public void death() {
 	super.death();
+	GameManager.getIstance().sortScorePlyer();
 	this.waitAnimation = true;
     }
 
@@ -116,10 +121,14 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	super.startAttack();
 	this.checkCollition();
 	this.waitAnimation = true;
-	if (!switchAttack)
+	if (!switchAttack){
 	    this.channel.setAnim(attack1);
-	else
+	    this.channel.setSpeed(3f);   
+	}
+	else{
 	    this.channel.setAnim(attack2);
+	    this.channel.setSpeed(2f);      
+	}
 	this.switchAttack = !this.switchAttack;
     }
 
