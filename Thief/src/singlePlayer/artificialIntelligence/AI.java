@@ -174,19 +174,23 @@ public class AI {
 
 	/** reset the Thief research */
 	public void controll() {
-		if (stopSearchThief) {
-			new Thread() {
-				@Override
-				public void run() {
-					try {
-						sleep(500);
-						AI.this.stopSearchThief = false;
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}.start();
+		if (this.stopSearchThief) {
+			this.stopSearchThief = false;
 		}
+
+		// if (stopSearchThief) {
+		// new Thread() {
+		// @Override
+		// public void run() {
+		// try {
+		// sleep(500);
+		// AI.this.stopSearchThief = false;
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// }.start();
+		// }
 	}
 
 	/** check if enemy is colliding with something in the scene */
