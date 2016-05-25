@@ -403,7 +403,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			}
 		
 	
-	    } else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
+	     else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
 		if (!chatboxIsEnable) {
 		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 			    .findElementByName("chatMultiPlayer");

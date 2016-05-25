@@ -111,7 +111,8 @@ public class MultiPlayer implements ScreenController {
 		}
 	    }
 	    if (!GameManager.getIstance().stateIsEmpty()) {
-		Pair<NodeCharacter, ModelState> pair = GameManager.getIstance().getState();
+		@SuppressWarnings("unchecked")
+		Pair<NodeCharacter, ModelState> pair = (Pair<NodeCharacter, ModelState>) GameManager.getIstance().getStates();
 		for (String key : GameManager.getIstance().getPlayers().keySet()) {
 		    if (GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())) {
 			final ModelState state = pair.getArg1();

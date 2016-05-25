@@ -517,13 +517,7 @@ public class GameManager {
     public synchronized boolean stateIsEmpty() {
 	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
     }
-
-	/** this method return true if states is empty */
-	public synchronized boolean stateIsEmpty() {
-		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
-	}
-
-	/** this method get box attack */
+    /** this method get box attack */
 	public synchronized NotifyBoxAttack getBoxAttack() {
 		return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
 	}
@@ -622,6 +616,12 @@ public class GameManager {
 	/** this method get portal */
 	public NodeModel getPortal() {
 		return portal;
+	}
+	
+	
+
+	public Collection<Pair<NodeCharacter, ModelState>> getStates() {
+		return states;
 	}
 
 	/** this method set portal */
