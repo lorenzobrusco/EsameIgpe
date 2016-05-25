@@ -1,8 +1,7 @@
 package multiPlayer;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import java.net.UnknownHostException;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -59,84 +58,99 @@ public class MultiPlayer implements ScreenController {
     private final Node rootNode;
     /** jmonkey's object */
     private final ViewPort viewPort;
-    
-    private String landscape;
+    /** input manager */
+    private final InputManager inputManager;
+    /** camera */
+    private final Camera cam;
+    /** start */
+    private boolean start;
+    /***/
+    private boolean created;
 
     public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
 	    String namePlayer, String nameModel) {
+	this.start = false;
+	this.created = false;
+	try {
+	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam);
+	    this.client.start();
+	} catch (UnknownHostException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
 	this.nameModel = nameModel;
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
+	this.inputManager = inputManager;
+	this.cam = cam;
 	cam.setFrustumFar(200);
 	cam.onFrameChange();
-	this.nameModel = nameModel;
 	this.loadTerrain = new LoadTerrain();
 	this.nodeScene = new Node("Scene");
 	GameManager.getIstance().setMultiplayer(this);
-	this.loadLevel(landscape, address, namePlayer, nameModel, rootNode, cam, inputManager);
-	this.setupAmbientSound();
     }
 
     /** this method is called for each update */
     public void simpleUpdate(Float tpf) {
-	this.render.rayRendering();
-	if (!GameManager.getIstance().getNodeThief().isRun())
-	    GameManager.getIstance().getNodeThief().stop();
-	if (!GameManager.getIstance().getNotyStateModelsIsEmpty()) {
-	    NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
-	    if (stateModel.isAttach()) {
-		GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
-	    } else {
-		GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
-	    }
+	if (this.start) {
+	    this.loadLevel(this.client.getNameTerrain(), this.rootNode, this.cam, this.inputManager);
+	    this.start = false;
+	    this.created = true;
 	}
-	if (!GameManager.getIstance().stateIsEmpty()) {
-	    Pair<NodeCharacter, ModelState> pair = GameManager.getIstance().getState();
-	    for (String key : GameManager.getIstance().getPlayers().keySet()) {
-		if (GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())) {
-		    final ModelState state = pair.getArg1();
-		    ((NodeEnemyPlayers) pair.getArg0()).changeState(state.getLife(), state.getScore(), state.isAttack(),
-			    state.getView(), state.getLocation(), state.getLocation());
+	if (this.created) {
+	    this.render.rayRendering();
+	    if (!GameManager.getIstance().getNodeThief().isRun())
+		GameManager.getIstance().getNodeThief().stop();
+	    if (!GameManager.getIstance().getNotyStateModelsIsEmpty()) {
+		NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
+		if (stateModel.isAttach()) {
+		    GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
+		} else {
+		    GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
 		}
 	    }
-	}
+	    if (!GameManager.getIstance().stateIsEmpty()) {
+		Pair<NodeCharacter, ModelState> pair = GameManager.getIstance().getState();
+		for (String key : GameManager.getIstance().getPlayers().keySet()) {
+		    if (GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())) {
+			final ModelState state = pair.getArg1();
+			((NodeEnemyPlayers) pair.getArg0()).changeState(state.getLife(), state.getScore(),
+				state.isAttack(), state.getView(), state.getLocation(), state.getLocation());
+		    }
+		}
+	    }
 
-	if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
-	    NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-	    if (box.isAttach())
-		GameManager.getIstance().getTerrain().attachChild(box.getModel());
-	    else
-		GameManager.getIstance().getTerrain().detachChild(box.getModel());
+	    if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
+		NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
+		if (box.isAttach())
+		    GameManager.getIstance().getTerrain().attachChild(box.getModel());
+		else
+		    GameManager.getIstance().getTerrain().detachChild(box.getModel());
+	    }
 	}
-
     }
 
     /** this method load landscape */
-    public void loadLevel(String level, String address, String namePlayer, String nameModel, Node rootNode, Camera cam,
-	    InputManager inputManager) {
-	try {
-	    final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
-	    this.nodeScene.attachChild(terrainQuad);
-	    this.nodeScene.addLight(loadTerrain.makeAmbientLight());
-	    this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
-	    this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
-	    this.nodeScene.addControl(rigidBodyControl);
-	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam);
-	    GameManager.getIstance().setTerrain(nodeScene);
-	    GameManager.getIstance().makeSecondLayer();
-	    this.client.bornPosition(nodeScene);
-	    this.rootNode.attachChild(nodeScene);
-	    GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
-	    GameManager.getIstance().addPhysics();
-	    GameManager.getIstance().addPointLightToScene();
-	    this.client.start();
-	    GameManager.getIstance().setClient(client);
-	    this.render = new GameRender(terrainQuad);
-	    this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
-	} catch (IOException e) {
-	    // TODO catch
-	    e.printStackTrace();
-	}
+    public void loadLevel(String level, Node rootNode, Camera cam, InputManager inputManager) {
+	final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
+	this.nodeScene.attachChild(terrainQuad);
+	this.nodeScene.addLight(loadTerrain.makeAmbientLight());
+	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
+	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
+	this.nodeScene.addControl(rigidBodyControl);
+	GameManager.getIstance().setTerrain(nodeScene);
+	GameManager.getIstance().makeSecondLayer();
+	this.client.bornPosition(nodeScene);
+	this.rootNode.attachChild(nodeScene);
+	GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
+	GameManager.getIstance().addPhysics();
+	GameManager.getIstance().addPointLightToScene();
+	GameManager.getIstance().setClient(client);
+	this.render = new GameRender(terrainQuad);
+	this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
+	this.setupAmbientSound();
+	
     }
 
     /** this method disconnect player */
@@ -153,7 +167,7 @@ public class MultiPlayer implements ScreenController {
     /** send message when player press send button */
     public void sendMessage() {
 
-	TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",
+	final TextField text = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chat-text-input",
 		TextField.class);
 	GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
 	text.setText("");
@@ -162,14 +176,7 @@ public class MultiPlayer implements ScreenController {
 
     /** this method load panel 2d */
     public void loadNifty() {
-
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/multiPlayer.xml", "lifeBarScreen", this);
-	// this.borderLifeBarThief =
-	// GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-	// .findElementByName("borderLifeBarThief");
-	// System.out.println(nameModel);
-	// GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief,
-	// borderLifeBarThief, nameModel);
     }
 
     /** this method sort player */
@@ -215,21 +222,17 @@ public class MultiPlayer implements ScreenController {
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
 
-    public void UpdateScore() {
-
+    /** this method get start */
+    public boolean isStart() {
+	return start;
     }
-    
-    
 
-    public String getLandscape() {
-		return landscape;
-	}
+    /** this method set start */
+    public void setStart(boolean start) {
+	this.start = start;
+    }
 
-	public void setLandscape(String landscape) {
-		this.landscape = landscape;
-	}
-
-	/** jmonkey's methods */
+    /** jmonkey's methods */
     @Override
     public void bind(Nifty arg0, Screen arg1) {
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")

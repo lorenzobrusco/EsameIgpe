@@ -265,13 +265,10 @@ public class GameManager {
 	this.application.getInputManager().setCursorVisible(true);
 	this.thief.getCamera().setEnabled(false);
 	this.thief.stop();
-
 	for (NodeModel model : this.getModels()) {
-
 	    for (Sound sound : model.getAllSound()) {
 		sound.stopSound();
 	    }
-
 	    if (model instanceof NodeEnemy)
 		((NodeEnemy) model).pauseIntelligence();
 	}
@@ -281,7 +278,6 @@ public class GameManager {
     public void quitGame() {
 
 	for (NodeModel model : this.getModels()) {
-
 	    for (Sound sound : model.getAllSound()) {
 		sound.stopSound();
 	    }
@@ -328,7 +324,7 @@ public class GameManager {
     /** this method sort score lists */
     public void sortScorePlyer() {// TODO score
 
-	Collections.sort(this.scorePlayers, new Comparator<NodeCharacter>() {
+	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
 	    @Override
 	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
 		if (arg0.getScore() > arg1.getScore())
@@ -342,8 +338,6 @@ public class GameManager {
 	for (int i = 0; i < this.scorePlayers.size(); i++) {
 	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
 		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
-	    System.out.println(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName() + ": "
-		    + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "");
 	}
     }
 
@@ -513,7 +507,7 @@ public class GameManager {
 	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
     }
 
-    /**this method return true if states is empty*/
+    /** this method return true if states is empty */
     public synchronized boolean stateIsEmpty() {
 	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
     }

@@ -83,9 +83,9 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int life = builder.builderLife(line);
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
-	GameManager.getIstance().addState(this, new ModelState(direction, view, life, attack, location, score));
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);
+	GameManager.getIstance().addState(this, new ModelState(direction, view, life, attack, location, score));
     }
 
     /** this method change enemy's state */
@@ -96,12 +96,12 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	this.life = life;
 	this.score = score;
 	GameManager.getIstance().sortScorePlyer();
-	
+
     }
 
     /** this method set enemy's walk direction */
     public void setWalkDirection(Vector3f location, Vector3f direction) {
-	if (!this.waitAnimation) {
+	if (!this.waitAnimation && this.alive) {
 	    if (direction.x == 0.0f && direction.y == -2.0f && direction.z == 0.0f) {
 		this.channel.setAnim(idle);
 	    } else {
@@ -115,9 +115,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** this method is called when enemy death */
     @Override
     public void death() {
-	super.death();
-	GameManager.getIstance().sortScorePlyer();
 	this.waitAnimation = true;
+	super.death();
     }
 
     /** this method is invoked when attach enemy */

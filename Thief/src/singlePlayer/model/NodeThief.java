@@ -377,13 +377,17 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    el.setVisible(!el.isVisible());
 		    GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
 			    .setFocus();
-		    GameManager.getIstance().pauseGame();
+		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		    NodeThief.this.getCamera().setEnabled(false);
+
 		    chatboxIsEnable = !chatboxIsEnable;
 		} else {
 		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 			    .findElementByName("chatMultiPlayer");
 		    el.setVisible(!el.isVisible());
-		    GameManager.getIstance().resumeGame();
+		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
+		    NodeThief.this.getCamera().setEnabled(true);
+		    NodeThief.this.getCamera().setDragToRotate(false);
 		    chatboxIsEnable = !chatboxIsEnable;
 		}
 	    }
