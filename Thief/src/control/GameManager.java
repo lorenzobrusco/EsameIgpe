@@ -316,9 +316,9 @@ public class GameManager {
 	}
 
 	/** this method start server */
-	public void startServer(String path) {
+	public void startServer(String path, int port) {
 		try {
-			this.server = new Server(path);
+			this.server = new Server(path, port);
 			this.server.start();
 		} catch (UnknownHostException e) {
 

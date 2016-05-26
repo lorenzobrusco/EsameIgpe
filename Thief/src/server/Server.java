@@ -16,8 +16,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Server extends Thread {
 
-    /** port to connect */
-    private final static int PORT = 8080;
     /** socket listing for new players */
     private final ServerSocket server;
     /** landspace shared for everyone */
@@ -28,8 +26,8 @@ public class Server extends Thread {
     private Boolean start;
 
     /** builder */
-    public Server(final String path) throws UnknownHostException, IOException {
-	this.server = new ServerSocket(PORT);
+    public Server(final String path, final int port) throws UnknownHostException, IOException {
+	this.server = new ServerSocket(port);
 	this.TERRAIN = path;
 	this.players = new ConcurrentLinkedQueue<>();
 	this.start = true;

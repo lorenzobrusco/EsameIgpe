@@ -468,8 +468,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this methos start server */
     public void startServer() {
-    	
-	GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape));
+    	//TODO
+	GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape),8080);
 	openServerScreen();
     }
 
