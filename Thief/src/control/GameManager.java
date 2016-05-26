@@ -28,7 +28,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
 import multiPlayer.Client;
@@ -519,11 +518,6 @@ public class GameManager {
 	/** this method get box attack */
 	public synchronized NotifyBoxAttack getBoxAttack() {
 		return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
-	}
-
-	/** this method returns state */
-	public synchronized Pair<NodeCharacter, ModelState> getState() {
-		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
 	}
 
 	/** this method check if collection is empty */

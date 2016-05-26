@@ -189,6 +189,7 @@ public class SinglePlayer implements ScreenController {
 		GameManager.getIstance().getNodeThief().stopBonfireSound();
 		GameManager.getIstance().getNodeThief().stopChapelSound();
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 		this.ambient.stopSound();
 
 	}
