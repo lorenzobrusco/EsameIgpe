@@ -47,7 +47,7 @@ public class SinglePlayer implements ScreenController {
 	private RigidBodyControl rigidBodyControl;
 	private final LoadTerrain loadTerrain;
 	private GameRender render;
-	private Sound ambient;
+	private Sound ambientSound;
 	private Element progressLifeBarThief;
 	private Element borderLifeBarThief;
 
@@ -68,15 +68,13 @@ public class SinglePlayer implements ScreenController {
 						GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen",
 								SinglePlayer.this);
 						SinglePlayer.this.setKey();
-						SinglePlayer.this.setupAmbientSound();
-						GameManager.getIstance().stopMenuSound();
+						SinglePlayer.this.setupambientSoundSound();
 
 						return null;
 					}
 				});
 			};
 		}.start();
-
 	}
 
 	public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
@@ -141,9 +139,11 @@ public class SinglePlayer implements ScreenController {
 				GameManager.getIstance().getNodeThief().analogListener, RUN, ROTATECLOCKWISE, ROTATECOUNTERCLOCKWISE);
 	}
 
-	private void setupAmbientSound() {
-		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
-		this.ambient.playSound();
+	private void setupambientSoundSound() {
+		this.ambientSound = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.0f,
+				false);
+		GameManager.getIstance().stopMenuSound();
+		this.playambientSoundSound();
 	}
 
 	public void startGrow(String nameButton) {
@@ -180,7 +180,6 @@ public class SinglePlayer implements ScreenController {
 
 	public void quitGame() {
 		// this.openCloseSureExitButton();
-		GameManager.getIstance().quitGame();
 		GameManager.getIstance().setPaused(false);
 		GameManager.getIstance().getApplication().getInputManager().clearMappings();
 		GameManager.getIstance().getNifty().exit();
@@ -190,7 +189,35 @@ public class SinglePlayer implements ScreenController {
 		GameManager.getIstance().getNodeThief().stopChapelSound();
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
-		this.ambient.stopSound();
+		GameManager.getIstance().quitGame();
+		this.stopAmbientSound();
+
+	}
+
+	private void stopAmbientSound() {
+		for (float i = this.ambientSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() - 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void playambientSoundSound() {
+		this.ambientSound.playSound();
+		for (float i = 0.0f; i < 0.8f; i += 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() + 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+				e.printStackTrace();
+			}
+		}
 
 	}
 

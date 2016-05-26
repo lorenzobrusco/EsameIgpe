@@ -2,6 +2,7 @@ package editor;
 
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -24,6 +25,7 @@ import com.jme3.terrain.geomipmap.TerrainQuad;
 import control.GameManager;
 import de.lessvoid.nifty.controls.Label;
 import de.lessvoid.nifty.controls.ListBox;
+import de.lessvoid.nifty.controls.NiftyControl;
 import de.lessvoid.nifty.controls.Slider;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.controls.TextField;
@@ -107,7 +109,7 @@ public class EditorTerrain implements ScreenController {
 	/** jmonkey's object */
 	private final AppSettings settings;
 	/** sound */
-	private Sound editorSound;
+	private Sound ambientSound;
 	/** file to delete */
 	private File currentFile;
 	/** id popup */
@@ -134,16 +136,13 @@ public class EditorTerrain implements ScreenController {
 		this.initCrossHairs();
 		/** make marker */
 		this.createMarker();
-		/** set keys */
-		this.setKey();
 		/** add panel 2d */
 		this.loadNifty();
+		/** set keys */
+		this.setKey();
 		/** set sound */
 		this.setupSound();
-		/** stop menu sounds */
-		GameManager.getIstance().stopMenuSound();
-		/** start sound */
-		this.editorSound.playSound();
+
 	}
 
 	/**
@@ -206,6 +205,9 @@ public class EditorTerrain implements ScreenController {
 			Vector3f tl = this.terrain.getWorldTranslation();
 			this.marker.setLocalTranslation(tl.add(new Vector3f(intersection.x, h, intersection.z)));
 		}
+		if (this.mouse) {
+			GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		}
 	}
 
 	/** this objcet listening events */
@@ -234,7 +236,6 @@ public class EditorTerrain implements ScreenController {
 			} else if (name.equals("mouse")) {
 				EditorTerrain.this.mouse = !EditorTerrain.this.mouse;
 			}
-
 		}
 	};
 
@@ -366,7 +367,6 @@ public class EditorTerrain implements ScreenController {
 
 	/** this method set key */
 	private void setKey() {
-
 		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 				new KeyTrigger(KeyInput.KEY_LCONTROL));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("tree", new KeyTrigger(KeyInput.KEY_1));
@@ -743,7 +743,10 @@ public class EditorTerrain implements ScreenController {
 
 	/** this method set sound */
 	private void setupSound() {
-		this.editorSound = new Sound(this.terrain, "Editor", false, false, true, 1.0f, false);
+		this.ambientSound = new Sound(this.terrain, "Editor", false, false, true, 1.0f, false);
+		GameManager.getIstance().stopMenuSound();
+		this.playAmbientSound();
+
 	}
 
 	/** this method is called when cursor move up a button */
@@ -768,12 +771,12 @@ public class EditorTerrain implements ScreenController {
 	public void closeEditor() {
 
 		this.guiNode.detachAllChildren();
-		GameManager.getIstance().quitGame();
 		GameManager.getIstance().getApplication().getInputManager().clearMappings();
 		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-		this.editorSound.stopSound();
+		GameManager.getIstance().quitGame();
+		this.stopAmbientSound();
 	}
 
 	/** this method add panel 2d */
@@ -804,7 +807,32 @@ public class EditorTerrain implements ScreenController {
 	public void onEndScreen() {
 	}
 
-	public void stopEditorSound() {
-		this.editorSound.stopSound();
+	public void stopAmbientSound() {
+		if (!(this.ambientSound == null))
+			for (float i = this.ambientSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+				this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() - 0.1f);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					this.ambientSound.stopSound();
+					e.printStackTrace();
+				}
+			}
+		this.ambientSound.stopSound();
+	}
+
+	private void playAmbientSound() {
+		this.ambientSound.getAudioNode().setVolume(0.0f);
+		this.ambientSound.playSound();
+		for (float i = 0.0f; i < 1.0f; i += 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() + 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+				e.printStackTrace();
+			}
+		}
+
 	}
 }

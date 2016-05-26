@@ -174,8 +174,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public void nearToPortal() {
 		if (this.getLocalTranslation()
 				.distance(GameManager.getIstance().getPortal().getLocalTranslation()) < PORTALDISTANCE) {
-		this.win = true;
-		GameManager.getIstance().getSinglePlayer().win();
+			this.win = true;
+			GameManager.getIstance().getSinglePlayer().win();
 		}
 	}
 
@@ -342,6 +342,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 					&& !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 				NodeThief.this.isRun = false;
 				NodeThief.this.waitAnimation = true;
+				NodeThief.this.swordSound.playSound();
 				if (!NodeThief.this.changeAttack) {
 					NodeThief.this.channel.setAnim(attack1);
 					NodeThief.this.channel.setSpeed(3f);
@@ -387,37 +388,38 @@ public class NodeThief extends NodeCharacter implements Collition {
 					chatboxIsEnable = !chatboxIsEnable;
 				}
 			}
-					
-	     else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
-		if (!chatboxIsEnable) {
-		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-			    .findElementByName("chatMultiPlayer");
-		    el.setVisible(!el.isVisible());
-		    GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
-			    .setFocus();
-		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-		    NodeThief.this.getCamera().setEnabled(false);
 
-		    chatboxIsEnable = !chatboxIsEnable;
-		} else {
-		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
-			    .findElementByName("chatMultiPlayer");
-		    el.setVisible(!el.isVisible());
-		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
-		    NodeThief.this.getCamera().setEnabled(true);
-		    NodeThief.this.getCamera().setDragToRotate(false);
-		    chatboxIsEnable = !chatboxIsEnable;
+			else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
+				if (!chatboxIsEnable) {
+					Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+							.findElementByName("chatMultiPlayer");
+					el.setVisible(!el.isVisible());
+					GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
+							.setFocus();
+					GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+					NodeThief.this.getCamera().setEnabled(false);
+
+					chatboxIsEnable = !chatboxIsEnable;
+				} else {
+					Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+							.findElementByName("chatMultiPlayer");
+					el.setVisible(!el.isVisible());
+					GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
+					NodeThief.this.getCamera().setEnabled(true);
+					NodeThief.this.getCamera().setDragToRotate(false);
+					chatboxIsEnable = !chatboxIsEnable;
+				}
+			}
+			if (win && pressed) {
+				win = false;
+				GameManager.getIstance().getSinglePlayer().quitGame();
+			} else if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+					&& !GameManager.getIstance().isPaused()) {
+				NodeThief.this.nearToPortal();
+				// GameManager.getIstance().pauseGame();
+			}
 		}
-	    }
-	   if (win && pressed) {
-		   win = false;
-	 	    GameManager.getIstance().getSinglePlayer().quitGame();
-	 		}
-	   else if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
-		    && !GameManager.getIstance().isPaused()) {
-		NodeThief.this.nearToPortal();
-		// GameManager.getIstance().pauseGame();
-	    }}};
+	};
 
 	/** jmonkey's method */
 	@Override
@@ -546,23 +548,40 @@ public class NodeThief extends NodeCharacter implements Collition {
 	protected void setupAudio() {
 		if (!GameManager.getIstance().isEditor()) {
 			this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false, false, false, 0.09f, false);
+			this.allSounds.add(walkingOnGrassSound);
 			this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f, false);
+			this.allSounds.add(this.scream1);
 			this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f, false);
+			this.allSounds.add(this.scream2);
 			this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f, false);
+			this.allSounds.add(this.scream2);
 			this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f, false);
+
 			if (!this.multiplayer) {
 				this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
+				this.allSounds.add(this.swordSound);
 				this.bonfireSound = new Sound(this, "Bonfire", false, false, false, 1.0f, false);
+				this.allSounds.add(this.bonfireSound);
 				this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice1);
 				this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice2);
 				this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice3);
 				this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice4);
 				this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice5);
 				this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice6);
 				this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice7);
 				this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
+				this.allSounds.add(this.deathSound);
 				this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
+				this.allSounds.add(this.enemyWin);
 				this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
+				this.allSounds.add(this.enemyView);
 			}
 		}
 	}
