@@ -110,7 +110,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.nameModel = PATHMODEL + nameModel + "/" + nameModel + ".mesh.j3o";
 		this.INPUT = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		this.OUTPUT = new DataOutputStream(this.socket.getOutputStream());
-		this.IAM = "192.168.1.2";
+		this.IAM = this.ipAddress();
 	}
 
 	/** Client connect with Server */
@@ -133,9 +133,9 @@ public class Client extends Thread implements CommunicationProtocol {
 				}
 			}
 			GameManager.getIstance().getMultiplayer().setStart(true);
-			// TODO tempo di caricamento
-			sleep(20000);
-			// s
+			/**time to loading*/
+			while(!GameManager.getIstance().getMultiplayer().isCreated())
+			    super.sleep(500);
 			this.OUTPUT.writeBytes(KNOCK + "\n");
 			if (this.INPUT.readLine().equals(WHOAREYOU)) {
 				final String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
