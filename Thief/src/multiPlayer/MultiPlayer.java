@@ -68,11 +68,11 @@ public class MultiPlayer implements ScreenController {
     private boolean created;
 
     public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
-	    String namePlayer, String nameModel) {
+	    String namePlayer, String nameModel, int port) {
 	this.start = false;
 	this.created = false;
 	try {
-	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam);
+	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam, port);
 	    this.client.start();
 	} catch (UnknownHostException e) {
 	    e.printStackTrace();
@@ -111,7 +111,8 @@ public class MultiPlayer implements ScreenController {
 		}
 	    }
 	    if (!GameManager.getIstance().stateIsEmpty()) {
-		Pair<NodeCharacter, ModelState> pair = GameManager.getIstance().getState();
+		@SuppressWarnings("unchecked")
+		Pair<NodeCharacter, ModelState> pair = (Pair<NodeCharacter, ModelState>) GameManager.getIstance().getStates();
 		for (String key : GameManager.getIstance().getPlayers().keySet()) {
 		    if (GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())) {
 			final ModelState state = pair.getArg1();

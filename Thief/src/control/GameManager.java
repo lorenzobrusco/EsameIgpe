@@ -27,6 +27,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import editor.LoadTerrain;
 import multiPlayer.Client;
@@ -318,6 +319,7 @@ public class GameManager {
 	/** this method start server */
 	public void startServer(String path, int port) {
 		try {
+	
 			this.server = new Server(path, port);
 			this.server.start();
 		} catch (UnknownHostException e) {
@@ -524,11 +526,6 @@ public class GameManager {
 		return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
 	}
 
-	/** this method returns state */
-	public synchronized Pair<NodeCharacter, ModelState> getState() {
-		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).poll();
-	}
-
 	/** this method check if collection is empty */
 	public synchronized boolean getBoxsAttackIsEmpty() {
 		return this.boxsAttack.isEmpty();
@@ -623,6 +620,10 @@ public class GameManager {
 	/** this method get portal */
 	public NodeModel getPortal() {
 		return portal;
+	}
+
+	public Collection<Pair<NodeCharacter, ModelState>> getStates() {
+		return states;
 	}
 
 	/** this method set portal */

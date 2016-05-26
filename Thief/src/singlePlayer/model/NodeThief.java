@@ -172,15 +172,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	/** this method is called when thief is near portal */
 	public void nearToPortal() {
-		this.win = true;
-		GameManager.getIstance().getSinglePlayer().win();
-	}
-
-	/** this method is called when main character is near portal */
-	public void endGame() {
 		if (this.getLocalTranslation()
 				.distance(GameManager.getIstance().getPortal().getLocalTranslation()) < PORTALDISTANCE) {
-			// TODO avviare fine gioco
+		this.win = true;
+		GameManager.getIstance().getSinglePlayer().win();
 		}
 	}
 
@@ -382,30 +377,47 @@ public class NodeThief extends NodeCharacter implements Collition {
 					el.setVisible(!el.isVisible());
 					GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
 							.setFocus();
-					GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-					NodeThief.this.getCamera().setEnabled(false);
-
+					GameManager.getIstance().pauseGame();
 					chatboxIsEnable = !chatboxIsEnable;
 				} else {
 					Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 							.findElementByName("chatMultiPlayer");
 					el.setVisible(!el.isVisible());
-					GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
-					NodeThief.this.getCamera().setEnabled(true);
-					NodeThief.this.getCamera().setDragToRotate(false);
+					GameManager.getIstance().resumeGame();
 					chatboxIsEnable = !chatboxIsEnable;
 				}
 			}
-			if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
-					&& !GameManager.getIstance().isPaused()) {
-				NodeThief.this.nearToPortal();
-				// GameManager.getIstance().pauseGame();
-			} else if (win && pressed) {
-				System.out.println("pressed");
-				GameManager.getIstance().getSinglePlayer().quitGame();
-			}
+					
+	     else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
+		if (!chatboxIsEnable) {
+		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+			    .findElementByName("chatMultiPlayer");
+		    el.setVisible(!el.isVisible());
+		    GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
+			    .setFocus();
+		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		    NodeThief.this.getCamera().setEnabled(false);
+
+		    chatboxIsEnable = !chatboxIsEnable;
+		} else {
+		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
+			    .findElementByName("chatMultiPlayer");
+		    el.setVisible(!el.isVisible());
+		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
+		    NodeThief.this.getCamera().setEnabled(true);
+		    NodeThief.this.getCamera().setDragToRotate(false);
+		    chatboxIsEnable = !chatboxIsEnable;
 		}
-	};
+	    }
+	   if (win && pressed) {
+		   win = false;
+	 	    GameManager.getIstance().getSinglePlayer().quitGame();
+	 		}
+	   else if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+		    && !GameManager.getIstance().isPaused()) {
+		NodeThief.this.nearToPortal();
+		// GameManager.getIstance().pauseGame();
+	    }}};
 
 	/** jmonkey's method */
 	@Override
