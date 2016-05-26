@@ -172,15 +172,15 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** start editor */
     public void editor() {
 
-	this.flyCam.setEnabled(true);
 	GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
-	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+	//this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 	this.mouseInput.setCursorVisible(false);
 	this.initKeys();
 	this.menuSound.stopSound();
+	this.flyCam.setEnabled(true);
 	this.editor = true;
 	this.singleplayer = false;
 	this.multiplayer = false;

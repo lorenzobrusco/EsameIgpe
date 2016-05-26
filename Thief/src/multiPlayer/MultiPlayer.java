@@ -25,7 +25,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
 import multiPlayer.notify.NotifyBoxAttack;
 import multiPlayer.notify.NotifyStateModel;
-import singlePlayer.SinglePlayer;
 import singlePlayer.Sound;
 import singlePlayer.model.NodeCharacter;
 
