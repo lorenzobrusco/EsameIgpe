@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
@@ -215,19 +216,11 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method return Player IP address */
     @Override
     public String ipAddress() {
-	URL url;
 	try {
-	    url = new URL("http://checkip.amazonaws.com/");
-	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-	    return br.readLine();
-	} catch (MalformedURLException e) { // TODO catch
-	    System.out.println("eccezioni nel ipAddress");
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nel ipAddress");
+	    return InetAddress.getLocalHost().getHostAddress();
+	} catch (UnknownHostException e) {
+	    return "127.0.0.1";
 	}
-
-	return null;
-
     }
 
     /** This Method communicates that there is a new player */
