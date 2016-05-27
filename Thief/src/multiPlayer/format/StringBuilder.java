@@ -2,12 +2,22 @@ package multiPlayer.format;
 
 import com.jme3.math.Vector3f;
 
+/**
+ * 
+ * this class build a string to send for multiplayer
+ *
+ */
+
 public class StringBuilder {
 
+    /** delimiter between vector */
     private static final String DELIMITER = "&";
+    /** separator between values */
     private static final String SEPARATOR = "#";
+    /** number of values */
     private static final int MAXLENGTH = 15;
 
+    /** constructor */
     public String builderString(Vector3f walk, Vector3f view, Vector3f location, int life, boolean attack, String ip,
 	    String model, String name, int score) {
 
@@ -18,11 +28,13 @@ public class StringBuilder {
 	return line;
     }
 
+    /** this method check if string is a instance of builderString */
     public boolean checkString(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	return split.length == MAXLENGTH;
     }
 
+    /** this method builder walk's vector */
     public Vector3f builderWalk(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	try {
@@ -34,6 +46,7 @@ public class StringBuilder {
 	}
     }
 
+    /** this method builder view's vector */
     public Vector3f builderView(String line) {
 	try {
 	    String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
@@ -46,6 +59,7 @@ public class StringBuilder {
 	}
     }
 
+    /** this method builder position's vector */
     public Vector3f builderPosition(String line) {
 	try {
 	    String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
@@ -57,6 +71,7 @@ public class StringBuilder {
 	}
     }
 
+    /** this method builder life */
     public int builderLife(String line) {
 	try {
 	    String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
@@ -67,36 +82,42 @@ public class StringBuilder {
 	}
     }
 
+    /** this method builder attack */
     public boolean builderAttack(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	boolean attack = split[10].equals("true");
 	return attack;
     }
 
+    /** this method builder key */
     public String builderKeyPlayer(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	String key = split[11] + split[12];
 	return key;
     }
 
+    /** this method builder model */
     public String builderModel(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	String model = split[12];
 	return model;
     }
 
+    /** this method builder address */
     public String builderAddress(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	String address = split[11];
 	return address;
     }
 
+    /** this method builder player's name */
     public String builderName(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	String address = split[13];
 	return address;
     }
 
+    /** this method builder score */
     public int builderScore(String line) {
 	String[] split = line.split("[\\" + DELIMITER + "\\" + SEPARATOR + "]");
 	try {

@@ -3,7 +3,6 @@ package multiPlayer;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
-
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -66,9 +65,10 @@ public class MultiPlayer implements ScreenController {
     private final Camera cam;
     /** start */
     private boolean start;
-    /***/
+    /** check if game is created */
     private boolean created;
 
+    /** constructor */
     public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
 	    String namePlayer, String nameModel, int port) {
 	this.start = false;
@@ -123,7 +123,6 @@ public class MultiPlayer implements ScreenController {
 		    }
 		}
 	    }
-
 	    if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
 		NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
 		if (box.isAttach())
@@ -248,12 +247,12 @@ public class MultiPlayer implements ScreenController {
 
     /** this method get created */
     public boolean isCreated() {
-        return this.created;
+	return this.created;
     }
 
-    /** this method set created*/
+    /** this method set created */
     public void setCreated(boolean created) {
-        this.created = created;
+	this.created = created;
     }
 
     /** jmonkey's methods */
@@ -261,7 +260,6 @@ public class MultiPlayer implements ScreenController {
     public void bind(Nifty arg0, Screen arg1) {
 	this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 		.findElementByName("borderLifeBarThief");
-	System.out.println(nameModel);
 	GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
     }
 

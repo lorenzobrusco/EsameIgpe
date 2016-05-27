@@ -175,7 +175,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
-	//this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+
+	this.cam.clone();
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 	this.mouseInput.setCursorVisible(false);
 	this.initKeys();
@@ -352,6 +353,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** this method change help's page */
     public void nextHelpImage() {
 	if (indexHelp == help.size() - 1)
 	    indexHelp = 0;
@@ -364,6 +366,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** this method change help's page */
     public void redoHelpImage() {
 	if (this.indexHelp == 0)
 	    this.indexHelp = help.size() - 1;
@@ -479,30 +482,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	openServerScreen();
     }
 
-    public boolean isSingleplayer() {
-	return singleplayer;
-    }
-
-    public void setSingleplayer(boolean singleplayer) {
-	this.singleplayer = singleplayer;
-    }
-
-    public boolean isMultiplayer() {
-	return multiplayer;
-    }
-
-    public void setMultiplayer(boolean multiplayer) {
-	this.multiplayer = multiplayer;
-    }
-
-    public boolean isEditor() {
-	return editor;
-    }
-
-    public void setEditor(boolean editor) {
-	this.editor = editor;
-    }
-
     /** jmonkey's method */
     @Override
     public void onAction(String arg0, boolean arg1, float arg2) {
@@ -523,10 +502,12 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void onStartScreen() {
     }
 
+    /** main */
     public static void main(String[] args) {
 	StartGame app = new StartGame();
 	app.setPauseOnLostFocus(false);
 	AppSettings gameSettings = new AppSettings(false);
+	// TODO Prima di consegnare
 	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
 	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 	//
