@@ -3,7 +3,6 @@ package multiPlayer;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
-
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -66,7 +65,7 @@ public class MultiPlayer implements ScreenController {
 	private final Camera cam;
 	/** start */
 	private boolean start;
-	/***/
+	/** check if game is created */
 	private boolean created;
 
 	public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
@@ -290,7 +289,6 @@ public class MultiPlayer implements ScreenController {
 	public void bind(Nifty arg0, Screen arg1) {
 		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 				.findElementByName("borderLifeBarThief");
-		System.out.println(nameModel);
 		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
 	}
 

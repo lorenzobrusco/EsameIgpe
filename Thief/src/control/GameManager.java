@@ -50,232 +50,232 @@ import singlePlayer.model.NodeThief;
 
 public class GameManager {
 
-	/** singleton */
-	private static GameManager manager;
-	/** models */
-	private Collection<NodeModel> spatial;
-	/** models to rendering */
-	private Collection<NodeModel> nodeRender;
-	/** enemies */
-	private Collection<NodeCharacter> enemies;
-	/** light */
-	private Collection<PointLight> lights;
-	/** state models */
-	private Collection<NotifyStateModel> notifyStateModels;
-	/** box attack */
-	private Collection<NotifyBoxAttack> boxsAttack;
-	/** player's states */
-	private Collection<Pair<NodeCharacter, ModelState>> states;
-	/** score multiplayer */
-	private List<NodeCharacter> scorePlayers;
-	/** players multiplayer */
-	private AbstractMap<String, NodeCharacter> players;
-	/** enemy's lifebars */
-	private AbstractMap<Integer, Element> enemiesLifeBar;
-	/** application */
-	private SimpleApplication application;
-	/** jmonkey's object */
-	private BulletAppState bulletAppState;
-	/** load terrain */
-	private LoadTerrain loadTerrain;
-	/** main's character */
-	private NodeThief thief;
-	/** bonfire */
-	private NodeModel bonfire;
-	/** portal */
-	private NodeModel portal;
-	/** terrain */
-	private Node terrain;
-	/** terrainquand */
-	private TerrainQuad terrainQuad;
-	/** singleplayer */
-	private SinglePlayer singlePlayer;
-	/** multiplayer */
-	private MultiPlayer multiplayer;
-	/** sounds */
-	private AudioRenderer audioRenderer;
-	/** it's true if choose editor */
-	private boolean editor;
-	/** client */
-	private Client client;
-	/** extends x */
-	private float worldXExtent;
-	/** extends z */
-	private float worldZExtent;
-	/** matrix */
-	private boolean[][] secondLayer;
-	/** panel 2d */
-	private Nifty nifty;
-	/** game type */
-	private String modelGame;
-	/** it's true if is pause */
-	private boolean paused;
-	/** server */
-	private Server server;
-	/** sound */
-	private Sound menuSound;
+    /** singleton */
+    private static GameManager manager;
+    /** models */
+    private Collection<NodeModel> spatial;
+    /** models to rendering */
+    private Collection<NodeModel> nodeRender;
+    /** enemies */
+    private Collection<NodeCharacter> enemies;
+    /** light */
+    private Collection<PointLight> lights;
+    /** state models */
+    private Collection<NotifyStateModel> notifyStateModels;
+    /** box attack */
+    private Collection<NotifyBoxAttack> boxsAttack;
+    /** player's states */
+    private Collection<Pair<NodeCharacter, ModelState>> states;
+    /** score multiplayer */
+    private List<NodeCharacter> scorePlayers;
+    /** players multiplayer */
+    private AbstractMap<String, NodeCharacter> players;
+    /** enemy's lifebars */
+    private AbstractMap<Integer, Element> enemiesLifeBar;
+    /** application */
+    private SimpleApplication application;
+    /** jmonkey's object */
+    private BulletAppState bulletAppState;
+    /** load terrain */
+    private LoadTerrain loadTerrain;
+    /** main's character */
+    private NodeThief thief;
+    /** bonfire */
+    private NodeModel bonfire;
+    /** portal */
+    private NodeModel portal;
+    /** terrain */
+    private Node terrain;
+    /** terrainquand */
+    private TerrainQuad terrainQuad;
+    /** singleplayer */
+    private SinglePlayer singlePlayer;
+    /** multiplayer */
+    private MultiPlayer multiplayer;
+    /** sounds */
+    private AudioRenderer audioRenderer;
+    /** it's true if choose editor */
+    private boolean editor;
+    /** client */
+    private Client client;
+    /** extends x */
+    private float worldXExtent;
+    /** extends z */
+    private float worldZExtent;
+    /** matrix */
+    private boolean[][] secondLayer;
+    /** panel 2d */
+    private Nifty nifty;
+    /** game type */
+    private String modelGame;
+    /** it's true if is pause */
+    private boolean paused;
+    /** server */
+    private Server server;
+    /** sound */
+    private Sound menuSound;
 
-	/** builder */
-	private GameManager() {
+    /** builder */
+    private GameManager() {
 
-		this.spatial = new Stack<>();
-		this.nodeRender = new ArrayList<>();
-		this.enemies = new ArrayList<>();
-		this.lights = new ArrayList<>();
-		this.scorePlayers = new ArrayList<>();
-		this.players = new HashMap<>();
-		this.notifyStateModels = new ConcurrentLinkedQueue<>();
-		this.boxsAttack = new ConcurrentLinkedQueue<>();
-		this.states = new ConcurrentLinkedQueue<>();
-		this.enemiesLifeBar = new HashMap<>();
-		this.editor = false;
-		this.paused = false;
+	this.spatial = new Stack<>();
+	this.nodeRender = new ArrayList<>();
+	this.enemies = new ArrayList<>();
+	this.lights = new ArrayList<>();
+	this.scorePlayers = new ArrayList<>();
+	this.players = new HashMap<>();
+	this.notifyStateModels = new ConcurrentLinkedQueue<>();
+	this.boxsAttack = new ConcurrentLinkedQueue<>();
+	this.states = new ConcurrentLinkedQueue<>();
+	this.enemiesLifeBar = new HashMap<>();
+	this.editor = false;
+	this.paused = false;
+    }
+
+    /** getInstance singleton */
+    public static GameManager getIstance() {
+	if (manager == null)
+	    manager = new GameManager();
+	return manager;
+    }
+
+    /** this method set params */
+    public void setParams(SimpleApplication application) {
+	this.loadTerrain = new LoadTerrain();
+	this.application = application;
+    }
+
+    /** this method set terrain */
+    public void setTerrain(Node terrain) {
+	this.terrain = terrain;
+	this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
+	this.worldZExtent = ((BoundingBox) this.terrain.getWorldBound()).getZExtent();
+	this.secondLayer = new boolean[(((int) (worldXExtent * 2)) + 1)][(((int) (worldZExtent * 2)) + 1)];
+    }
+
+    /** this method add bonfire's light */
+    public void addPointShadow(Vector3f localTranslation) {
+
+	PointLight light = new PointLight();
+	light.setColor(new ColorRGBA(0.8f, 0.7f, 0.5f, 0.2f));
+	light.setRadius(40f);
+	light.setPosition(new Vector3f(localTranslation.x, localTranslation.y + 1f, localTranslation.z));
+	this.lights.add(light);
+
+    }
+
+    /** this method add all lights */
+    public void addPointLightToScene() {
+	for (PointLight light : this.lights) {
+	    terrain.addLight(light);
 	}
+    }
 
-	/** getInstance singleton */
-	public static GameManager getIstance() {
-		if (manager == null)
-			manager = new GameManager();
-		return manager;
+    /** this method add physic */
+    public synchronized void addPhysics() {
+	for (NodeModel model : spatial) {
+	    if (model.getName().contains("Chapel") || model.getName().contains("Tree")
+		    || model.getName().contains("House") || model.getName().contains("HouseMedium")
+		    || model.getName().contains("HouseTwo") || model.getName().contains("WindMill")
+		    || model.getName().contains("Portal") || model.getName().contains("Castle")
+		    || model.getName().contains("Bonfire")) {
+		CollisionShape collisionShape = CollisionShapeFactory.createMeshShape(model);
+		RigidBodyControl body = new RigidBodyControl(collisionShape, 0);
+		model.addControl(body);
+	    } else {
+		model.addCharacterControl();
+	    }
+	    this.bulletAppState.getPhysicsSpace().add(model);
 	}
+    }
 
-	/** this method set params */
-	public void setParams(SimpleApplication application) {
-		this.loadTerrain = new LoadTerrain();
-		this.application = application;
+    /** this method start enemy's ai */
+    public void startEnemiesIntelligence() {
+	for (NodeCharacter enemy : this.enemies) {
+	    ((NodeEnemy) enemy).runIntelligence();
 	}
+    }
 
-	/** this method set terrain */
-	public void setTerrain(Node terrain) {
-		this.terrain = terrain;
-		this.worldXExtent = ((BoundingBox) this.terrain.getWorldBound()).getXExtent();
-		this.worldZExtent = ((BoundingBox) this.terrain.getWorldBound()).getZExtent();
-		this.secondLayer = new boolean[(((int) (worldXExtent * 2)) + 1)][(((int) (worldZExtent * 2)) + 1)];
+    /** this method add model to rendering */
+    public boolean addModelRender(NodeModel model) {
+	if (this.nodeRender.contains(model))
+	    return false;
+	this.nodeRender.add(model);
+	return true;
+    }
+
+    /** this method remove model */
+    public void removeModel(String name) {
+	for (NodeModel model : this.spatial) {
+	    if (model.getName().equals(name)) {
+		this.spatial.remove(model);
+		return;
+	    }
 	}
+    }
 
-	/** this method add bonfire's light */
-	public void addPointShadow(Vector3f localTranslation) {
-
-		PointLight light = new PointLight();
-		light.setColor(new ColorRGBA(0.8f, 0.7f, 0.5f, 0.2f));
-		light.setRadius(40f);
-		light.setPosition(new Vector3f(localTranslation.x, localTranslation.y + 1f, localTranslation.z));
-		this.lights.add(light);
-
+    /** this method check if point x,z is free */
+    public boolean isWalkable(float x, float z) {
+	if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]
+		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2
+			&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10) {
+	    return false;
 	}
+	return true;
+    }
 
-	/** this method add all lights */
-	public void addPointLightToScene() {
-		for (PointLight light : this.lights) {
-			terrain.addLight(light);
-		}
+    /** build a boolean matrix to know if point(x,z) is walkable */
+    public void makeSecondLayer() {
+	for (Spatial model : this.getModels()) {
+	    if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
+		this.makeModelArea(model);
+		this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
+			+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
+				+ (int) this.worldZExtent)] = true;
+	    }
 	}
+    }
 
-	/** this method add physic */
-	public synchronized void addPhysics() {
-		for (NodeModel model : spatial) {
-			if (model.getName().contains("Chapel") || model.getName().contains("Tree")
-					|| model.getName().contains("House") || model.getName().contains("HouseMedium")
-					|| model.getName().contains("HouseTwo") || model.getName().contains("WindMill")
-					|| model.getName().contains("Portal") || model.getName().contains("Castle")
-					|| model.getName().contains("Bonfire")) {
-				CollisionShape collisionShape = CollisionShapeFactory.createMeshShape(model);
-				RigidBodyControl body = new RigidBodyControl(collisionShape, 0);
-				model.addControl(body);
-			} else {
-				model.addCharacterControl();
-			}
-			this.bulletAppState.getPhysicsSpace().add(model);
-		}
+    /**
+     * set to true or false secondLayer matrix cells, if it is true that point
+     * is walkable else not
+     */
+    private void makeModelArea(Spatial model) {
+
+	int xModelStart = (int) (model.getLocalTranslation().getX()
+		- (((BoundingBox) model.getWorldBound()).getXExtent() / 2) - 10);
+	int zModelStart = (int) (model.getLocalTranslation().getZ()
+		- (((BoundingBox) model.getWorldBound()).getZExtent() / 2) - 10);
+
+	int xModelEnd = (int) (model.getLocalTranslation().getX()
+		+ (((BoundingBox) model.getWorldBound()).getXExtent() / 2) + 10);
+	int zModelEnd = (int) (model.getLocalTranslation().getZ()
+		+ (((BoundingBox) model.getWorldBound()).getZExtent() / 2) + 10);
+
+	for (int x = xModelStart; x < xModelEnd; x++) {
+	    for (int z = zModelStart; z < zModelEnd; z++) {
+		this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)] = true;
+	    }
 	}
+    }
 
-	/** this method start enemy's ai */
-	public void startEnemiesIntelligence() {
-		for (NodeCharacter enemy : this.enemies) {
-			((NodeEnemy) enemy).runIntelligence();
-		}
+    /** this method set pause */
+    public void pauseGame() {
+	this.paused = true;
+	this.application.getInputManager().setCursorVisible(true);
+	this.thief.getCamera().setEnabled(false);
+	this.thief.stop();
+
+	for (NodeModel model : this.getModels()) {
+
+	    for (Sound sound : model.getAllSound()) {
+		sound.stopSound();
+	    }
+
+	    if (model instanceof NodeEnemy)
+		((NodeEnemy) model).pauseIntelligence();
 	}
-
-	/** this method add model to rendering */
-	public boolean addModelRender(NodeModel model) {
-		if (this.nodeRender.contains(model))
-			return false;
-		this.nodeRender.add(model);
-		return true;
-	}
-
-	/** this method remove model */
-	public void removeModel(String name) {
-		for (NodeModel model : this.spatial) {
-			if (model.getName().equals(name)) {
-				this.spatial.remove(model);
-				return;
-			}
-		}
-	}
-
-	/** this method check if point x,z is free */
-	public boolean isWalkable(float x, float z) {
-		if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]
-				|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2
-						&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10) {
-			return false;
-		}
-		return true;
-	}
-
-	/** build a boolean matrix to know if point(x,z) is walkable */
-	public void makeSecondLayer() {
-		for (Spatial model : this.getModels()) {
-			if (!model.getName().equals("Bonfire") && !(model instanceof NodeCharacter)) {
-				this.makeModelArea(model);
-				this.secondLayer[(((int) model.getWorldBound().getCenter().getX())
-						+ (int) this.worldXExtent)][(((int) model.getWorldBound().getCenter().getZ())
-								+ (int) this.worldZExtent)] = true;
-			}
-		}
-	}
-
-	/**
-	 * set to true or false secondLayer matrix cells, if it is true that point
-	 * is walkable else not
-	 */
-	private void makeModelArea(Spatial model) {
-
-		int xModelStart = (int) (model.getLocalTranslation().getX()
-				- (((BoundingBox) model.getWorldBound()).getXExtent() / 2) - 10);
-		int zModelStart = (int) (model.getLocalTranslation().getZ()
-				- (((BoundingBox) model.getWorldBound()).getZExtent() / 2) - 10);
-
-		int xModelEnd = (int) (model.getLocalTranslation().getX()
-				+ (((BoundingBox) model.getWorldBound()).getXExtent() / 2) + 10);
-		int zModelEnd = (int) (model.getLocalTranslation().getZ()
-				+ (((BoundingBox) model.getWorldBound()).getZExtent() / 2) + 10);
-
-		for (int x = xModelStart; x < xModelEnd; x++) {
-			for (int z = zModelStart; z < zModelEnd; z++) {
-				this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)] = true;
-			}
-		}
-	}
-
-	/** this method set pause */
-	public void pauseGame() {
-		this.paused = true;
-		this.application.getInputManager().setCursorVisible(true);
-		this.thief.getCamera().setEnabled(false);
-		this.thief.stop();
-
-		for (NodeModel model : this.getModels()) {
-
-			for (Sound sound : model.getAllSound()) {
-				sound.stopSound();
-			}
-
-			if (model instanceof NodeEnemy)
-				((NodeEnemy) model).pauseIntelligence();
-		}
-	}
+    }
 
 	/** this method is called when user come back to menu */
 	public void quitGame() {
@@ -290,19 +290,18 @@ public class GameManager {
 				((NodeEnemy) model).pauseIntelligence();
 		}
 
-		this.menuSound.getAudioNode().setVolume(1.0f);
+//		this.menuSound.getAudioNode().setVolume(1.0f);
 		this.playMenuSound();
 
-		this.spatial.clear();
-		this.nodeRender.clear();
-		this.enemies.clear();
-		this.lights.clear();
-		this.notifyStateModels.clear();
-		this.players.clear();
-		this.enemiesLifeBar.clear();
-		this.terrain.detachAllChildren();
-		this.getApplication().getInputManager().setCursorVisible(true);
-	}
+	this.spatial.clear();
+	this.nodeRender.clear();
+	this.enemies.clear();
+	this.lights.clear();
+	this.notifyStateModels.clear();
+	this.players.clear();
+	this.enemiesLifeBar.clear();
+	this.terrain.detachAllChildren();
+    }
 
 	/** this method is called to resume game */
 	public void resumeGame() {

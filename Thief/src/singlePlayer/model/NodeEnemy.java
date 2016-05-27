@@ -25,16 +25,24 @@ public class NodeEnemy extends NodeCharacter {
 
     /** artificial intelligence */
     private final AI artificialIntelligence;
-
+    /** check if enemy is running */
     private boolean isRun;
+    /** check if enemy is standing */
     private boolean isStanding;
+    /** check if enemy has found thief */
     private boolean hasFound;
+    /** switch attack's animations */
     private boolean switchAttack;
+    /** check if there is some animation */
     private boolean waitAnimation;
+    /** minimum distnace for attack thief */
     private final float DISTANCE;
+    /** attack box */
     private Geometry box;
+    /** enemie's lifebar */
     private LifeBar lifeBar;
 
+    /** constructor */
     public NodeEnemy(Spatial model, Vector3f dimensionControll, Vector3f intersection) {
 	super(model, dimensionControll, intersection, 50, 10);
 	this.artificialIntelligence = new AI(this);
@@ -46,9 +54,9 @@ public class NodeEnemy extends NodeCharacter {
 	this.waitAnimation = false;
 	this.DISTANCE = 5;
 	this.isStanding = !isRun;
-
     }
 
+    /** this method create attack box */
     private void setBoundingBox() {
 	BoundingBox boundingBox = new BoundingBox();
 	boundingBox.setXExtent(1.5f);
@@ -76,12 +84,14 @@ public class NodeEnemy extends NodeCharacter {
 
     }
 
+    /** this method start ai */
     public void runIntelligence() {
 	if (!waitAnimation && this.alive) {
 	    this.artificialIntelligence.run();
 	}
     }
 
+    /** this method start attack */
     public void attack() {
 	if (!GameManager.getIstance().getNodeThief().isDead() && !GameManager.getIstance().isPaused()) {
 	    if (this.hasFound && !this.waitAnimation) {
@@ -107,6 +117,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
+    /** this method stop animation */
     public void stopAnimation() {
 	if (this.getWorldTranslation().y > -9f) {
 	    if (!isStanding) {
@@ -120,6 +131,7 @@ public class NodeEnemy extends NodeCharacter {
 
     }
 
+    /** this method run animation */
     public void runAnimation() {
 	if (!isRun && this.alive) {
 	    this.channel.setAnim(this.run);
@@ -133,6 +145,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
+    /** this method start first attack's animation */
     public void attack1Animation() {
 	if (this.alive) {
 	    this.channel.setAnim(this.attack1);
@@ -140,6 +153,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
+    /** this method start second attack's animation */
     public void attack2Animation() {
 	if (this.alive) {
 	    this.channel.setAnim(this.attack2);
@@ -147,22 +161,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
-    public boolean hasFound() {
-	return hasFound;
-    }
-
-    public void setHasFound(boolean hasFound) {
-	this.hasFound = hasFound;
-    }
-
-    public float getDISTANCE() {
-	return DISTANCE;
-    }
-
-    public boolean isSwitchAttack() {
-	return switchAttack;
-    }
-
+    /** this method reset everything */
     @Override
     public void resetAll() {
 	super.resetAll();
@@ -172,6 +171,7 @@ public class NodeEnemy extends NodeCharacter {
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(this);
     }
 
+    /** this method check if there is a collition */
     @Override
     public void checkCollition() {
 	CollisionResults collisionResult = new CollisionResults();
@@ -183,6 +183,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
+    /** this method is called when enemy is deaths */
     @Override
     public void death() {
 	if (this.alive) {
@@ -194,6 +195,7 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
+    /** jmonkey's method */
     @Override
     public void onAnimCycleDone(AnimControl arg0, AnimChannel arg1, String arg2) {
 	if (arg2.equals(attack1)) {
@@ -209,29 +211,48 @@ public class NodeEnemy extends NodeCharacter {
 	}
     }
 
+    /** this method check if enemy has found thief */
+    public boolean hasFound() {
+	return hasFound;
+    }
+
+    /** this method set if enemy has found thief */
+    public void setHasFound(boolean hasFound) {
+	this.hasFound = hasFound;
+    }
+
+    /** this method get distance */
+    public float getDISTANCE() {
+	return DISTANCE;
+    }
+
+    /** this method get box */
     public Geometry getBox() {
 	return box;
     }
 
+    /** this method set box */
     public void setBox(Geometry box) {
 	this.box = box;
     }
 
+    /** this method get lifebar */
     public LifeBar getLifeBar() {
 	return lifeBar;
     }
 
+    /** this method set lifebar */
     public void setLifeBar(LifeBar lifeBar) {
 	this.lifeBar = lifeBar;
     }
 
+    /** this method stop ai */
     public void pauseIntelligence() {
-
 	artificialIntelligence.pause();
     }
 
+    /** this method resume ai */
     public void resumeIntelligence() {
-
 	artificialIntelligence.resume();
     }
 }

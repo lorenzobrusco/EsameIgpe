@@ -171,7 +171,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		GameManager.getIstance().getNifty().exit();
 		GameManager.getIstance().setEditor(true);
 		GameManager.getIstance().setModelGame(pathEditor);
-		// this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+
 		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 		this.mouseInput.setCursorVisible(false);
 		this.initKeys();
@@ -472,29 +472,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		openServerScreen();
 	}
 
-	public boolean isSingleplayer() {
-		return singleplayer;
-	}
-
-	public void setSingleplayer(boolean singleplayer) {
-		this.singleplayer = singleplayer;
-	}
-
-	public boolean isMultiplayer() {
-		return multiplayer;
-	}
-
-	public void setMultiplayer(boolean multiplayer) {
-		this.multiplayer = multiplayer;
-	}
-
-	public boolean isEditor() {
-		return editor;
-	}
-
-	public void setEditor(boolean editor) {
-		this.editor = editor;
-	}
 
 	/** jmonkey's method */
 	@Override

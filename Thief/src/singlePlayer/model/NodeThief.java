@@ -92,7 +92,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	private boolean canTalk;
 
-	/** builder */
+	/** constructor */
 	public NodeThief(Spatial model, Vector3f startPositon, boolean multiplayer) {
 		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 50, 10);
 		this.viewDirection = new Vector3f(0, 0, 1);
@@ -590,6 +590,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 	public ChaseCamera getCamera() {
 		return this.camera;
 	}
+
+    /** this method set chaseCam */
+    public void setChaseCamera(final ChaseCamera chaseCamera) {
+	this.camera = chaseCamera;
+    }
 
 	/** this method get controll */
 	public BetterCharacterControl getControl() {

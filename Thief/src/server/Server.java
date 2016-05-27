@@ -29,7 +29,7 @@ public class Server extends Thread {
 
     /** builder */
     public Server(final String path, int port) throws UnknownHostException, IOException {
-    this.PORT = port;
+	this.PORT = port;
 	this.server = new ServerSocket(PORT);
 	this.TERRAIN = path;
 	this.players = new ConcurrentLinkedQueue<>();

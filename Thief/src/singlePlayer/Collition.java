@@ -7,7 +7,9 @@ package singlePlayer;
  */
 public interface Collition {
 
-    /**this method must be override from class that want to use this interface*/
+    /**
+     * this method must be override from class that want to use this interface
+     */
     public void checkCollition();
 
 }
