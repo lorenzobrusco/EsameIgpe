@@ -5,8 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.Callable;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
@@ -27,9 +25,7 @@ import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.EditorTerrain;
 import multiPlayer.MultiPlayer;
-import server.Server;
 import singlePlayer.SinglePlayer;
-import singlePlayer.Sound;
 
 public class StartGame extends SimpleApplication implements ActionListener, ScreenController {
 
@@ -59,8 +55,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	private NiftyJmeDisplay niftyDisplay;
 	/** panel 2d */
 	private Nifty nifty;
-	/** sound */
-	private Sound menuSound;
 	/** index */
 	private int indexCharacter;
 	/** index */
@@ -90,7 +84,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		this.assetManager.registerLocator("assets/", FileLocator.class);
 		GameManager.getIstance().setParams(this);
 		GameManager.getIstance().setBullet(bulletAppState);
-		this.setupSound();
+		GameManager.getIstance().setAudioRendere(this.audioRenderer);
 		this.flyCam.setMoveSpeed(100f);
 		this.flyCam.setEnabled(false);
 		this.mouseInput.setCursorVisible(true);
@@ -103,7 +97,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 		GameManager.getIstance().setNifty(nifty);
 		GameManager.getIstance().getApplication().getInputManager().clearMappings();
-		this.menuSound.playSound();
+		GameManager.getIstance().setupAudio();
+		GameManager.getIstance().playMenuSound();
 		this.initKeys();
 	}
 
@@ -143,7 +138,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 				.findNiftyControl("landscapeListBox", ListBox.class).getFocusItem().toString().split("\\.");
 		this.player = new SinglePlayer(inputManager, viewPort, rootNode, cam, level[0], true, true, true);
 		this.initKeys();
-		this.menuSound.stopSound();
 		this.singleplayer = true;
 		this.editor = false;
 		this.multiplayer = false;
@@ -152,6 +146,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	/** start multiplayer */
 	public void multiPlayer() {
+		this.inputManager.setCursorVisible(false);
+		StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
 		this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
 				.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
 		this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
@@ -164,7 +160,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 				Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
 						.findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
 		this.initKeys();
-		this.menuSound.stopSound();
 		this.multiplayer = true;
 		this.singleplayer = false;
 		this.editor = false;
@@ -173,23 +168,17 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	/** start editor */
 	public void editor() {
 
-		this.flyCam.setEnabled(true);
 		GameManager.getIstance().getNifty().exit();
 		GameManager.getIstance().setEditor(true);
 		GameManager.getIstance().setModelGame(pathEditor);
-		this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+
 		this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 		this.mouseInput.setCursorVisible(false);
 		this.initKeys();
-		this.menuSound.stopSound();
+		this.flyCam.setEnabled(true);
 		this.editor = true;
 		this.singleplayer = false;
 		this.multiplayer = false;
-	}
-
-	/** this method setup sound */
-	public void setupSound() {
-		this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
 	}
 
 	/** this method load next panel 2d */
@@ -312,7 +301,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	}
 
-	/** previus character */
+	/** previous character */
 	public void redoCharacter() {
 		if (this.indexCharacter == 0)
 			this.indexCharacter = characters.size() - 1;
@@ -340,7 +329,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	}
 
-	/** previus landscape */
+	/** Previous landscape */
 	public void redoLandscape() {
 		if (this.indexLandscape == 0)
 			this.indexLandscape = landscape.size() - 1;
@@ -392,6 +381,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	public void closeGame() {
 		if (this.multiplayer)
 			this.multiPlayer.exit();
+		GameManager.getIstance().stopMenuSound();
+		GameManager.getIstance().getAudioRender().cleanup();
+		this.audioRenderer.cleanup();		
 		System.exit(0);
 	}
 
@@ -480,29 +472,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		openServerScreen();
 	}
 
-	public boolean isSingleplayer() {
-		return singleplayer;
-	}
-
-	public void setSingleplayer(boolean singleplayer) {
-		this.singleplayer = singleplayer;
-	}
-
-	public boolean isMultiplayer() {
-		return multiplayer;
-	}
-
-	public void setMultiplayer(boolean multiplayer) {
-		this.multiplayer = multiplayer;
-	}
-
-	public boolean isEditor() {
-		return editor;
-	}
-
-	public void setEditor(boolean editor) {
-		this.editor = editor;
-	}
 
 	/** jmonkey's method */
 	@Override
@@ -540,7 +509,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		gameSettings.setRenderer("LWJGL-OpenGL2");
 		//
 		app.setSettings(gameSettings);
-		// app.setShowSettings(false);
+//		 app.setShowSettings(false);
 		app.setDisplayFps(false);
 		app.setDisplayStatView(false);
 

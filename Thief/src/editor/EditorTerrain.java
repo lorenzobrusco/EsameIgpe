@@ -107,7 +107,7 @@ public class EditorTerrain implements ScreenController {
 	/** jmonkey's object */
 	private final AppSettings settings;
 	/** sound */
-	private Sound editorSound;
+	private Sound ambientSound;
 	/** file to delete */
 	private File currentFile;
 	/** id popup */
@@ -134,16 +134,13 @@ public class EditorTerrain implements ScreenController {
 		this.initCrossHairs();
 		/** make marker */
 		this.createMarker();
-		/** set keys */
-		this.setKey();
 		/** add panel 2d */
 		this.loadNifty();
+		/** set keys */
+		this.setKey();
 		/** set sound */
 		this.setupSound();
-		/** stop menu sounds */
-		GameManager.getIstance().stopMenuSound();
-		/** start sound */
-		this.editorSound.playSound();
+
 	}
 
 	/**
@@ -206,6 +203,9 @@ public class EditorTerrain implements ScreenController {
 			Vector3f tl = this.terrain.getWorldTranslation();
 			this.marker.setLocalTranslation(tl.add(new Vector3f(intersection.x, h, intersection.z)));
 		}
+		if (this.mouse) {
+			GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		}
 	}
 
 	/** this objcet listening events */
@@ -234,7 +234,6 @@ public class EditorTerrain implements ScreenController {
 			} else if (name.equals("mouse")) {
 				EditorTerrain.this.mouse = !EditorTerrain.this.mouse;
 			}
-
 		}
 	};
 
@@ -366,7 +365,6 @@ public class EditorTerrain implements ScreenController {
 
 	/** this method set key */
 	private void setKey() {
-
 		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 				new KeyTrigger(KeyInput.KEY_LCONTROL));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("tree", new KeyTrigger(KeyInput.KEY_1));
@@ -598,61 +596,10 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	/** this method move bonfire */
-	private void makeBonFire(Vector3f intersect) {// TODO togliete commenti per
-		// creare un nuovo bonFire
-		// Node bonfire = new Node("Bonfire");
-		//
-		// Spatial wood =
-		// GameManager.getIstance().getApplication().getAssetManager()
-		// .loadModel("Models/Specials/Bonfire/Bonfire.mesh.j3o");
-		// wood.setLocalTranslation(0, 0.4f, 0);
-		//
-		// ParticleEmitter fire = new ParticleEmitter("Emitter",
-		// com.jme3.effect.ParticleMesh.Type.Triangle, 3000);
-		// fire.setLocalTranslation(bonfire.getLocalTranslation().x - 0.1f,
-		// bonfire.getLocalTranslation().y + 0.5f,
-		// bonfire.getLocalTranslation().x + 0.2f);
-		// Material mat_red = new
-		// Material(GameManager.getIstance().getApplication().getAssetManager(),
-		// "Common/MatDefs/Misc/Particle.j3md");
-		// mat_red.setTexture("Texture",
-		// GameManager.getIstance().getApplication().getAssetManager().loadTexture("Effects/Explosion/flame.png"));
-		// fire.setMaterial(mat_red);
-		// fire.setImagesX(2);
-		// fire.setImagesY(2);
-		// fire.setEndColor(new ColorRGBA(1f, 0f, 0f, 1f));
-		// fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f));
-		// fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2,
-		// 0));
-		// fire.setStartSize(1.0f);
-		// fire.setEndSize(0.1f);
-		// fire.setGravity(0, -1f, 0);
-		// fire.setLowLife(1f);
-		// fire.setHighLife(2f);
-		// fire.getParticleInfluencer().setVelocityVariation(0.3f);
-		//
-		// bonfire.attachChild(wood);
-		// bonfire.attachChild(fire);
-		//
-		// NodeModel nodeBonFire = new NodeModel(bonfire, new Vector3f(7.3f,
-		// 15f, 1000f));
-		//
-		// this.bonFireModel = nodeBonFire;
-		// this.bonFireModel.setName(bonfire.getName());
-		// this.bonFireModel.getModel().setLocalTranslation(intersect);
-		// this.terrain.attachChild(nodeBonFire.getModel());
-		// this.bonFireModel.moveModel(nodeBonFire.getModel().getLocalTranslation());
-		// this.spatials.add((Node) nodeBonFire.getModel());
-		// this.setName();
-		// this.nifty.getCurrentScreen().findNiftyControl("sliderRotate",
-		// Slider.class)
-		// .setValue(nifty.getCurrentScreen().findNiftyControl("sliderRotate",
-		// Slider.class).getMin());
-
+	private void makeBonFire(Vector3f intersect) {
 		this.bonFireModel.setName(this.bonFireModel.getName());
 		this.bonFireModel.getModel().setLocalTranslation(intersect);
 		this.bonFireModel.moveModel(this.bonFireModel.getModel().getLocalTranslation());
-		// this.spatials.add((Node) this.bonFireModel.getModel());
 		this.setName();
 		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 				.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -672,16 +619,10 @@ public class EditorTerrain implements ScreenController {
 	}
 
 	/** this method move thief */
-	private void makeThief(Vector3f intersect) {// TODO togliete commenti per
-		// creare un nuovo yasuo
-		// this.thiefModel = new
-		// NodeThief(GameManager.getIstance().getApplication().getAssetManager()
-		// .loadModel("Models/Characters/Yasuo/Yasuo.mesh.j3o"), intersect,
-		// false);
+	private void makeThief(Vector3f intersect) {
 		this.thiefModel.getModel().setLocalTranslation(intersect);
 		this.thiefModel.moveModel(intersect);
 		this.terrain.attachChild(thiefModel.getModel());
-		// this.spatials.add((Node) this.thiefModel.getModel());
 		this.setName();
 		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 				.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -743,7 +684,10 @@ public class EditorTerrain implements ScreenController {
 
 	/** this method set sound */
 	private void setupSound() {
-		this.editorSound = new Sound(this.terrain, "Editor", false, false, true, 1.0f, false);
+		this.ambientSound = new Sound(this.terrain, "Editor", false, false, true, 1.0f, false);
+		GameManager.getIstance().stopMenuSound();
+		this.playAmbientSound();
+
 	}
 
 	/** this method is called when cursor move up a button */
@@ -768,12 +712,12 @@ public class EditorTerrain implements ScreenController {
 	public void closeEditor() {
 
 		this.guiNode.detachAllChildren();
-		GameManager.getIstance().quitGame();
 		GameManager.getIstance().getApplication().getInputManager().clearMappings();
 		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-		this.editorSound.stopSound();
+		GameManager.getIstance().quitGame();
+		this.stopAmbientSound();
 	}
 
 	/** this method add panel 2d */
@@ -804,7 +748,32 @@ public class EditorTerrain implements ScreenController {
 	public void onEndScreen() {
 	}
 
-	public void stopEditorSound() {
-		this.editorSound.stopSound();
+	public void stopAmbientSound() {
+		if (!(this.ambientSound == null))
+			for (float i = this.ambientSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+				this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() - 0.1f);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					this.ambientSound.stopSound();
+					e.printStackTrace();
+				}
+			}
+		this.ambientSound.stopSound();
+	}
+
+	private void playAmbientSound() {
+		this.ambientSound.getAudioNode().setVolume(0.0f);
+		this.ambientSound.playSound();
+		for (float i = 0.0f; i < 1.0f; i += 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() + 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+				e.printStackTrace();
+			}
+		}
+
 	}
 }

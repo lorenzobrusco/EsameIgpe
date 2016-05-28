@@ -29,7 +29,7 @@ public class Server extends Thread {
 
     /** builder */
     public Server(final String path, int port) throws UnknownHostException, IOException {
-    this.PORT = port;
+	this.PORT = port;
 	this.server = new ServerSocket(PORT);
 	this.TERRAIN = path;
 	this.players = new ConcurrentLinkedQueue<>();
@@ -41,8 +41,8 @@ public class Server extends Thread {
     public void run() {
 	while (this.start) {
 	    try {
-		Socket client = server.accept();
-		ClientManager clientManager = new ClientManager(this, client);
+		final Socket client = server.accept();
+		final ClientManager clientManager = new ClientManager(this, client);
 		this.newPlayer();
 		clientManager.start();
 	    } catch (SocketTimeoutException timeoutException) {

@@ -1,7 +1,6 @@
 package control;
 
 import com.jme3.terrain.geomipmap.TerrainQuad;
-
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -66,16 +65,20 @@ public class GameRender {
 		    } else {
 			model.stopBonfireSound();
 		    }
-		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
+		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")
+			    && !GameManager.getIstance().isPaused()) {
 			GameManager.getIstance().getSinglePlayer().showMessageForPlayer("MessageForPlayerBonFire");
 
-		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
+		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")
+			    && !GameManager.getIstance().isPaused()) {
 			GameManager.getIstance().getSinglePlayer().hideMessageForPlayer("MessageForPlayerBonFire");
 		    }
 
-		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {
+		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal")
+			    && !GameManager.getIstance().isPaused()) {
 			GameManager.getIstance().getSinglePlayer().showMessageForPlayer("MessageForPlayerPortal");
-		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {
+		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal")
+			    && !GameManager.getIstance().isPaused()) {
 			GameManager.getIstance().getSinglePlayer().hideMessageForPlayer("MessageForPlayerPortal");
 		    }
 

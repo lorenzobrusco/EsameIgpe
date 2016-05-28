@@ -7,15 +7,15 @@ package multiPlayer.format;
  */
 public class FormatIP {
 
-    /**string to check*/
+    /** string to check */
     private final String ipAddress;
 
-    /**builder*/
+    /** builder */
     public FormatIP(String ipAddress) {
 	this.ipAddress = ipAddress;
     }
 
-    /**this method return true if string is a ip*/
+    /** this method return true if string is a ip */
     public boolean itIsCorrectFormat() {
 	final String[] address = this.ipAddress.split(".");
 	for (int i = 0; i < address.length; i++)
@@ -24,7 +24,7 @@ public class FormatIP {
 	return true;
     }
 
-    /**this method get ip*/
+    /** this method get ip */
     public String getIpAddress() {
 	return ipAddress;
     }

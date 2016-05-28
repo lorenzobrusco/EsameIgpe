@@ -32,7 +32,7 @@ import multiPlayer.notify.NotifyBoxAttack;
  */
 
 public class SinglePlayer implements ScreenController {
-
+	/** key event */
 	private final String ATTACK1 = "Attack1";
 	private final String ATTACK2 = "Attack2";
 	private final String RUN = "Run";
@@ -40,17 +40,21 @@ public class SinglePlayer implements ScreenController {
 	private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
 	private final String BONFIRE = "BonFire";
 	private final String PAUSE = "Pause";
+	/***/
+	/** jmonkey's object */
 	private final ViewPort viewPort;
 	private final Node rootNode;
 	private Node nodeScene;
 	private CollisionShape collisionShape;
 	private RigidBodyControl rigidBodyControl;
 	private final LoadTerrain loadTerrain;
+	/***/
 	private GameRender render;
-	private Sound ambient;
+	private Sound ambientSound;
 	private Element progressLifeBarThief;
 	private Element borderLifeBarThief;
 
+	/** constructor */
 	public SinglePlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String level,
 			boolean shadows, boolean fog, boolean water) {
 		this.viewPort = viewPort;
@@ -68,17 +72,16 @@ public class SinglePlayer implements ScreenController {
 						GameManager.getIstance().getNifty().fromXml("Interface/Xml/singlePlayer.xml", "lifeBarScreen",
 								SinglePlayer.this);
 						SinglePlayer.this.setKey();
-						SinglePlayer.this.setupAmbientSound();
-						GameManager.getIstance().stopMenuSound();
+						SinglePlayer.this.setupAmbientSoundSound();
 
 						return null;
 					}
 				});
 			};
 		}.start();
-
 	}
 
+	/** this method handles to load models */
 	public void loadLevel(String level, boolean shadows, boolean fog, boolean water) {
 		TerrainQuad terrainQuad = loadTerrain.loadTerrain(level + ".j3o", false);
 		this.nodeScene = new Node("Scene");
@@ -97,6 +100,7 @@ public class SinglePlayer implements ScreenController {
 		this.viewPort.addProcessor(loadTerrain.makeFilter(shadows, fog, water));
 	}
 
+	/** this method update root node */
 	public void simpleUpdate(Float tpf) {
 		if (this.nodeScene != null) {
 			this.render.rayRendering();
@@ -115,6 +119,7 @@ public class SinglePlayer implements ScreenController {
 		}
 	}
 
+	/** this method set key triggers */
 	private void setKey() {
 		GameManager.getIstance().getApplication().getInputManager().addMapping(RUN, new KeyTrigger(KeyInput.KEY_W));
 		GameManager.getIstance().getApplication().getInputManager().addMapping(ATTACK1,
@@ -141,46 +146,49 @@ public class SinglePlayer implements ScreenController {
 				GameManager.getIstance().getNodeThief().analogListener, RUN, ROTATECLOCKWISE, ROTATECOUNTERCLOCKWISE);
 	}
 
-	private void setupAmbientSound() {
-		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
-		this.ambient.playSound();
+	/** this meethod add ambient sounds */
+	private void setupAmbientSoundSound() {
+		this.ambientSound = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.0f,
+				false);
+		GameManager.getIstance().stopMenuSound();
+		this.playAmbientSoundSound();
 	}
 
+	/** this method is called when cursor move up a button */
 	public void startGrow(String nameButton) {
-
 		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
 				"Interface/Image/Button/" + nameButton + "OnHover.png", false);
 		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
+	/** this method is called when cursor outside a button */
 	public void endGrow(String nameButton) {
-
 		NiftyImage image = GameManager.getIstance().getNifty().getRenderEngine().createImage(null,
 				"Interface/Image/Button/" + nameButton + ".png", false);
 		Element niftyElement = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName(nameButton);
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
+	/** this method create a popup to exit */
 	public void openCloseSureExitButton() {
 		Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
 		element.setVisible(!element.isVisible());
-
 	}
 
+	/** this method is called when thief found portal */
 	public void win() {
 		GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("layerWinner").setVisible(true);
 	}
 
+	/** this method resume game */
 	public void resumeGame() {
 		GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
 		GameManager.getIstance().resumeGame();
-
 	}
 
+	/** this method close game */
 	public void quitGame() {
-		// this.openCloseSureExitButton();
-		GameManager.getIstance().quitGame();
 		GameManager.getIstance().setPaused(false);
 		GameManager.getIstance().getApplication().getInputManager().clearMappings();
 		GameManager.getIstance().getNifty().exit();
@@ -189,7 +197,37 @@ public class SinglePlayer implements ScreenController {
 		GameManager.getIstance().getNodeThief().stopBonfireSound();
 		GameManager.getIstance().getNodeThief().stopChapelSound();
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-		this.ambient.stopSound();
+		GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
+		GameManager.getIstance().quitGame();
+		this.stopAmbientSound();
+	}
+
+	/** stop playing ambient sound */
+	private void stopAmbientSound() {
+		for (float i = this.ambientSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() - 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	/** start playing ambient sound */
+	private void playAmbientSoundSound() {
+		this.ambientSound.playSound();
+		for (float i = 0.0f; i < 0.8f; i += 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() + 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -222,7 +260,5 @@ public class SinglePlayer implements ScreenController {
 	/** jmonkey's method */
 	@Override
 	public void onStartScreen() {
-
 	}
-
 }
