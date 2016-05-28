@@ -38,7 +38,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String KNOCK = "knock knock";
     private final static String WHOAREYOU = "who are you?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
-    private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String WHOISTHERE = "tell me, who is there ?";
@@ -112,33 +111,28 @@ public class Client extends Thread implements CommunicationProtocol {
 	    /** time to loading */
 	    while (!GameManager.getIstance().getMultiplayer().isCreated())
 		super.sleep(500);
-	    while (!this.establishedConnection) {
-		this.OUTPUT.writeBytes(KNOCK + "\n");
-		String line = this.INPUT.readLine();
-		if (line.equals(WHOAREYOU)) {
-		    final String out = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
-			    GameManager.getIstance().getNodeThief().getLocalTranslation(),
-			    GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,
-			    this.namePlayer, 0);
-		    this.OUTPUT.writeBytes(out + "\n");
-		    line = this.INPUT.readLine();
-		    if (line.equals(YOUAREWELCOME)) {
-
-			this.OUTPUT.writeBytes(WHOISTHERE + "\n");
-			int size = Integer.parseInt(this.INPUT.readLine());
-			for (int i = 0; i < size; i++) {
-			    if (this.INPUT.readLine().equals(NEWPLAYER)) {
-				String message = this.INPUT.readLine();
-				this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
-					new StringBuilder().builderModel(message),
-					new StringBuilder().builderName(message),
-					new StringBuilder().builderPosition(message));
-			    }
+	    this.OUTPUT.writeBytes(KNOCK + "\n");
+	    String line = this.INPUT.readLine();
+	    if (line.equals(WHOAREYOU)) {
+		final String out = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
+			GameManager.getIstance().getNodeThief().getLocalTranslation(),
+			GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,
+			this.namePlayer, 0);
+		this.OUTPUT.writeBytes(out + "\n");
+		line = this.INPUT.readLine();
+		if (line.equals(YOUAREWELCOME)) {
+		    this.OUTPUT.writeBytes(WHOISTHERE + "\n");
+		    int size = Integer.parseInt(this.INPUT.readLine());
+		    for (int i = 0; i < size; i++) {
+			if (this.INPUT.readLine().equals(NEWPLAYER)) {
+			    String message = this.INPUT.readLine();
+			    this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
+				    new StringBuilder().builderModel(message), new StringBuilder().builderName(message),
+				    new StringBuilder().builderPosition(message));
 			}
-			this.establishedConnection = true;
 		    }
-		} else if (line.equals(TRYAGAIN))
-		    this.startConnection();
+		    this.establishedConnection = true;
+		}
 	    }
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nello start");
@@ -348,6 +342,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = this.INPUT.readLine();
+		System.out.println("client: " + message);
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
 		else if (message.equals(SENDSTATE))

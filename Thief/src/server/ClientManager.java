@@ -49,7 +49,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String WHOAREYOU = "who are you?";
     private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
-    private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
@@ -73,34 +72,28 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void startConnection() {
 	try {
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
-	    while (!this.establishedConnection) {
-		if (this.INPUT.readLine().equals(KNOCK))
-		    this.OUTPUT.writeBytes(WHOAREYOU + "\n");
-		String line = this.INPUT.readLine();
-		if (!new StringBuilder().checkString(line)) {
-		    this.OUTPUT.writeBytes(TRYAGAIN + "\n");
-		} else {
-		    this.address = new StringBuilder().builderAddress(line);
-		    this.player = new StringBuilder().builderKeyPlayer(line);
-		    this.nameModel = new StringBuilder().builderModel(line);
-		    this.startPosition = new StringBuilder().builderPosition(line);
-		    this.nameClient = new StringBuilder().builderName(line);
-		    this.currentPosition = this.startPosition;
-		    if (new FormatIP(this.address).itIsCorrectFormat()) {
-			this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
-			if (this.INPUT.readLine().equals(WHOISTHERE)) {
-			    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
-			    for (ClientManager manager : this.server.getPlayers()) {
-				this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
-					manager.startPosition);
-				manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
-					this.startPosition);
-			    }
-			}
-			this.server.addPlayer(this);
-			this.establishedConnection = true;
+	    if (this.INPUT.readLine().equals(KNOCK))
+		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
+	    String line = this.INPUT.readLine();
+	    this.address = new StringBuilder().builderAddress(line);
+	    this.player = new StringBuilder().builderKeyPlayer(line);
+	    this.nameModel = new StringBuilder().builderModel(line);
+	    this.startPosition = new StringBuilder().builderPosition(line);
+	    this.nameClient = new StringBuilder().builderName(line);
+	    this.currentPosition = this.startPosition;
+	    if (new FormatIP(this.address).itIsCorrectFormat()) {
+		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
+		if (this.INPUT.readLine().equals(WHOISTHERE)) {
+		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
+		    for (ClientManager manager : this.server.getPlayers()) {
+			this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
+				manager.startPosition);
+			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
+				this.startPosition);
 		    }
 		}
+		this.server.addPlayer(this);
+		this.establishedConnection = true;
 	    }
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -271,6 +264,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = this.INPUT.readLine();
+		System.out.println("server: " + message);
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
 		if (message.equals(CLOSE))
