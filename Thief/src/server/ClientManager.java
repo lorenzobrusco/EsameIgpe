@@ -38,9 +38,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private Vector3f currentPosition;
     /** Writer for client */
     private final BufferedReader INPUT;
-    /** Rwader for client */
+    /** Reader for client */
     private final DataOutputStream OUTPUT;
-    /** connection stabilished with client */
+    /** connection  established with client */
     private boolean establishedConnection;
     /** notify new player */
     private boolean newPlayer;
