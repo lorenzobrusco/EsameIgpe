@@ -383,7 +383,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 			this.multiPlayer.exit();
 		GameManager.getIstance().stopMenuSound();
 		GameManager.getIstance().getAudioRender().cleanup();
-		this.audioRenderer.cleanup();		
+		this.audioRenderer.cleanup();
 		System.exit(0);
 	}
 

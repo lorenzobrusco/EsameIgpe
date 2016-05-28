@@ -142,6 +142,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		} else if (line.equals(TRYAGAIN))
 		    this.startConnection();
 	    }
+	    System.out.println(IAM);
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nello start");
 	} catch (InterruptedException e) {
