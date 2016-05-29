@@ -128,6 +128,7 @@ public class EditorTerrain implements ScreenController {
 		/** load the landscape */
 		this.makeScene(path + ".j3o");
 		/** set cam */
+		this.cam.setFrustumFar(2048.0f);
 		this.cam.setLocation(new Vector3f(0, 128, 0));
 		this.cam.lookAtDirection(new Vector3f(0, -1f, 0).normalizeLocal(), Vector3f.UNIT_X);
 		/** painting cross */
@@ -140,11 +141,10 @@ public class EditorTerrain implements ScreenController {
 		this.setKey();
 		/** set sound */
 		this.setupSound();
-
 	}
 
 	/**
-	 * this method's called for each update and in according at the choosed
+	 * this method's called for each update and in according at the chosen
 	 * variables modify landscape
 	 */
 	public void simpleUpdate(float tpf) {
@@ -206,9 +206,10 @@ public class EditorTerrain implements ScreenController {
 		if (this.mouse) {
 			GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		}
+
 	}
 
-	/** this objcet listening events */
+	/** this object listening events */
 	public ActionListener actionListener = new ActionListener() {
 		public void onAction(String name, boolean pressed, float tpf) {
 			if (name.equals("Raise")) {
@@ -223,7 +224,7 @@ public class EditorTerrain implements ScreenController {
 				EditorTerrain.this.enemy = pressed;
 			} else if (name.equals("portal")) {
 				EditorTerrain.this.portal = pressed;
-			} else if (name.equals("builder")) {
+			} else if (name.equals("building")) {
 				EditorTerrain.this.buildings = pressed;
 			} else if (name.equals("chapel")) {
 				EditorTerrain.this.chapel = pressed;
@@ -239,13 +240,11 @@ public class EditorTerrain implements ScreenController {
 
 	/*** this method create a popup */
 	public void openPopUpSave() {
-
 		final Element popup = GameManager.getIstance().getNifty().createPopup("popupSave");
 		this.idPopUp = popup.getId();
 		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 				popup.getId(), null);
 		this.mouse = false;
-
 	}
 
 	/** this method delete map */
@@ -365,6 +364,7 @@ public class EditorTerrain implements ScreenController {
 
 	/** this method set key */
 	private void setKey() {
+
 		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
 				new KeyTrigger(KeyInput.KEY_LCONTROL));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("tree", new KeyTrigger(KeyInput.KEY_1));
@@ -374,7 +374,7 @@ public class EditorTerrain implements ScreenController {
 		GameManager.getIstance().getApplication().getInputManager().addMapping("enemy", new KeyTrigger(KeyInput.KEY_4));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("portal",
 				new KeyTrigger(KeyInput.KEY_5));
-		GameManager.getIstance().getApplication().getInputManager().addMapping("builder",
+		GameManager.getIstance().getApplication().getInputManager().addMapping("building",
 				new KeyTrigger(KeyInput.KEY_6));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("chapel",
 				new KeyTrigger(KeyInput.KEY_7));
@@ -385,11 +385,11 @@ public class EditorTerrain implements ScreenController {
 		GameManager.getIstance().getApplication().getInputManager().addMapping("Lower",
 				new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		GameManager.getIstance().getApplication().getInputManager().addListener(this.actionListener, "exit", "Lower",
-				"Raise", "enemy", "portal", "builder", "chapel", "windMill", "bonFire", "castle", "thief", "tree",
+				"Raise", "enemy", "portal", "building", "chapel", "windMill", "bonFire", "castle", "thief", "tree",
 				"mouse", "save");
 	}
 
-	/** this method pull down or pull up landspace */
+	/** this method pull down or pull up landscape */
 	private void adjustHeight(Vector3f loc, float radius, float height) {
 		int radiusStepsX = (int) (radius / this.terrain.getLocalScale().x);
 		int radiusStepsZ = (int) (radius / this.terrain.getLocalScale().z);
@@ -536,30 +536,30 @@ public class EditorTerrain implements ScreenController {
 
 	/** this method add a random building */
 	private void makeBuildings(Vector3f intersect) {
-		NodeModel builder = null;
+		NodeModel building = null;
 		int rand = (int) (Math.random() * 4);
 		switch (rand) {
 		case 0:
-			builder = new NodeModel("Buildings/House/House.mesh.j3o", new Vector3f(3.0f, 6f, 100f));
+			building = new NodeModel("Buildings/House/House.mesh.j3o", new Vector3f(3.0f, 6f, 100f));
 			break;
 		case 1:
-			builder = new NodeModel("Buildings/HouseTwo/HouseTwo.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+			building = new NodeModel("Buildings/HouseTwo/HouseTwo.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
 			break;
 		case 2:
-			builder = new NodeModel("Buildings/HouseMedium/HouseMedium.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f));
-			builder.setName("HouseMedium");
+			building = new NodeModel("Buildings/HouseMedium/HouseMedium.mesh.j3o", new Vector3f(3.0f, 4.5f, 10f));
+			building.setName("HouseMedium");
 			break;
 		case 3:
-			builder = new NodeModel("Buildings/WindMill/WindMill.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
-			builder.setName("WindMill");
+			building = new NodeModel("Buildings/WindMill/WindMill.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+			building.setName("WindMill");
 			break;
 		default:
 			break;
 		}
-		builder.getModel().setLocalTranslation(intersect);
-		this.terrain.attachChild(builder.getModel());
-		builder.moveModel(builder.getModel().getLocalTranslation());
-		this.spatials.add((Node) builder.getModel());
+		building.getModel().setLocalTranslation(intersect);
+		this.terrain.attachChild(building.getModel());
+		building.moveModel(building.getModel().getLocalTranslation());
+		this.spatials.add((Node) building.getModel());
 		this.setName();
 		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 				.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -569,11 +569,11 @@ public class EditorTerrain implements ScreenController {
 	/** this method add a chapel */
 	private void makeChapel(Vector3f intersect) {
 
-		NodeModel builder = new NodeModel("Buildings/Chapel/Chapel.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
-		builder.getModel().setLocalTranslation(intersect);
-		this.terrain.attachChild(builder.getModel());
-		builder.moveModel(builder.getModel().getLocalTranslation());
-		this.spatials.add((Node) builder.getModel());
+		NodeModel building = new NodeModel("Buildings/Chapel/Chapel.mesh.j3o", new Vector3f(3.0f, 7f, 100f));
+		building.getModel().setLocalTranslation(intersect);
+		this.terrain.attachChild(building.getModel());
+		building.moveModel(building.getModel().getLocalTranslation());
+		this.spatials.add((Node) building.getModel());
 		this.setName();
 		GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("sliderRotate", Slider.class)
 				.setValue(GameManager.getIstance().getNifty().getCurrentScreen()
@@ -712,10 +712,22 @@ public class EditorTerrain implements ScreenController {
 	public void closeEditor() {
 
 		this.guiNode.detachAllChildren();
-		GameManager.getIstance().getApplication().getInputManager().clearMappings();
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("mouse");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("tree");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("bonFire");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("thief");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("enemy");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("portal");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("building");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("chapel");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("castle");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("Raise");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("Lower");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("save");
+		GameManager.getIstance().getApplication().getInputManager().reset();
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
-		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		GameManager.getIstance().quitGame();
 		this.stopAmbientSound();
 	}

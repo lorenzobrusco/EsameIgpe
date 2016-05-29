@@ -130,13 +130,9 @@ public class SinglePlayer implements ScreenController {
 				new KeyTrigger(KeyInput.KEY_A));
 		GameManager.getIstance().getApplication().getInputManager().addMapping(ROTATECOUNTERCLOCKWISE,
 				new KeyTrigger(KeyInput.KEY_D));
-		GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-				new KeyTrigger(KeyInput.KEY_TAB));
 		GameManager.getIstance().getApplication().getInputManager().addMapping("win",
 				new KeyTrigger(KeyInput.KEY_SPACE));
 		GameManager.getIstance().getApplication().getInputManager().addMapping(BONFIRE, new KeyTrigger(KeyInput.KEY_F));
-		GameManager.getIstance().getApplication().getInputManager().addMapping("mouse",
-				new KeyTrigger(KeyInput.KEY_LCONTROL));
 		GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE,
 				new KeyTrigger(KeyInput.KEY_ESCAPE));
 		GameManager.getIstance().getApplication().getInputManager().addListener(
@@ -190,13 +186,23 @@ public class SinglePlayer implements ScreenController {
 	/** this method close game */
 	public void quitGame() {
 		GameManager.getIstance().setPaused(false);
-		GameManager.getIstance().getApplication().getInputManager().clearMappings();
+
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.RUN);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK1);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK2);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ROTATECLOCKWISE);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ROTATECOUNTERCLOCKWISE);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("win");
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.BONFIRE);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.PAUSE);
+		GameManager.getIstance().getApplication().getInputManager().deleteMapping("toggleRotate");
+		GameManager.getIstance().getApplication().getInputManager().reset();
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		GameManager.getIstance().getNifty().exit();
 		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 		GameManager.getIstance().getNodeThief().stopBonfireSound();
 		GameManager.getIstance().getNodeThief().stopChapelSound();
-		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 		GameManager.getIstance().quitGame();
 		this.stopAmbientSound();
