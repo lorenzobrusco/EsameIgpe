@@ -56,6 +56,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String run = "Run";
     private final static String rotateClockwise = "rotateClockwise";
     private final static String rotateCounterClockwise = "rotateCounterClockwise";
+    private final static String PAUSE = "Pause";
     /** Max file Size */
     public final static int FILE_SIZE = 7134962;
     /** Life Number Player */
@@ -80,7 +81,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final BufferedReader INPUT;
     /** Writer for Server */
     private final DataOutputStream OUTPUT;
-    /** connection stabilished with server */
+    /** connection established with server */
     private boolean establishedConnection;
 
     /** new state */
@@ -327,9 +328,11 @@ public class Client extends Thread implements CommunicationProtocol {
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox,
 		new KeyTrigger(KeyInput.KEY_RETURN));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(PAUSE,
+		new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,
-		"sendMessage");
+		PAUSE, "sendMessage");
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
     }
