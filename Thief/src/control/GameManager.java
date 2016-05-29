@@ -217,8 +217,8 @@ public class GameManager {
     /** this method check if point x,z is free */
     public boolean isWalkable(float x, float z) {
 	if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]
-		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2
-			&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10) {
+		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2f
+			&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10f) {
 	    return false;
 	}
 	return true;
@@ -261,17 +261,18 @@ public class GameManager {
 
     /** this method set pause */
     public void pauseGame() {
-	this.paused = true;
 	this.application.getInputManager().setCursorVisible(true);
 	this.thief.getCamera().setEnabled(false);
-	if (this.getNodeThief().isSinglePlayer())
+	if (this.getNodeThief().isSinglePlayer()) {
+	    this.paused = true;
 	    this.thief.stop();
-	for (NodeModel model : this.getModels()) {
-	    for (Sound sound : model.getAllSound()) {
-		sound.stopSound();
+	    for (NodeModel model : this.getModels()) {
+		for (Sound sound : model.getAllSound()) {
+		    sound.stopSound();
+		}
+		if (model instanceof NodeEnemy)
+		    ((NodeEnemy) model).pauseIntelligence();
 	    }
-	    if (model instanceof NodeEnemy)
-		((NodeEnemy) model).pauseIntelligence();
 	}
     }
 
@@ -297,13 +298,14 @@ public class GameManager {
 
     /** this method is called to resume game */
     public void resumeGame() {
-	this.paused = false;
 	this.thief.getCamera().setEnabled(true);
 	this.thief.getCamera().setDragToRotate(false);
 	this.application.getInputManager().setCursorVisible(false);
-
-	for (NodeCharacter enemy : enemies)
-	    ((NodeEnemy) enemy).resumeIntelligence();
+	if (this.thief.isSinglePlayer()) {
+	    this.paused = false;
+	    for (NodeCharacter enemy : enemies)
+		((NodeEnemy) enemy).resumeIntelligence();
+	}
     }
 
     /** this method start server */

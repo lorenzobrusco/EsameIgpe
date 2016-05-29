@@ -398,7 +398,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 			    .setFocus();
 		    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		    NodeThief.this.getCamera().setEnabled(false);
-
 		    chatboxIsEnable = !chatboxIsEnable;
 		} else {
 		    Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")

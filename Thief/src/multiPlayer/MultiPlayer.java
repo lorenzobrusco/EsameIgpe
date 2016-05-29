@@ -22,10 +22,7 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
-import multiPlayer.notify.NotifyBoxAttack;
-import multiPlayer.notify.NotifyStateModel;
 import singlePlayer.Sound;
-import singlePlayer.model.NodeCharacter;
 
 /**
  * 
@@ -67,7 +64,8 @@ public class MultiPlayer implements ScreenController {
     private boolean start;
     /** check if game is created */
     private boolean created;
-
+   
+    /**constructor*/
     public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
 	    String namePlayer, String nameModel, int port) {
 	this.start = false;
@@ -102,34 +100,6 @@ public class MultiPlayer implements ScreenController {
 	    this.render.rayRendering();
 	    if (!GameManager.getIstance().getNodeThief().isRun())
 		GameManager.getIstance().getNodeThief().stop();
-	    if (!GameManager.getIstance().getNotyStateModelsIsEmpty()) {
-		NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
-		if (stateModel.isAttach()) {
-		    GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
-		} else {
-		    GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
-		}
-	    }
-	    if (!GameManager.getIstance().stateIsEmpty()) {
-		@SuppressWarnings("unchecked")
-		Pair<NodeCharacter, ModelState> pair = (Pair<NodeCharacter, ModelState>) GameManager.getIstance()
-			.getStates();
-		for (String key : GameManager.getIstance().getPlayers().keySet()) {
-		    if (GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())) {
-			final ModelState state = pair.getArg1();
-			((NodeEnemyPlayers) pair.getArg0()).changeState(state.getLife(), state.getScore(),
-				state.isAttack(), state.getView(), state.getLocation(), state.getLocation());
-		    }
-		}
-	    }
-
-	    if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
-		NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-		if (box.isAttach())
-		    GameManager.getIstance().getTerrain().attachChild(box.getModel());
-		else
-		    GameManager.getIstance().getTerrain().detachChild(box.getModel());
-	    }
 	}
     }
 
@@ -188,7 +158,6 @@ public class MultiPlayer implements ScreenController {
 		Thread.sleep(100);
 	    } catch (InterruptedException e) {
 		this.ambientSound.stopSound();
-		e.printStackTrace();
 	    }
 	}
     }
@@ -200,7 +169,6 @@ public class MultiPlayer implements ScreenController {
 		Thread.sleep(100);
 	    } catch (InterruptedException e) {
 		this.ambientSound.stopSound();
-		e.printStackTrace();
 	    }
 	}
 
@@ -268,6 +236,27 @@ public class MultiPlayer implements ScreenController {
     public void openCloseSureExitButton() {
 	Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
 	element.setVisible(!element.isVisible());
+    }
+
+    /** this method resume game */
+    public void resumeGame() {
+	GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
+	GameManager.getIstance().resumeGame();
+    }
+
+    /** this method close game */
+    public void quitGame() {
+	this.exit();
+	GameManager.getIstance().setPaused(false);
+	GameManager.getIstance().getApplication().getInputManager().reset();
+	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	GameManager.getIstance().getNifty().exit();
+	GameManager.getIstance().getApplication().getViewPort().clearProcessors();
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
+	GameManager.getIstance().getNodeThief().stopBonfireSound();
+	GameManager.getIstance().getNodeThief().stopChapelSound();
+	GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
+	GameManager.getIstance().quitGame();
     }
 
     /** this method get start */
