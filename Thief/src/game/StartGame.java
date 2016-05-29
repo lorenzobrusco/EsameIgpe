@@ -368,9 +368,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
 	/** this method set keys */
 	private void initKeys() {
-		GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-				new KeyTrigger(KeyInput.KEY_TAB));
-		this.inputManager.addListener(actionListener, "debug", "mouse");
+//		GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
+//				new KeyTrigger(KeyInput.KEY_TAB));
+		this.inputManager.addListener(actionListener, /*"debug",*/ "mouse");
 
 	}
 
