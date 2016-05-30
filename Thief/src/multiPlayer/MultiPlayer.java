@@ -138,7 +138,10 @@ public class MultiPlayer implements ScreenController {
 	/** this method disconnect player */
 	public void exit() {
 		this.client.endConnection();
+<<<<<<< HEAD
 		this.stopAmbientSound();
+=======
+>>>>>>> origin/Davide
 	}
 
 	/** this method set sound */
@@ -179,10 +182,15 @@ public class MultiPlayer implements ScreenController {
 
 		final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
 				.findNiftyControl("#chat-text-input", TextField.class);
+<<<<<<< HEAD
 		if (!text.getDisplayedText().equals("")) {
 			GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
 			text.setText("");
 		}
+=======
+		GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
+		text.setText("");
+>>>>>>> origin/Davide
 
 	}
 
@@ -250,6 +258,10 @@ public class MultiPlayer implements ScreenController {
 	public void quitGame() {
 		this.exit();
 		GameManager.getIstance().setPaused(false);
+<<<<<<< HEAD
+=======
+		this.client.removeKeyMappings();
+>>>>>>> origin/Davide
 		GameManager.getIstance().getApplication().getInputManager().reset();
 		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 		GameManager.getIstance().getNifty().exit();
@@ -259,6 +271,10 @@ public class MultiPlayer implements ScreenController {
 		GameManager.getIstance().getNodeThief().stopChapelSound();
 		GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 		GameManager.getIstance().quitGame();
+<<<<<<< HEAD
+=======
+		this.stopAmbientSound();
+>>>>>>> origin/Davide
 	}
 
 	/** this method get start */

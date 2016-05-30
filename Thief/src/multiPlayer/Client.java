@@ -375,15 +375,13 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
-	    this.quitGame();
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel run");
 	}
     }
 
-    // TODO aggiungere questo metodo all'uscita dal multiplayer
-    public void quitGame() {
-	GameManager.getIstance().setPaused(false);
+    /** remove added key mapping for multiplayer */
+    public void removeKeyMappings() {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.RUN);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK1);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK2);
