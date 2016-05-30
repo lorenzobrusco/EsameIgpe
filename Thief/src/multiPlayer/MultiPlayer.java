@@ -247,6 +247,7 @@ public class MultiPlayer implements ScreenController {
     /** this method reset every things */
     public void reset() {
 	GameManager.getIstance().setPaused(false);
+	GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().reset();
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
