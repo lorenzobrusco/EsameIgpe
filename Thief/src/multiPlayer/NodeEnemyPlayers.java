@@ -144,6 +144,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
     }
 
+    /**this method reset every things*/
     @Override
     public void resetAll() {
         super.resetAll();
