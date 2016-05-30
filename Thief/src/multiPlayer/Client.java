@@ -274,6 +274,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
 		GameManager.getIstance().getTerrain().attachChild(players);
+		System.out.println(players.getName());
 		return null;
 	    }
 	});
@@ -285,13 +286,12 @@ public class Client extends Thread implements CommunicationProtocol {
 	final NodeCharacter player = GameManager.getIstance().getPlayers().get(key);
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
-		GameManager.getIstance().getTerrain().detachChild(player);
-		GameManager.getIstance().removePlayers(key);
-		GameManager.getIstance().removeModel(key);
+		((Node)GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
 		return null;
 	    }
 	});
-
+	GameManager.getIstance().removePlayers(key);
+	GameManager.getIstance().removeModel(key);
     }
 
     /** This method Sends a Message for Player's ChatBox */
@@ -335,7 +335,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.CHATBOX,
 		new KeyTrigger(KeyInput.KEY_TAB));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.SENDMESSAGECHAT,
-			new KeyTrigger(KeyInput.KEY_RETURN));
+		new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.PAUSE,
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
@@ -390,8 +390,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.SENDMESSAGECHAT);
 
     }
-
-   
 
     /** this method is called when server and client aren't synchronized */
     private void exception() {
