@@ -244,7 +244,7 @@ public class EditorTerrain implements ScreenController {
 		this.idPopUp = popup.getId();
 		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 				popup.getId(), null);
-		this.mouse = false;
+		this.mouse = !this.mouse;
 	}
 
 	/** this method delete map */
@@ -446,7 +446,6 @@ public class EditorTerrain implements ScreenController {
 		return null;
 	}
 
-	// TODO move
 	/** this method set nifty */
 	private void loadNifty() {
 		GameManager.getIstance().getNifty().fromXml("Interface/Xml/editor.xml", "start", this);

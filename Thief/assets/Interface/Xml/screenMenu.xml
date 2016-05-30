@@ -7,6 +7,21 @@
 	<useControls filename="nifty-default-controls.xml" />
 	<useStyles filename="Interface/Styles/listboxStyleChat.xml" />
 
+	<popup id="blindServerPort" childLayout="center" backgroundColor="#000a">
+		<panel height="30%" width="60%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label"
+					text="please insert or change port number before start server"
+					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+			</panel>
+			<control name="button" label="Yes" id="Button" align="center"
+				valign="center" visibleToMouse="true" width="30%">
+				<interact onClick="closePopUp()"></interact>
+			</control>
+		</panel>
+	</popup>
+
 	<controlDefinition name="IPTextField"
 		defaultFocusElement="textField">
 		<panel childLayout="absolute">
@@ -35,7 +50,7 @@
 		defaultFocusElement="textField">
 		<panel childLayout="absolute">
 			<control id="textfieldPortServer" style="my-textfield" name="textfield"
-				width="93%" height="80%" x="9%" y="17%" maxLength="15" text="Port-Address">
+				width="93%" height="80%" x="9%" y="17%" maxLength="15" text="Port">
 				<interact onClick="resetParamsTextfield(myTextFieldPortServer)" />
 			</control>
 			<image filename="Interface/Image/Graphics/frame.png" x="5%" y="5%"
@@ -48,7 +63,7 @@
 		<panel childLayout="absolute">
 			<control id="textfieldPortMultiPlayer" style="my-textfield"
 				name="textfield" width="93%" height="80%" x="9%" y="17%" maxLength="15"
-				text="Port-Address">
+				text="Port">
 				<interact onClick="resetParamsTextfield(myTextFieldPortMultiPlayer)" />
 			</control>
 			<image filename="Interface/Image/Graphics/frame.png" x="5%" y="5%"

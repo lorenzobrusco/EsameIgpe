@@ -308,19 +308,14 @@ public class GameManager {
 	}
     }
 
-    /** this method start server */
-    public void startServer(String path, int port) {
-	try {
+    /** this method start server 
+     * @throws IOException 
+     * @throws UnknownHostException */
+    public void startServer(String path, int port) throws UnknownHostException, IOException {
 
-	    this.server = new Server(path, port);
-	    this.server.start();
-	} catch (UnknownHostException e) {
+	this.server = new Server(path, port);
+	this.server.start();
 
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    // TODO catch
-	    e.printStackTrace();
-	}
     }
 
     /** this method sort score lists */
