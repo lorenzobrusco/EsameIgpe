@@ -84,6 +84,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    if (new FormatIP(this.address).itIsCorrectFormat()) {
 		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
 		if (this.INPUT.readLine().equals(WHOISTHERE)) {
+		    this.establishedConnection = true;
 		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
 		    for (ClientManager manager : this.server.getPlayers()) {
 			this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
@@ -93,7 +94,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    }
 		}
 		this.server.addPlayer(this);
-		this.establishedConnection = true;
 	    }
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -107,7 +107,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
 	    String client = this.INPUT.readLine();
-	    System.out.println("player to exit: " + client);
 	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
 	} catch (IOException e) {
@@ -124,12 +123,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	    String line = this.INPUT.readLine();
-
+	    
 	    if (!new StringBuilder().checkString(line))
 		return;
 
 	    final String key = new StringBuilder().builderKeyPlayer(line);
-
+	    
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
 
 	    final Vector3f viewdirection = new StringBuilder().builderView(line);
@@ -201,6 +200,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), location, 0, false, name,
 		    model, nameClient, 0);
+	    System.out.println(line);
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.newPlayer = false;
 	} catch (IOException e) {

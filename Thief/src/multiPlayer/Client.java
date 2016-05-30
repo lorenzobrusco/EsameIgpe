@@ -56,8 +56,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final String ROTATECLOCKWISE = "rotateClockwise";
     private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
     private final String PAUSE = "Pause";
-    /** Max file Size */
-    public final static int FILE_SIZE = 7134962;
     /** Life Number Player */
     private final static int LIFENUMBER = 50;
     /** damage inflicted on the enemy */
@@ -120,6 +118,7 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.OUTPUT.writeBytes(out + "\n");
 		line = this.INPUT.readLine();
 		if (line.equals(YOUAREWELCOME)) {
+		    this.establishedConnection = true;
 		    this.OUTPUT.writeBytes(WHOISTHERE + "\n");
 		    int size = Integer.parseInt(this.INPUT.readLine());
 		    for (int i = 0; i < size; i++) {
@@ -130,7 +129,6 @@ public class Client extends Thread implements CommunicationProtocol {
 				    new StringBuilder().builderPosition(message));
 			}
 		    }
-		    this.establishedConnection = true;
 		}
 	    }
 	} catch (IOException e) {// TODO catch
@@ -164,8 +162,9 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     /** This Method communicates an Player Updates */
-    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
+    public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
+	    
 	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
@@ -190,12 +189,10 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method Updates state of a Player */
     public void statePlayer() {
 	try {
-
 	    String line = this.INPUT.readLine();
 	    if (!new StringBuilder().checkString(line))
 		return;
 	    String key = new StringBuilder().builderKeyPlayer(line);
-
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setState(line);
 	    }
@@ -261,6 +258,7 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method add a Player and his Model in the Game's Terrain */
     public void addNewPlayers(String name, String model, String player, Vector3f location) {
 
+	System.out.println(this.nameModel + "add "+ model);
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	spatial.setLocalTranslation(location);
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
@@ -313,7 +311,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** This method Riceived a Message from Player's ChatBox and Print */
     public void riceivedMessage() {
-
 	try {
 	    final String namePlayer = INPUT.readLine();
 	    final String messageChatBox = INPUT.readLine();
@@ -360,7 +357,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = this.INPUT.readLine();
-		System.out.println(message);
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
 		else if (message.equals(SENDSTATE))

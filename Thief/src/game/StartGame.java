@@ -1,6 +1,7 @@
 package game;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private String ipAddress;
     /** player's name */
     private String namePlayer;
+    /** id popup */
+    private String idPopUp;
 
     /** builder */
     public StartGame() {
@@ -395,6 +398,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.indexLandscape = 0;
 	this.ipAddress = "";
 	this.namePlayer = "";
+	this.idPopUp = "";
     }
 
     /** this method disable flycam and set visible cursor */
@@ -454,10 +458,36 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this methods start server */
     public void startServer() {
+	try {
 
-	GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape), Integer.parseInt(nifty
-		.getCurrentScreen().findNiftyControl("myTextFieldPortServer", TextField.class).getDisplayedText()));
-	openServerScreen();
+	    GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape),
+		    Integer.parseInt(this.nifty.getCurrentScreen()
+			    .findNiftyControl("myTextFieldPortServer", TextField.class).getDisplayedText()));
+	    openServerScreen();
+
+	} catch (UnknownHostException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (IOException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (NumberFormatException e){
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	}
+	
+
+    }
+
+    /** this method close popup */
+    public void closePopUp() {
+	GameManager.getIstance().getNifty().closePopup(this.idPopUp);
     }
 
     /** this method close server */
