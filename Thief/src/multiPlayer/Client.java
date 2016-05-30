@@ -271,7 +271,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
 		GameManager.getIstance().getTerrain().attachChild(players);
-		System.out.println(players.getName());
 		return null;
 	    }
 	});
