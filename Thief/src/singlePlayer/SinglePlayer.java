@@ -86,6 +86,7 @@ public class SinglePlayer implements ScreenController {
 	this.nodeScene = new Node("Scene");
 	this.nodeScene.attachChild(terrainQuad);
 	this.nodeScene.addLight(loadTerrain.makeDirectionLight());
+	this.nodeScene.addLight(loadTerrain.makeAmbientLight());
 	this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
 	this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
 	this.nodeScene.addControl(rigidBodyControl);
