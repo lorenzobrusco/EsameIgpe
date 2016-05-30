@@ -613,16 +613,16 @@ public class NodeThief extends NodeCharacter implements Collition {
     public void setSinglePlayer(boolean isSinglePlayer) {
 	this.isSinglePlayer = isSinglePlayer;
     }
+    
+    /**this method get multiplayer*/
+    public boolean isMultiplayer() {
+        return multiplayer;
+    }
 
-    /** set if it's in multiplayer */
-	public boolean isMultiplayer() {
-		return multiplayer;
-	}
-
-	/** set if it's in multiplayer */
-	public void setMultiplayer(boolean multiplayer) {
-		this.multiplayer = multiplayer;
-	}
+    /**this method set multiplayer*/
+    public void setMultiplayer(boolean multiplayer) {
+        this.multiplayer = multiplayer;
+    }
     /** return all sounds about this model */
     @Override
     public ArrayList<Sound> getAllSound() {

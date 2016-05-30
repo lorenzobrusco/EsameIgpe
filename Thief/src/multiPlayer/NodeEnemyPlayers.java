@@ -121,10 +121,10 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** this method is called when enemy death */
     @Override
     public void death() {
-	this.waitAnimation = true;
-	super.death();
 	if (this.alive)
 	    GameManager.getIstance().getNodeThief().killSomeOne();
+	this.waitAnimation = true;
+	super.death();
     }
 
     /** this method is invoked when attach enemy */
