@@ -46,8 +46,9 @@ public class Server extends Thread {
 		this.newPlayer();
 		clientManager.start();
 	    } catch (SocketTimeoutException timeoutException) {
-		System.out.println("time out");
+		System.out.println("error");
 	    } catch (IOException e) {
+		System.out.println("error");
 	    }
 	}
 
@@ -68,7 +69,7 @@ public class Server extends Thread {
 		try {
 		    Server.this.start = false;
 		    Server.this.server.close();
-		} catch (Exception e) {// TODO: handle exception
+		} catch (Exception e) {
 		}
 	    }
 	}.run();

@@ -32,8 +32,6 @@ import multiPlayer.Client;
 import multiPlayer.ModelState;
 import multiPlayer.MultiPlayer;
 import multiPlayer.Pair;
-import multiPlayer.notify.NotifyBoxAttack;
-import multiPlayer.notify.NotifyStateModel;
 import server.Server;
 import singlePlayer.SinglePlayer;
 import singlePlayer.Sound;
@@ -60,10 +58,7 @@ public class GameManager {
     private Collection<NodeCharacter> enemies;
     /** light */
     private Collection<PointLight> lights;
-    /** state models */
-    private Collection<NotifyStateModel> notifyStateModels;
-    /** box attack */
-    private Collection<NotifyBoxAttack> boxsAttack;
+
     /** player's states */
     private Collection<Pair<NodeCharacter, ModelState>> states;
     /** score multiplayer */
@@ -124,8 +119,6 @@ public class GameManager {
 	this.lights = new ArrayList<>();
 	this.scorePlayers = new ArrayList<>();
 	this.players = new HashMap<>();
-	this.notifyStateModels = new ConcurrentLinkedQueue<>();
-	this.boxsAttack = new ConcurrentLinkedQueue<>();
 	this.states = new ConcurrentLinkedQueue<>();
 	this.enemiesLifeBar = new HashMap<>();
 	this.editor = false;
@@ -291,7 +284,6 @@ public class GameManager {
 	this.nodeRender.clear();
 	this.enemies.clear();
 	this.lights.clear();
-	this.notifyStateModels.clear();
 	this.players.clear();
 	this.enemiesLifeBar.clear();
 	this.terrain.detachAllChildren();
@@ -309,9 +301,12 @@ public class GameManager {
 	}
     }
 
-    /** this method start server 
-     * @throws IOException 
-     * @throws UnknownHostException */
+    /**
+     * this method start server
+     * 
+     * @throws IOException
+     * @throws UnknownHostException
+     */
     public void startServer(String path, int port) throws UnknownHostException, IOException {
 
 	this.server = new Server(path, port);
@@ -320,7 +315,7 @@ public class GameManager {
     }
 
     /** this method sort score lists */
-    public void sortScorePlyer() {// TODO score
+    public void sortScorePlyer() {
 	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
 	    @Override
 	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
@@ -474,26 +469,6 @@ public class GameManager {
 	this.spatial.add(model);
     }
 
-    /** this method add model's state */
-    public synchronized void addNotifyStateModel(NotifyStateModel notifyStateModel) {
-	this.notifyStateModels.add(notifyStateModel);
-    }
-
-    /** this method get model's state */
-    public synchronized NotifyStateModel getNotifyStateModel() {
-	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
-    }
-
-    /** this method check if collection is empty */
-    public synchronized boolean getNotyStateModelsIsEmpty() {
-	return this.notifyStateModels.isEmpty();
-    }
-
-    /** this method add box attack */
-    public synchronized void addBoxAttack(NotifyBoxAttack boxAttack) {
-	this.boxsAttack.add(boxAttack);
-    }
-
     /** this method add state */
     public synchronized void addState(NodeCharacter character, ModelState modelState) {
 	this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
@@ -502,16 +477,6 @@ public class GameManager {
     /** this method return true if states is empty */
     public synchronized boolean stateIsEmpty() {
 	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
-    }
-
-    /** this method get box attack */
-    public synchronized NotifyBoxAttack getBoxAttack() {
-	return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
-    }
-
-    /** this method check if collection is empty */
-    public synchronized boolean getBoxsAttackIsEmpty() {
-	return this.boxsAttack.isEmpty();
     }
 
     /** this method add player and score */
@@ -632,7 +597,6 @@ public class GameManager {
 		    Thread.sleep(100);
 		} catch (InterruptedException e) {
 		    this.menuSound.stopSound();
-		    e.printStackTrace();
 		}
 	    }
 	this.menuSound.stopSound();
@@ -658,7 +622,6 @@ public class GameManager {
 		    Thread.sleep(100);
 	    } catch (InterruptedException e) {
 		this.menuSound.stopSound();
-		e.printStackTrace();
 	    }
 	}
     }

@@ -48,8 +48,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private boolean editor;
     /** jmonkey's object to add physic */
     private BulletAppState bulletAppState;
-    // TODO to delite
-    private boolean debug;
     /** nifty's manager */
     private NiftyJmeDisplay niftyDisplay;
     /** panel 2d */
@@ -117,14 +115,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** check which button is pressed */
     public ActionListener actionListener = new ActionListener() {
 	public void onAction(String name, boolean pressed, float value) {
-	    // TODO to delete
-	    if (name.equals("debug")) {
-		debug = !debug;
-		bulletAppState.setDebugEnabled(debug);
-	    } else if (name.equals("mouse") && !singleplayer) {
+	    if (name.equals("mouse") && !singleplayer) {
 		StartGame.this.mouse();
 	    }
-
 	}
     };
 
@@ -147,21 +140,39 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start multiplayer */
     public void multiPlayer() {
-	this.inputManager.setCursorVisible(false);
-	StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
-	this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
-	this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
-	GameManager.getIstance().setEditor(false);
-	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-	GameManager.getIstance().setModelGame(pathMultiPlayer);
-	this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
-		((ArrayList<String>) characters).get(indexCharacter),
-		Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
-			.findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
+	try {
+	    this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldName", TextField.class).getDisplayedText();
+	    this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
+	    GameManager.getIstance().setEditor(false);
+	    this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+	    GameManager.getIstance().setModelGame(pathMultiPlayer);
+	    this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
+		    ((ArrayList<String>) characters).get(indexCharacter),
+		    Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
+			    .findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
+	    this.inputManager.setCursorVisible(false);
+	    StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
+	    this.multiplayer = true;
+	} catch (UnknownHostException ex) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (NumberFormatException n) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (IOException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	}
+
 	this.initKeys();
-	this.multiplayer = true;
 	this.singleplayer = false;
 	this.editor = false;
     }
@@ -389,7 +400,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.characters = new ArrayList<String>();
 	this.help = new ArrayList<String>();
 	this.landscape = new ArrayList<String>();
-	this.debug = false;
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
@@ -433,7 +443,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 			listBox.addItem(filePath.getFileName().toString());
 		}
 	    });
-	} catch (IOException e) {
+	} catch (IOException e) {// TODO catch
 	    e.printStackTrace();
 	}
 	listBox.selectItemByIndex(0);

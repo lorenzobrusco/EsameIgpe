@@ -27,7 +27,7 @@
 			backgroundImage="Interface/Image/Graphics/blackBar.png">
 			<panel height="50%" width="100%" childLayout="center">
 				<control name="label"
-					text="client and server aren't synchronize"
+					text="insert all values or they're not valid"
 					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
 			</panel>
 			<control name="button" label="Yes" id="Button" align="center"

@@ -28,7 +28,7 @@ public class SaveTerrain {
 	try {
 	    exporter.save(modelToSave, file);
 
-	} catch (IOException ex) {
+	} catch (IOException ex) { //TODO catch
 	    ex.printStackTrace();
 	}
     }

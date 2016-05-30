@@ -206,7 +206,6 @@ public class SinglePlayer implements ScreenController {
 		Thread.sleep(100);
 	    } catch (InterruptedException e) {
 		this.ambientSound.stopSound();
-		e.printStackTrace();
 	    }
 	}
 
@@ -221,7 +220,6 @@ public class SinglePlayer implements ScreenController {
 		Thread.sleep(100);
 	    } catch (InterruptedException e) {
 		this.ambientSound.stopSound();
-		e.printStackTrace();
 	    }
 	}
 

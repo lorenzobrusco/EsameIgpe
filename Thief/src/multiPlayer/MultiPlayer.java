@@ -64,22 +64,17 @@ public class MultiPlayer implements ScreenController {
     private boolean start;
     /** check if game is created */
     private boolean created;
-   
-    /**constructor*/
+
+    /**
+     * constructor
+     * 
+     */
     public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
-	    String namePlayer, String nameModel, int port) {
+	    String namePlayer, String nameModel, int port) throws UnknownHostException, IOException {
 	this.start = false;
 	this.created = false;
-	try {
-	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam, port);
-	    this.client.start();
-	} catch (UnknownHostException e) {
-	    //TODO catch 
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    //TODO 
-	    e.printStackTrace();
-	}
+	this.client = new Client(namePlayer, nameModel, address, inputManager, cam, port);
+	this.client.start();
 	this.nameModel = nameModel;
 	this.viewPort = viewPort;
 	this.rootNode = rootNode;
@@ -107,7 +102,6 @@ public class MultiPlayer implements ScreenController {
 
     /** this method load landscape */
     public void loadLevel(String level, Node rootNode, Camera cam, InputManager inputManager) {
-
 	new Thread() {
 	    public void run() {
 		GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
@@ -246,8 +240,8 @@ public class MultiPlayer implements ScreenController {
 	GameManager.getIstance().resumeGame();
     }
 
-    /**this method reset every things*/
-    public void reset(){
+    /** this method reset every things */
+    public void reset() {
 	GameManager.getIstance().setPaused(false);
 	GameManager.getIstance().getApplication().getInputManager().reset();
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
@@ -259,7 +253,7 @@ public class MultiPlayer implements ScreenController {
 	GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 	GameManager.getIstance().quitGame();
     }
-    
+
     /** this method close game */
     public void quitGame() {
 	this.exit();
