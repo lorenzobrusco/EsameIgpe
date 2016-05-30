@@ -47,7 +47,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean isSinglePlayer;
     /** check if is multiplayer */
     private boolean multiplayer;
-    /** swicth attach animation */
+    /** switch attach animation */
     private boolean changeAttack;
     /** wait that animation is ends */
     private boolean waitAnimation;
@@ -614,10 +614,20 @@ public class NodeThief extends NodeCharacter implements Collition {
 	this.isSinglePlayer = isSinglePlayer;
     }
 
+    /** set if it's in multiplayer */
+	public boolean isMultiplayer() {
+		return multiplayer;
+	}
+
+	/** set if it's in multiplayer */
+	public void setMultiplayer(boolean multiplayer) {
+		this.multiplayer = multiplayer;
+	}
     /** return all sounds about this model */
     @Override
     public ArrayList<Sound> getAllSound() {
 	this.canTalk = false;
 	return super.getAllSound();
     }
+
 }
