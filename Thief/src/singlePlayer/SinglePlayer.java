@@ -168,6 +168,11 @@ public class SinglePlayer implements ScreenController {
 	GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("layerWinner").setVisible(true);
     }
 
+    /** this method destroy map */
+    public void removeNodeScene() {
+	this.nodeScene = null;
+    }
+
     /** this method resume game */
     public void resumeGame() {
 	GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
@@ -255,4 +260,5 @@ public class SinglePlayer implements ScreenController {
     @Override
     public void onStartScreen() {
     }
+
 }

@@ -39,6 +39,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** camera attach to main character */
     private ChaseCamera camera;
+    /**bonfire key*/
     private final String bonfire = "BonFire";
     /** it's true main character is running */
     private boolean isRun;
@@ -89,7 +90,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private int talkFrequence;
     /***/
     private boolean win;
-
+    /***/
     private boolean canTalk;
 
     /** constructor */

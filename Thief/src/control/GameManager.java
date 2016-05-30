@@ -279,14 +279,7 @@ public class GameManager {
 		((NodeEnemy) model).pauseIntelligence();
 	}
 	this.playMenuSound();
-	this.spatial.clear();
-	this.scorePlayers.clear();
-	this.nodeRender.clear();
-	this.enemies.clear();
-	this.lights.clear();
-	this.players.clear();
-	this.enemiesLifeBar.clear();
-	this.terrain.detachAllChildren();
+	this.reset();
     }
 
     /** this method is called to resume game */
@@ -330,6 +323,79 @@ public class GameManager {
 	for (int i = 0; i < this.scorePlayers.size(); i++) {
 	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
 		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+	}
+    }
+
+    /** reset application */
+    public void reset() {
+	this.spatial.clear();
+	this.nodeRender.clear();
+	this.enemies.clear();
+	this.lights.clear();
+	this.states.clear();
+	this.scorePlayers.clear();
+	this.players.clear();
+	this.enemiesLifeBar.clear();
+	this.loadTerrain = null;
+	if (this.singlePlayer != null) {
+	    this.singlePlayer.removeNodeScene();
+	}
+	if (this.multiplayer != null) {
+	    this.multiplayer.setCreated(false);
+	}
+	this.thief.detachAllChildren();
+	this.thief.removeFromParent();
+	this.thief = null;
+	if (this.bonfire != null) {
+	    this.bonfire.detachAllChildren();
+	    this.bonfire.removeFromParent();
+	    this.bonfire = null;
+	}
+	if (this.portal != null) {
+	    this.portal.detachAllChildren();
+	    this.portal.removeFromParent();
+	    this.portal = null;
+	}
+	this.terrain.detachAllChildren();
+	this.terrain.removeFromParent();
+	this.terrain = null;
+	this.terrainQuad.detachAllChildren();
+	this.terrainQuad.removeFromParent();
+	this.terrainQuad = null;
+	this.singlePlayer = null;
+	this.multiplayer = null;
+	this.client = null;
+	this.server = null;
+    }
+
+    /** this method stop sound */
+    public void stopMenuSound() {
+	if (!(this.menuSound == null))
+	    for (float i = this.menuSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+		this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() - 0.1f);
+		try {
+		    Thread.sleep(100);
+		} catch (InterruptedException e) {
+		    this.menuSound.stopSound();
+		}
+	    }
+	this.menuSound.stopSound();
+    }
+
+    /** this method start sound */
+    public void playMenuSound() {
+	this.menuSound.getAudioNode().setVolume(0.0f);
+	this.menuSound.playSound();
+	for (float i = 0.0f; i < 1.0f; i += 0.1f) {
+	    this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() + 0.1f);
+	    try {
+		if (!this.editor && this.getSinglePlayer() == null && this.multiplayer == null)
+		    Thread.sleep(50);
+		else
+		    Thread.sleep(100);
+	    } catch (InterruptedException e) {
+		this.menuSound.stopSound();
+	    }
 	}
     }
 
@@ -423,7 +489,7 @@ public class GameManager {
 	return this.editor;
     }
 
-    /** this method add emenies */
+    /** this method add enemies */
     public void addModelEnemy(NodeCharacter enemy) {
 	this.enemies.add(enemy);
 
@@ -525,6 +591,16 @@ public class GameManager {
 	return this.paused;
     }
 
+    /** this method set audio render */
+    public void setAudioRendere(AudioRenderer audioRenderer) {
+	this.audioRenderer = audioRenderer;
+    }
+
+    /** this method setup audio */
+    public void setupAudio() {
+	this.menuSound = new Sound(this.application.getRootNode(), "Menu", false, false, true, 1.0f, false);
+    }
+
     /** this method set pause */
     public void setPaused(boolean value) {
 	this.paused = value;
@@ -589,40 +665,4 @@ public class GameManager {
 	return worldZExtent;
     }
 
-    public void stopMenuSound() {
-	if (!(this.menuSound == null))
-	    for (float i = this.menuSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
-		this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() - 0.1f);
-		try {
-		    Thread.sleep(100);
-		} catch (InterruptedException e) {
-		    this.menuSound.stopSound();
-		}
-	    }
-	this.menuSound.stopSound();
-    }
-
-    public void setAudioRendere(AudioRenderer audioRenderer) {
-	this.audioRenderer = audioRenderer;
-    }
-
-    public void setupAudio() {
-	this.menuSound = new Sound(this.application.getRootNode(), "Menu", false, false, true, 1.0f, false);
-    }
-
-    public void playMenuSound() {
-	this.menuSound.getAudioNode().setVolume(0.0f);
-	this.menuSound.playSound();
-	for (float i = 0.0f; i < 1.0f; i += 0.1f) {
-	    this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() + 0.1f);
-	    try {
-		if (!this.editor && this.getSinglePlayer() == null && this.multiplayer == null)
-		    Thread.sleep(50);
-		else
-		    Thread.sleep(100);
-	    } catch (InterruptedException e) {
-		this.menuSound.stopSound();
-	    }
-	}
-    }
 }
