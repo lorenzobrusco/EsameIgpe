@@ -211,8 +211,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
     }
 
@@ -229,8 +228,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("imageLandScape");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 
     }
@@ -254,8 +252,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 
     }
@@ -352,6 +349,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** next page */
     public void nextHelpImage() {
 	if (indexHelp == help.size() - 1)
 	    indexHelp = 0;
@@ -364,6 +362,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** previous page */
     public void redoHelpImage() {
 	if (this.indexHelp == 0)
 	    this.indexHelp = help.size() - 1;
@@ -378,9 +377,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this method set keys */
     private void initKeys() {
-	// GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-	// new KeyTrigger(KeyInput.KEY_TAB));
-	this.inputManager.addListener(actionListener, /* "debug", */ "mouse");
+	this.inputManager.addListener(actionListener, "mouse");
 
     }
 
@@ -443,8 +440,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 			listBox.addItem(filePath.getFileName().toString());
 		}
 	    });
-	} catch (IOException e) {// TODO catch
-	    e.printStackTrace();
+	} catch (IOException e) {
+	    this.showPopUp("exceptionStartGame");
 	}
 	listBox.selectItemByIndex(0);
 	loadScreen("singlePlayerScreen");
@@ -476,22 +473,21 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    openServerScreen();
 
 	} catch (UnknownHostException e) {
-	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
-	    this.idPopUp = popup.getId();
-	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
-		    popup.getId(), null);
+	   this.showPopUp("blindServerPort");
 	} catch (IOException e) {
-	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
-	    this.idPopUp = popup.getId();
-	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
-		    popup.getId(), null);
+	    this.showPopUp("blindServerPort");
 	} catch (NumberFormatException e) {
-	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
-	    this.idPopUp = popup.getId();
-	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
-		    popup.getId(), null);
+	    this.showPopUp("blindServerPort");
 	}
 
+    }
+
+    /** this method show popup */
+    public void showPopUp(final String id) {
+	final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
     }
 
     /** this method open popup when client has exception */

@@ -21,16 +21,11 @@ public class SaveTerrain {
     }
 
     /** this method save file */
-    public void saveModel(String name) {
+    public void saveModel(String name) throws IOException {
 
 	File file = new File("assets" + File.separator + "Scenes" + File.separator + name + ".j3o");
 	BinaryExporter exporter = new BinaryExporter();
-	try {
-	    exporter.save(modelToSave, file);
-
-	} catch (IOException ex) { //TODO catch
-	    ex.printStackTrace();
-	}
+	exporter.save(modelToSave, file);
     }
 
 }

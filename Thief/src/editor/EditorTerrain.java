@@ -268,7 +268,15 @@ public class EditorTerrain implements ScreenController {
     public void save() {
 	if (GameManager.getIstance().getNifty().getCurrentScreen()
 		.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText().equals("")) {
-	    new SaveTerrain(this.rootNode).saveModel("default");
+	    try {
+		new SaveTerrain(this.rootNode).saveModel("default");
+	    } catch (IOException e) {
+		final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
+		this.idPopUp = popup.getId();
+		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+			popup.getId(), null);
+		this.mouse = !this.mouse;
+	    }
 	} else {
 	    String fileName = GameManager.getIstance().getNifty().getCurrentScreen()
 		    .findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText();
@@ -279,8 +287,16 @@ public class EditorTerrain implements ScreenController {
 		return;
 	    }
 	    file = new File("assets" + File.separator + "Scenes" + File.separator + fileName + ".j3o");
-	    new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
-		    .findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
+	    try {
+		new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
+			.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
+	    } catch (IOException e) {
+		final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
+		this.idPopUp = popup.getId();
+		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+			popup.getId(), null);
+		this.mouse = !this.mouse;
+	    }
 	    GameManager.getIstance().getNifty().getCurrentScreen()
 		    .findNiftyControl("textfieldSaveTerrain", TextField.class).setText("");
 	}
@@ -641,8 +657,12 @@ public class EditorTerrain implements ScreenController {
 		    listBox.addItem(filePath.getFileName().toString());
 		}
 	    });
-	} catch (IOException e) { // TODO catch
-	    e.printStackTrace();
+	} catch (IOException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	    this.mouse = !this.mouse;
 	}
 	listBox.selectItemByIndex(0);
     }
@@ -749,8 +769,12 @@ public class EditorTerrain implements ScreenController {
 		    listBox.addItem(filePath.getFileName().toString());
 		}
 	    });
-	} catch (IOException e) { // TODO catch
-	    e.printStackTrace();
+	} catch (IOException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	    this.mouse = !this.mouse;
 	}
 	listBox.selectItemByIndex(0);
     }
