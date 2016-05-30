@@ -360,7 +360,6 @@ public class GameManager {
 	this.singlePlayer = null;
 	this.multiplayer = null;
 	this.client = null;
-	this.server = null;
     }
 
     /** this method stop sound */
