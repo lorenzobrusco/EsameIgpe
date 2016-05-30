@@ -133,7 +133,7 @@ public class MultiPlayer implements ScreenController {
 
     /** this method disconnect player */
     public void exit() {
-	this.client.endConnection();
+//	this.client.endConnection();
 	this.stopAmbientSound();
     }
 
@@ -165,6 +165,8 @@ public class MultiPlayer implements ScreenController {
 		Thread.sleep(100);
 	    } catch (InterruptedException e) {
 		this.ambientSound.stopSound();
+	    } catch (NullPointerException e) {
+		this.ambientSound.stopSound();
 	    }
 	}
 
@@ -173,14 +175,14 @@ public class MultiPlayer implements ScreenController {
     /** send message when player press send button */
     public void sendMessage() {
 
-		final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
-				.findNiftyControl("#chat-text-input", TextField.class);
-		if (!text.getDisplayedText().equals("")) {
-			GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
-			text.setText("");
-		}
-
+	final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
+		.findNiftyControl("#chat-text-input", TextField.class);
+	if (!text.getDisplayedText().equals("")) {
+	    GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
+	    text.setText("");
 	}
+
+    }
 
     /** this method load panel 2d */
     public void loadNifty() {
@@ -244,14 +246,12 @@ public class MultiPlayer implements ScreenController {
 
     /** this method reset every things */
     public void reset() {
-	GameManager.getIstance().getNifty().exit();
+	// GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setPaused(false);
+	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().reset();
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 	GameManager.getIstance().getApplication().getViewPort().clearProcessors();
-	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
-	GameManager.getIstance().getNodeThief().stopBonfireSound();
-	GameManager.getIstance().getNodeThief().stopChapelSound();
 	GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 	GameManager.getIstance().quitGame();
     }

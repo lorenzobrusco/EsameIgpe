@@ -312,9 +312,12 @@ public class GameManager {
 	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
 	    @Override
 	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
-		return (((Integer)arg1.getScore()).compareTo((Integer) arg0.getScore()));
+		return (((Integer) arg1.getScore()).compareTo((Integer) arg0.getScore()));
 	    }
 	});
+	for (int i = 0; i < 3; i++) {
+	    this.multiplayer.setPlayerInScoreLists("", i);
+	}
 	for (int i = 0; i < this.scorePlayers.size(); i++) {
 	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
 		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
@@ -323,23 +326,34 @@ public class GameManager {
 
     /** reset application */
     public void reset() {
-	this.spatial.clear();
-	this.nodeRender.clear();
-	this.enemies.clear();
-	this.lights.clear();
-	this.states.clear();
-	this.scorePlayers.clear();
-	this.players.clear();
-	this.enemiesLifeBar.clear();
-	this.loadTerrain = null;
+	if (this.spatial != null)
+	    this.spatial.clear();
+	if (this.nodeRender != null)
+	    this.nodeRender.clear();
+	if (this.enemies != null)
+	    this.enemies.clear();
+	if (this.lights != null)
+	    this.lights.clear();
+	if (this.states != null)
+	    this.states.clear();
+	if (this.scorePlayers != null)
+	    this.scorePlayers.clear();
+	if (this.players != null)
+	    this.players.clear();
+	if (this.enemiesLifeBar != null)
+	    this.enemiesLifeBar.clear();
+	if (this.loadTerrain != null)
+	    this.loadTerrain = null;
 	if (this.singlePlayer != null) {
 	    this.singlePlayer.removeNodeScene();
 	}
 	if (this.multiplayer != null) {
 	    this.multiplayer.setCreated(false);
 	}
-	this.thief.detachAllChildren();
-	this.thief.removeFromParent();
+	if (this.thief != null) {
+	    this.thief.detachAllChildren();
+	    this.thief.removeFromParent();
+	}
 	this.thief = null;
 	if (this.bonfire != null) {
 	    this.bonfire.detachAllChildren();
@@ -351,11 +365,15 @@ public class GameManager {
 	    this.portal.removeFromParent();
 	    this.portal = null;
 	}
-	this.terrain.detachAllChildren();
-	this.terrain.removeFromParent();
+	if (this.terrain != null) {
+	    this.terrain.detachAllChildren();
+	    this.terrain.removeFromParent();
+	}
 	this.terrain = null;
-	this.terrainQuad.detachAllChildren();
-	this.terrainQuad.removeFromParent();
+	if (this.terrainQuad != null) {
+	    this.terrainQuad.detachAllChildren();
+	    this.terrainQuad.removeFromParent();
+	}
 	this.terrainQuad = null;
 	this.singlePlayer = null;
 	this.multiplayer = null;
@@ -548,6 +566,7 @@ public class GameManager {
     /** this method remove score */
     public void removeScorePlayer(NodeCharacter character) {
 	this.scorePlayers.remove(character);
+	this.sortScorePlyer();
     }
 
     /** this method get score */

@@ -57,8 +57,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
     private final String PAUSE = "Pause";
     private final String SENDMESSAGECHAT = "sendMessage";
-    /** Life Number Player */
-    private final static int LIFENUMBER = 50;
     /** damage inflicted on the enemy */
     private final static int DAMAGE = 10;
     /** Player IP Address */
@@ -128,7 +126,7 @@ public class Client extends Thread implements CommunicationProtocol {
 			    String message = this.INPUT.readLine();
 			    this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
 				    new StringBuilder().builderModel(message), new StringBuilder().builderName(message),
-				    new StringBuilder().builderPosition(message));
+				    new StringBuilder().builderPosition(message), new StringBuilder().builderLife(message));
 			}
 		    }
 		}
@@ -152,7 +150,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    }
 	} catch (IOException e) {
 	    this.exception();
-
 	}
     }
 
@@ -220,7 +217,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    String line = this.INPUT.readLine();
 	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
-		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line));
+		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line), new StringBuilder().builderLife(line));
 	} catch (IOException e) {
 	    this.exception();
 	}
@@ -258,10 +255,10 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     /** This Method add a Player and his Model in the Game's Terrain */
-    public void addNewPlayers(String name, String model, String player, Vector3f location) {
+    public void addNewPlayers(String name, String model, String player, Vector3f location, int life) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	spatial.setLocalTranslation(location);
-	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
+	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, life,
 		DAMAGE, name);
 	players.addCharacterControl();
 	GameManager.getIstance().addModelEnemy(players);
@@ -286,12 +283,13 @@ public class Client extends Thread implements CommunicationProtocol {
 	final NodeCharacter player = GameManager.getIstance().getPlayers().get(key);
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
-		((Node)GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
+		((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
 		return null;
 	    }
 	});
 	GameManager.getIstance().removePlayers(key);
 	GameManager.getIstance().removeModel(key);
+	GameManager.getIstance().removeScorePlayer(player);
     }
 
     /** This method Sends a Message for Player's ChatBox */
@@ -388,14 +386,13 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.CHATBOX);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.TOGGLEROTATE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.SENDMESSAGECHAT);
-
     }
 
     /** this method is called when server and client aren't synchronized */
     private void exception() {
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    @Override
-	    public Void call() throws Exception {
+	    public Void call() {
 		Client.this.establishedConnection = false;
 		GameManager.getIstance().getMultiplayer().reset();
 		return null;

@@ -179,7 +179,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start editor */
     public void editor() {
-	GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
@@ -261,6 +260,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void openServerScreen() {
 
 	if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowLeft")
+		    .setVisible(true);
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowRight")
+		    .setVisible(true);
 	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
 		    "Interface/Image/Graphics/serverIsClose.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
@@ -270,7 +273,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
 		    .setVisible(true);
 	} else if (GameManager.getIstance().getServer().isStart()) {
-
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowLeft")
+		    .setVisible(false);
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowRight")
+		    .setVisible(false);
 	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
 		    "Interface/Image/Graphics/serverIsOpen.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
@@ -473,7 +479,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    openServerScreen();
 
 	} catch (UnknownHostException e) {
-	   this.showPopUp("blindServerPort");
+	    this.showPopUp("blindServerPort");
 	} catch (IOException e) {
 	    this.showPopUp("blindServerPort");
 	} catch (NumberFormatException e) {
@@ -527,6 +533,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** jmonkey's method */
     @Override
     public void onStartScreen() {
+
     }
 
     public static void main(String[] args) {
