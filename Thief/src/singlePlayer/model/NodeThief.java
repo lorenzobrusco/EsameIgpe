@@ -25,7 +25,6 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.SizeValue;
-import multiPlayer.NodeEnemyPlayers;
 import singlePlayer.Collition;
 import singlePlayer.Sound;
 
@@ -490,14 +489,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
 			((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 		    }
-		} else if (enemy instanceof NodeEnemyPlayers) {
-		    if (enemy.isDead()) {
-			this.killSomeOne();
-			GameManager.getIstance().sortScorePlyer();
-			((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);
-			((NodeEnemyPlayers) enemy).getLifeBar().setVisibleLifeBar();
-		    }
-		}
+		} 
 	    }
 	}
     }

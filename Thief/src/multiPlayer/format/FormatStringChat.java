@@ -1,7 +1,6 @@
 package multiPlayer.format;
 
 import control.GameManager;
-import de.lessvoid.nifty.controls.Chat;
 import de.lessvoid.nifty.controls.ListBox;
 
 /**
@@ -24,11 +23,9 @@ public class FormatStringChat {
     /** this method take a string and formats it and send it for the chatbox */
     public void printMessageChatBox(String messageChatBox) {
 	/** take nifty's control */
-    	@SuppressWarnings("unchecked")
-		ListBox<String> tmp1 =  GameManager.getIstance().getNifty().getCurrentScreen()
-    			.findNiftyControl("#chatBox" , ListBox.class);
-//	final Chat chatController = GameManager.getIstance().getNifty().getCurrentScreen()
-//		.findNiftyControl("chatMultiPlayer", Chat.class);
+	@SuppressWarnings("unchecked")
+	ListBox<String> tmp1 = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chatBox",
+		ListBox.class);
 	final String[] tmp = messageChatBox.split(" ");
 	String space = "";
 	String message = "";
@@ -38,16 +35,14 @@ public class FormatStringChat {
 	space += "          ";
 	for (int i = 0; i < tmp.length; i++) {
 	    if (i == 0)
-		message += "      "+namePlayer + ": ";
+		message += "      " + namePlayer + ": ";
 	    if ((message.length() + tmp[i].length()) <= MAX_CHARACTER_IN_LINE) {
 		message += tmp[i] + " ";
 	    } else {
-//		chatController.receivedChatLine(message, null);
-	    	tmp1.addItem(message);
+		tmp1.addItem(message);
 		message = space + tmp[i] + " ";
 	    }
 	}
-//	chatController.receivedChatLine(message, null);
 	tmp1.addItem(message);
     }
 

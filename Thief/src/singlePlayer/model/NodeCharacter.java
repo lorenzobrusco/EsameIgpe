@@ -245,8 +245,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
     /** this method is called when character is death */
     public void death() {
-	// if (this.alive)
-	/// this.deathSound.playSound();
 	this.alive = false;
 	this.channel.setAnim(death, 0.50f);
 	this.channel.setLoopMode(LoopMode.DontLoop);
