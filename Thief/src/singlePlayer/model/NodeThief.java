@@ -39,8 +39,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** camera attach to main character */
     private ChaseCamera camera;
-    /**bonfire key*/
-    private final String bonfire = "BonFire";
+    /**key Event*/
+    private final String BONFIRE = "BonFire";
+    private final String SENDMESSAGECHAT = "sendMessage";
     /** it's true main character is running */
     private boolean isRun;
     /** check if is single player */
@@ -355,7 +356,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
 		NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
 		NodeThief.this.notifyUpdate(true);
-	    } else if ((name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
+	    } else if ((name.equals(BONFIRE) && pressed && NodeThief.this.alive && NodeThief.this.alive
 		    && !NodeThief.this.waitAnimation && !NodeThief.this.isRun)
 		    && !GameManager.getIstance().isPaused()) {
 		NodeThief.this.stop();
@@ -410,10 +411,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    chatboxIsEnable = !chatboxIsEnable;
 		}
 		}
-	    if ((name.equals("sendMessage") && !isSinglePlayer) && chatboxIsEnable && !pressed) {
-	 
+	      if ((name.equals(SENDMESSAGECHAT) && !isSinglePlayer) && chatboxIsEnable && !pressed) {
+	   	 
 	    	GameManager.getIstance().getMultiplayer().sendMessage();
 	    }
+
 	    if (win && pressed) {
 		win = false;
 		GameManager.getIstance().getSinglePlayer().quitGame();
@@ -440,7 +442,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    arg1.setAnim(idle);
 	    NodeThief.this.endAttack();
 	}
-	if (arg2.equals(bonfire)) {
+	if (arg2.equals(BONFIRE)) {
 	    arg1.setAnim(idle);
 	    NodeThief.this.waitAnimation = false;
 	    for (NodeCharacter enemy : GameManager.getIstance().getEnemies()) {

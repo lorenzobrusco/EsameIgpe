@@ -56,6 +56,7 @@ public class Client extends Thread implements CommunicationProtocol {
     private final String ROTATECLOCKWISE = "rotateClockwise";
     private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
     private final String PAUSE = "Pause";
+    private final String SENDMESSAGECHAT = "sendMessage";
     /** Life Number Player */
     private final static int LIFENUMBER = 50;
     /** damage inflicted on the enemy */
@@ -332,12 +333,14 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.MOUSE,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.CHATBOX,
-		new KeyTrigger(KeyInput.KEY_RETURN));
+		new KeyTrigger(KeyInput.KEY_TAB));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.SENDMESSAGECHAT,
+			new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.PAUSE,
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().actionListener, this.RUN, this.ATTACK1, this.ATTACK2,
-		this.TOGGLEROTATE, this.CHATBOX, this.PAUSE, "sendMessage");
+		this.TOGGLEROTATE, this.CHATBOX, this.PAUSE, this.SENDMESSAGECHAT);
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().analogListener, this.RUN, this.ROTATECLOCKWISE,
 		this.ROTATECOUNTERCLOCKWISE);
@@ -384,7 +387,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.MOUSE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.CHATBOX);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.TOGGLEROTATE);
-	GameManager.getIstance().getApplication().getInputManager().deleteMapping("sendMessage");
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.SENDMESSAGECHAT);
 
     }
 
