@@ -38,7 +38,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** camera attach to main character */
     private ChaseCamera camera;
-    /**key Event*/
+    /** key Event */
     private final String BONFIRE = "BonFire";
     private final String SENDMESSAGECHAT = "sendMessage";
     /** it's true main character is running */
@@ -51,7 +51,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean changeAttack;
     /** wait that animation is ends */
     private boolean waitAnimation;
-    /**check if chat box is enable*/
+    /** check if chat box is enable */
     private boolean chatboxIsEnable;
     /** speed main character */
     private static final float SPEED = 15;
@@ -409,10 +409,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    NodeThief.this.getCamera().setDragToRotate(false);
 		    chatboxIsEnable = !chatboxIsEnable;
 		}
-		}
-	      if ((name.equals(SENDMESSAGECHAT) && !isSinglePlayer) && chatboxIsEnable && !pressed) {
-	   	 
-	    	GameManager.getIstance().getMultiplayer().sendMessage();
+	    }
+	    if ((name.equals(SENDMESSAGECHAT) && !isSinglePlayer) && chatboxIsEnable && !pressed) {
+
+		GameManager.getIstance().getMultiplayer().sendMessage();
 	    }
 
 	    if (win && pressed) {
@@ -468,7 +468,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 	    this.resetCurrentTime();
 	    this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 	    this.walkingOnGrassSound.stopSound();
-	    GameManager.getIstance().sortScorePlyer();
+	    if (GameManager.getIstance().getMultiplayer() != null)
+		GameManager.getIstance().sortScorePlyer();
 	}
     }
 
@@ -489,7 +490,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
 			((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 		    }
-		} 
+		}
 	    }
 	}
     }
