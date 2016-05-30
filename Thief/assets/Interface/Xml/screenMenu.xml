@@ -21,6 +21,21 @@
 			</control>
 		</panel>
 	</popup>
+	
+	<popup id="exceptionServer" childLayout="center" backgroundColor="#000a">
+		<panel height="30%" width="60%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label"
+					text="client and server aren't synchronize"
+					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+			</panel>
+			<control name="button" label="Yes" id="Button" align="center"
+				valign="center" visibleToMouse="true" width="30%">
+				<interact onClick="closePopUp()"></interact>
+			</control>
+		</panel>
+	</popup>
 
 	<controlDefinition name="IPTextField"
 		defaultFocusElement="textField">

@@ -641,7 +641,7 @@ public class EditorTerrain implements ScreenController {
 					listBox.addItem(filePath.getFileName().toString());
 				}
 			});
-		} catch (IOException e) {
+		} catch (IOException e) { //TODO catch
 			e.printStackTrace();
 		}
 		listBox.selectItemByIndex(0);
@@ -749,7 +749,7 @@ public class EditorTerrain implements ScreenController {
 					listBox.addItem(filePath.getFileName().toString());
 				}
 			});
-		} catch (IOException e) {
+		} catch (IOException e) { //TODO catch
 			e.printStackTrace();
 		}
 		listBox.selectItemByIndex(0);
@@ -765,7 +765,7 @@ public class EditorTerrain implements ScreenController {
 				this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() - 0.1f);
 				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException e) { //TODO catch
 					this.ambientSound.stopSound();
 					e.printStackTrace();
 				}
@@ -780,7 +780,7 @@ public class EditorTerrain implements ScreenController {
 			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() + 0.1f);
 			try {
 				Thread.sleep(100);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException e) { //TODO catch
 				this.ambientSound.stopSound();
 				e.printStackTrace();
 			}

@@ -287,6 +287,7 @@ public class GameManager {
 	}
 	this.playMenuSound();
 	this.spatial.clear();
+	this.scorePlayers.clear();
 	this.nodeRender.clear();
 	this.enemies.clear();
 	this.lights.clear();

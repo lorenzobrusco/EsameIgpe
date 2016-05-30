@@ -475,14 +475,21 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    this.idPopUp = popup.getId();
 	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 		    popup.getId(), null);
-	} catch (NumberFormatException e){
+	} catch (NumberFormatException e) {
 	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
 	    this.idPopUp = popup.getId();
 	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 		    popup.getId(), null);
 	}
-	
 
+    }
+
+    /** this method open popup when client has exception */
+    public void openPopUp() {
+	final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
     }
 
     /** this method close popup */

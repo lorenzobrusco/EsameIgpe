@@ -74,8 +74,10 @@ public class MultiPlayer implements ScreenController {
 	    this.client = new Client(namePlayer, nameModel, address, inputManager, cam, port);
 	    this.client.start();
 	} catch (UnknownHostException e) {
+	    //TODO catch 
 	    e.printStackTrace();
 	} catch (IOException e) {
+	    //TODO 
 	    e.printStackTrace();
 	}
 	this.nameModel = nameModel;
@@ -244,9 +246,8 @@ public class MultiPlayer implements ScreenController {
 	GameManager.getIstance().resumeGame();
     }
 
-    /** this method close game */
-    public void quitGame() {
-	this.exit();
+    /**this method reset every things*/
+    public void reset(){
 	GameManager.getIstance().setPaused(false);
 	GameManager.getIstance().getApplication().getInputManager().reset();
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
@@ -257,6 +258,12 @@ public class MultiPlayer implements ScreenController {
 	GameManager.getIstance().getNodeThief().stopChapelSound();
 	GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 	GameManager.getIstance().quitGame();
+    }
+    
+    /** this method close game */
+    public void quitGame() {
+	this.exit();
+	this.reset();
     }
 
     /** this method get start */
