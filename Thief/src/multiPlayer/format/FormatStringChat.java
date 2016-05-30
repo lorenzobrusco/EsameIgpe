@@ -38,7 +38,7 @@ public class FormatStringChat {
 	space += "          ";
 	for (int i = 0; i < tmp.length; i++) {
 	    if (i == 0)
-		message += namePlayer + ": ";
+		message += "      "+namePlayer + ": ";
 	    if ((message.length() + tmp[i].length()) <= MAX_CHARACTER_IN_LINE) {
 		message += tmp[i] + " ";
 	    } else {

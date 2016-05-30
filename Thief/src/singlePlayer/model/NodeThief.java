@@ -408,6 +408,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 		    NodeThief.this.getCamera().setDragToRotate(false);
 		    chatboxIsEnable = !chatboxIsEnable;
 		}
+		}
+	    if ((name.equals("sendMessage") && !isSinglePlayer) && chatboxIsEnable && !pressed) {
+	 
+	    	GameManager.getIstance().getMultiplayer().sendMessage();
 	    }
 	    if (win && pressed) {
 		win = false;
