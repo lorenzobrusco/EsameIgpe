@@ -8,7 +8,6 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import control.GameManager;
 import multiPlayer.format.StringBuilder;
@@ -35,7 +34,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** builder */
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
-	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -45,7 +43,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
     /** builder */
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, int life, int DAMAGE, String key) {
 	super(model, dimensionControll, life, DAMAGE);
-	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -56,7 +53,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public NodeEnemyPlayers(String model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
 	super(model, dimensionControll, intersect, life, DAMAGE);
-	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -67,7 +63,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public NodeEnemyPlayers(Spatial model, Vector3f dimensionControll, Vector3f intersect, int life, int DAMAGE,
 	    String key) {
 	super(model, dimensionControll, intersect, life, DAMAGE);
-	this.setShadowMode(RenderQueue.ShadowMode.Inherit);
 	this.waitAnimation = false;
 	this.switchAttack = false;
 	this.lifeBar = new LifeBar(this);
@@ -85,6 +80,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int life = builder.builderLife(line);
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
+	GameManager.getIstance().sortScorePlyer();
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
 		NodeEnemyPlayers.this.changeState(life, score, attack, view, location, direction);
@@ -97,13 +93,16 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
+	this.lifeBar.updateLifeBar(this.life - life);
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);
-	this.lifeBar.updateLifeBar(this.life - life);
 	this.life = life;
+	if (this.life <= 0) {
+	    this.death();
+	    this.lifeBar.updateLifeBar(0);
+	    this.lifeBar.setVisibleLifeBar();
+	}
 	this.score = score;
-	GameManager.getIstance().sortScorePlyer();
-
     }
 
     /** this method set enemy's walk direction */
@@ -124,6 +123,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void death() {
 	this.waitAnimation = true;
 	super.death();
+	if (this.alive)
+	    GameManager.getIstance().getNodeThief().killSomeOne();
     }
 
     /** this method is invoked when attach enemy */
@@ -142,6 +143,13 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    }
 	    this.switchAttack = !this.switchAttack;
 	}
+    }
+
+    /** this method reset every things */
+    @Override
+    public void resetAll() {
+	super.resetAll();
+	this.lifeBar = new LifeBar(this);
     }
 
     /** this method check if enemy strikes main character */
@@ -173,7 +181,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	if (arg2.equals(death)) {
 	    NodeEnemyPlayers.this.waitAnimation = false;
 	    NodeEnemyPlayers.this.resetAll();
-	    NodeEnemyPlayers.this.lifeBar = new LifeBar(this);
 	}
 	if (arg2.equals(run)) {
 	    arg1.setAnim(idle);

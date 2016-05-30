@@ -43,7 +43,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     protected final String chatBox = "chatBox";
     /***/
     /** start life */
-    protected final int STARTLIFE;
+    protected final int STARTLIFE = 50;
     /** life */
     protected int life;
     /** damage */
@@ -78,7 +78,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.control.addListener(this);
 	this.channel = control.createChannel();
 	this.channel.setAnim(idle);
-	this.STARTLIFE = life;
 	this.life = life;
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
@@ -95,7 +94,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.control.addListener(this);
 	this.channel = control.createChannel();
 	this.channel.setAnim(idle);
-	this.STARTLIFE = life;
 	this.life = life;
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
@@ -111,7 +109,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.control.addListener(this);
 	this.channel = control.createChannel();
 	this.channel.setAnim(idle);
-	this.STARTLIFE = life;
 	this.life = life;
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
@@ -129,7 +126,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.control.addListener(this);
 	this.channel = control.createChannel();
 	this.channel.setAnim(idle);
-	this.STARTLIFE = life;
 	this.life = life;
 	this.score = 0;
 	this.DAMAGE = DAMAGE;
@@ -245,8 +241,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 
     /** this method is called when character is death */
     public void death() {
-	// if (this.alive)
-	/// this.deathSound.playSound();
 	this.alive = false;
 	this.channel.setAnim(death, 0.50f);
 	this.channel.setLoopMode(LoopMode.DontLoop);

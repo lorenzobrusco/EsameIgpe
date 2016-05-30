@@ -48,8 +48,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private boolean editor;
     /** jmonkey's object to add physic */
     private BulletAppState bulletAppState;
-    // TODO to delite
-    private boolean debug;
     /** nifty's manager */
     private NiftyJmeDisplay niftyDisplay;
     /** panel 2d */
@@ -117,14 +115,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** check which button is pressed */
     public ActionListener actionListener = new ActionListener() {
 	public void onAction(String name, boolean pressed, float value) {
-	    // TODO to delete
-	    if (name.equals("debug")) {
-		debug = !debug;
-		bulletAppState.setDebugEnabled(debug);
-	    } else if (name.equals("mouse") && !singleplayer) {
+	    if (name.equals("mouse") && !singleplayer) {
 		StartGame.this.mouse();
 	    }
-
 	}
     };
 
@@ -147,28 +140,45 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start multiplayer */
     public void multiPlayer() {
-	this.inputManager.setCursorVisible(false);
-	StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
-	this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
-	this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
-	GameManager.getIstance().setEditor(false);
-	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-	GameManager.getIstance().setModelGame(pathMultiPlayer);
-	this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
-		((ArrayList<String>) characters).get(indexCharacter),
-		Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
-			.findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
+	try {
+	    this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldName", TextField.class).getDisplayedText();
+	    this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
+	    GameManager.getIstance().setEditor(false);
+	    this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+	    GameManager.getIstance().setModelGame(pathMultiPlayer);
+	    this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
+		    ((ArrayList<String>) characters).get(indexCharacter),
+		    Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
+			    .findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
+	    this.inputManager.setCursorVisible(false);
+	    StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
+	    this.multiplayer = true;
+	} catch (UnknownHostException ex) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (NumberFormatException n) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (IOException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	}
+
 	this.initKeys();
-	this.multiplayer = true;
 	this.singleplayer = false;
 	this.editor = false;
     }
 
     /** start editor */
     public void editor() {
-	GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
@@ -200,8 +210,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
     }
 
@@ -218,8 +227,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("imageLandScape");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 
     }
@@ -243,8 +251,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 
     }
@@ -253,6 +260,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void openServerScreen() {
 
 	if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowLeft")
+		    .setVisible(true);
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowRight")
+		    .setVisible(true);
 	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
 		    "Interface/Image/Graphics/serverIsClose.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
@@ -262,7 +273,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
 		    .setVisible(true);
 	} else if (GameManager.getIstance().getServer().isStart()) {
-
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowLeft")
+		    .setVisible(false);
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowRight")
+		    .setVisible(false);
 	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
 		    "Interface/Image/Graphics/serverIsOpen.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
@@ -341,6 +355,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** next page */
     public void nextHelpImage() {
 	if (indexHelp == help.size() - 1)
 	    indexHelp = 0;
@@ -353,6 +368,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** previous page */
     public void redoHelpImage() {
 	if (this.indexHelp == 0)
 	    this.indexHelp = help.size() - 1;
@@ -367,9 +383,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** this method set keys */
     private void initKeys() {
-	// GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-	// new KeyTrigger(KeyInput.KEY_TAB));
-	this.inputManager.addListener(actionListener, /* "debug", */ "mouse");
+	this.inputManager.addListener(actionListener, "mouse");
 
     }
 
@@ -389,7 +403,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.characters = new ArrayList<String>();
 	this.help = new ArrayList<String>();
 	this.landscape = new ArrayList<String>();
-	this.debug = false;
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
@@ -434,7 +447,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		}
 	    });
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 	listBox.selectItemByIndex(0);
 	loadScreen("singlePlayerScreen");
@@ -466,23 +479,29 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    openServerScreen();
 
 	} catch (UnknownHostException e) {
-	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
-	    this.idPopUp = popup.getId();
-	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
-		    popup.getId(), null);
+	    this.showPopUp("blindServerPort");
 	} catch (IOException e) {
-	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
-	    this.idPopUp = popup.getId();
-	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
-		    popup.getId(), null);
-	} catch (NumberFormatException e){
-	    final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
-	    this.idPopUp = popup.getId();
-	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
-		    popup.getId(), null);
+	    this.showPopUp("blindServerPort");
+	} catch (NumberFormatException e) {
+	    this.showPopUp("blindServerPort");
 	}
-	
 
+    }
+
+    /** this method show popup */
+    public void showPopUp(final String id) {
+	final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
+    }
+
+    /** this method open popup when client has exception */
+    public void openPopUp() {
+	final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
     }
 
     /** this method close popup */
@@ -514,6 +533,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** jmonkey's method */
     @Override
     public void onStartScreen() {
+
     }
 
     public static void main(String[] args) {
