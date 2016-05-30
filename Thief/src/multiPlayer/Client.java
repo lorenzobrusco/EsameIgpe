@@ -258,8 +258,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** This Method add a Player and his Model in the Game's Terrain */
     public void addNewPlayers(String name, String model, String player, Vector3f location) {
-
-	System.out.println(this.nameModel + "add " + model);
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	spatial.setLocalTranslation(location);
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
@@ -278,8 +276,6 @@ public class Client extends Thread implements CommunicationProtocol {
 		return null;
 	    }
 	});
-	// GameManager.getIstance().addNotifyStateModel(new
-	// NotifyStateModel(true, players));
 	GameManager.getIstance().sortScorePlyer();
     }
 

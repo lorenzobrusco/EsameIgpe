@@ -185,7 +185,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), location, 0, false, name,
 		    model, nameClient, 0);
-	    System.out.println(line);
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.newPlayer = false;
 	} catch (IOException e) {
