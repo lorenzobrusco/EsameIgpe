@@ -83,6 +83,7 @@ public class Server extends Thread {
 	}
 	if (!exist)
 	    this.players.add(clientManager);
+	
     }
 
     /** this method remove a player */

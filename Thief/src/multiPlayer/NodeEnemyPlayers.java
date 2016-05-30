@@ -1,5 +1,7 @@
 package multiPlayer;
 
+import java.util.concurrent.Callable;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.bounding.BoundingBox;
@@ -83,15 +85,20 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int life = builder.builderLife(line);
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
-	this.setViewDirection(view);
-	this.setWalkDirection(location, direction);
-	GameManager.getIstance().addState(this, new ModelState(direction, view, life, attack, location, score));
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    public Void call() {
+		NodeEnemyPlayers.this.changeState(life, score, attack, view, location, direction);
+		return null;
+	    }
+	});
     }
 
     /** this method change enemy's state */
     public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
+	this.setViewDirection(view);
+	this.setWalkDirection(location, direction);
 	this.lifeBar.updateLifeBar(this.life - life);
 	this.life = life;
 	this.score = score;

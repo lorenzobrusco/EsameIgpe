@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.net.InetAddress;
 import java.net.Socket;
-import java.net.URL;
+import java.net.UnknownHostException;
 import com.jme3.math.Vector3f;
 import multiPlayer.format.FormatIP;
 import multiPlayer.format.StringBuilder;
@@ -38,9 +38,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private Vector3f currentPosition;
     /** Writer for client */
     private final BufferedReader INPUT;
-    /** Rwader for client */
+    /** Reader for client */
     private final DataOutputStream OUTPUT;
-    /** connection stabilished with client */
+    /** connection established with client */
     private boolean establishedConnection;
     /** notify new player */
     private boolean newPlayer;
@@ -49,7 +49,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final static String WHOAREYOU = "who are you?";
     private final static String WHOISTHERE = "tell me, who is there ?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
-    private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String SENDSTATE = "send your state";
@@ -73,34 +72,28 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     public void startConnection() {
 	try {
 	    this.OUTPUT.writeBytes(this.server.getTERRAIN() + "\n");
-	    while (!this.establishedConnection) {
-		if (this.INPUT.readLine().equals(KNOCK))
-		    this.OUTPUT.writeBytes(WHOAREYOU + "\n");
-		String line = this.INPUT.readLine();
-		if (!new StringBuilder().checkString(line)) {
-		    this.OUTPUT.writeBytes(TRYAGAIN + "\n");
-		} else {
-		    this.address = new StringBuilder().builderAddress(line);
-		    this.player = new StringBuilder().builderKeyPlayer(line);
-		    this.nameModel = new StringBuilder().builderModel(line);
-		    this.startPosition = new StringBuilder().builderPosition(line);
-		    this.nameClient = new StringBuilder().builderName(line);
-		    this.currentPosition = this.startPosition;
-		    if (new FormatIP(this.address).itIsCorrectFormat()) {
-			this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
-			if (this.INPUT.readLine().equals(WHOISTHERE)) {
-			    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
-			    for (ClientManager manager : this.server.getPlayers()) {
-				this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
-					manager.startPosition);
-				manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
-					this.startPosition);
-			    }
-			}
-			this.server.addPlayer(this);
-			this.establishedConnection = true;
+	    if (this.INPUT.readLine().equals(KNOCK))
+		this.OUTPUT.writeBytes(WHOAREYOU + "\n");
+	    String line = this.INPUT.readLine();
+	    this.address = new StringBuilder().builderAddress(line);
+	    this.player = new StringBuilder().builderKeyPlayer(line);
+	    this.nameModel = new StringBuilder().builderModel(line);
+	    this.startPosition = new StringBuilder().builderPosition(line);
+	    this.nameClient = new StringBuilder().builderName(line);
+	    this.currentPosition = this.startPosition;
+	    if (new FormatIP(this.address).itIsCorrectFormat()) {
+		this.OUTPUT.writeBytes(YOUAREWELCOME + "\n");
+		if (this.INPUT.readLine().equals(WHOISTHERE)) {
+		    this.establishedConnection = true;
+		    this.OUTPUT.writeBytes(this.server.getPlayers().size() + "\n");
+		    for (ClientManager manager : this.server.getPlayers()) {
+			this.communicationNewPlayer(manager.address, manager.nameModel, manager.nameClient,
+				manager.startPosition);
+			manager.communicationNewPlayer(this.address, this.nameModel, this.nameClient,
+				this.startPosition);
 		    }
 		}
+		this.server.addPlayer(this);
 	    }
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -114,10 +107,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
 	    String client = this.INPUT.readLine();
-	    System.out.println("player to exit: " + client);
 	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
-
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -132,12 +123,12 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
 
 	    String line = this.INPUT.readLine();
-
+	    
 	    if (!new StringBuilder().checkString(line))
 		return;
 
 	    final String key = new StringBuilder().builderKeyPlayer(line);
-
+	    
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
 
 	    final Vector3f viewdirection = new StringBuilder().builderView(line);
@@ -157,8 +148,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	} catch (IOException e) {
 	    System.out.println("client : connection");
-	} catch (NumberFormatException ex) {
-	    System.out.println("client : cast float");
 	}
     }
 
@@ -198,18 +187,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     /** This Method return Player IP address */
     @Override
     public String ipAddress() {
-	URL url;
 	try {
-	    url = new URL("http://checkip.amazonaws.com/");
-	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-	    return br.readLine();
-	} catch (MalformedURLException e) {
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
+	    return InetAddress.getLocalHost().getHostAddress();
+	} catch (UnknownHostException e) {
+	    return "127.0.0.1";
 	}
-
-	return null;
     }
 
     /** This Method communicates that there is a new player */
@@ -218,6 +200,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), location, 0, false, name,
 		    model, nameClient, 0);
+	    System.out.println(line);
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.newPlayer = false;
 	} catch (IOException e) {
@@ -278,9 +261,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
 	    }
-	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
+	    this.socket.close();
 	    this.server.removePlayer(this);
 	} catch (IOException e) {
 	    e.printStackTrace();

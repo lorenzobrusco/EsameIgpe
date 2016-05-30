@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -20,7 +21,6 @@ import com.jme3.scene.Spatial;
 import control.GameManager;
 import multiPlayer.format.FormatStringChat;
 import multiPlayer.format.StringBuilder;
-import multiPlayer.notify.NotifyStateModel;
 import multiPlayer.protocols.CommunicationProtocol;
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeThief;
@@ -38,7 +38,6 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String KNOCK = "knock knock";
     private final static String WHOAREYOU = "who are you?";
     private final static String YOUAREWELCOME = "ok, you're welcome";
-    private final static String TRYAGAIN = "try again";
     private final static String CLOSE = "close connection";
     private final static String NEWPLAYER = "it's arrive a new player";
     private final static String WHOISTHERE = "tell me, who is there ?";
@@ -48,17 +47,15 @@ public class Client extends Thread implements CommunicationProtocol {
     private final static String PATHMODEL = "Models/Characters/";
     private final static String SENDMESSAGE = "Can I send a message?";
     /** Keyboard Commands */
-    private final static String debug = "debug";
-    private final static String mouse = "mouse";
-    private final static String chatBox = "chatBox";
-    private final static String toggleRotate = "toggleRotate";
-    private final static String attack1 = "Attack1";
-    private final static String attack2 = "Attack2";
-    private final static String run = "Run";
-    private final static String rotateClockwise = "rotateClockwise";
-    private final static String rotateCounterClockwise = "rotateCounterClockwise";
-    /** Max file Size */
-    public final static int FILE_SIZE = 7134962;
+    private final String MOUSE = "mouse";
+    private final String CHATBOX = "chatBox";
+    private final String TOGGLEROTATE = "toggleRotate";
+    private final String ATTACK1 = "Attack1";
+    private final String ATTACK2 = "Attack2";
+    private final String RUN = "Run";
+    private final String ROTATECLOCKWISE = "rotateClockwise";
+    private final String ROTATECOUNTERCLOCKWISE = "rotateCounterClockwise";
+    private final String PAUSE = "Pause";
     /** Life Number Player */
     private final static int LIFENUMBER = 50;
     /** damage inflicted on the enemy */
@@ -81,9 +78,8 @@ public class Client extends Thread implements CommunicationProtocol {
     private final BufferedReader INPUT;
     /** Writer for Server */
     private final DataOutputStream OUTPUT;
-    /** connection stabilished with server */
+    /** connection established with server */
     private boolean establishedConnection;
-
     /** new state */
     private String lineToSend;
 
@@ -112,33 +108,28 @@ public class Client extends Thread implements CommunicationProtocol {
 	    /** time to loading */
 	    while (!GameManager.getIstance().getMultiplayer().isCreated())
 		super.sleep(500);
-	    while (!this.establishedConnection) {
-		this.OUTPUT.writeBytes(KNOCK + "\n");
-		String line = this.INPUT.readLine();
-		if (line.equals(WHOAREYOU)) {
-		    final String out = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
-			    GameManager.getIstance().getNodeThief().getLocalTranslation(),
-			    GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,
-			    this.namePlayer, 0);
-		    this.OUTPUT.writeBytes(out + "\n");
-		    line = this.INPUT.readLine();
-		    if (line.equals(YOUAREWELCOME)) {
-
-			this.OUTPUT.writeBytes(WHOISTHERE + "\n");
-			int size = Integer.parseInt(this.INPUT.readLine());
-			for (int i = 0; i < size; i++) {
-			    if (this.INPUT.readLine().equals(NEWPLAYER)) {
-				String message = this.INPUT.readLine();
-				this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
-					new StringBuilder().builderModel(message),
-					new StringBuilder().builderName(message),
-					new StringBuilder().builderPosition(message));
-			    }
+	    this.OUTPUT.writeBytes(KNOCK + "\n");
+	    String line = this.INPUT.readLine();
+	    if (line.equals(WHOAREYOU)) {
+		final String out = new StringBuilder().builderString(new Vector3f(), new Vector3f(),
+			GameManager.getIstance().getNodeThief().getLocalTranslation(),
+			GameManager.getIstance().getNodeThief().getLife(), false, this.IAM, this.nameModel,
+			this.namePlayer, 0);
+		this.OUTPUT.writeBytes(out + "\n");
+		line = this.INPUT.readLine();
+		if (line.equals(YOUAREWELCOME)) {
+		    this.establishedConnection = true;
+		    this.OUTPUT.writeBytes(WHOISTHERE + "\n");
+		    int size = Integer.parseInt(this.INPUT.readLine());
+		    for (int i = 0; i < size; i++) {
+			if (this.INPUT.readLine().equals(NEWPLAYER)) {
+			    String message = this.INPUT.readLine();
+			    this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
+				    new StringBuilder().builderModel(message), new StringBuilder().builderName(message),
+				    new StringBuilder().builderPosition(message));
 			}
-			this.establishedConnection = true;
 		    }
-		} else if (line.equals(TRYAGAIN))
-		    this.startConnection();
+		}
 	    }
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nello start");
@@ -152,7 +143,8 @@ public class Client extends Thread implements CommunicationProtocol {
     public void endConnection() {
 	try {
 	    this.OUTPUT.writeBytes(CLOSE + "\n");
-	    this.OUTPUT.writeBytes(IAM + nameModel + "\n");
+	    String line = IAM + nameModel;
+	    this.OUTPUT.writeBytes(line + "\n");
 	    this.establishedConnection = false;
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel end");
@@ -170,8 +162,9 @@ public class Client extends Thread implements CommunicationProtocol {
     }
 
     /** This Method communicates an Player Updates */
-    public void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
+    public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 	try {
+	    
 	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
@@ -185,6 +178,7 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicateExitPlayer() {
 	try {
 	    String player = INPUT.readLine();
+	    System.out.println(player);
 	    this.removeModel(player);
 	} catch (IOException e) {// TODO cathc
 	    System.out.println("eccezioni nel communicateExitPlayer");
@@ -195,12 +189,10 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method Updates state of a Player */
     public void statePlayer() {
 	try {
-
 	    String line = this.INPUT.readLine();
 	    if (!new StringBuilder().checkString(line))
 		return;
 	    String key = new StringBuilder().builderKeyPlayer(line);
-
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setState(line);
 	    }
@@ -240,11 +232,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(this.nameModel);
 	float x = (float) ((Math.random() * GameManager.getIstance().getWorldXExtent()) * 0.25);
 	float z = (float) ((Math.random() * GameManager.getIstance().getWorldZExtent()) * 0.25);
-
 	while (!GameManager.getIstance().isWalkable(x, z)) {
 	    x = (float) ((Math.random() * GameManager.getIstance().getWorldXExtent()) * 0.25);
 	    z = (float) ((Math.random() * GameManager.getIstance().getWorldZExtent()) * 0.25);
-
 	}
 	Vector3f position = new Vector3f(x, GameManager.getIstance().getTerrainQuad().getHeight(new Vector2f(x, z)), z);
 	spatial.setLocalTranslation(position);
@@ -256,13 +246,19 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getMultiplayer().loadNifty();
 	GameManager.getIstance().getNodeThief().setName(namePlayer);
 	GameManager.getIstance().sortScorePlyer();
-	scene.attachChild(GameManager.getIstance().getNodeThief());
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    public Void call() {
+		scene.attachChild(GameManager.getIstance().getNodeThief());
+		return null;
+	    }
+	});
 	this.setKey();
     }
 
     /** This Method add a Player and his Model in the Game's Terrain */
     public void addNewPlayers(String name, String model, String player, Vector3f location) {
 
+	System.out.println(this.nameModel + "add "+ model);
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	spatial.setLocalTranslation(location);
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
@@ -275,17 +271,28 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().addScorePlayer(players);
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(players);
 	GameManager.getIstance().addPlayes(name, players);
-	GameManager.getIstance().addNotifyStateModel(new NotifyStateModel(true, players));
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    public Void call() {
+		GameManager.getIstance().getTerrain().attachChild(players);
+		return null;
+	    }
+	});
+	// GameManager.getIstance().addNotifyStateModel(new
+	// NotifyStateModel(true, players));
 	GameManager.getIstance().sortScorePlyer();
     }
 
     /** This Method remove a Model in the Game's Terrain */
     public void removeModel(String key) {
-
-	GameManager.getIstance()
-		.addNotifyStateModel(new NotifyStateModel(false, GameManager.getIstance().getPlayers().get(key)));
-	GameManager.getIstance().removePlayers(key);
-	GameManager.getIstance().removeModel(key);
+	final NodeCharacter player = GameManager.getIstance().getPlayers().get(key);
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    public Void call() {
+		GameManager.getIstance().getTerrain().detachChild(player);
+		GameManager.getIstance().removePlayers(key);
+		GameManager.getIstance().removeModel(key);
+		return null;
+	    }
+	});
 
     }
 
@@ -295,7 +302,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
 	    this.OUTPUT.writeBytes(this.namePlayer + "\n");
 	    this.OUTPUT.writeBytes(displayedText + "\n");
-	    System.out.println("Client mando: "+ namePlayer+"->"+displayedText);
+
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -304,11 +311,9 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** This method Riceived a Message from Player's ChatBox and Print */
     public void riceivedMessage() {
-
 	try {
 	    final String namePlayer = INPUT.readLine();
 	    final String messageChatBox = INPUT.readLine();
-	    System.out.println("Client ricevo: "+namePlayer+"-->"+messageChatBox);
 	    new FormatStringChat(namePlayer).printMessageChatBox(messageChatBox);
 
 	} catch (IOException e) {
@@ -320,27 +325,28 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** This method set Keyboard Command for MultiPlayer */
     public void setKey() {
-	GameManager.getIstance().getApplication().getInputManager().addMapping(run, new KeyTrigger(KeyInput.KEY_W));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(attack1,
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.RUN,
+		new KeyTrigger(KeyInput.KEY_W));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.ATTACK1,
 		new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(attack2,
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.ATTACK2,
 		new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateClockwise,
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.ROTATECLOCKWISE,
 		new KeyTrigger(KeyInput.KEY_A));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(rotateCounterClockwise,
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.ROTATECOUNTERCLOCKWISE,
 		new KeyTrigger(KeyInput.KEY_D));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(debug, new KeyTrigger(KeyInput.KEY_TAB));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(mouse,
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.MOUSE,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
-	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox,
-		new KeyTrigger(KeyInput.KEY_F9));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("sendMessage",
-			new KeyTrigger(KeyInput.KEY_RETURN));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.CHATBOX,
+		new KeyTrigger(KeyInput.KEY_RETURN));
+	GameManager.getIstance().getApplication().getInputManager().addMapping(this.PAUSE,
+		new KeyTrigger(KeyInput.KEY_ESCAPE));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,
-		"sendMessage");
+		GameManager.getIstance().getNodeThief().actionListener, this.RUN, this.ATTACK1, this.ATTACK2,
+		this.TOGGLEROTATE, this.CHATBOX, this.PAUSE, "sendMessage");
 	GameManager.getIstance().getApplication().getInputManager().addListener(
-		GameManager.getIstance().getNodeThief().analogListener, run, rotateClockwise, rotateCounterClockwise);
+		GameManager.getIstance().getNodeThief().analogListener, this.RUN, this.ROTATECLOCKWISE,
+		this.ROTATECOUNTERCLOCKWISE);
     }
 
     /** Thread's Method */
@@ -367,9 +373,25 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
+	    this.quitGame();
 	} catch (IOException e) {// TODO catch
 	    System.out.println("eccezioni nel run");
 	}
+    }
+
+    // TODO aggiungere questo metodo all'uscita dal multiplayer
+    public void quitGame() {
+	GameManager.getIstance().setPaused(false);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.RUN);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK1);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK2);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ROTATECLOCKWISE);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ROTATECOUNTERCLOCKWISE);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.MOUSE);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.CHATBOX);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.TOGGLEROTATE);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping("sendMessage");
+
     }
 
     /** this method get player's name */

@@ -1,5 +1,7 @@
 package singlePlayer.model;
 
+import java.util.concurrent.Callable;
+
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -14,7 +16,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import control.GameManager;
 import de.lessvoid.nifty.elements.Element;
-import multiPlayer.notify.NotifyBoxAttack;
 import singlePlayer.Sound;
 
 /**
@@ -165,10 +166,6 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	GameManager.getIstance().getBullet().getPhysicsSpace().add(characterControl);
     }
 
-    /** this method stop attack */
-    public void endAttack() {
-	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(false, this.node));
-    }
 
     /** this method check if there is a collition */
     public void isStricken(final int DAMAGE) {
@@ -197,7 +194,22 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
     public void startAttack() {
 	this.node.setLocalTranslation(this.getLocalTranslation());
 	this.node.setLocalRotation(this.getLocalRotation());
-	GameManager.getIstance().addBoxAttack(new NotifyBoxAttack(true, this.node));
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    public Void call() {
+		GameManager.getIstance().getTerrain().attachChild(NodeCharacter.this.node);
+		return null;
+	    }
+	});
+    }
+
+    /** this method stop attack */
+    public void endAttack() {
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    public Void call() {
+		GameManager.getIstance().getTerrain().detachChild(NodeCharacter.this.node);
+		return null;
+	    }
+	});
     }
 
     /** this method create a box */
