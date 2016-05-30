@@ -351,6 +351,7 @@ public class GameManager {
 	    this.multiplayer.setCreated(false);
 	}
 	if (this.thief != null) {
+	    this.thief.setMultiplayer(false);
 	    this.thief.detachAllChildren();
 	    this.thief.removeFromParent();
 	}
