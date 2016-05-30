@@ -85,6 +85,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	final int life = builder.builderLife(line);
 	final boolean attack = builder.builderAttack(line);
 	final int score = builder.builderScore(line);
+	GameManager.getIstance().sortScorePlyer();
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
 		NodeEnemyPlayers.this.changeState(life, score, attack, view, location, direction);
@@ -97,13 +98,11 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
+	this.lifeBar.updateLifeBar(this.life - life);
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);
-	this.lifeBar.updateLifeBar(this.life - life);
 	this.life = life;
 	this.score = score;
-	GameManager.getIstance().sortScorePlyer();
-
     }
 
     /** this method set enemy's walk direction */
@@ -142,6 +141,13 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	    }
 	    this.switchAttack = !this.switchAttack;
 	}
+    }
+
+    /** this method reset every things */
+    @Override
+    public void resetAll() {
+	super.resetAll();
+	this.lifeBar = new LifeBar(this);
     }
 
     /** this method check if enemy strikes main character */

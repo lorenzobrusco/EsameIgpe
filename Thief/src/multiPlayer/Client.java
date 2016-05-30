@@ -88,7 +88,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final InputManager inputManager, final Camera cam, int port) throws UnknownHostException, IOException {
 	this.PORT = port;
 	this.socket = new Socket(address, PORT);
-	this.establishedConnection = true;
+	this.establishedConnection = false;
 	this.lineToSend = "";
 	this.namePlayer = namePlayer;
 	this.cam = cam;
@@ -105,9 +105,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    this.nameTerrain = this.INPUT.readLine();
 	    GameManager.getIstance().getMultiplayer().setStart(true);
-	    /** time to loading */
+	    /** time to loading models */
 	    while (!GameManager.getIstance().getMultiplayer().isCreated())
 		super.sleep(500);
+	    /***/
 	    this.OUTPUT.writeBytes(KNOCK + "\n");
 	    String line = this.INPUT.readLine();
 	    if (line.equals(WHOAREYOU)) {
@@ -131,10 +132,10 @@ public class Client extends Thread implements CommunicationProtocol {
 		    }
 		}
 	    }
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nello start");
+	} catch (IOException e) {
+	    this.exception();
 	} catch (InterruptedException e) {
-	    e.printStackTrace();
+	    this.exception();
 	}
     }
 
@@ -142,12 +143,15 @@ public class Client extends Thread implements CommunicationProtocol {
     @Override
     public void endConnection() {
 	try {
-	    this.OUTPUT.writeBytes(CLOSE + "\n");
-	    String line = IAM + nameModel;
-	    this.OUTPUT.writeBytes(line + "\n");
-	    this.establishedConnection = false;
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nel end");
+	    if (this.socket.isConnected()) {
+		this.OUTPUT.writeBytes(CLOSE + "\n");
+		String line = IAM + nameModel;
+		this.OUTPUT.writeBytes(line + "\n");
+		this.establishedConnection = false;
+	    }
+	} catch (IOException e) {
+	    this.exception();
+
 	}
     }
 
@@ -156,21 +160,22 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicationState() {
 	try {
 	    this.OUTPUT.writeBytes(this.lineToSend + "\n");
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nel communicationState");
+	} catch (IOException e) {
+	    this.exception();
 	}
     }
 
     /** This Method communicates an Player Updates */
-    public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
+    public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location,
+	    int score) {
 	try {
-	    
 	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
-
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nel notifyUpdate");
+	} catch (IOException e) {
+	    this.exception();
+	} catch (NullPointerException e) {
+	    this.exception();
 	}
     }
 
@@ -178,11 +183,9 @@ public class Client extends Thread implements CommunicationProtocol {
     public void communicateExitPlayer() {
 	try {
 	    String player = INPUT.readLine();
-	    System.out.println(player);
 	    this.removeModel(player);
-	} catch (IOException e) {// TODO cathc
-	    System.out.println("eccezioni nel communicateExitPlayer");
-	    // TODO da gestire
+	} catch (IOException e) {
+	    this.exception();
 	}
     }
 
@@ -196,10 +199,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    if (GameManager.getIstance().getPlayers().get(key) != null) {
 		((NodeEnemyPlayers) GameManager.getIstance().getPlayers().get(key)).setState(line);
 	    }
-
-	} catch (IOException e) {// TODO catch
-	    e.printStackTrace();
-	    System.out.println("eccezioni nel statePlayer");
+	} catch (IOException e) {
+	    this.exception();
 	}
     }
 
@@ -219,8 +220,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    String line = this.INPUT.readLine();
 	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
 		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line));
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nel communicationNewPlayer");
+	} catch (IOException e) {
+	    this.exception();
 	}
     }
 
@@ -257,8 +258,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** This Method add a Player and his Model in the Game's Terrain */
     public void addNewPlayers(String name, String model, String player, Vector3f location) {
-
-	System.out.println(this.nameModel + "add "+ model);
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	spatial.setLocalTranslation(location);
 	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, LIFENUMBER,
@@ -277,8 +276,6 @@ public class Client extends Thread implements CommunicationProtocol {
 		return null;
 	    }
 	});
-	// GameManager.getIstance().addNotifyStateModel(new
-	// NotifyStateModel(true, players));
 	GameManager.getIstance().sortScorePlyer();
     }
 
@@ -302,9 +299,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
 	    this.OUTPUT.writeBytes(this.namePlayer + "\n");
 	    this.OUTPUT.writeBytes(displayedText + "\n");
-
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.exception();
 	}
 
     }
@@ -315,10 +311,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	    final String namePlayer = INPUT.readLine();
 	    final String messageChatBox = INPUT.readLine();
 	    new FormatStringChat(namePlayer).printMessageChatBox(messageChatBox);
-
 	} catch (IOException e) {
-	    // TODO catch
-	    e.printStackTrace();
+	    this.exception();
 	}
 
     }
@@ -338,11 +332,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.MOUSE,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.CHATBOX,
-		new KeyTrigger(KeyInput.KEY_TAB));
+		new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(this.PAUSE,
 		new KeyTrigger(KeyInput.KEY_ESCAPE));
-	GameManager.getIstance().getApplication().getInputManager().addMapping("sendMessage",
-			new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().actionListener, this.RUN, this.ATTACK1, this.ATTACK2,
 		this.TOGGLEROTATE, this.CHATBOX, this.PAUSE, "sendMessage");
@@ -375,13 +367,15 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
-	} catch (IOException e) {// TODO catch
-	    System.out.println("eccezioni nel run");
+	    this.quitGame();
+	} catch (IOException e) {
+	    this.exception();
 	}
     }
 
-    /** remove added key mapping for multiplayer */
-    public void removeKeyMappings() {
+    /** this method clear mapping */
+    public void quitGame() {
+	GameManager.getIstance().setPaused(false);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.RUN);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK1);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ATTACK2);
@@ -392,6 +386,18 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.TOGGLEROTATE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping("sendMessage");
 
+    }
+
+    /** this method is called when server and client aren't synchronized */
+    private void exception() {
+	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+	    @Override
+	    public Void call() throws Exception {
+		Client.this.establishedConnection = false;
+		GameManager.getIstance().getMultiplayer().reset();
+		return null;
+	    }
+	});
     }
 
     /** this method get player's name */

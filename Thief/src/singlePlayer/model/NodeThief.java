@@ -39,6 +39,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     /** camera attach to main character */
     private ChaseCamera camera;
+    /**bonfire key*/
     private final String bonfire = "BonFire";
     /** it's true main character is running */
     private boolean isRun;
@@ -50,7 +51,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private boolean changeAttack;
     /** wait that animation is ends */
     private boolean waitAnimation;
-    // TODO
+    /**check if chat box is enable*/
     private boolean chatboxIsEnable;
     /** speed main character */
     private static final float SPEED = 15;
@@ -89,7 +90,7 @@ public class NodeThief extends NodeCharacter implements Collition {
     private int talkFrequence;
     /***/
     private boolean win;
-
+    /***/
     private boolean canTalk;
 
     /** constructor */
@@ -511,7 +512,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 
     @Override
     public void isStricken(int DAMAGE) {
-	// TODO Auto-generated method stub
 	super.isStricken(DAMAGE);
 	this.setDamageLifeBar();
 	this.notifyUpdate(false);

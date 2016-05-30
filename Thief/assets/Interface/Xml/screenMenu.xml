@@ -7,12 +7,41 @@
 	<useControls filename="nifty-default-controls.xml" />
 	<useStyles filename="Interface/Styles/listboxStyleChat.xml" />
 
+	<popup id="exceptionStartGame" childLayout="center" backgroundColor="#000a">
+		<panel height="30%" width="60%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label"
+					text="you haven't any permission, contact us to resolve it" font="Interface/Fonts/Morpheus.fnt"
+					color="#ee1f" />
+			</panel>
+			<control name="button" label="Yes" id="Button" align="center"
+				valign="center" visibleToMouse="true" width="30%">
+				<interact onClick="closePopUp()"></interact>
+			</control>
+		</panel>
+	</popup>
+
 	<popup id="blindServerPort" childLayout="center" backgroundColor="#000a">
 		<panel height="30%" width="60%" align="center" childLayout="vertical"
 			backgroundImage="Interface/Image/Graphics/blackBar.png">
 			<panel height="50%" width="100%" childLayout="center">
 				<control name="label"
 					text="please insert or change port number before start server"
+					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+			</panel>
+			<control name="button" label="Yes" id="Button" align="center"
+				valign="center" visibleToMouse="true" width="30%">
+				<interact onClick="closePopUp()"></interact>
+			</control>
+		</panel>
+	</popup>
+
+	<popup id="exceptionServer" childLayout="center" backgroundColor="#000a">
+		<panel height="30%" width="60%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label" text="insert all values or they're not valid"
 					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
 			</panel>
 			<control name="button" label="Yes" id="Button" align="center"

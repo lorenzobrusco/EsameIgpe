@@ -96,9 +96,8 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		this.server.addPlayer(this);
 	    }
 	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-
+	    this.exception();
+	} 
     }
 
     /** server closed connection with client */
@@ -110,7 +109,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.exception();
 	}
 
     }
@@ -119,46 +118,32 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     @Override
     public void communicationState() {
 	try {
-
 	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
-
 	    String line = this.INPUT.readLine();
-	    
 	    if (!new StringBuilder().checkString(line))
 		return;
-
 	    final String key = new StringBuilder().builderKeyPlayer(line);
-	    
 	    final Vector3f walkdirection = new StringBuilder().builderWalk(line);
-
 	    final Vector3f viewdirection = new StringBuilder().builderView(line);
-
 	    final Vector3f position = new StringBuilder().builderPosition(line);
-
 	    final int life = new StringBuilder().builderLife(line);
-
 	    final boolean attack = new StringBuilder().builderAttack(line);
-
 	    final int score = new StringBuilder().builderScore(line);
-
 	    for (ClientManager manager : this.server.getPlayers()) {
-		if (manager != this)// TODO non mandare messaggio a me stesso
+		if (manager != this)
 		    manager.statePlayer(key, walkdirection, viewdirection, position, life, attack, score);
 	    }
-
 	} catch (IOException e) {
-	    System.out.println("client : connection");
+	    this.exception();
 	}
     }
 
     /** This Method communicates any player has left the multyplayer */
     public void communicateExitPlayer(String player) {
-
 	for (ClientManager manager : this.server.getPlayers()) {
 	    if (manager != this)
 		manager.sendPlayerToDelete(player);
 	}
-
     }
 
     /** this method send player's name to delete */
@@ -167,7 +152,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(DELETE + "\n");
 	    this.OUTPUT.writeBytes(player + "\n");
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.exception();
 	}
     }
 
@@ -180,7 +165,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		    this.nameClient, score);
 	    this.OUTPUT.writeBytes(line + "\n");
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.exception();
 	}
     }
 
@@ -200,12 +185,10 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(NEWPLAYER + "\n");
 	    String line = new StringBuilder().builderString(new Vector3f(), new Vector3f(), location, 0, false, name,
 		    model, nameClient, 0);
-	    System.out.println(line);
 	    this.OUTPUT.writeBytes(line + "\n");
 	    this.newPlayer = false;
 	} catch (IOException e) {
-	    // TODO catch
-	    e.printStackTrace();
+	    this.exception();
 	}
 
     }
@@ -220,8 +203,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    }
 
 	} catch (IOException e) {
-	    // TODO catch
-	    e.printStackTrace();
+	    this.exception();
 	}
 
     }
@@ -233,8 +215,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(player + "\n");
 	    this.OUTPUT.writeBytes(message + "\n");
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    this.exception();
 	}
 
     }
@@ -245,6 +226,13 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    manager.setNewPlayer(true);
 	    manager.communicationNewPlayer(this.player, this.nameModel, this.nameClient, this.startPosition);
 	}
+    }
+
+    /***/
+    private void exception() {
+	this.server.removePlayer(this);
+	final String client = this.address + this.nameModel;
+	this.communicateExitPlayer(client);
     }
 
     /** thread's run */
@@ -266,7 +254,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.socket.close();
 	    this.server.removePlayer(this);
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.exception();
+	} catch (NullPointerException e){
+	    this.exception();
 	}
     }
 
