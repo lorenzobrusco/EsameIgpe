@@ -217,8 +217,8 @@ public class GameManager {
     /** this method check if point x,z is free */
     public boolean isWalkable(float x, float z) {
 	if (this.secondLayer[(int) (x + this.worldXExtent)][(int) (z + this.worldZExtent)]
-		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2
-			&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10) {
+		|| this.getTerrainQuad().getHeight(new Vector2f(x, z)) < -2f
+			&& this.getTerrainQuad().getHeight(new Vector2f(x, z)) > 10f) {
 	    return false;
 	}
 	return true;
@@ -261,38 +261,31 @@ public class GameManager {
 
     /** this method set pause */
     public void pauseGame() {
-	this.paused = true;
 	this.application.getInputManager().setCursorVisible(true);
 	this.thief.getCamera().setEnabled(false);
-	this.thief.stop();
-
-	for (NodeModel model : this.getModels()) {
-
-	    for (Sound sound : model.getAllSound()) {
-		sound.stopSound();
+	if (this.getNodeThief().isSinglePlayer()) {
+	    this.paused = true;
+	    this.thief.stop();
+	    for (NodeModel model : this.getModels()) {
+		for (Sound sound : model.getAllSound()) {
+		    sound.stopSound();
+		}
+		if (model instanceof NodeEnemy)
+		    ((NodeEnemy) model).pauseIntelligence();
 	    }
-
-	    if (model instanceof NodeEnemy)
-		((NodeEnemy) model).pauseIntelligence();
 	}
     }
 
-	/** this method is called when user come back to menu */
-	public void quitGame() {
-
-		for (NodeModel model : this.getModels()) {
-
-			for (Sound sound : model.getAllSound()) {
-				sound.stopSound();
-			}
-
-			if (model instanceof NodeEnemy)
-				((NodeEnemy) model).pauseIntelligence();
-		}
-
-//		this.menuSound.getAudioNode().setVolume(1.0f);
-		this.playMenuSound();
-
+    /** this method is called when user come back to menu */
+    public void quitGame() {
+	for (NodeModel model : this.getModels()) {
+	    for (Sound sound : model.getAllSound()) {
+		sound.stopSound();
+	    }
+	    if (model instanceof NodeEnemy)
+		((NodeEnemy) model).pauseIntelligence();
+	}
+	this.playMenuSound();
 	this.spatial.clear();
 	this.nodeRender.clear();
 	this.enemies.clear();
@@ -303,373 +296,374 @@ public class GameManager {
 	this.terrain.detachAllChildren();
     }
 
-	/** this method is called to resume game */
-	public void resumeGame() {
-		this.paused = false;
-		this.thief.getCamera().setEnabled(true);
-		this.thief.getCamera().setDragToRotate(false);
-		this.application.getInputManager().setCursorVisible(false);
-
-		for (NodeCharacter enemy : enemies)
-			((NodeEnemy) enemy).resumeIntelligence();
+    /** this method is called to resume game */
+    public void resumeGame() {
+	this.thief.getCamera().setEnabled(true);
+	this.thief.getCamera().setDragToRotate(false);
+	this.application.getInputManager().setCursorVisible(false);
+	if (this.thief.isSinglePlayer()) {
+	    this.paused = false;
+	    for (NodeCharacter enemy : enemies)
+		((NodeEnemy) enemy).resumeIntelligence();
 	}
+    }
 
-	/** this method start server */
-	public void startServer(String path, int port) {
+    /** this method start server */
+    public void startServer(String path, int port) {
+	try {
+
+	    this.server = new Server(path, port);
+	    this.server.start();
+	} catch (UnknownHostException e) {
+
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    // TODO catch
+	    e.printStackTrace();
+	}
+    }
+
+    /** this method sort score lists */
+    public void sortScorePlyer() {// TODO score
+	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
+	    @Override
+	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
+		if (arg0.getScore() > arg1.getScore())
+		    return 1;
+		else if (arg0.getScore() < arg1.getScore())
+		    return 2;
+		else
+		    return 0;
+	    }
+	});
+	for (int i = 0; i < this.scorePlayers.size(); i++) {
+	    this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
+		    + ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
+	}
+    }
+
+    /** this method set bullet */
+    public void setBullet(BulletAppState appState) {
+	this.bulletAppState = appState;
+    }
+
+    /** this method set client */
+    public void setClient(final Client client) {
+	this.client = client;
+    }
+
+    /** this method get client */
+    public Client getClient() {
+	return this.client;
+    }
+
+    /** this method get models */
+    public Collection<NodeModel> getModels() {
+	return spatial;
+    }
+
+    /** this method get loadterrain */
+    public LoadTerrain getLoadTerrain() {
+	return loadTerrain;
+    }
+
+    /** this method get main's character */
+    public NodeThief getNodeThief() {
+	return thief;
+    }
+
+    /** this method set main's character */
+    public void setNodeThief(NodeThief thief) {
+	this.thief = thief;
+    }
+
+    /** this method get players */
+    public AbstractMap<String, NodeCharacter> getPlayers() {
+	return this.players;
+    }
+
+    /** this method add players */
+    public void addPlayes(String address, NodeCharacter player) {
+	this.players.put(address, player);
+    }
+
+    /** this method remove players */
+    public void removePlayers(String address) {
+	this.players.remove(address);
+    }
+
+    /** this method remove enemy's lifebar */
+    public void removeEnemyLifeBar(int key) {
+	this.enemiesLifeBar.remove(key);
+    }
+
+    /** this method get enemy's lifebar */
+    public AbstractMap<Integer, Element> getEnemiesLifeBar() {
+	return this.enemiesLifeBar;
+    }
+
+    /** this method get bonfire */
+    public NodeModel getBonfire() {
+	return bonfire;
+    }
+
+    /** this method set bonfire */
+    public void setBonfire(NodeModel bonfire) {
+	this.bonfire = bonfire;
+    }
+
+    /** this method get lights */
+    public Collection<PointLight> getLights() {
+	return this.lights;
+    }
+
+    /** this method get sounds */
+    public AudioRenderer getAudioRender() {
+	return this.audioRenderer;
+    }
+
+    /** this method set editor */
+    public void setEditor(boolean editor) {
+	this.editor = editor;
+    }
+
+    /** this method get editor */
+    public boolean isEditor() {
+	return this.editor;
+    }
+
+    /** this method add emenies */
+    public void addModelEnemy(NodeCharacter enemy) {
+	this.enemies.add(enemy);
+
+    }
+
+    /** this method get enemies */
+    public Collection<NodeCharacter> getModelEnemys() {
+	return this.enemies;
+    }
+
+    /** this method get application */
+    public Application getApplication() {
+	return application;
+    }
+
+    /** this method remove model to rendering */
+    public void detachModelRender(NodeModel model) {
+	this.nodeRender.remove(model);
+    }
+
+    /** this method get model to rendering */
+    public Collection<NodeModel> getNodeModel() {
+	return this.nodeRender;
+    }
+
+    /** this method get enemies */
+    public Collection<NodeCharacter> getEnemies() {
+	return this.enemies;
+    }
+
+    /** this method get terrain */
+    public Node getTerrain() {
+	return this.terrain;
+    }
+
+    /** this method get bullet */
+    public BulletAppState getBullet() {
+	return this.bulletAppState;
+    }
+
+    /** this method add model */
+    public void addModel(NodeModel model) {
+	this.spatial.add(model);
+    }
+
+    /** this method add model's state */
+    public synchronized void addNotifyStateModel(NotifyStateModel notifyStateModel) {
+	this.notifyStateModels.add(notifyStateModel);
+    }
+
+    /** this method get model's state */
+    public synchronized NotifyStateModel getNotifyStateModel() {
+	return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
+    }
+
+    /** this method check if collection is empty */
+    public synchronized boolean getNotyStateModelsIsEmpty() {
+	return this.notifyStateModels.isEmpty();
+    }
+
+    /** this method add box attack */
+    public synchronized void addBoxAttack(NotifyBoxAttack boxAttack) {
+	this.boxsAttack.add(boxAttack);
+    }
+
+    /** this method add state */
+    public synchronized void addState(NodeCharacter character, ModelState modelState) {
+	this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
+    }
+
+    /** this method return true if states is empty */
+    public synchronized boolean stateIsEmpty() {
+	return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
+    }
+
+    /** this method get box attack */
+    public synchronized NotifyBoxAttack getBoxAttack() {
+	return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
+    }
+
+    /** this method check if collection is empty */
+    public synchronized boolean getBoxsAttackIsEmpty() {
+	return this.boxsAttack.isEmpty();
+    }
+
+    /** this method add player and score */
+    public void addScorePlayer(NodeCharacter character) {
+	this.scorePlayers.add(character);
+	// this.sortScorePlyer();
+    }
+
+    /** this method remove score */
+    public void removeScorePlayer(NodeCharacter character) {
+	this.scorePlayers.remove(character);
+    }
+
+    /** this method get score */
+    public ArrayList<NodeCharacter> getScorePlayer() {
+	return (ArrayList<NodeCharacter>) this.scorePlayers;
+    }
+
+    /** this method matrix */
+    public boolean[][] getSecondLayer() {
+	return this.secondLayer;
+    }
+
+    /** this method get nifty */
+    public Nifty getNifty() {
+	return nifty;
+    }
+
+    /** this method set nifty */
+    public void setNifty(Nifty nifty) {
+	this.nifty = nifty;
+    }
+
+    /** this method get game type */
+    public String getModelGame() {
+	return modelGame;
+    }
+
+    /** this method set game type */
+    public void setModelGame(String modelGame) {
+	this.modelGame = modelGame;
+    }
+
+    /** this method get pause */
+    public boolean isPaused() {
+	return this.paused;
+    }
+
+    /** this method set pause */
+    public void setPaused(boolean value) {
+	this.paused = value;
+    }
+
+    /** this method get server */
+    public Server getServer() {
+	return server;
+    }
+
+    /** this method get terrainquand */
+    public TerrainQuad getTerrainQuad() {
+	return this.terrainQuad;
+    }
+
+    /** this method set terrainquad */
+    public void setTerrainQuad(final TerrainQuad quad) {
+	this.terrainQuad = quad;
+    }
+
+    /** this method get singleplayer */
+    public SinglePlayer getSinglePlayer() {
+	return singlePlayer;
+    }
+
+    /** this method set singleplayer */
+    public void setSinglePlayer(SinglePlayer singlePlayer) {
+	this.singlePlayer = singlePlayer;
+    }
+
+    /** this method get multiplayer */
+    public MultiPlayer getMultiplayer() {
+	return multiplayer;
+    }
+
+    /** this method set multiplayer */
+    public void setMultiplayer(MultiPlayer multiplayer) {
+	this.multiplayer = multiplayer;
+    }
+
+    /** this method get portal */
+    public NodeModel getPortal() {
+	return portal;
+    }
+
+    public Collection<Pair<NodeCharacter, ModelState>> getStates() {
+	return states;
+    }
+
+    /** this method set portal */
+    public void setPortal(NodeModel portal) {
+	this.portal = portal;
+    }
+
+    /** this method get x */
+    public float getWorldXExtent() {
+	return worldXExtent;
+    }
+
+    /** this method z */
+    public float getWorldZExtent() {
+	return worldZExtent;
+    }
+
+    public void stopMenuSound() {
+	if (!(this.menuSound == null))
+	    for (float i = this.menuSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+		this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() - 0.1f);
 		try {
-
-			this.server = new Server(path, port);
-			this.server.start();
-		} catch (UnknownHostException e) {
-
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO catch
-			e.printStackTrace();
+		    Thread.sleep(100);
+		} catch (InterruptedException e) {
+		    this.menuSound.stopSound();
+		    e.printStackTrace();
 		}
-	}
+	    }
+	this.menuSound.stopSound();
+    }
 
-	/** this method sort score lists */
-	public void sortScorePlyer() {// TODO score
-		this.scorePlayers.sort(new Comparator<NodeCharacter>() {
-			@Override
-			public int compare(NodeCharacter arg0, NodeCharacter arg1) {
-				if (arg0.getScore() > arg1.getScore())
-					return 1;
-				else if (arg0.getScore() < arg1.getScore())
-					return 2;
-				else
-					return 0;
-			}
-		});
-		for (int i = 0; i < this.scorePlayers.size(); i++) {
-			this.multiplayer.setPlayerInScoreLists(((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getName()
-					+ ": " + ((ArrayList<NodeCharacter>) this.scorePlayers).get(i).getScore() + "", i);
-		}
-	}
+    public void setAudioRendere(AudioRenderer audioRenderer) {
+	this.audioRenderer = audioRenderer;
+    }
 
-	/** this method set bullet */
-	public void setBullet(BulletAppState appState) {
-		this.bulletAppState = appState;
-	}
+    public void setupAudio() {
+	this.menuSound = new Sound(this.application.getRootNode(), "Menu", false, false, true, 1.0f, false);
+    }
 
-	/** this method set client */
-	public void setClient(final Client client) {
-		this.client = client;
-	}
-
-	/** this method get client */
-	public Client getClient() {
-		return this.client;
-	}
-
-	/** this method get models */
-	public Collection<NodeModel> getModels() {
-		return spatial;
-	}
-
-	/** this method get loadterrain */
-	public LoadTerrain getLoadTerrain() {
-		return loadTerrain;
-	}
-
-	/** this method get main's character */
-	public NodeThief getNodeThief() {
-		return thief;
-	}
-
-	/** this method set main's character */
-	public void setNodeThief(NodeThief thief) {
-		this.thief = thief;
-	}
-
-	/** this method get players */
-	public AbstractMap<String, NodeCharacter> getPlayers() {
-		return this.players;
-	}
-
-	/** this method add players */
-	public void addPlayes(String address, NodeCharacter player) {
-		this.players.put(address, player);
-	}
-
-	/** this method remove players */
-	public void removePlayers(String address) {
-		this.players.remove(address);
-	}
-
-	/** this method remove enemy's lifebar */
-	public void removeEnemyLifeBar(int key) {
-		this.enemiesLifeBar.remove(key);
-	}
-
-	/** this method get enemy's lifebar */
-	public AbstractMap<Integer, Element> getEnemiesLifeBar() {
-		return this.enemiesLifeBar;
-	}
-
-	/** this method get bonfire */
-	public NodeModel getBonfire() {
-		return bonfire;
-	}
-
-	/** this method set bonfire */
-	public void setBonfire(NodeModel bonfire) {
-		this.bonfire = bonfire;
-	}
-
-	/** this method get lights */
-	public Collection<PointLight> getLights() {
-		return this.lights;
-	}
-
-	/** this method get sounds */
-	public AudioRenderer getAudioRender() {
-		return this.audioRenderer;
-	}
-
-	/** this method set editor */
-	public void setEditor(boolean editor) {
-		this.editor = editor;
-	}
-
-	/** this method get editor */
-	public boolean isEditor() {
-		return this.editor;
-	}
-
-	/** this method add emenies */
-	public void addModelEnemy(NodeCharacter enemy) {
-		this.enemies.add(enemy);
-
-	}
-
-	/** this method get enemies */
-	public Collection<NodeCharacter> getModelEnemys() {
-		return this.enemies;
-	}
-
-	/** this method get application */
-	public Application getApplication() {
-		return application;
-	}
-
-	/** this method remove model to rendering */
-	public void detachModelRender(NodeModel model) {
-		this.nodeRender.remove(model);
-	}
-
-	/** this method get model to rendering */
-	public Collection<NodeModel> getNodeModel() {
-		return this.nodeRender;
-	}
-
-	/** this method get enemies */
-	public Collection<NodeCharacter> getEnemies() {
-		return this.enemies;
-	}
-
-	/** this method get terrain */
-	public Node getTerrain() {
-		return this.terrain;
-	}
-
-	/** this method get bullet */
-	public BulletAppState getBullet() {
-		return this.bulletAppState;
-	}
-
-	/** this method add model */
-	public void addModel(NodeModel model) {
-		this.spatial.add(model);
-	}
-
-	/** this method add model's state */
-	public synchronized void addNotifyStateModel(NotifyStateModel notifyStateModel) {
-		this.notifyStateModels.add(notifyStateModel);
-	}
-
-	/** this method get model's state */
-	public synchronized NotifyStateModel getNotifyStateModel() {
-		return ((ConcurrentLinkedQueue<NotifyStateModel>) this.notifyStateModels).poll();
-	}
-
-	/** this method check if collection is empty */
-	public synchronized boolean getNotyStateModelsIsEmpty() {
-		return this.notifyStateModels.isEmpty();
-	}
-
-	/** this method add box attack */
-	public synchronized void addBoxAttack(NotifyBoxAttack boxAttack) {
-		this.boxsAttack.add(boxAttack);
-	}
-
-	/** this method add state */
-	public synchronized void addState(NodeCharacter character, ModelState modelState) {
-		this.states.add(new Pair<NodeCharacter, ModelState>(character, modelState));
-	}
-
-	/** this method return true if states is empty */
-	public synchronized boolean stateIsEmpty() {
-		return ((ConcurrentLinkedQueue<Pair<NodeCharacter, ModelState>>) this.states).isEmpty();
-	}
-
-	/** this method get box attack */
-	public synchronized NotifyBoxAttack getBoxAttack() {
-		return ((ConcurrentLinkedQueue<NotifyBoxAttack>) this.boxsAttack).poll();
-	}
-
-	/** this method check if collection is empty */
-	public synchronized boolean getBoxsAttackIsEmpty() {
-		return this.boxsAttack.isEmpty();
-	}
-
-	/** this method add player and score */
-	public void addScorePlayer(NodeCharacter character) {
-		this.scorePlayers.add(character);
-		// this.sortScorePlyer();
-	}
-
-	/** this method remove score */
-	public void removeScorePlayer(NodeCharacter character) {
-		this.scorePlayers.remove(character);
-	}
-
-	/** this method get score */
-	public ArrayList<NodeCharacter> getScorePlayer() {
-		return (ArrayList<NodeCharacter>) this.scorePlayers;
-	}
-
-	/** this method matrix */
-	public boolean[][] getSecondLayer() {
-		return this.secondLayer;
-	}
-
-	/** this method get nifty */
-	public Nifty getNifty() {
-		return nifty;
-	}
-
-	/** this method set nifty */
-	public void setNifty(Nifty nifty) {
-		this.nifty = nifty;
-	}
-
-	/** this method get game type */
-	public String getModelGame() {
-		return modelGame;
-	}
-
-	/** this method set game type */
-	public void setModelGame(String modelGame) {
-		this.modelGame = modelGame;
-	}
-
-	/** this method get pause */
-	public boolean isPaused() {
-		return this.paused;
-	}
-
-	/** this method set pause */
-	public void setPaused(boolean value) {
-		this.paused = value;
-	}
-
-	/** this method get server */
-	public Server getServer() {
-		return server;
-	}
-
-	/** this method get terrainquand */
-	public TerrainQuad getTerrainQuad() {
-		return this.terrainQuad;
-	}
-
-	/** this method set terrainquad */
-	public void setTerrainQuad(final TerrainQuad quad) {
-		this.terrainQuad = quad;
-	}
-
-	/** this method get singleplayer */
-	public SinglePlayer getSinglePlayer() {
-		return singlePlayer;
-	}
-
-	/** this method set singleplayer */
-	public void setSinglePlayer(SinglePlayer singlePlayer) {
-		this.singlePlayer = singlePlayer;
-	}
-
-	/** this method get multiplayer */
-	public MultiPlayer getMultiplayer() {
-		return multiplayer;
-	}
-
-	/** this method set multiplayer */
-	public void setMultiplayer(MultiPlayer multiplayer) {
-		this.multiplayer = multiplayer;
-	}
-
-	/** this method get portal */
-	public NodeModel getPortal() {
-		return portal;
-	}
-
-	public Collection<Pair<NodeCharacter, ModelState>> getStates() {
-		return states;
-	}
-
-	/** this method set portal */
-	public void setPortal(NodeModel portal) {
-		this.portal = portal;
-	}
-
-	/** this method get x */
-	public float getWorldXExtent() {
-		return worldXExtent;
-	}
-
-	/** this method z */
-	public float getWorldZExtent() {
-		return worldZExtent;
-	}
-
-	public void stopMenuSound() {
-		if (!(this.menuSound == null))
-			for (float i = this.menuSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
-				this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() - 0.1f);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					this.menuSound.stopSound();
-					e.printStackTrace();
-				}
-			}
+    public void playMenuSound() {
+	this.menuSound.getAudioNode().setVolume(0.0f);
+	this.menuSound.playSound();
+	for (float i = 0.0f; i < 1.0f; i += 0.1f) {
+	    this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() + 0.1f);
+	    try {
+		if (!this.editor && this.getSinglePlayer() == null && this.multiplayer == null)
+		    Thread.sleep(50);
+		else
+		    Thread.sleep(100);
+	    } catch (InterruptedException e) {
 		this.menuSound.stopSound();
+		e.printStackTrace();
+	    }
 	}
-
-	public void setAudioRendere(AudioRenderer audioRenderer) {
-		this.audioRenderer = audioRenderer;
-	}
-
-	public void setupAudio() {
-		this.menuSound = new Sound(this.application.getRootNode(), "Menu", false, false, true, 1.0f, false);
-	}
-
-	public void playMenuSound() {
-		this.menuSound.getAudioNode().setVolume(0.0f);
-		this.menuSound.playSound();
-		for (float i = 0.0f; i < 1.0f; i += 0.1f) {
-			this.menuSound.getAudioNode().setVolume(this.menuSound.getAudioNode().getVolume() + 0.1f);
-			try {
-				if (!this.editor && this.getSinglePlayer() == null && this.multiplayer == null)
-					Thread.sleep(50);
-				else
-					Thread.sleep(100);
-			} catch (InterruptedException e) {
-				this.menuSound.stopSound();
-				e.printStackTrace();
-			}
-		}
-	}
+    }
 }

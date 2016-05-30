@@ -7,6 +7,39 @@
 	<useStyles filename="Interface/Styles/listboxStyleChat.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 
+	<controlDefinition name="sureExit">
+		<panel id="PanelButton" childLayout="vertical" height="70%">
+			<panel id="space1" childLayout="center" height="30%" />
+			<image filename="Interface/Image/Text/AreyousureText.png" id="areSureExit"
+				width="90%" height="15%" align="center" valign="center" />
+			<panel id="space2" childLayout="center" height="20%" />
+			<panel id="buttonPanel" childLayout="horizontal" height="30%"
+				width="100%">
+				<panel id="buttonSpace" childLayout="center" width="5%" />
+				<image filename="Interface/Image/Button/yesButton.png" id="yesButton"
+					width="40%" height="40%" visibleToMouse="true">
+					<effect>
+						<onStartHover name="nop" onStartEffect="startGrow(yesButton)" />
+						<onEndHover name="nop" onStartEffect="endGrow(yesButton)" />
+					</effect>
+					<interact onClick="quitGame()" />
+
+
+				</image>
+				<panel id="buttonSpace1" childLayout="center" width="10%" />
+				<image filename="Interface/Image/Button/noButton.png" id="noButton"
+					width="40%" height="40%" visibleToMouse="true">
+					<effect>
+						<onStartHover name="nop" onStartEffect="startGrow(noButton)" />
+						<onEndHover name="nop" onStartEffect="endGrow(noButton)" />
+					</effect>
+					<interact onClick="openCloseSureExitButton()" />
+				</image>
+			</panel>
+
+		</panel>
+	</controlDefinition>
+
 	<controlDefinition name="myChat" style="nifty-chat-control"
 		controller="de.lessvoid.nifty.controls.chatcontrol.ChatControl" lines="10"
 		chatLineIconWidth="25px" chatLineIconHeight="25px" chatLineHeight="25px">
@@ -43,29 +76,35 @@
 
 
 	<controlDefinition name="Scores">
-	 <panel childLayout="vertical" backgroundImage="Interface/Image/Graphics/blackBarHorizontal.png" width ="20%" height = "17%">
-	 <panel height="4%"/>
-	    <image 	filename="Interface/Image/Text/ScoreText.png" width="60%" height="30%" align="center"/>
-	     <text id="firstPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#2ef12a" text="" align="center"/>	     
-	       <text id="secondPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="" align="center" />	       
-	         <text id="thirdPlayerText" font="Interface/Fonts/Morpheus-20.fnt" color="#ffff" text="" align="center"/>
+		<panel childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBarHorizontal.png"
+			width="20%" height="17%">
+			<panel height="4%" />
+			<image filename="Interface/Image/Text/ScoreText.png" width="60%"
+				height="30%" align="center" />
+			<text id="firstPlayerText" font="Interface/Fonts/Morpheus-20.fnt"
+				color="#2ef12a" text="" align="center" />
+			<text id="secondPlayerText" font="Interface/Fonts/Morpheus-20.fnt"
+				color="#ffff" text="" align="center" />
+			<text id="thirdPlayerText" font="Interface/Fonts/Morpheus-20.fnt"
+				color="#ffff" text="" align="center" />
 
-	</panel>
+		</panel>
 	</controlDefinition>
 
 	<screen id="lifeBarScreen" controller="multiPlayer.MultiPlayer">
 
-		<layer id="layerProgressBar" childLayout="vertical" >
+		<layer id="layerProgressBar" childLayout="vertical">
 			<panel id="panelProgressBar" childLayout="absolute">
 
 			</panel>
 
 
 		</layer>
-		
+
 		<layer id="LayerScore" childLayout="horizontal">
-		<panel childLayout="center" width="1%"/>
-		      <control name="Scores" y="1%"/>
+			<panel childLayout="center" width="1%" />
+			<control name="Scores" y="1%" />
 		</layer>
 
 		<layer id="layerBorder" childLayout="vertical">
@@ -79,8 +118,8 @@
 
 
 		<layer childLayout="horizontal">
-			<panel  childLayout="horizontal" width="62%" />
-			<panel  childLayout="vertical">
+			<panel childLayout="horizontal" width="62%" />
+			<panel childLayout="vertical">
 				<panel height="3%" />
 				<control id="chatMultiPlayer" name="myChat" width="100%"
 					visible="false" />
@@ -89,5 +128,45 @@
 		</layer>
 
 	</screen>
+	<screen id="pauseScreen" controller="multiPlayer.MultiPlayer">
+		<layer id="pauseBackground" childLayout="center">
+			<image id="pausebackground" filename="Interface/Image/Graphics/opacityBackgroundPause.png" />
+		</layer>
+		<layer id="pauseLayerForeground" childLayout="center">
+			<panel id="menuPanel" childLayout="center">
+				<image id="pauseSinglePlayer" filename="Interface/Image/Graphics/pauseBackground.png"
+					width="70%" height="70%" />
+				<panel id="exitPanel" childLayout="vertical" width="70%"
+					height="70%">
+					<control name="sureExit" id="sureExitControl" visible="false" />
+					<panel id="buttonPanel1" childLayout="horizontal" height="30%">
+						<panel id="buttonSpace2" childLayout="center" width="5%" />
+						<image filename="Interface/Image/Button/startMenuButton.png"
+							id="startMenuButton" width="40%" height="40%" visibleToMouse="true">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(startMenuButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(startMenuButton)" />
+							</effect>
+							<interact onClick="openCloseSureExitButton()" />
+						</image>
+
+						<panel id="buttonSpace3" childLayout="center" width="10%" />
+
+						<image filename="Interface/Image/Button/resumeButton.png"
+							id="resumeButton" width="40%" height="40%" visibleToMouse="true">
+							<effect>
+								<onStartHover name="nop" onStartEffect="startGrow(resumeButton)" />
+								<onEndHover name="nop" onStartEffect="endGrow(resumeButton)" />
+							</effect>
+							<interact onClick="resumeGame()" />
+
+						</image>
+					</panel>
+
+				</panel>
+			</panel>
+		</layer>
+	</screen>
+
 
 </nifty>

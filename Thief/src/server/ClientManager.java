@@ -4,9 +4,9 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
+import java.net.InetAddress;
 import java.net.Socket;
-import java.net.URL;
+import java.net.UnknownHostException;
 import com.jme3.math.Vector3f;
 import multiPlayer.format.FormatIP;
 import multiPlayer.format.StringBuilder;
@@ -40,7 +40,7 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     private final BufferedReader INPUT;
     /** Reader for client */
     private final DataOutputStream OUTPUT;
-    /** connection  established with client */
+    /** connection established with client */
     private boolean establishedConnection;
     /** notify new player */
     private boolean newPlayer;
@@ -110,7 +110,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    System.out.println("player to exit: " + client);
 	    this.communicateExitPlayer(client);
 	    this.establishedConnection = false;
-
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -150,8 +149,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 
 	} catch (IOException e) {
 	    System.out.println("client : connection");
-	} catch (NumberFormatException ex) {
-	    System.out.println("client : cast float");
 	}
     }
 
@@ -191,18 +188,11 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     /** This Method return Player IP address */
     @Override
     public String ipAddress() {
-	URL url;
 	try {
-	    url = new URL("http://checkip.amazonaws.com/");
-	    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-	    return br.readLine();
-	} catch (MalformedURLException e) {
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
+	    return InetAddress.getLocalHost().getHostAddress();
+	} catch (UnknownHostException e) {
+	    return "127.0.0.1";
 	}
-
-	return null;
     }
 
     /** This Method communicates that there is a new player */
@@ -264,7 +254,6 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = this.INPUT.readLine();
-		System.out.println("server: " + message);
 		if (message.equals(SENDSTATE))
 		    this.communicationState();
 		if (message.equals(CLOSE))
@@ -272,9 +261,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
 		if (message.equals(SENDMESSAGE))
 		    this.riceivedMessage();
 	    }
-	    this.socket.close();
 	    this.INPUT.close();
 	    this.OUTPUT.close();
+	    this.socket.close();
 	    this.server.removePlayer(this);
 	} catch (IOException e) {
 	    e.printStackTrace();
