@@ -211,6 +211,7 @@ public class MultiPlayer implements ScreenController {
 
 		final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
 				.findNiftyControl("#chat-text-input", TextField.class);
+		System.out.println("MultiPlayer: "+text.getDisplayedText());
 		GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
 		text.setText("");
 

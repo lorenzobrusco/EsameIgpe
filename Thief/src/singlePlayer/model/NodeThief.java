@@ -20,9 +20,15 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 import control.GameManager;
+import de.lessvoid.nifty.NiftyEventSubscriber;
 import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.controls.ListBox;
+import de.lessvoid.nifty.controls.TextField;
+import de.lessvoid.nifty.controls.chatcontrol.ChatBoxViewConverter;
+import de.lessvoid.nifty.controls.chatcontrol.ChatControl;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.SizeValue;
 import multiPlayer.NodeEnemyPlayers;
@@ -410,6 +416,14 @@ public class NodeThief extends NodeCharacter implements Collition {
 					chatboxIsEnable = !chatboxIsEnable;
 				}
 			}
+			if((name.equals("sendMessage") && chatboxIsEnable && pressed ))
+					{
+						@SuppressWarnings("unchecked")
+						ListBox<String> chatControl = GameManager.getIstance().getNifty().getCurrentScreen().findNiftyControl("#chatBox", ListBox.class);
+						
+						 chatControl.addItem("suca");
+						
+					}
 			if (win && pressed) {
 				win = false;
 				GameManager.getIstance().getSinglePlayer().quitGame();

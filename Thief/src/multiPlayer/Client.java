@@ -295,7 +295,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.OUTPUT.writeBytes(SENDMESSAGE + "\n");
 	    this.OUTPUT.writeBytes(this.namePlayer + "\n");
 	    this.OUTPUT.writeBytes(displayedText + "\n");
-
+	    System.out.println("Client mando: "+ namePlayer+"->"+displayedText);
 	} catch (IOException e) {
 	    e.printStackTrace();
 	}
@@ -308,6 +308,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    final String namePlayer = INPUT.readLine();
 	    final String messageChatBox = INPUT.readLine();
+	    System.out.println("Client ricevo: "+namePlayer+"-->"+messageChatBox);
 	    new FormatStringChat(namePlayer).printMessageChatBox(messageChatBox);
 
 	} catch (IOException e) {
@@ -332,7 +333,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().addMapping(mouse,
 		new KeyTrigger(KeyInput.KEY_LCONTROL));
 	GameManager.getIstance().getApplication().getInputManager().addMapping(chatBox,
-		new KeyTrigger(KeyInput.KEY_RETURN));
+		new KeyTrigger(KeyInput.KEY_F9));
+	GameManager.getIstance().getApplication().getInputManager().addMapping("sendMessage",
+			new KeyTrigger(KeyInput.KEY_RETURN));
 	GameManager.getIstance().getApplication().getInputManager().addListener(
 		GameManager.getIstance().getNodeThief().actionListener, run, attack1, attack2, toggleRotate, chatBox,
 		"sendMessage");
