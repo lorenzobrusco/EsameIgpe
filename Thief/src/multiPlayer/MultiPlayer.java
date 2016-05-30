@@ -173,12 +173,14 @@ public class MultiPlayer implements ScreenController {
     /** send message when player press send button */
     public void sendMessage() {
 
-	final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("#chat-text-input", TextField.class);
-	GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
-	text.setText("");
+		final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
+				.findNiftyControl("#chat-text-input", TextField.class);
+		if (!text.getDisplayedText().equals("")) {
+			GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
+			text.setText("");
+		}
 
-    }
+	}
 
     /** this method load panel 2d */
     public void loadNifty() {
