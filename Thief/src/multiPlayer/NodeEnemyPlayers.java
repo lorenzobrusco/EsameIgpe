@@ -127,7 +127,8 @@ public class NodeEnemyPlayers extends NodeCharacter {
     @Override
     public void death() {
 	this.waitAnimation = true;
-	GameManager.getIstance().getNodeThief().killSomeOne();
+	if (this.alive)
+	    GameManager.getIstance().getNodeThief().killSomeOne();
 	super.death();
     }
 

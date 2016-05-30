@@ -4,7 +4,7 @@
 	<useStyles filename="nifty-default-styles.xml" />
 
 	<useStyles filename="Interface/Styles/textFieldStyleChat.xml" />
-	<useStyles filename="Interface/Styles/listboxStyleChat.xml" />
+	<useStyles filename="Interface/Styles/styleListBoxChat.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 
 	<controlDefinition name="sureExit">
