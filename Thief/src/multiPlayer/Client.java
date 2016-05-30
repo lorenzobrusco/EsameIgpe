@@ -391,6 +391,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ROTATECOUNTERCLOCKWISE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.MOUSE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.CHATBOX);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.PAUSE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.TOGGLEROTATE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.SENDMESSAGECHAT);
     }
