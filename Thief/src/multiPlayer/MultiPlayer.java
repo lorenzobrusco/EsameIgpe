@@ -133,7 +133,7 @@ public class MultiPlayer implements ScreenController {
 
     /** this method disconnect player */
     public void exit() {
-//	this.client.endConnection();
+	this.client.endConnection();
 	this.stopAmbientSound();
     }
 
@@ -246,7 +246,6 @@ public class MultiPlayer implements ScreenController {
 
     /** this method reset every things */
     public void reset() {
-	// GameManager.getIstance().getNifty().exit();
 	GameManager.getIstance().setPaused(false);
 	GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
 	GameManager.getIstance().getApplication().getInputManager().reset();
