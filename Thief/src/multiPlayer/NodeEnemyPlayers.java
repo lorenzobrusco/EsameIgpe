@@ -144,6 +144,12 @@ public class NodeEnemyPlayers extends NodeCharacter {
 	}
     }
 
+    @Override
+    public void resetAll() {
+        super.resetAll();
+        this.lifeBar = new LifeBar(this);
+    }
+    
     /** this method check if enemy strikes main character */
     @Override
     public void checkCollition() {

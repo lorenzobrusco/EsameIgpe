@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -45,13 +44,9 @@ public class Server extends Thread {
 		final ClientManager clientManager = new ClientManager(this, client);
 		this.newPlayer();
 		clientManager.start();
-	    } catch (SocketTimeoutException timeoutException) {
-		System.out.println("error");
 	    } catch (IOException e) {
-		System.out.println("error");
 	    }
 	}
-
     }
 
     /** this method notify everyone that a new player is arrived */
@@ -84,7 +79,7 @@ public class Server extends Thread {
 	}
 	if (!exist)
 	    this.players.add(clientManager);
-	
+
     }
 
     /** this method remove a player */
