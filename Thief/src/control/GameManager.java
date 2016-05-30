@@ -312,12 +312,7 @@ public class GameManager {
 	this.scorePlayers.sort(new Comparator<NodeCharacter>() {
 	    @Override
 	    public int compare(NodeCharacter arg0, NodeCharacter arg1) {
-		if (arg0.getScore() > arg1.getScore())
-		    return 1;
-		else if (arg0.getScore() < arg1.getScore())
-		    return 2;
-		else
-		    return 0;
+		return (((Integer)arg0.getScore()).compareTo((Integer) arg1.getScore()));
 	    }
 	});
 	for (int i = 0; i < this.scorePlayers.size(); i++) {

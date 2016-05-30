@@ -391,6 +391,8 @@ public class Client extends Thread implements CommunicationProtocol {
 
     }
 
+   
+
     /** this method is called when server and client aren't synchronized */
     private void exception() {
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {

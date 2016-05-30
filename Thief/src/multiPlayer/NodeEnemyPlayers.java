@@ -98,10 +98,16 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
+	System.out.println("last: " + this.life + " current: " + life);
 	this.lifeBar.updateLifeBar(this.life - life);
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);
 	this.life = life;
+	if (this.life <= 0) {
+	    this.death();
+	    this.lifeBar.updateLifeBar(0);
+	    this.lifeBar.setVisibleLifeBar();
+	}
 	this.score = score;
     }
 
@@ -122,6 +128,7 @@ public class NodeEnemyPlayers extends NodeCharacter {
     @Override
     public void death() {
 	this.waitAnimation = true;
+	GameManager.getIstance().getNodeThief().killSomeOne();
 	super.death();
     }
 
