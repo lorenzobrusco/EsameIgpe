@@ -98,7 +98,6 @@ public class NodeEnemyPlayers extends NodeCharacter {
     public void changeState(int life, int score, boolean attack, Vector3f view, Vector3f location, Vector3f direction) {
 	if (attack)
 	    this.startAttack();
-	System.out.println("last: " + this.life + " current: " + life);
 	this.lifeBar.updateLifeBar(this.life - life);
 	this.setViewDirection(view);
 	this.setWalkDirection(location, direction);

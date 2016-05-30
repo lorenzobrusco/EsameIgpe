@@ -141,8 +141,9 @@ public class ClientManager extends Thread implements CommunicationProtocol {
     /** This Method communicates any player has left the multyplayer */
     public void communicateExitPlayer(String player) {
 	for (ClientManager manager : this.server.getPlayers()) {
-	    if (manager != this)
+	    if (manager != this){
 		manager.sendPlayerToDelete(player);
+	    }
 	}
     }
 
