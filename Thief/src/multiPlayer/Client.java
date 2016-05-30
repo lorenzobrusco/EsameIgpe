@@ -355,7 +355,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.startConnection();
 	    while (this.establishedConnection) {
 		final String message = this.INPUT.readLine();
-		this.exception();
 		if (message.equals(NEWPLAYER))
 		    this.communicationNewPlayer();
 		else if (message.equals(SENDSTATE))
