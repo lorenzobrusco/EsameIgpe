@@ -174,9 +174,13 @@ public class Client extends Thread implements CommunicationProtocol {
     public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location,
 	    int score) {
 	try {
-	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+
+	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    if (!this.lineToSend.equals(line)) {
+		this.lineToSend = line;
+		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    }
 	} catch (IOException e) {
 	    this.exception();
 	} catch (NullPointerException e) {
@@ -288,10 +292,14 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method remove a Model in the Game's Terrain */
     public void removeModel(String key) {
 	final NodeCharacter player = GameManager.getIstance().getPlayers().get(key);
-	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
-	    public Void call() {
-		((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
-		return null;
+	GameManager.getIstance().getApplication().enqueue(new Callable<Node>() {
+	    public Node call() {
+
+		if (GameManager.getIstance().getTerrain().getChildren().contains(player))
+		    GameManager.getIstance().getTerrain().detachChild(player);
+		else if (((Node) GameManager.getIstance().getTerrain().getChild(0)).getChildren().contains(player))
+		    ((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
+		return GameManager.getIstance().getTerrain();
 	    }
 	});
 	GameManager.getIstance().removePlayers(key);
@@ -398,7 +406,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** this method is called when server and client aren't synchronized */
     private void exception() {
-	System.out.println("eccezzione");
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    @Override
 	    public Void call() {
@@ -427,6 +434,11 @@ public class Client extends Thread implements CommunicationProtocol {
     /** this method set terrain's name */
     public void setNameTerrain(String nameTerrain) {
 	this.nameTerrain = nameTerrain;
+    }
+
+    /** this method check if it's connected and return it */
+    public boolean isConnected() {
+	return this.establishedConnection;
     }
 
 }

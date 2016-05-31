@@ -248,7 +248,8 @@ public class EditorTerrain implements ScreenController {
 	this.idPopUp = popup.getId();
 	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 		popup.getId(), null);
-	this.mouse = false;
+	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	
     }
 
     /** this method delete map */
@@ -263,6 +264,7 @@ public class EditorTerrain implements ScreenController {
     /** this method close popup */
     public void closePopup() {
 	GameManager.getIstance().getNifty().closePopup(this.idPopUp);
+	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
     }
 
     /**
@@ -273,17 +275,12 @@ public class EditorTerrain implements ScreenController {
 	if (GameManager.getIstance().getNifty().getCurrentScreen()
 		.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText().equals("")) {
 	    try {
-		this.terrain.removeLight(this.ambientLight);
-		this.terrain.removeLight(this.directionLight);
 		new SaveTerrain(this.rootNode).saveModel("default");
-		this.terrain.addLight(this.ambientLight);
-		this.terrain.addLight(this.directionLight);
 	    } catch (IOException e) {
 		final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
 		this.idPopUp = popup.getId();
 		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 			popup.getId(), null);
-		this.mouse = !this.mouse;
 	    }
 	} else {
 	    String fileName = GameManager.getIstance().getNifty().getCurrentScreen()
@@ -296,19 +293,15 @@ public class EditorTerrain implements ScreenController {
 	    }
 	    file = new File("assets" + File.separator + "Scenes" + File.separator + fileName + ".j3o");
 	    try {
-		this.terrain.removeLight(this.ambientLight);
-		this.terrain.removeLight(this.directionLight);
+		
 		new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
 			.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
-		this.terrain.addLight(this.ambientLight);
-		this.terrain.addLight(this.directionLight);
-
+		
 	    } catch (IOException e) {
 		final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
 		this.idPopUp = popup.getId();
 		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 			popup.getId(), null);
-		this.mouse = !this.mouse;
 	    }
 	    GameManager.getIstance().getNifty().getCurrentScreen()
 		    .findNiftyControl("textfieldSaveTerrain", TextField.class).setText("");
