@@ -369,6 +369,7 @@ public class GameManager {
 	if (this.terrain != null) {
 	    this.terrain.detachAllChildren();
 	    this.terrain.removeFromParent();
+	    this.bulletAppState.getPhysicsSpace().remove(terrain);
 	}
 	this.terrain = null;
 	if (this.terrainQuad != null) {

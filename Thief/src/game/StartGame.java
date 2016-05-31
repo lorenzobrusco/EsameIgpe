@@ -12,6 +12,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.math.Quaternion;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
@@ -123,6 +124,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     /** start single player */
     public void singlePlayer() {
+	// this.rootNode.detachAllChildren();
 	this.inputManager.setCursorVisible(false);
 	StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackground").setVisible(true);
 	GameManager.getIstance().setEditor(false);
@@ -154,7 +156,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 			    .findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
 	    this.inputManager.setCursorVisible(false);
 	    StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
+	    this.initKeys();
 	    this.multiplayer = true;
+	    this.singleplayer = false;
+	    this.editor = false;
 	} catch (UnknownHostException ex) {
 	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
 	    this.idPopUp = popup.getId();
@@ -171,14 +176,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 		    popup.getId(), null);
 	}
-
-	this.initKeys();
-	this.singleplayer = false;
-	this.editor = false;
     }
 
-    /** start editor */
     public void editor() {
+	this.rootNode.detachAllChildren();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
@@ -515,6 +516,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	openServerScreen();
     }
 
+    /**this method get rootNode*/
+    public Node getRoot(){
+	return this.rootNode;
+    }
+    
     /** jmonkey's method */
     @Override
     public void onAction(String arg0, boolean arg1, float arg2) {
