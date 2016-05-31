@@ -9,6 +9,7 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
@@ -106,6 +107,9 @@ public class EditorTerrain implements ScreenController {
     private final ViewPort viewPort;
     /** jmonkey's object */
     private final AppSettings settings;
+    /** lights */
+    private Light ambientLight;
+    private Light directionLight;
     /** sound */
     private Sound ambientSound;
     /** file to delete */
@@ -244,7 +248,8 @@ public class EditorTerrain implements ScreenController {
 	this.idPopUp = popup.getId();
 	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 		popup.getId(), null);
-	this.mouse = !this.mouse;
+	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	
     }
 
     /** this method delete map */
@@ -259,6 +264,7 @@ public class EditorTerrain implements ScreenController {
     /** this method close popup */
     public void closePopup() {
 	GameManager.getIstance().getNifty().closePopup(this.idPopUp);
+	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
     }
 
     /**
@@ -275,7 +281,6 @@ public class EditorTerrain implements ScreenController {
 		this.idPopUp = popup.getId();
 		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 			popup.getId(), null);
-		this.mouse = !this.mouse;
 	    }
 	} else {
 	    String fileName = GameManager.getIstance().getNifty().getCurrentScreen()
@@ -288,14 +293,15 @@ public class EditorTerrain implements ScreenController {
 	    }
 	    file = new File("assets" + File.separator + "Scenes" + File.separator + fileName + ".j3o");
 	    try {
+		
 		new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
 			.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
+		
 	    } catch (IOException e) {
 		final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
 		this.idPopUp = popup.getId();
 		GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 			popup.getId(), null);
-		this.mouse = !this.mouse;
 	    }
 	    GameManager.getIstance().getNifty().getCurrentScreen()
 		    .findNiftyControl("textfieldSaveTerrain", TextField.class).setText("");
@@ -323,6 +329,7 @@ public class EditorTerrain implements ScreenController {
     /** this method clean scene and load landspace */
     private void loadScene(String name) {
 	GameManager.getIstance().getModels().clear();
+	this.terrain.detachAllChildren();
 	this.rootNode.detachChild(this.terrain);
 	this.viewPort.clearProcessors();
 	this.makeScene(name);
@@ -357,8 +364,10 @@ public class EditorTerrain implements ScreenController {
     /** this method set landspace, main character adn spawn point */
     private void makeScene(String path) {
 	this.terrain = this.loadTerrain.loadTerrain(path, true);
-	this.terrain.addLight(loadTerrain.makeDirectionLight());
-	this.terrain.addLight(this.loadTerrain.makeAmbientLight());
+	this.ambientLight = this.loadTerrain.makeAmbientLight();
+	this.directionLight = this.loadTerrain.makeDirectionLight();
+	this.terrain.addLight(this.ambientLight);
+	this.terrain.addLight(this.directionLight);
 	this.rootNode.attachChild(this.terrain);
 	this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
 	this.viewPort.addProcessor(loadTerrain.makeFilter(true, false, true));
@@ -417,7 +426,7 @@ public class EditorTerrain implements ScreenController {
 	    for (int x = -radiusStepsX; x < radiusStepsX; x++) {
 		float locX = loc.x + (x * xStepAmount);
 		float locZ = loc.z + (z * zStepAmount);
-		if (isInRadius(locX - loc.x, locZ - loc.z, radius)) {
+		if (isInRadius(locX - loc.x, locZ - loc.z, radius) ) {
 		    float h = calculateHeight(radius, height, locX - loc.x, locZ - loc.z);
 		    locs.add(new Vector2f(locX, locZ));
 		    heights.add(h);

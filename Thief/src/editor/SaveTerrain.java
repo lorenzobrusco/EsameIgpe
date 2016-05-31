@@ -22,7 +22,6 @@ public class SaveTerrain {
 
     /** this method save file */
     public void saveModel(String name) throws IOException {
-
 	File file = new File("assets" + File.separator + "Scenes" + File.separator + name + ".j3o");
 	BinaryExporter exporter = new BinaryExporter();
 	exporter.save(modelToSave, file);

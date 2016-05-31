@@ -126,7 +126,8 @@ public class Client extends Thread implements CommunicationProtocol {
 			    String message = this.INPUT.readLine();
 			    this.addNewPlayers(new StringBuilder().builderKeyPlayer(message),
 				    new StringBuilder().builderModel(message), new StringBuilder().builderName(message),
-				    new StringBuilder().builderPosition(message), new StringBuilder().builderLife(message));
+				    new StringBuilder().builderPosition(message),
+				    new StringBuilder().builderLife(message));
 			}
 		    }
 		}
@@ -149,7 +150,13 @@ public class Client extends Thread implements CommunicationProtocol {
 		this.establishedConnection = false;
 	    }
 	} catch (IOException e) {
-	    this.exception();
+	    GameManager.getIstance().setPaused(false);
+	    GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start",
+		    GameManager.getIstance().getMultiplayer());
+	    GameManager.getIstance().getApplication().getInputManager().reset();
+	    GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+	    GameManager.getIstance().getApplication().getViewPort().clearProcessors();
+	    GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
 	}
     }
 
@@ -167,9 +174,13 @@ public class Client extends Thread implements CommunicationProtocol {
     public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location,
 	    int score) {
 	try {
-	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+
+	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    if (!this.lineToSend.equals(line)) {
+		this.lineToSend = line;
+		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    }
 	} catch (IOException e) {
 	    this.exception();
 	} catch (NullPointerException e) {
@@ -217,7 +228,8 @@ public class Client extends Thread implements CommunicationProtocol {
 	try {
 	    String line = this.INPUT.readLine();
 	    this.addNewPlayers(new StringBuilder().builderKeyPlayer(line), new StringBuilder().builderModel(line),
-		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line), new StringBuilder().builderLife(line));
+		    new StringBuilder().builderName(line), new StringBuilder().builderPosition(line),
+		    new StringBuilder().builderLife(line));
 	} catch (IOException e) {
 	    this.exception();
 	}
@@ -258,8 +270,8 @@ public class Client extends Thread implements CommunicationProtocol {
     public void addNewPlayers(String name, String model, String player, Vector3f location, int life) {
 	Spatial spatial = GameManager.getIstance().getApplication().getAssetManager().loadModel(model);
 	spatial.setLocalTranslation(location);
-	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, life,
-		DAMAGE, name);
+	NodeCharacter players = new NodeEnemyPlayers(spatial, new Vector3f(1.5f, 4.4f, 80f), location, life, DAMAGE,
+		name);
 	players.addCharacterControl();
 	GameManager.getIstance().addModelEnemy(players);
 	GameManager.getIstance().addModel(players);
@@ -271,7 +283,6 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    public Void call() {
 		GameManager.getIstance().getTerrain().attachChild(players);
-		System.out.println(players.getName());
 		return null;
 	    }
 	});
@@ -281,10 +292,14 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method remove a Model in the Game's Terrain */
     public void removeModel(String key) {
 	final NodeCharacter player = GameManager.getIstance().getPlayers().get(key);
-	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
-	    public Void call() {
-		((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
-		return null;
+	GameManager.getIstance().getApplication().enqueue(new Callable<Node>() {
+	    public Node call() {
+
+		if (GameManager.getIstance().getTerrain().getChildren().contains(player))
+		    GameManager.getIstance().getTerrain().detachChild(player);
+		else if (((Node) GameManager.getIstance().getTerrain().getChild(0)).getChildren().contains(player))
+		    ((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
+		return GameManager.getIstance().getTerrain();
 	    }
 	});
 	GameManager.getIstance().removePlayers(key);
@@ -384,6 +399,7 @@ public class Client extends Thread implements CommunicationProtocol {
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.ROTATECOUNTERCLOCKWISE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.MOUSE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.CHATBOX);
+	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.PAUSE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.TOGGLEROTATE);
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping(this.SENDMESSAGECHAT);
     }
@@ -418,6 +434,11 @@ public class Client extends Thread implements CommunicationProtocol {
     /** this method set terrain's name */
     public void setNameTerrain(String nameTerrain) {
 	this.nameTerrain = nameTerrain;
+    }
+
+    /** this method check if it's connected and return it */
+    public boolean isConnected() {
+	return this.establishedConnection;
     }
 
 }
