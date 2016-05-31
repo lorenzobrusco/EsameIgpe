@@ -174,9 +174,13 @@ public class Client extends Thread implements CommunicationProtocol {
     public synchronized void notifyUpdate(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location,
 	    int score) {
 	try {
-	    this.lineToSend = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
+
+	    final String line = new StringBuilder().builderString(walk, view, location, life, attack, this.IAM,
 		    this.nameModel, this.namePlayer, score);
-	    this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    if (!this.lineToSend.equals(line)) {
+		this.lineToSend = line;
+		this.OUTPUT.writeBytes(SENDSTATE + "\n");
+	    }
 	} catch (IOException e) {
 	    this.exception();
 	} catch (NullPointerException e) {
@@ -398,7 +402,6 @@ public class Client extends Thread implements CommunicationProtocol {
 
     /** this method is called when server and client aren't synchronized */
     private void exception() {
-	System.out.println("eccezzione");
 	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
 	    @Override
 	    public Void call() {
@@ -429,4 +432,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.nameTerrain = nameTerrain;
     }
 
+    /**this method check if it's connected and return it*/
+    public boolean isConnected(){
+	return this.establishedConnection;
+    }
+    
 }
