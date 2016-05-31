@@ -275,8 +275,9 @@ public class GameManager {
 			for (Sound sound : model.getAllSound()) {
 				sound.stopSound();
 			}
-			if (model instanceof NodeEnemy)
-				((NodeEnemy) model).pauseIntelligence();
+			if (this.multiplayer != null)
+				if (model instanceof NodeEnemy)
+					((NodeEnemy) model).pauseIntelligence();
 		}
 		this.playMenuSound();
 		this.reset();
@@ -342,8 +343,10 @@ public class GameManager {
 			this.players.clear();
 		if (this.enemiesLifeBar != null)
 			this.enemiesLifeBar.clear();
+		
 		if (this.loadTerrain != null)
-			this.loadTerrain = null;
+			this.loadTerrain = new LoadTerrain();
+		
 		if (this.singlePlayer != null) {
 			this.singlePlayer.removeNodeScene();
 		}
@@ -370,6 +373,7 @@ public class GameManager {
 			this.terrain.detachAllChildren();
 			this.terrain.removeFromParent();
 		}
+		
 		this.terrain = null;
 		if (this.terrainQuad != null) {
 			this.terrainQuad.detachAllChildren();
@@ -379,6 +383,26 @@ public class GameManager {
 		this.singlePlayer = null;
 		this.multiplayer = null;
 		this.client = null;
+		
+		
+		this.bulletAppState.cleanup();
+		this.bulletAppState.getPhysicsSpace().update(0.5f);
+		
+
+		this.application.getRenderer().cleanup();
+		this.application.getAssetManager().clearAssetEventListeners();
+		this.application.getCamera().clearViewportChanged();
+		this.application.getRenderManager().getRenderer().cleanup();
+		this.application.getRenderer().cleanup();
+		this.application.getRenderer().clearBuffers(true, true, true);
+		this.application.getGuiNode().detachAllChildren();
+		this.application.getRenderManager().getRenderer().clearClipRect();
+		this.application.getRootNode().detachAllChildren();
+		this.application.getRootNode().forceRefresh(true, true, true);
+		this.application.getRootNode().updateModelBound();
+		this.application.getRootNode().updateGeometricState();
+		this.application.getRootNode().updateLogicalState(1.0f);
+		this.application.restart();
 	}
 
 	/** this method stop sound */

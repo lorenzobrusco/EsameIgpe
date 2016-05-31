@@ -7,6 +7,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.InputManager;
+import com.jme3.math.Vector2f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Node;
@@ -94,6 +95,10 @@ public class MultiPlayer implements ScreenController {
 			MultiPlayer.this.start = false;
 		}
 		if (this.created) {
+			System.out.println(GameManager.getIstance().getTerrainQuad()
+					.getHeight(new Vector2f(GameManager.getIstance().getNodeThief().getWorldTranslation().getX(),
+							GameManager.getIstance().getNodeThief().getWorldTranslation().getZ())));
+			System.out.println(GameManager.getIstance().getNodeThief().getLocalTranslation());
 			this.render.rayRendering();
 			if (!GameManager.getIstance().getNodeThief().isRun())
 				GameManager.getIstance().getNodeThief().stop();
@@ -135,6 +140,7 @@ public class MultiPlayer implements ScreenController {
 	public void exit() {
 		this.client.endConnection();
 		this.stopAmbientSound();
+		this.render = null;
 	}
 
 	/** this method set sound */
