@@ -186,7 +186,7 @@ public class NodeCharacter extends NodeModel implements AnimEventListener {
 	this.channel.setLoopMode(LoopMode.Loop);
     }
 
-    /** this method attach a box for check collition */
+    /** this method attach a box for check collision */
     public void startAttack() {
 	this.node.setLocalTranslation(this.getLocalTranslation());
 	this.node.setLocalRotation(this.getLocalRotation());
