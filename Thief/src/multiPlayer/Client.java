@@ -292,10 +292,14 @@ public class Client extends Thread implements CommunicationProtocol {
     /** This Method remove a Model in the Game's Terrain */
     public void removeModel(String key) {
 	final NodeCharacter player = GameManager.getIstance().getPlayers().get(key);
-	GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
-	    public Void call() {
-		((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
-		return null;
+	GameManager.getIstance().getApplication().enqueue(new Callable<Node>() {
+	    public Node call() {
+
+		if (GameManager.getIstance().getTerrain().getChildren().contains(player))
+		    GameManager.getIstance().getTerrain().detachChild(player);
+		else if (((Node) GameManager.getIstance().getTerrain().getChild(0)).getChildren().contains(player))
+		    ((Node) GameManager.getIstance().getTerrain().getChild(0)).detachChild(player);
+		return GameManager.getIstance().getTerrain();
 	    }
 	});
 	GameManager.getIstance().removePlayers(key);
@@ -432,9 +436,9 @@ public class Client extends Thread implements CommunicationProtocol {
 	this.nameTerrain = nameTerrain;
     }
 
-    /**this method check if it's connected and return it*/
-    public boolean isConnected(){
+    /** this method check if it's connected and return it */
+    public boolean isConnected() {
 	return this.establishedConnection;
     }
-    
+
 }

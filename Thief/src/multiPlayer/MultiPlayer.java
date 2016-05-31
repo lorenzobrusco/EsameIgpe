@@ -252,7 +252,7 @@ public class MultiPlayer implements ScreenController {
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
 	GameManager.getIstance().getApplication().getViewPort().clearProcessors();
 	GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
-//	GameManager.getIstance().quitGame();
+	GameManager.getIstance().quitGame();
     }
 
     /** this method close game */
