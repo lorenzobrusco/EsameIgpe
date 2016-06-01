@@ -1,6 +1,7 @@
 package game;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -8,11 +9,10 @@ import java.util.Collection;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Quaternion;
 import com.jme3.niftygui.NiftyJmeDisplay;
+import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import control.GameManager;
 import de.lessvoid.nifty.Nifty;
@@ -26,7 +26,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import editor.EditorTerrain;
 import multiPlayer.MultiPlayer;
 import singlePlayer.SinglePlayer;
-import singlePlayer.Sound;
 
 public class StartGame extends SimpleApplication implements ActionListener, ScreenController {
 
@@ -50,30 +49,28 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     private boolean editor;
     /** jmonkey's object to add physic */
     private BulletAppState bulletAppState;
-    // TODO to delite
-    private boolean debug;
     /** nifty's manager */
     private NiftyJmeDisplay niftyDisplay;
     /** panel 2d */
     private Nifty nifty;
-    /** sound */
-    private Sound menuSound;
     /** index */
     private int indexCharacter;
     /** index */
     private int indexHelp;
-    /**index for landscape'array*/
+    /** index for landscape'array */
     private int indexLandscape;
     /** characters list */
     private Collection<String> characters;
     /** help's images */
     private Collection<String> help;
-    /**Landscape's Image*/
+    /** Landscape's Image */
     private Collection<String> landscape;
     /** player's address */
     private String ipAddress;
     /** player's name */
     private String namePlayer;
+    /** id popup */
+    private String idPopUp;
 
     /** builder */
     public StartGame() {
@@ -87,7 +84,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.assetManager.registerLocator("assets/", FileLocator.class);
 	GameManager.getIstance().setParams(this);
 	GameManager.getIstance().setBullet(bulletAppState);
-	this.setupSound();
+	GameManager.getIstance().setAudioRendere(this.audioRenderer);
 	this.flyCam.setMoveSpeed(100f);
 	this.flyCam.setEnabled(false);
 	this.mouseInput.setCursorVisible(true);
@@ -100,7 +97,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	GameManager.getIstance().getApplication().getGuiViewPort().addProcessor(niftyDisplay);
 	GameManager.getIstance().setNifty(nifty);
 	GameManager.getIstance().getApplication().getInputManager().clearMappings();
-	this.menuSound.playSound();
+	GameManager.getIstance().setupAudio();
+	GameManager.getIstance().playMenuSound();
 	this.initKeys();
     }
 
@@ -118,20 +116,17 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** check which button is pressed */
     public ActionListener actionListener = new ActionListener() {
 	public void onAction(String name, boolean pressed, float value) {
-	    // TODO to delete
-	    if (name.equals("debug")) {
-		debug = !debug;
-		bulletAppState.setDebugEnabled(debug);
-	    } else if (name.equals("mouse") && !singleplayer) {
+	    if (name.equals("mouse") && !singleplayer) {
 		StartGame.this.mouse();
 	    }
-
 	}
     };
 
     /** start single player */
     public void singlePlayer() {
-	
+	// this.rootNode.detachAllChildren();
+	this.inputManager.setCursorVisible(false);
+	StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackground").setVisible(true);
 	GameManager.getIstance().setEditor(false);
 	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	GameManager.getIstance().setModelGame(pathSinglePlayer);
@@ -139,51 +134,61 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		.findNiftyControl("landscapeListBox", ListBox.class).getFocusItem().toString().split("\\.");
 	this.player = new SinglePlayer(inputManager, viewPort, rootNode, cam, level[0], true, true, true);
 	this.initKeys();
-	this.menuSound.stopSound();
 	this.singleplayer = true;
-	this.multiplayer = false;
 	this.editor = false;
+	this.multiplayer = false;
 
     }
 
     /** start multiplayer */
     public void multiPlayer() {
-	this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldName", TextField.class).getDisplayedText();
-	this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
-		.findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
-	GameManager.getIstance().setEditor(false);
-	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
-	GameManager.getIstance().setModelGame(pathMultiPlayer);
-	this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
-		((ArrayList<String>) characters).get(indexCharacter));
-	this.initKeys();
-	this.menuSound.stopSound();
-	this.multiplayer = true;
-	this.singleplayer = false;
-	this.editor = false;
+	try {
+	    this.namePlayer = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldName", TextField.class).getDisplayedText();
+	    this.ipAddress = GameManager.getIstance().getNifty().getCurrentScreen()
+		    .findNiftyControl("textfieldIP", TextField.class).getDisplayedText();
+	    GameManager.getIstance().setEditor(false);
+	    this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
+	    GameManager.getIstance().setModelGame(pathMultiPlayer);
+	    this.multiPlayer = new MultiPlayer(inputManager, viewPort, rootNode, cam, ipAddress, namePlayer,
+		    ((ArrayList<String>) characters).get(indexCharacter),
+		    Integer.parseInt(GameManager.getIstance().getNifty().getCurrentScreen()
+			    .findNiftyControl("myTextFieldPortMultiPlayer", TextField.class).getDisplayedText()));
+	    this.inputManager.setCursorVisible(false);
+	    StartGame.this.nifty.getCurrentScreen().findElementByName("loadingBackgroundMulti").setVisible(true);
+	    this.initKeys();
+	    this.multiplayer = true;
+	    this.singleplayer = false;
+	    this.editor = false;
+	} catch (UnknownHostException ex) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (NumberFormatException n) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	} catch (IOException e) {
+	    final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	    this.idPopUp = popup.getId();
+	    GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		    popup.getId(), null);
+	}
     }
 
-    /** start editor */
     public void editor() {
-	
-	this.flyCam.setEnabled(true);
-	GameManager.getIstance().getNifty().exit();
+	this.rootNode.detachAllChildren();
 	GameManager.getIstance().setEditor(true);
 	GameManager.getIstance().setModelGame(pathEditor);
-	this.cam.setRotation(new Quaternion(0.0f, 1.0f, 0.0f, 0.0f));
 	this.editorTerrain = new EditorTerrain(rootNode, cam, guiFont, guiNode, viewPort, settings, "mountain");
 	this.mouseInput.setCursorVisible(false);
 	this.initKeys();
-	this.menuSound.stopSound();
+	this.flyCam.setEnabled(true);
 	this.editor = true;
 	this.singleplayer = false;
 	this.multiplayer = false;
-    }
-
-    /** this method setup sound */
-    public void setupSound() {
-	this.menuSound = new Sound(this.rootNode, "Menu", false, false, true, 1.0f, false);
     }
 
     /** this method load next panel 2d */
@@ -206,29 +211,26 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
     }
-    
-    public void loadLandScape()
-    {
-    	try {
-    	    Files.walk(Paths.get("assets/Interface/Image/Landscape")).forEach(filePath -> {
-    		if (Files.isRegularFile(filePath)) {
-    		    String[] split = filePath.getFileName().toString().split("\\.");
-    		  this.landscape.add(split[0]);
-    		}
-    	    });
-    	    NiftyImage image = nifty.getRenderEngine().createImage(null,
-    		    "Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(0) + ".png", false);
-    	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("imageLandScape");
-    	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
-    	} catch (IOException e) {
-    	    // TODO gestire
-    	    e.printStackTrace();
-    	}
-    
+
+    public void loadLandScape() {
+	try {
+	    Files.walk(Paths.get("assets/Interface/Image/Landscape")).forEach(filePath -> {
+		if (Files.isRegularFile(filePath)) {
+		    String[] split = filePath.getFileName().toString().split("\\.");
+		    this.landscape.add(split[0]);
+		}
+	    });
+	    NiftyImage image = nifty.getRenderEngine().createImage(null,
+		    "Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(0) + ".png", false);
+	    Element niftyElement = nifty.getScreen("serverScreen").findElementByName("imageLandScape");
+	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
+	} catch (IOException e) {
+	    this.showPopUp("exceptionStartGame");
+	}
+
     }
 
     public void loadHelpScreen() {
@@ -250,8 +252,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
 	} catch (IOException e) {
-	    // TODO gestire
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 
     }
@@ -260,6 +261,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     public void openServerScreen() {
 
 	if (GameManager.getIstance().getServer() == null || !GameManager.getIstance().getServer().isStart()) {
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowLeft")
+		    .setVisible(true);
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowRight")
+		    .setVisible(true);
 	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
 		    "Interface/Image/Graphics/serverIsClose.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
@@ -269,7 +274,10 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
 		    .setVisible(true);
 	} else if (GameManager.getIstance().getServer().isStart()) {
-
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowLeft")
+		    .setVisible(false);
+	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("arrowRight")
+		    .setVisible(false);
 	    final NiftyImage image = nifty.getRenderEngine().createImage(null,
 		    "Interface/Image/Graphics/serverIsOpen.png", false);
 	    final Element niftyElement = nifty.getScreen("serverScreen").findElementByName("serverState");
@@ -279,9 +287,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	    GameManager.getIstance().getNifty().getScreen("serverScreen").findElementByName("startServerButton")
 		    .setVisible(false);
 	}
-	if(landscape.isEmpty())
-	loadLandScape();
-	
+	if (landscape.isEmpty())
+	    loadLandScape();
+
 	this.loadScreen("serverScreen");
 
     }
@@ -306,8 +314,8 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
     }
-    
-    /** previus character */
+
+    /** previous character */
     public void redoCharacter() {
 	if (this.indexCharacter == 0)
 	    this.indexCharacter = characters.size() - 1;
@@ -320,37 +328,35 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
     }
-    
+
     /** next landscape */
     public void nextLandscape() {
-    	
+
 	if (indexLandscape == landscape.size() - 1)
 	    indexLandscape = 0;
 	else
 	    indexLandscape++;
 	NiftyImage image = nifty.getRenderEngine().createImage(null,
-		"Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(indexLandscape) + ".png",
-		false);
+		"Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(indexLandscape) + ".png", false);
 	Element niftyElement = nifty.getCurrentScreen().findElementByName("imageLandScape");
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
     }
-    
-    /** previus landscape*/
+
+    /** Previous landscape */
     public void redoLandscape() {
 	if (this.indexLandscape == 0)
 	    this.indexLandscape = landscape.size() - 1;
 	else
 	    this.indexLandscape--;
 	final NiftyImage image = nifty.getRenderEngine().createImage(null,
-		"Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(indexLandscape) + ".png",
-		false);
+		"Interface/Image/Landscape/" + ((ArrayList<String>) landscape).get(indexLandscape) + ".png", false);
 	final Element niftyElement = nifty.getCurrentScreen().findElementByName("imageLandScape");
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 
     }
-    
 
+    /** next page */
     public void nextHelpImage() {
 	if (indexHelp == help.size() - 1)
 	    indexHelp = 0;
@@ -363,6 +369,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
+    /** previous page */
     public void redoHelpImage() {
 	if (this.indexHelp == 0)
 	    this.indexHelp = help.size() - 1;
@@ -375,13 +382,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 
     }
 
-   
-
     /** this method set keys */
     private void initKeys() {
-	GameManager.getIstance().getApplication().getInputManager().addMapping("debug",
-		new KeyTrigger(KeyInput.KEY_TAB));
-	this.inputManager.addListener(actionListener, "debug", "mouse");
+	this.inputManager.addListener(actionListener, "mouse");
 
     }
 
@@ -390,8 +393,9 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
      * close game
      */
     public void closeGame() {
-	if (this.multiplayer)
-	    this.multiPlayer.exit();
+	GameManager.getIstance().stopMenuSound();
+	GameManager.getIstance().getAudioRender().cleanup();
+	this.audioRenderer.cleanup();
 	System.exit(0);
     }
 
@@ -400,7 +404,6 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.characters = new ArrayList<String>();
 	this.help = new ArrayList<String>();
 	this.landscape = new ArrayList<String>();
-	this.debug = false;
 	this.singleplayer = false;
 	this.multiplayer = false;
 	this.editor = false;
@@ -409,6 +412,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	this.indexLandscape = 0;
 	this.ipAddress = "";
 	this.namePlayer = "";
+	this.idPopUp = "";
     }
 
     /** this method disable flycam and set visible cursor */
@@ -444,7 +448,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 		}
 	    });
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    this.showPopUp("exceptionStartGame");
 	}
 	listBox.selectItemByIndex(0);
 	loadScreen("singlePlayerScreen");
@@ -466,11 +470,44 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	niftyElement.getRenderer(ImageRenderer.class).setImage(image);
     }
 
-    /** this methos start server */
+    /** this methods start server */
     public void startServer() {
-    	
-	GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape));
-	openServerScreen();
+	try {
+
+	    GameManager.getIstance().startServer(((ArrayList<String>) landscape).get(indexLandscape),
+		    Integer.parseInt(this.nifty.getCurrentScreen()
+			    .findNiftyControl("myTextFieldPortServer", TextField.class).getDisplayedText()));
+	    openServerScreen();
+
+	} catch (UnknownHostException e) {
+	    this.showPopUp("blindServerPort");
+	} catch (IOException e) {
+	    this.showPopUp("blindServerPort");
+	} catch (NumberFormatException e) {
+	    this.showPopUp("blindServerPort");
+	}
+
+    }
+
+    /** this method show popup */
+    public void showPopUp(final String id) {
+	final Element popup = GameManager.getIstance().getNifty().createPopup("blindServerPort");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
+    }
+
+    /** this method open popup when client has exception */
+    public void openPopUp() {
+	final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionServer");
+	this.idPopUp = popup.getId();
+	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
+		popup.getId(), null);
+    }
+
+    /** this method close popup */
+    public void closePopUp() {
+	GameManager.getIstance().getNifty().closePopup(this.idPopUp);
     }
 
     /** this method close server */
@@ -479,6 +516,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	openServerScreen();
     }
 
+    /**this method get rootNode*/
+    public Node getRoot(){
+	return this.rootNode;
+    }
+    
     /** jmonkey's method */
     @Override
     public void onAction(String arg0, boolean arg1, float arg2) {
@@ -497,6 +539,7 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
     /** jmonkey's method */
     @Override
     public void onStartScreen() {
+
     }
 
     public static void main(String[] args) {
@@ -512,13 +555,12 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	// gameSettings.setUseInput(true);
 	// gameSettings.setFrameRate(500);
 	// gameSettings.setSamples(0);
-	 gameSettings.setRenderer("LWJGL-OpenGL2");
+	gameSettings.setRenderer("LWJGL-OpenGL2");
 	//
-	 app.setSettings(gameSettings);
-//	 app.setShowSettings(false);
-	 app.setDisplayFps(false);
-	 app.setDisplayStatView(false);
-
+	app.setSettings(gameSettings);
+	// app.setShowSettings(false);
+	app.setDisplayFps(false);
+	app.setDisplayStatView(false);
 	app.start();
 
     }

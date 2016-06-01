@@ -35,6 +35,7 @@ public class AI {
 	/** control value to make enemy move */
 	private boolean move;
 
+	/** check if game is stopped */
 	private boolean pause;
 
 	/** constructor */
@@ -147,7 +148,6 @@ public class AI {
 						this.controll();
 
 					}
-
 					/**
 					 * if enemy is arrived to its new position than stop and
 					 * choose another way
@@ -158,14 +158,12 @@ public class AI {
 									&& (int) this.enemy.getLocalTranslation().getZ() <= (int) this.random.getZ() + 1)) {
 						this.move = false;
 					}
-
 				}
 			} else {
 				if (!this.setNewWay) {
 					this.setNewWay = true;
 					this.move = true;
 				}
-
 			}
 		} else {
 			this.stop();
@@ -215,10 +213,12 @@ public class AI {
 		enemy.stopAnimation();
 	}
 
+	/** stop artificial intelligence */
 	public void pause() {
 		this.pause = true;
 	}
 
+	/** resume artificial intelligence */
 	public void resume() {
 		this.pause = false;
 	}

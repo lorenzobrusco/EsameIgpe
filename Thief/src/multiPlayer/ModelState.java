@@ -23,6 +23,7 @@ public class ModelState {
     /** player's score */
     private int score;
 
+    /** constructor */
     public ModelState(Vector3f walk, Vector3f view, int life, boolean attack, Vector3f location, int score) {
 
 	this.walk = walk;
@@ -83,16 +84,14 @@ public class ModelState {
 	this.life = life;
     }
 
-    /**this method get score*/
+    /** this method get score */
     public int getScore() {
-        return score;
+	return score;
     }
 
-    /**this method set score*/
+    /** this method set score */
     public void setScore(int score) {
-        this.score = score;
+	this.score = score;
     }
 
-    
-    
 }

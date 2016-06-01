@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<nifty-styles>
+  <style id="nifty-listbox">
+    <attributes />
+  </style>
+  <style id="nifty-listbox#scrollpanel">
+    <attributes focusable="false" backgroundImage="Interface/Image/Graphics/blackBar.png"/>
+
+  </style>
+  <style id="nifty-listbox#bottom-right">
+    <attributes width="23px" height="23px" />
+  </style>
+  
+  <style id="nifty-listbox-item" base="nifty-label">
+    <attributes color="#ffff" width="100%" align="left" textVAlign="center" textHAlign="left" />
+   </style>
+</nifty-styles>

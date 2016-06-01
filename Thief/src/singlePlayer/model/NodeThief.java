@@ -25,8 +25,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.tools.SizeValue;
-import multiPlayer.NodeEnemyPlayers;
-import singlePlayer.Collition;
+import singlePlayer.Collision;
 import singlePlayer.Sound;
 
 /**
@@ -35,11 +34,13 @@ import singlePlayer.Sound;
  *
  */
 
-public class NodeThief extends NodeCharacter implements Collition {
+public class NodeThief extends NodeCharacter implements Collision {
 
 	/** camera attach to main character */
 	private ChaseCamera camera;
-	private final String bonfire = "BonFire";
+	/** key Event */
+	private final String BONFIRE = "BonFire";
+	private final String SENDMESSAGECHAT = "sendMessage";
 	/** it's true main character is running */
 	private boolean isRun;
 	/** check if is single player */
@@ -50,13 +51,13 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private boolean changeAttack;
 	/** wait that animation is ends */
 	private boolean waitAnimation;
-	// TODO
+	/** check if chat box is enable */
 	private boolean chatboxIsEnable;
 	/** speed main character */
 	private static final float SPEED = 15;
-	/** minimum distace to active bonfire */
+	/** minimum distance to active bonfire */
 	private static final float BONFIREDISTANCE = 10f;
-	/** minimum distace to active portal */
+	/** minimum distance to active portal */
 	private static final float PORTALDISTANCE = 10f;
 	/** length lifebar */
 	private static final int SIZELIFEBAR = 17;
@@ -87,12 +88,12 @@ public class NodeThief extends NodeCharacter implements Collition {
 	private int currentTime;
 	/** minimum time to speech */
 	private int talkFrequence;
-	/***/
+	/** check if thief win */
 	private boolean win;
-
+	/** check if thief can talk */
 	private boolean canTalk;
 
-	/** builder */
+	/** constructor */
 	public NodeThief(Spatial model, Vector3f startPositon, boolean multiplayer) {
 		super(model, new Vector3f(1.5f, 4.4f, 2f), model.getLocalTranslation(), 50, 10);
 		this.viewDirection = new Vector3f(0, 0, 1);
@@ -109,7 +110,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.talkFrequence = 10;
 		this.setViewed(true);
 		this.setupAudio();
-		this.canTalk = true;
 
 	}
 
@@ -144,6 +144,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 		this.walkingOnGrassSound.playSound();
 		Vector3f vector3f = this.characterControl.getViewDirection().mult(SPEED);
 		vector3f.y = -2f;
+		NodeThief.this.notifyUpdate(false);
 		this.characterControl.setWalkDirection(vector3f);
 		if (this.getWorldTranslation().y < -9f) {
 			this.death();
@@ -172,15 +173,10 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	/** this method is called when thief is near portal */
 	public void nearToPortal() {
-		this.win = true;
-		GameManager.getIstance().getSinglePlayer().win();
-	}
-
-	/** this method is called when main character is near portal */
-	public void endGame() {
 		if (this.getLocalTranslation()
 				.distance(GameManager.getIstance().getPortal().getLocalTranslation()) < PORTALDISTANCE) {
-			// TODO avviare fine gioco
+			this.win = true;
+			GameManager.getIstance().getSinglePlayer().win();
 		}
 	}
 
@@ -191,7 +187,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	/** this method, if is multiplayer, notify update */
 	public void notifyUpdate(boolean attack) {
-		if (this.multiplayer)
+		if (this.multiplayer && GameManager.getIstance().getClient().isConnected())
 			GameManager.getIstance().getClient().notifyUpdate(characterControl.getWalkDirection(),
 					characterControl.getViewDirection(), super.life, attack, this.getLocalTranslation(), this.score);
 	}
@@ -322,9 +318,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 				rotateR.multLocal(viewDirection);
 			}
 			if (!GameManager.getIstance().isPaused()) {
-				NodeThief.this.notifyUpdate(false);
 				viewDirection.y = -2f;
 				characterControl.setViewDirection(viewDirection);
+				NodeThief.this.notifyUpdate(false);
 			}
 		}
 	};
@@ -347,6 +343,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 					&& !NodeThief.this.waitAnimation) && !GameManager.getIstance().isPaused()) {
 				NodeThief.this.isRun = false;
 				NodeThief.this.waitAnimation = true;
+				NodeThief.this.swordSound.playSound();
 				if (!NodeThief.this.changeAttack) {
 					NodeThief.this.channel.setAnim(attack1);
 					NodeThief.this.channel.setSpeed(3f);
@@ -358,7 +355,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 				NodeThief.this.changeAttack = !NodeThief.this.changeAttack;
 				NodeThief.this.channel.setLoopMode(LoopMode.DontLoop);
 				NodeThief.this.notifyUpdate(true);
-			} else if ((name.equals(bonfire) && pressed && NodeThief.this.alive && NodeThief.this.alive
+			} else if ((name.equals(BONFIRE) && pressed && NodeThief.this.alive && NodeThief.this.alive
 					&& !NodeThief.this.waitAnimation && !NodeThief.this.isRun)
 					&& !GameManager.getIstance().isPaused()) {
 				NodeThief.this.stop();
@@ -371,9 +368,9 @@ public class NodeThief extends NodeCharacter implements Collition {
 				} else {
 					GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
 					GameManager.getIstance().resumeGame();
-					Element element = GameManager.getIstance().getNifty().getCurrentScreen()
-							.findElementByName("sureExitControl");
-					element.setVisible(false);
+					GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl")
+							.setVisible(false);
+
 				}
 			} else if ((name.equals(chatBox) && !isSinglePlayer) && !pressed) {
 				if (!chatboxIsEnable) {
@@ -382,29 +379,45 @@ public class NodeThief extends NodeCharacter implements Collition {
 					el.setVisible(!el.isVisible());
 					GameManager.getIstance().getNifty().getScreen("lifeBarScreen").findElementByName("#chat-text-input")
 							.setFocus();
-					GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-					NodeThief.this.getCamera().setEnabled(false);
-
+					GameManager.getIstance().pauseGame();
 					chatboxIsEnable = !chatboxIsEnable;
 				} else {
 					Element el = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 							.findElementByName("chatMultiPlayer");
 					el.setVisible(!el.isVisible());
-					GameManager.getIstance().getApplication().getInputManager().setCursorVisible(false);
-					NodeThief.this.getCamera().setEnabled(true);
-					NodeThief.this.getCamera().setDragToRotate(false);
+					GameManager.getIstance().resumeGame();
 					chatboxIsEnable = !chatboxIsEnable;
 				}
 			}
-			if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+			if ((name.equals(SENDMESSAGECHAT) && !isSinglePlayer) && chatboxIsEnable && !pressed) {
+				GameManager.getIstance().getMultiplayer().sendMessage();
+			}
+
+			if (win && pressed) {
+				win = false;
+				GameManager.getIstance().getSinglePlayer().quitGame();
+			} else if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 					&& !GameManager.getIstance().isPaused()) {
 				NodeThief.this.nearToPortal();
-				// GameManager.getIstance().pauseGame();
-			} else if (win && pressed) {
-				System.out.println("pressed");
-				GameManager.getIstance().getSinglePlayer().quitGame();
+				GameManager.getIstance().pauseGame();
 			}
 		}
+	};
+
+	@Override
+	public void onAnimChange(AnimControl arg0, AnimChannel arg1, String arg2) {
+		if (arg2.equals(run)) {
+			if (this.multiplayer && GameManager.getIstance().getClient().isConnected()) {
+				NodeThief.this.notifyUpdate(false);
+			}
+		}
+		if (arg2.equals(idle)) {
+			if (this.multiplayer && GameManager.getIstance().getClient().isConnected()) {
+				NodeThief.this.stop();
+				NodeThief.this.notifyUpdate(false);
+			}
+		}
+
 	};
 
 	/** jmonkey's method */
@@ -422,7 +435,7 @@ public class NodeThief extends NodeCharacter implements Collition {
 			arg1.setAnim(idle);
 			NodeThief.this.endAttack();
 		}
-		if (arg2.equals(bonfire)) {
+		if (arg2.equals(BONFIRE)) {
 			arg1.setAnim(idle);
 			NodeThief.this.waitAnimation = false;
 			for (NodeCharacter enemy : GameManager.getIstance().getEnemies()) {
@@ -449,7 +462,8 @@ public class NodeThief extends NodeCharacter implements Collition {
 			this.resetCurrentTime();
 			this.characterControl.setWalkDirection(new Vector3f(0, -2f, 0));
 			this.walkingOnGrassSound.stopSound();
-			GameManager.getIstance().sortScorePlyer();
+			if (GameManager.getIstance().getMultiplayer() != null)
+				GameManager.getIstance().sortScorePlyer();
 		}
 	}
 
@@ -470,13 +484,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 						((NodeEnemy) enemy).getLifeBar().updateLifeBar(0);
 						((NodeEnemy) enemy).getLifeBar().setVisibleLifeBar();
 					}
-				} else if (enemy instanceof NodeEnemyPlayers) {
-					if (enemy.isDead()) {
-						this.killSomeOne();
-						GameManager.getIstance().sortScorePlyer();
-						((NodeEnemyPlayers) enemy).getLifeBar().updateLifeBar(0);
-						((NodeEnemyPlayers) enemy).getLifeBar().setVisibleLifeBar();
-					}
 				}
 			}
 		}
@@ -494,7 +501,6 @@ public class NodeThief extends NodeCharacter implements Collition {
 
 	@Override
 	public void isStricken(int DAMAGE) {
-		// TODO Auto-generated method stub
 		super.isStricken(DAMAGE);
 		this.setDamageLifeBar();
 		this.notifyUpdate(false);
@@ -534,23 +540,40 @@ public class NodeThief extends NodeCharacter implements Collition {
 	protected void setupAudio() {
 		if (!GameManager.getIstance().isEditor()) {
 			this.walkingOnGrassSound = new Sound(this, "WalkingOnGrass", false, false, false, 0.09f, false);
+			this.allSounds.add(walkingOnGrassSound);
 			this.scream1 = new Sound(this, "Scream1", false, false, false, 0.5f, false);
+			this.allSounds.add(this.scream1);
 			this.scream2 = new Sound(this, "Scream2", false, false, false, 0.5f, false);
+			this.allSounds.add(this.scream2);
 			this.scream3 = new Sound(this, "Scream3", false, false, false, 0.5f, false);
+			this.allSounds.add(this.scream2);
 			this.scream4 = new Sound(this, "Scream4", false, false, false, 0.5f, false);
+
 			if (!this.multiplayer) {
 				this.swordSound = new Sound(this, "Sword", false, false, false, 0.1f, false);
+				this.allSounds.add(this.swordSound);
 				this.bonfireSound = new Sound(this, "Bonfire", false, false, false, 1.0f, false);
+				this.allSounds.add(this.bonfireSound);
 				this.voice1 = new Sound(this, "Voice1", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice1);
 				this.voice2 = new Sound(this, "Voice2", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice2);
 				this.voice3 = new Sound(this, "Voice3", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice3);
 				this.voice4 = new Sound(this, "Voice4", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice4);
 				this.voice5 = new Sound(this, "Voice5", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice5);
 				this.voice6 = new Sound(this, "Voice6", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice6);
 				this.voice7 = new Sound(this, "Voice7", false, false, false, 1.0f, false);
+				this.allSounds.add(this.voice7);
 				this.deathSound = new Sound(this, "Death", false, false, false, 1.0f, false);
+				this.allSounds.add(this.deathSound);
 				this.enemyWin = new Sound(this, "EnemyWin", false, false, false, 1.0f, false);
+				this.allSounds.add(this.enemyWin);
 				this.enemyView = new Sound(this, "EnemyView", false, false, false, 1.0f, false);
+				this.allSounds.add(this.enemyView);
 			}
 		}
 	}
@@ -558,6 +581,11 @@ public class NodeThief extends NodeCharacter implements Collition {
 	/** this method get chase camera */
 	public ChaseCamera getCamera() {
 		return this.camera;
+	}
+
+	/** this method set chaseCam */
+	public void setChaseCamera(final ChaseCamera chaseCamera) {
+		this.camera = chaseCamera;
 	}
 
 	/** this method get controll */
@@ -578,6 +606,16 @@ public class NodeThief extends NodeCharacter implements Collition {
 	/** this method set singlePlayer */
 	public void setSinglePlayer(boolean isSinglePlayer) {
 		this.isSinglePlayer = isSinglePlayer;
+	}
+
+	/** this method get multiplayer */
+	public boolean isMultiplayer() {
+		return multiplayer;
+	}
+
+	/** this method set multiplayer */
+	public void setMultiplayer(boolean multiplayer) {
+		this.multiplayer = multiplayer;
 	}
 
 	/** return all sounds about this model */

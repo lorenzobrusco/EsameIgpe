@@ -84,7 +84,6 @@ public class LoadTerrain {
 	}
     }
 
-    
     /**
      * this methods, if it's called from editor add spatial while if it isn't
      * called from editor add spawn point
@@ -102,6 +101,7 @@ public class LoadTerrain {
 	    terrain.detachChild(spatial);
 	}
     }
+
     /**
      * this methods, if it's called from editor add spatial while if it isn't
      * called from editor add main character

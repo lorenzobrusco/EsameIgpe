@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,7 +16,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Server extends Thread {
 
     /** port to connect */
-    private final static int PORT = 8080;
+    private final int PORT;
     /** socket listing for new players */
     private final ServerSocket server;
     /** landspace shared for everyone */
@@ -28,7 +27,8 @@ public class Server extends Thread {
     private Boolean start;
 
     /** builder */
-    public Server(final String path) throws UnknownHostException, IOException {
+    public Server(final String path, int port) throws UnknownHostException, IOException {
+	this.PORT = port;
 	this.server = new ServerSocket(PORT);
 	this.TERRAIN = path;
 	this.players = new ConcurrentLinkedQueue<>();
@@ -40,16 +40,13 @@ public class Server extends Thread {
     public void run() {
 	while (this.start) {
 	    try {
-		Socket client = server.accept();
-		ClientManager clientManager = new ClientManager(this, client);
+		final Socket client = server.accept();
+		final ClientManager clientManager = new ClientManager(this, client);
 		this.newPlayer();
 		clientManager.start();
-	    } catch (SocketTimeoutException timeoutException) {
-		System.out.println("time out");
 	    } catch (IOException e) {
 	    }
 	}
-
     }
 
     /** this method notify everyone that a new player is arrived */
@@ -67,7 +64,7 @@ public class Server extends Thread {
 		try {
 		    Server.this.start = false;
 		    Server.this.server.close();
-		} catch (Exception e) {// TODO: handle exception
+		} catch (Exception e) {
 		}
 	    }
 	}.run();
@@ -75,13 +72,14 @@ public class Server extends Thread {
 
     /** this method add new player */
     public synchronized void addPlayer(ClientManager clientManager) {
-	boolean exist = false;
-	for (ClientManager manager : this.players) {
-	    if (manager.getAddress().equals(clientManager.getAddress()))
-		exist = true;
-	}
-	if (!exist)
+//	boolean exist = false;
+//	for (ClientManager manager : this.players) {
+//	    if (manager.getAddress().equals(clientManager.getAddress()))
+//		exist = true;
+//	}
+//	if (!exist)
 	    this.players.add(clientManager);
+
     }
 
     /** this method remove a player */

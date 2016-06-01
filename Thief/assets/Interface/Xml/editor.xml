@@ -3,11 +3,26 @@
 	<useStyles filename="nifty-default-styles.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 
+	<popup id="exceptionEditor" childLayout="center" backgroundColor="#000a">
+		<panel height="30%" width="60%" align="center" childLayout="vertical"
+			backgroundImage="Interface/Image/Graphics/blackBar.png">
+			<panel height="50%" width="100%" childLayout="center">
+				<control name="label" text="you haven't any permission, contact us to resolve it"
+					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+			</panel>
+			<control name="button" label="Yes" id="Button" align="center"
+				valign="center" visibleToMouse="true" width="30%">
+				<interact onClick="closePopUp()"></interact>
+			</control>
+		</panel>
+	</popup>
+
 	<popup id="popupSave" childLayout="center" backgroundColor="#000a">
 		<panel height="15%" width="40%" align="center" childLayout="vertical"
 			backgroundImage="Interface/Image/Graphics/blackBar.png">
 			<panel height="50%" width="100%" childLayout="center">
-				<control name="label" text="this name exists, do yo want overwrite?" font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+				<control name="label" text="this name exists, do yo want overwrite?"
+					font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
 			</panel>
 			<panel height="30%" width="100%" childLayout="horizontal"
 				paddingLeft="68px">
@@ -23,12 +38,13 @@
 			</panel>
 		</panel>
 	</popup>
-	
+
 	<popup id="popupDelete" childLayout="center" backgroundColor="#000a">
 		<panel height="15%" width="40%" align="center" childLayout="vertical"
 			backgroundImage="Interface/Image/Graphics/blackBar.png">
 			<panel height="50%" width="100%" childLayout="center">
-				<control name="label" text="Do yo want delete map?" font="Interface/Fonts/Morpheus.fnt" color="#ee1f" />
+				<control name="label" text="Do yo want delete map?" font="Interface/Fonts/Morpheus.fnt"
+					color="#ee1f" />
 			</panel>
 			<panel height="30%" width="100%" childLayout="horizontal"
 				paddingLeft="68px">
@@ -44,7 +60,7 @@
 			</panel>
 		</panel>
 	</popup>
-	
+
 
 	<screen id="start" controller="editor.EditorTerrain">
 		<layer childLayout="center" id="layer">

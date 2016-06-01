@@ -2,6 +2,7 @@ package multiPlayer;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -21,10 +22,7 @@ import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import editor.LoadTerrain;
-import multiPlayer.notify.NotifyBoxAttack;
-import multiPlayer.notify.NotifyStateModel;
 import singlePlayer.Sound;
-import singlePlayer.model.NodeCharacter;
 
 /**
  * 
@@ -41,7 +39,7 @@ public class MultiPlayer implements ScreenController {
 	/** manager to render */
 	private GameRender render;
 	/** sounds */
-	private Sound ambient;
+	private Sound ambientSound;
 	/** manager to player */
 	private Client client = null;
 	/** player's name */
@@ -64,21 +62,19 @@ public class MultiPlayer implements ScreenController {
 	private final Camera cam;
 	/** start */
 	private boolean start;
-	/***/
+	/** check if game is created */
 	private boolean created;
 
+	/**
+	 * constructor
+	 * 
+	 */
 	public MultiPlayer(InputManager inputManager, ViewPort viewPort, Node rootNode, Camera cam, String address,
-			String namePlayer, String nameModel) {
+			String namePlayer, String nameModel, int port) throws UnknownHostException, IOException {
 		this.start = false;
 		this.created = false;
-		try {
-			this.client = new Client(namePlayer, nameModel, address, inputManager, cam);
-			this.client.start();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.client = new Client(namePlayer, nameModel, address, inputManager, cam, port);
+		this.client.start();
 		this.nameModel = nameModel;
 		this.viewPort = viewPort;
 		this.rootNode = rootNode;
@@ -95,74 +91,86 @@ public class MultiPlayer implements ScreenController {
 	public void simpleUpdate(Float tpf) {
 		if (this.start) {
 			this.loadLevel(this.client.getNameTerrain(), this.rootNode, this.cam, this.inputManager);
-			this.start = false;
-			this.created = true;
+			MultiPlayer.this.start = false;
 		}
 		if (this.created) {
 			this.render.rayRendering();
 			if (!GameManager.getIstance().getNodeThief().isRun())
 				GameManager.getIstance().getNodeThief().stop();
-			if (!GameManager.getIstance().getNotyStateModelsIsEmpty()) {
-				NotifyStateModel stateModel = GameManager.getIstance().getNotifyStateModel();
-				if (stateModel.isAttach()) {
-					GameManager.getIstance().getTerrain().attachChild(stateModel.getModel());
-				} else {
-					GameManager.getIstance().getTerrain().detachChild(stateModel.getModel());
-				}
-			}
-			if (!GameManager.getIstance().stateIsEmpty()) {
-				Pair<NodeCharacter, ModelState> pair = GameManager.getIstance().getState();
-				for (String key : GameManager.getIstance().getPlayers().keySet()) {
-					if (GameManager.getIstance().getPlayers().get(key).equals(pair.getArg0())) {
-						final ModelState state = pair.getArg1();
-						((NodeEnemyPlayers) pair.getArg0()).changeState(state.getLife(), state.getScore(),
-								state.isAttack(), state.getView(), state.getLocation(), state.getLocation());
-					}
-				}
-			}
-
-			if (!GameManager.getIstance().getBoxsAttackIsEmpty()) {
-				NotifyBoxAttack box = GameManager.getIstance().getBoxAttack();
-				if (box.isAttach())
-					GameManager.getIstance().getTerrain().attachChild(box.getModel());
-				else
-					GameManager.getIstance().getTerrain().detachChild(box.getModel());
-			}
 		}
 	}
 
 	/** this method load landscape */
 	public void loadLevel(String level, Node rootNode, Camera cam, InputManager inputManager) {
-		final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
-		this.nodeScene.attachChild(terrainQuad);
-		this.nodeScene.addLight(loadTerrain.makeAmbientLight());
-		this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
-		this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
-		this.nodeScene.addControl(rigidBodyControl);
-		GameManager.getIstance().setTerrain(nodeScene);
-		GameManager.getIstance().makeSecondLayer();
-		this.client.bornPosition(nodeScene);
-		this.rootNode.attachChild(nodeScene);
-		GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
-		GameManager.getIstance().addPhysics();
-		GameManager.getIstance().addPointLightToScene();
-		GameManager.getIstance().setClient(client);
-		this.render = new GameRender(terrainQuad);
-		this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
-		GameManager.getIstance().stopMenuSound();
-		this.setupAmbientSound();
-
+		new Thread() {
+			public void run() {
+				GameManager.getIstance().getApplication().enqueue(new Callable<Void>() {
+					public Void call() {
+						final TerrainQuad terrainQuad = loadTerrain.loadTerrainMultiPlayer(level + ".j3o");
+						MultiPlayer.this.nodeScene.attachChild(terrainQuad);
+						MultiPlayer.this.nodeScene.addLight(loadTerrain.makeAmbientLight());
+						MultiPlayer.this.collisionShape = CollisionShapeFactory.createMeshShape((Node) nodeScene);
+						MultiPlayer.this.rigidBodyControl = new RigidBodyControl(collisionShape, 0);
+						MultiPlayer.this.nodeScene.addControl(rigidBodyControl);
+						GameManager.getIstance().setTerrain(nodeScene);
+						GameManager.getIstance().makeSecondLayer();
+						MultiPlayer.this.client.bornPosition(nodeScene);
+						MultiPlayer.this.rootNode.attachChild(nodeScene);
+						GameManager.getIstance().getBullet().getPhysicsSpace().add(rigidBodyControl);
+						GameManager.getIstance().addPhysics();
+						GameManager.getIstance().addPointLightToScene();
+						GameManager.getIstance().setClient(client);
+						MultiPlayer.this.render = new GameRender(terrainQuad);
+						MultiPlayer.this.viewPort.addProcessor(loadTerrain.makeFilter(true, true, true));
+						MultiPlayer.this.setupAmbientSound();
+						MultiPlayer.this.created = true;
+						return null;
+					}
+				});
+			};
+		}.start();
 	}
 
 	/** this method disconnect player */
 	public void exit() {
 		this.client.endConnection();
+		this.stopAmbientSound();
+		this.render = null;
 	}
 
 	/** this method set sound */
 	private void setupAmbientSound() {
-		this.ambient = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f, false);
-		this.ambient.playSound();
+		this.ambientSound = new Sound(GameManager.getIstance().getTerrain(), "Gameplay", false, false, true, 0.8f,
+				false);
+		GameManager.getIstance().stopMenuSound();
+		this.playAmbientSound();
+	}
+
+	/** start playing ambient sound */
+	private void playAmbientSound() {
+		this.ambientSound.getAudioNode().setVolume(0.0f);
+		this.ambientSound.playSound();
+		for (float i = 0.0f; i < 0.8f; i += 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() + 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+			}
+		}
+	}
+
+	/** stop playing ambient sound */
+	private void stopAmbientSound() {
+		for (float i = this.ambientSound.getAudioNode().getVolume(); i > 0.1f; i -= 0.1f) {
+			this.ambientSound.getAudioNode().setVolume(this.ambientSound.getAudioNode().getVolume() - 0.1f);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				this.ambientSound.stopSound();
+			}
+		}
+		this.ambientSound.stopSound();
 	}
 
 	/** send message when player press send button */
@@ -170,8 +178,10 @@ public class MultiPlayer implements ScreenController {
 
 		final TextField text = GameManager.getIstance().getNifty().getCurrentScreen()
 				.findNiftyControl("#chat-text-input", TextField.class);
-		GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
-		text.setText("");
+		if (!text.getDisplayedText().equals("")) {
+			GameManager.getIstance().getClient().sendMessage(text.getDisplayedText());
+			text.setText("");
+		}
 
 	}
 
@@ -223,9 +233,38 @@ public class MultiPlayer implements ScreenController {
 		niftyElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
+	/** this method create a popup to exit */
+	public void openCloseSureExitButton() {
+		Element element = GameManager.getIstance().getNifty().getCurrentScreen().findElementByName("sureExitControl");
+		element.setVisible(!element.isVisible());
+	}
+
+	/** this method resume game */
+	public void resumeGame() {
+		GameManager.getIstance().getNifty().gotoScreen("lifeBarScreen");
+		GameManager.getIstance().resumeGame();
+	}
+
+	/** this method reset every things */
+	public void reset() {
+		GameManager.getIstance().setPaused(false);
+		GameManager.getIstance().getNifty().fromXml("Interface/Xml/screenMenu.xml", "start", this);
+		GameManager.getIstance().getApplication().getInputManager().reset();
+		GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
+		GameManager.getIstance().getApplication().getViewPort().clearProcessors();
+		GameManager.getIstance().getNodeThief().getCamera().setEnabled(false);
+		GameManager.getIstance().quitGame();
+	}
+
+	/** this method close game */
+	public void quitGame() {
+		this.exit();
+		this.reset();
+	}
+
 	/** this method get start */
 	public boolean isStart() {
-		return start;
+		return this.start;
 	}
 
 	/** this method set start */
@@ -233,12 +272,21 @@ public class MultiPlayer implements ScreenController {
 		this.start = start;
 	}
 
+	/** this method get created */
+	public boolean isCreated() {
+		return this.created;
+	}
+
+	/** this method set created */
+	public void setCreated(boolean created) {
+		this.created = created;
+	}
+
 	/** jmonkey's methods */
 	@Override
 	public void bind(Nifty arg0, Screen arg1) {
 		this.borderLifeBarThief = GameManager.getIstance().getNifty().getScreen("lifeBarScreen")
 				.findElementByName("borderLifeBarThief");
-		System.out.println(nameModel);
 		GameManager.getIstance().getNodeThief().setLifeBar(progressLifeBarThief, borderLifeBarThief, nameModel);
 	}
 
@@ -251,5 +299,5 @@ public class MultiPlayer implements ScreenController {
 	@Override
 	public void onStartScreen() {
 	}
-//TODO stop musica multiplayer qunado esce
+
 }

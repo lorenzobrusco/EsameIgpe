@@ -1,7 +1,6 @@
 package control;
 
 import com.jme3.terrain.geomipmap.TerrainQuad;
-
 import singlePlayer.model.NodeCharacter;
 import singlePlayer.model.NodeEnemy;
 import singlePlayer.model.NodeModel;
@@ -9,7 +8,7 @@ import singlePlayer.model.NodeThief;
 
 /**
  * 
- * This class set the minimum distace to render starting of the character's
+ * This class set the minimum distance to render starting of the character's
  * position
  * 
  */
@@ -35,14 +34,14 @@ public class GameRender {
     }
 
     private float distance(NodeModel model) {
-	/** Return distace from thief to each every models */
+	/** Return distance from thief to each every models */
 	return thief.getWorldTranslation().distance(model.getWorldTranslation());
     }
 
     public synchronized void rayRendering() {
 	/**
-	 * this methos attach and detach every models according to the distace
-	 * from thief, expet castle
+	 * this methods attach and detach every models according to the distance
+	 * from thief, expect castle
 	 */
 	for (NodeModel model : GameManager.getIstance().getModels()) {
 	    if (!(model.getName().contains("Castle"))) {
@@ -66,17 +65,21 @@ public class GameRender {
 		    } else {
 			model.stopBonfireSound();
 		    }
-		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerBonFire");
+		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Bonfire")
+			    && !GameManager.getIstance().isPaused()) {
+			GameManager.getIstance().getSinglePlayer().showMessageForPlayer("MessageForPlayerBonFire");
 
-		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerBonFire");
+		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Bonfire")
+			    && !GameManager.getIstance().isPaused()) {
+			GameManager.getIstance().getSinglePlayer().hideMessageForPlayer("MessageForPlayerBonFire");
 		    }
 
-		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().showMessageBonfire("MessageForPlayerPortal");
-		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal") && !GameManager.getIstance().isPaused()) {
-			GameManager.getIstance().getSinglePlayer().hideMessageBonfire("MessageForPlayerPortal");
+		    if (distance(model) <= this.MESSAGEDISTANCE && model.getName().equals("Portal")
+			    && !GameManager.getIstance().isPaused()) {
+			GameManager.getIstance().getSinglePlayer().showMessageForPlayer("MessageForPlayerPortal");
+		    } else if (distance(model) > this.MESSAGEDISTANCE && model.getName().equals("Portal")
+			    && !GameManager.getIstance().isPaused()) {
+			GameManager.getIstance().getSinglePlayer().hideMessageForPlayer("MessageForPlayerPortal");
 		    }
 
 		    if ((model instanceof NodeCharacter) && distance(model) < this.ENEMYSOUNDDISTANCE

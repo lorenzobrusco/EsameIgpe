@@ -41,8 +41,8 @@ public class LifeBar extends Node {
 	materialGreenBox = new Material(GameManager.getIstance().getApplication().getAssetManager(),
 		"Common/MatDefs/Misc/Unshaded.j3md");
 	materialGreenBox.setColor("Color", ColorRGBA.Green);
-	materialGreenBox.setTexture("ColorMap",
-		GameManager.getIstance().getApplication().getAssetManager().loadTexture("Interface/Image/LifeBar/lifeBar.png"));
+	materialGreenBox.setTexture("ColorMap", GameManager.getIstance().getApplication().getAssetManager()
+		.loadTexture("Interface/Image/LifeBar/lifeBar.png"));
 	geometryGreenBox.setMaterial(materialGreenBox);
 
 	materialRedBox = materialGreenBox.clone();
@@ -56,7 +56,6 @@ public class LifeBar extends Node {
     /** this method calculate remaining life before thief' attach */
     public void updateLifeBar(int damage) {
 
-	
 	if (damage >= life) {
 	    this.setVisibleLifeBar();
 	} else {
