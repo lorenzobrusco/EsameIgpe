@@ -738,7 +738,6 @@ public class EditorTerrain implements ScreenController {
 
     /** this method is called when editor is close */
     public void closeEditor() {
-
 	this.guiNode.detachAllChildren();
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping("mouse");
 	GameManager.getIstance().getApplication().getInputManager().deleteMapping("tree");
