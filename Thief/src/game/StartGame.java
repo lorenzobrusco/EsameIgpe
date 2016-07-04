@@ -516,11 +516,11 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	openServerScreen();
     }
 
-    /**this method get rootNode*/
-    public Node getRoot(){
+    /** this method get rootNode */
+    public Node getRoot() {
 	return this.rootNode;
     }
-    
+
     /** jmonkey's method */
     @Override
     public void onAction(String arg0, boolean arg1, float arg2) {
@@ -546,19 +546,19 @@ public class StartGame extends SimpleApplication implements ActionListener, Scre
 	StartGame app = new StartGame();
 	app.setPauseOnLostFocus(false);
 	AppSettings gameSettings = new AppSettings(false);
-	// gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
-	// java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
+	gameSettings.setResolution(java.awt.Toolkit.getDefaultToolkit().getScreenSize().width,
+		java.awt.Toolkit.getDefaultToolkit().getScreenSize().height);
 	//
-	// gameSettings.setFullscreen(true);
-	// gameSettings.setVSync(true);
-	// gameSettings.setTitle("Thief");
-	// gameSettings.setUseInput(true);
-	// gameSettings.setFrameRate(500);
-	// gameSettings.setSamples(0);
+	gameSettings.setFullscreen(true);
+	gameSettings.setVSync(true);
+	gameSettings.setTitle("Thief");
+	gameSettings.setUseInput(true);
+	gameSettings.setFrameRate(500);
+	gameSettings.setSamples(0);
 	gameSettings.setRenderer("LWJGL-OpenGL2");
 	//
 	app.setSettings(gameSettings);
-	// app.setShowSettings(false);
+	app.setShowSettings(false);
 	app.setDisplayFps(false);
 	app.setDisplayStatView(false);
 	app.start();

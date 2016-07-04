@@ -386,7 +386,10 @@ public class Client extends Thread implements CommunicationProtocol {
 	    this.quitGame();
 	} catch (IOException e) {
 	    this.exception();
+	}catch (NullPointerException e) {
+	    this.exception();
 	}
+	
     }
 
     /** this method clear mapping */
