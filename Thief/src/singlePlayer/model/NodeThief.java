@@ -178,6 +178,8 @@ public class NodeThief extends NodeCharacter implements Collision {
 			this.win = true;
 			GameManager.getIstance().getSinglePlayer().win();
 		}
+		else
+		    this.win=false;
 	}
 
 	/** this method reset current time */
@@ -396,10 +398,9 @@ public class NodeThief extends NodeCharacter implements Collision {
 			if (win && pressed) {
 				win = false;
 				GameManager.getIstance().getSinglePlayer().quitGame();
-			} else if ((name.equals("win") && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
+			} else if ((name.equals("win") && pressed && !win && NodeThief.this.alive && !NodeThief.this.waitAnimation)
 					&& !GameManager.getIstance().isPaused()) {
 				NodeThief.this.nearToPortal();
-				GameManager.getIstance().pauseGame();
 			}
 		}
 	};

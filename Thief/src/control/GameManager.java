@@ -369,34 +369,26 @@ public class GameManager {
 	if (this.terrain != null) {
 	    this.terrain.detachAllChildren();
 	    this.terrain.removeFromParent();
-	    this.bulletAppState.getPhysicsSpace().remove(terrain);
+	    if (!this.editor)
+		this.bulletAppState.getPhysicsSpace().remove(terrain);
 	}
 	this.terrain = null;
 	if (this.terrainQuad != null) {
 	    this.terrainQuad.detachAllChildren();
 	    this.terrainQuad.removeFromParent();
 	}
-	
-	
-	
-		this.application.getRenderer().cleanup();
-		this.application.getAssetManager().clearAssetEventListeners();
-		this.application.getCamera().clearViewportChanged();
-		this.application.getRenderManager().getRenderer().cleanup();
-		this.application.getRenderer().cleanup();
-		this.application.getRenderer().clearBuffers(true, true, true);
-		this.application.getGuiNode().detachAllChildren();
-		this.application.getRenderManager().getRenderer().clearClipRect();
-		this.application.getRootNode().detachAllChildren();
-		this.application.getRootNode().forceRefresh(true, true, true);
-		this.application.getRootNode().updateModelBound();
-		this.application.getRootNode().updateGeometricState();
-		this.application.getRootNode().updateLogicalState(1.0f);
-		this.application.restart();
-	
+
+	this.application.getGuiNode().detachAllChildren();
+	this.application.getRenderManager().getRenderer().clearClipRect();
+	this.application.getRootNode().detachAllChildren();
+	this.application.getRootNode().forceRefresh(true, true, true);
+	this.application.getRootNode().updateModelBound();
+	this.application.getRootNode().updateGeometricState();
+	this.application.getRootNode().updateLogicalState(1.0f);
 	this.terrainQuad = null;
 	this.singlePlayer = null;
 	this.multiplayer = null;
+	this.editor = false;
 	this.client = null;
     }
 

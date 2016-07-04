@@ -249,7 +249,7 @@ public class EditorTerrain implements ScreenController {
 	GameManager.getIstance().getNifty().showPopup(GameManager.getIstance().getNifty().getCurrentScreen(),
 		popup.getId(), null);
 	GameManager.getIstance().getApplication().getInputManager().setCursorVisible(true);
-	
+
     }
 
     /** this method delete map */
@@ -293,10 +293,10 @@ public class EditorTerrain implements ScreenController {
 	    }
 	    file = new File("assets" + File.separator + "Scenes" + File.separator + fileName + ".j3o");
 	    try {
-		
+
 		new SaveTerrain(this.rootNode).saveModel(GameManager.getIstance().getNifty().getCurrentScreen()
 			.findNiftyControl("textfieldSaveTerrain", TextField.class).getDisplayedText());
-		
+
 	    } catch (IOException e) {
 		final Element popup = GameManager.getIstance().getNifty().createPopup("exceptionEditor");
 		this.idPopUp = popup.getId();
@@ -426,7 +426,7 @@ public class EditorTerrain implements ScreenController {
 	    for (int x = -radiusStepsX; x < radiusStepsX; x++) {
 		float locX = loc.x + (x * xStepAmount);
 		float locZ = loc.z + (z * zStepAmount);
-		if (isInRadius(locX - loc.x, locZ - loc.z, radius) ) {
+		if (isInRadius(locX - loc.x, locZ - loc.z, radius)) {
 		    float h = calculateHeight(radius, height, locX - loc.x, locZ - loc.z);
 		    locs.add(new Vector2f(locX, locZ));
 		    heights.add(h);
